@@ -1,48 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/BackMenuLayout"
+    android:background="@color/yp_blue_light__yp_black"
     tools:context=".SettingsActivity">
 
-    <Button
-        android:id="@+id/button_back_from_settings"
-        style="@style/GoBackButtons"
-        android:text="@string/button_settings" />
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:alpha="0.0"
+        android:scaleType="fitCenter"
+        android:fitsSystemWindows="true"
+        android:visibility="visible" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_dark_mode"
-        style="@style/SettingsMenuButtons"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:gravity="center_vertical"
-        android:paddingEnd="@dimen/padding_z"
-        android:text="@string/dark_mod"
-        tools:ignore="VisualLintButtonSize" />
-    <!--android:background="@color/buttons_secondary"-->
+    <LinearLayout
+        android:id="@+id/act_settings_layout"
+        style="@style/BackMenuLayout"
+        android:alpha="0.8"
+        tools:context=".SettingsActivity">
 
-    <Button
-        android:id="@+id/button_settings_share"
-        style="@style/SettingsMenuButtons"
-        android:layout_height="wrap_content"
-        android:text="@string/share_the_app"
-        app:icon="@drawable/share"
-        tools:ignore="VisualLintButtonSize" />
+        <Button
+            android:id="@+id/button_back_from_settings"
+            style="@style/GoBackButtons"
+            android:text="@string/button_back" />
 
-    <Button
-        android:id="@+id/button_settings_write_to_supp"
-        style="@style/SettingsMenuButtons"
-        android:layout_height="wrap_content"
-        android:text="@string/write_to_support"
-        app:icon="@drawable/support"
-        tools:ignore="VisualLintButtonSize" />
+        <Button
+            android:id="@+id/clearing_the_storage"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/clearing_the_storage"
+            app:icon="@android:drawable/ic_menu_delete"
+            tools:ignore="VisualLintButtonSize" />
 
-    <Button
-        android:id="@+id/button_settings_user_agreement"
-        style="@style/SettingsMenuButtons"
-        android:layout_height="wrap_content"
-        android:text="@string/user_agreement"
-        app:icon="@drawable/arrow_forward"
-        tools:ignore="VisualLintButtonSize" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/key_input_off"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:checked="true"
+            android:text="@string/preview_off"
+            app:icon="@android:drawable/ic_menu_delete"
+            tools:ignore="VisualLintButtonSize" />
 
-</LinearLayout>
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/key_input_clear"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:text="@string/key_input_clear"
+            app:icon="@android:drawable/ic_menu_delete"
+            tools:ignore="VisualLintButtonSize" />
+
+        <TextView
+            android:id="@+id/preview_size_label"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:layout_marginTop="@dimen/dp8"
+            android:text="Размер превью: 200"
+            android:layout_gravity="start" />
+
+        <SeekBar
+            android:id="@+id/preview_size"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp44"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:text="Не сохранять превью"
+            android:max="4"
+            android:progress="3" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/disguise"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:checked="true"
+            android:text="Мимикрировать под другое приложение"
+            app:icon="@android:drawable/ic_menu_delete"
+            tools:ignore="VisualLintButtonSize" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_dark_mode"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:text="@string/dark_mod"
+            tools:ignore="VisualLintButtonSize" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/button_tumbler"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/dp8"
+            android:rotation="0"
+            android:text="@string/gachi_switch"
+            app:thumbTint="@color/kototeka_thumb_color" />
+
+        <Button
+            android:id="@+id/button_settings_share"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/share_the_app"
+            app:icon="@android:drawable/ic_menu_share"
+            tools:ignore="VisualLintButtonSize" />
+
+        <Button
+            android:id="@+id/button_settings_write_to_supp"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/write_to_support"
+            app:icon="@android:drawable/ic_dialog_email"
+            tools:ignore="VisualLintButtonSize" />
+
+        <Button
+            android:id="@+id/button_settings_user_agreement"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/user_agreement"
+            app:icon="@android:drawable/ic_menu_edit"
+            tools:ignore="VisualLintButtonSize" />
+
+        <Button
+            android:id="@+id/button_weather"
+            style="@style/SecondaryButtonsAndText"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="О Разработчике"
+            app:icon="@android:drawable/ic_menu_mapmode"
+            tools:ignore="VisualLintButtonSize" />
+
+
+    </LinearLayout>
+
+</FrameLayout>

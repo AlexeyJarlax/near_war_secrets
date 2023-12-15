@@ -1,38 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/FrontMenuLayout"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <ImageView
+        android:id="@+id/background_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="@dimen/padding_for_linear_layout"
-        android:text="@string/playlist_maker"
-        android:textColor="@color/yp_white"
-        android:textSize="@dimen/text_size_large" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/cat" />
 
-    <Button
-        android:id="@+id/button_search"
-        style="@style/MainMenuButtons"
-        android:text="@string/button_search"
-        app:icon="@drawable/search"
-        tools:ignore="VisualLintButtonSize" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button_media_lib"
-        style="@style/MainMenuButtons"
-        android:text="@string/button_media_lib"
-        app:icon="@drawable/library"
-        tools:ignore="VisualLintButtonSize" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-    <Button
-        android:id="@+id/button_settings"
-        style="@style/MainMenuButtons"
-        android:text="@string/button_settings"
-        app:icon="@drawable/settings"
-        tools:ignore="VisualLintButtonSize" />
-</LinearLayout>
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/yp_black__yp_white"
+                android:layout_marginEnd="@dimen/dp44"
+                android:padding="@dimen/dp16"
+                android:text="@string/app_name_in_main_page"
+                android:textSize="@dimen/text_size_sp22" />
+
+            <Button
+                android:id="@+id/button_login"
+                style="@style/MainMenuButtons"
+                android:layout_width="@dimen/dp36"
+                android:layout_height="@dimen/dp36"
+                android:layout_margin="@dimen/dp8"
+               android:gravity="center"
+                android:text="****"
+                app:icon="@android:drawable/ic_lock_idle_lock" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_search"
+            style="@style/MainMenuButtons"
+            android:text="@string/button_search"
+            app:icon="@android:drawable/ic_menu_search"
+            tools:ignore="VisualLintButtonSize" />
+
+        <Button
+            android:id="@+id/button_item_loader"
+            style="@style/MainMenuButtons"
+            android:text="@string/button_item_loader"
+            app:icon="@android:drawable/ic_menu_add"
+            tools:ignore="VisualLintButtonSize" />
+
+        <Button
+            android:id="@+id/button_my_gallery"
+            style="@style/MainMenuButtons"
+            android:text="@string/button_my_gallery"
+            app:icon="@android:drawable/ic_menu_gallery"
+            tools:ignore="VisualLintButtonSize" />
+
+        <Button
+            android:id="@+id/button_settings"
+            style="@style/MainMenuButtons"
+            android:text="@string/button_settings"
+            app:icon="@android:drawable/ic_menu_preferences"
+            tools:ignore="VisualLintButtonSize" />
+
+    </LinearLayout>
+</RelativeLayout>

@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://www.jitpack.io")
         gradlePluginPortal()
     }
 }
@@ -10,8 +11,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://www.jitpack.io")
     }
 }
 
-rootProject.name = "Playlist Maker"
+rootProject.name = "kototeka"
 include(":app")

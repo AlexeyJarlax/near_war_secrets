@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Playlist Maker</string>
-    <string name="playlist_maker">Playlist Maker</string>
+    <string name="app_name">kototeka</string>
+    <string name="app_name_in_main_page">Теневая галерея</string>
     <string name="button_search">Поиск</string>
     <string name="button_back">Назад</string>
-    <string name="button_media_lib">Медиатека</string>
+    <string name="button_item_loader">Добавить</string>
+    <string name="button_my_gallery">Хранилище</string>
     <string name="button_settings">Настройки</string>
     <string name="dark_mod">Темная тема</string>
     <string name="share_the_app">Поделиться приложением</string>
@@ -12,10 +13,35 @@
     <string name="share_app_text">Попробуй это приложение, которое я яростно написал: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_title">Поделиться приложением</string>
     <string name="support_email">mailto:al3ksei.pav@yandex.ru</string>
-    <string name="support_email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="support_email_subject">Сообщение разработчикам и разработчицам приложения kototeka</string>
     <string name="support_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">это приложение не пригодно для инвалидов</string>
     <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
+    <string name="cam_bat_on">Скрыть\nкамеру</string>
+    <string name="cam_bat_off">Запустить\nкамеру</string>
+    <string name="cam_bat">Камера</string>
+    <string name="snapshot">Сделать\nснимок</string>
+    <string name="galery">Открыть\nгалерею</string>
+    <string name="gachi_switch">Визуальный стиль:\nКототека / Гачимучи</string>
+    <string name="sample">Один два три</string>
+    <string name="key_info">Введенные символы станут уникальным ключом шифрования на устройстве. Ключ шифрования может состоять из любых символов, включая русские буквы, цифры, специальные символы и т.д. Однако, для повышения уровня безопасности рекомендуется использовать длинные и сложные ключи, состоящие из различных символов.
+После выхода из приложения ключ будет сохранён, и его не обязательно вводить при следующем входе в приложение. В настройках можно изменить опцию на отчистку ключа при каждом выходе из приложения.
+Если вы забыли ключ или решили его изменить, вы сможете придумать новый и продолжать использовать приложение. Однако, старые изображения больше не будут доступны для просмотра, если вы не вернетесь к предыдущему ключу. Ключ привязывается к изображению только при его создании. Если вы поменяли ключ и некоторые изображения стали недоступными, вы можете легко удалить ненужные изображения с помощью функционала приложения.
+Вы можете поделиться изображением с другим пользователем, и он сможет просмотреть его на своем устройстве, получив его от вас любым доступным способом и открыв его с использованием того же самого ключа. Для этого ему нужно будет ввести тот же самый ключ шифрования при входе в приложение, и он сможет загрузить изображение в скрытую галерею и ознакомиться с его содержимым.</string>
+    <string name="clearing_the_storage">Очистить хранилище</string>
+    <string name="key_input_clear">Удалять ключ при закрытии сессии \n(ключ будет запрашиваться при входе)</string>
+    <string name="preview_off">Использовать ключ шифрования</string>
+    <string name="something_went_wrong">Упс. Что-то пошло не так...</string>
+    <string name="nothing_found">Упс. Ничего не найдено...</string>
+    <string name="placeholder_track_name">No Reply</string>
+    <string name="placeholder_artist_name">The Beatles</string>
+    <string name="placeholder_track_time">5:12</string>
+    <string name="error_text_web">Проблемы со связью \n
+        \n Загрузка не удалась. Проверьте\n
+        подключение к интернету</string>
+    <string name="nothing_was_found">Ничего не нашлось</string>
+    <string name="refresh">Обновить</string>
+    <string name="any_mistake">тут будет сообщение об ошибке,\nиконка поменяется в зависимости\nот характера ошибки</string>
 </resources>
