@@ -58,17 +58,13 @@ class ItemLoaderActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private var photoList = ArrayList<String>()
-    private var hiddenPhotoList = ArrayList<String>()
-    private lateinit var outputFile: File
     private var isPreviewVisible = false
     private lateinit var photoListAdapter: PhotoListAdapter
     private lateinit var imageDialog: Dialog
 
     companion object {
-        var newHashedKey: ByteArray = byteArrayOf(1)
         const val REQUEST_PERMISSIONS = 1
         const val REQUEST_SELECT_PHOTO = 2
-        const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss"
         const val REQUEST_KEY_INPUT = 3
     }
 
@@ -128,15 +124,6 @@ class ItemLoaderActivity : AppCompatActivity() {
         // Получение пути к внутренней директории и сохранение для photoList
         val savedFiles = getPreviouslySavedFiles()
         photoList.addAll(savedFiles)
-//        val internalDir = getDir("originalAndPreviews", Context.MODE_PRIVATE)
-//        val savedFiles = getPreviouslySavedFiles(internalDir)
-//        photoList.addAll(savedFiles)
-//
-//        // Получение пути к внутренней директории и сохранение для hiddenPhotoList
-//        val internalHiddenDir = getDir("originalAndPreviews", Context.MODE_PRIVATE)
-//        val hiddenSavedFiles = getPreviouslySavedFiles(internalHiddenDir)
-//        hiddenPhotoList.addAll(hiddenSavedFiles)
-
 
         val back = findViewById<Button>(R.id.button_back_from_loader) // НАЗАД
         back.setOnClickListener {
@@ -156,11 +143,6 @@ class ItemLoaderActivity : AppCompatActivity() {
             this, android.R.style.Theme_Black_NoTitleBar_Fullscreen
         )  // открытие изображения в новом окне
         imageDialog.setContentView(R.layout.util_dialog_image_view)
-
-        fun openKeyInputActivity() {
-            val intent = Intent(this, KeyInputActivity::class.java)
-            startActivityForResult(intent, REQUEST_KEY_INPUT)
-        }
 
         val buttonCamera = findViewById<Button>(R.id.button_camera)
         val buttonCapture = findViewById<Button>(R.id.button_capture)
@@ -258,7 +240,6 @@ class ItemLoaderActivity : AppCompatActivity() {
                         fileName = "${fileName}.o"
                     }
 
-//                    val folder = getDir("originalAndPreviews", Context.MODE_PRIVATE)
                     val folder = getExternalFilesDir(null)
                     if (folder != null) {
                         var counter = 1
@@ -338,20 +319,12 @@ class ItemLoaderActivity : AppCompatActivity() {
         val encryptedBytes = cipher.doFinal()
         outputStream.write(encryptedBytes)
 
-//        var fileName = "222.k"
         if (File(getExternalFilesDir(null), fileName).exists()) {
             Timber.d("=== сейчас в директории существует файл fileName: ${fileName}")
         }
         if (File(getExternalFilesDir(null), "${fileName}k").exists()) {
             Timber.d("=== сейчас в директории существует файл {fileName}k: ${fileName}k")
         }
-
-//        encryptedFile.renameTo(File(getExternalFilesDir(null), fileName)) // сохраняем
-//        encryptedFile.renameTo(
-//            File(
-//                getExternalFilesDir(null),
-//                "()" + fileName
-//            ))
 
         val isEncryptedFileSaved = encryptedFile.exists()
         if (!isEncryptedFileSaved) {// Проверка на сохранение файла
@@ -374,33 +347,16 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
     }
 
-//        val originalFile = File(imageUri.path) // Удаление оригинального изображения
-//        originalFile.delete()
-//    }
-
-    //    private fun getPreviouslySavedFiles(directory: File?): List<String> {
-//        val savedFiles = mutableListOf<String>()
-//        if (directory != null && directory.exists() && directory.isDirectory) {
-//            val files = directory.listFiles()
-//            if (files != null) {
-//                // Сортировка файлов по дате (самые новые первыми)
-//                val sortedFiles = files.sortedByDescending { it.lastModified() }
-//                for (file in sortedFiles) {
-//                    savedFiles.add(file.name)
-//                }
-//            }
-//        }
-//        return savedFiles
-//    }
-//}
-    private fun getPreviouslySavedFiles(): List<String> {
+    private fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
         val savedFiles = mutableListOf<String>()
         val directory = this.getExternalFilesDir(null)
         if (directory != null && directory.exists() && directory.isDirectory) {
             val files = directory.listFiles()
             if (files != null) {
                 for (file in files.reversed()) {
-                    savedFiles.add(file.name)
+                    if (file.extension != "kk") {
+                        savedFiles.add(file.name)
+                    }
                 }
             }
         }
@@ -421,7 +377,6 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
         val textViewName: TextView = itemView.findViewById(R.id.text_view_name_preview)
         val dataSecTextView: TextView = itemView.findViewById(R.id.data_sec_text_view_preview)
     }
-
     private var imageDialog: Dialog? = null
     private val dateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault())
 
@@ -430,13 +385,7 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
             LayoutInflater.from(context).inflate(R.layout.util_item_photo_unit, parent, false)
         return ViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val fileName = photoList[position]
-//        val directory = context.getDir("originalAndPreviews", Context.MODE_PRIVATE)
-//        val file = File(directory, fileName)
-//        val file = File(context.filesDir, "originalAndPreviews/$fileName")
-
         val imageView = holder.imageView
         val textViewName = holder.textViewName
         val dataSecTextView = holder.dataSecTextView
@@ -448,8 +397,7 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
             .transform(RoundedCorners(16))
             .into(imageView)
 
-//        dataSecTextView.text = dateFormat.format(file.lastModified())
-//        textViewName.text = fileName
+
         val thumbnailName = photoList[position]
         dataSecTextView.text =
             dateFormat.format(File(context.getExternalFilesDir(null), thumbnailName).lastModified())
@@ -458,20 +406,12 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
         holder.itemView.setOnClickListener {
 
             val decryptionKey = encryptionKey
-//            val encryptedFileName = file.name
             val encryptedFileName = photoList[position]
-//            val encryptedFile = File(context.filesDir, "originalAndPreviews/$encryptedFileName")
-//            val encryptedFile = file
             val encryptedFile = File(context.getExternalFilesDir(null), encryptedFileName)
             Timber.d("=== Glide : encryptedFile: ${encryptedFile.name}")
-            val decryptedFile = File(context.getExternalFilesDir(null), encryptedFileName.replace(".p", ".kk"))
+            val decryptedFile =
+                File(context.getExternalFilesDir(null), encryptedFileName.replace(".p", ".kk"))
             Timber.d("=== Glide : decryptedFile: ${decryptedFile.name}")
-//            if (File(getExternalFilesDir(null), fileName).exists()) {
-//                val existingFile = File(getExternalFilesDir(null), fileName)
-//                existingFile.delete()
-//            }
-//            )
-
 
             if (encryptedFileName.endsWith(".o", true) ||
                 encryptedFileName.endsWith(".jpg", true) ||
@@ -496,8 +436,6 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
                 }
             } else if (encryptedFileName.endsWith(".p", true)) { // кодированные пикчи
                 try {
-//                    val encryptedFileName = photoList[position]
-//                    val encryptedFile = File(context.filesDir, encryptedFileName)
                     decryptImage(decryptedFile, decryptionKey)
                 } catch (e: Exception) {
                     context.toast("Ошибка. Возможно ключ был изменён")
@@ -508,29 +446,20 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
         }
     }
 
-//    override fun getItemCount(): Int {
-//        val uniqueFiles = HashSet<String>()
-//        val filteredList = photoList.filter { fileName ->
-//            val file = File(context.filesDir, "originalAndPreviews/$fileName")
-//            val isNewFile = uniqueFiles.add(file.name)
-//            isNewFile
-//        }
-//        return filteredList.size
-//    }
-
     override fun getItemCount(): Int {
         return photoList.size
     }
 
     private fun decryptImage(file: File, decryptionKey: String) {
+        Timber.d("=== Начало декодирования. файл file: ${file.name}")
         val encryptedBytes = file.readBytes()
         val messageDigest = MessageDigest.getInstance("SHA-256")
-        Log.d("Encryption", "файл messageDigest: ${messageDigest}")
+        Timber.d("=== файл messageDigest: ${messageDigest}")
         val hashedKey = messageDigest.digest(decryptionKey.toByteArray())
-        Log.d("Encryption", "файл hashedKey: $hashedKey")
+        Timber.d("=== файл hashedKey: $hashedKey")
         val keySpec = SecretKeySpec(hashedKey, "AES")
         val cipher = Cipher.getInstance("AES")
-        Log.d("Encryption", "файл cipher: ${cipher}")
+        Timber.d("=== файл cipher: ${cipher}")
         cipher.init(Cipher.DECRYPT_MODE, keySpec)
         val decryptedBytes = cipher.doFinal(encryptedBytes)
         val decryptedBitmap = BitmapFactory.decodeByteArray(decryptedBytes, 0, decryptedBytes.size)
@@ -545,16 +474,8 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
             matrix,
             true
         )
-        context.toast("Дешифрование выполнено успешно")
-//        imageDialog = Dialog(context)        // Создаем и настраиваем диалоговое окно
-//        imageDialog?.setContentView(R.layout.util_dialog_image_view)
-//
-//        val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
-//        imageViewDialog.setImageBitmap(rotatedBitmap)
-//
-//        // Показываем диалоговое окно
-//        imageDialog?.show()
-//    }
+        Timber.d("=== Успешный конец декодирования. файл rotatedBitmap: ${rotatedBitmap}")
+        context.toast("Дешифрование ${file.name} выполнено успешно")
         imageDialog = Dialog(context)
         imageDialog?.setContentView(R.layout.util_dialog_image_view)
         val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
@@ -565,7 +486,7 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
         glideRequest.into(imageViewDialog)
         imageViewDialog.setImageBitmap(rotatedBitmap)
         imageDialog?.show()
-        Log.d("Encryption", "Вывод дешифрованного изображения через Dialog")
+        Timber.d("=== Вывод дешифрованного изображения через Dialog")
         imageViewDialog.setOnClickListener {
             imageDialog?.dismiss()
         }
@@ -589,7 +510,6 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
                         context.toast("Ошибка: Не удалось сохранить превью")
                     }
                 }
-
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
             })
@@ -609,22 +529,16 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
         } else {
             "Пустая превьюшка"
         }
-
-//        val folder = context.getDir("originalAndPreviews", Context.MODE_PRIVATE)
-//        val file = File(folder, previewFileName)
         val file = File(context.getExternalFilesDir(null), previewFileName)
-
         try {
             val outputStream = FileOutputStream(file)
             thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             outputStream.flush()
             outputStream.close()
-            // return the thumbnail name
             return previewFileName
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return ""
     }
 
