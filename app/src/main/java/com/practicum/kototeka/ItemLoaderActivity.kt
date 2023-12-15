@@ -472,6 +472,7 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
 //            }
 //            )
 
+
             if (encryptedFileName.endsWith(".o", true) ||
                 encryptedFileName.endsWith(".jpg", true) ||
                 encryptedFileName.endsWith(".jpeg", true) ||
