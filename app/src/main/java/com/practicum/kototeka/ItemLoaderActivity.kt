@@ -6,15 +6,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +17,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -38,29 +34,23 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.github.chrisbanes.photoview.PhotoView
 import com.practicum.kototeka.KeyInputActivity.Companion.encryptionKey
 import com.practicum.kototeka.util.NameUtil
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
 
 class ItemLoaderActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private var photoList = ArrayList<String>()
+    var photoList = ArrayList<String>()
     private var isPreviewVisible = false
     private lateinit var photoListAdapter: PhotoListAdapter
     private lateinit var imageDialog: Dialog
+    private lateinit var encryption: Encryption
+    private var outputGalleryFile: File? = null
 
     companion object {
         const val REQUEST_PERMISSIONS = 1
@@ -85,11 +75,13 @@ class ItemLoaderActivity : AppCompatActivity() {
         encryptionKey = KeyInputActivity.encryptionKey
         requestPermissions()
         Timber.plant(Timber.DebugTree()) // для логирования багов
-
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        encryption = Encryption(this, encryptionKey)
+        val savedFiles = encryption.getPreviouslySavedFiles()
+        for (fileUri in savedFiles) {
+            val uri: Uri = Uri.parse(fileUri)
+            encryption.addPhotoToList(uri)
+        }
+        photoListAdapter = PhotoListAdapter(this, encryption)
     }
 
     private fun requestPermissions() {
@@ -122,7 +114,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
 
         // Получение пути к внутренней директории и сохранение для photoList
-        val savedFiles = getPreviouslySavedFiles()
+        val savedFiles = encryption.getPreviouslySavedFiles()
         photoList.addAll(savedFiles)
 
         val back = findViewById<Button>(R.id.button_back_from_loader) // НАЗАД
@@ -133,10 +125,6 @@ class ItemLoaderActivity : AppCompatActivity() {
         val previewView = findViewById<PreviewView>(R.id.view_finder)
         recyclerView = findViewById(R.id.list_view_photos)
         recyclerView.layoutManager = GridLayoutManager(this, 3)
-
-        photoListAdapter = PhotoListAdapter(
-            this, photoList
-        )
         recyclerView.adapter = photoListAdapter
 
         imageDialog = Dialog(
@@ -195,11 +183,21 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
     }
 
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {// Выбран файл
+                outputGalleryFile?.let { file ->
+                    encryption.fileSavingOperat(file, "g.jpg")
+                }
+            }
+        }
+
     private fun openGallery() {
         val pickPhotoIntent =
             Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         if (pickPhotoIntent.resolveActivity(packageManager) != null) {
-            startActivityForResult(pickPhotoIntent, REQUEST_SELECT_PHOTO)
+            outputGalleryFile = File(getExternalFilesDir(null), "g.jpg")
+            getContent.launch("image/*")
         } else {
             toast("Невозможно открыть галерею")
         }
@@ -229,6 +227,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                 var fileName = ""
 
                 buttonCapture.setOnClickListener {
+
                     val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
                     fileName = "${randomName}.unknown"
 
@@ -260,21 +259,21 @@ class ItemLoaderActivity : AppCompatActivity() {
                             object : ImageCapture.OnImageSavedCallback {
                                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                                     if (encryptionKey.isNotEmpty()) {
-                                        photoListAdapter.createThumbnail(
+                                        encryption.createThumbnail(
                                             this@ItemLoaderActivity,
                                             outputFile.toUri()
                                         )
-                                        encryptImage(outputFile.toUri(), encryptionKey, fileName)
-                                    } else {
-                                        toast("Изображение сохранено без шифрования")
-                                        photoList.add(
-                                            0,
+                                        encryption.encryptImage(
+                                            outputFile.toUri(),
+                                            encryptionKey,
                                             fileName
                                         )
-                                        photoListAdapter.notifyDataSetChanged()
+                                    } else {
+                                        toast("Изображение сохранено без шифрования")
+                                        encryption.addPhotoToList(outputFile.toUri())
+                                        notifyDSC()
                                     }
                                 }
-
                                 override fun onError(exception: ImageCaptureException) {
                                     toast("Ошибка сохранения изображения")
                                 }
@@ -289,78 +288,8 @@ class ItemLoaderActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun encryptImage(imageUri: Uri, encryptionKey: String, fileName: String) {
-        Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
-        val inputStream = contentResolver.openInputStream(imageUri) ?: return
-        var encryptedFile = File(getExternalFilesDir(null), "${fileName}k")
-        if (File(getExternalFilesDir(null), "${fileName}k").exists()) {
-            Timber.d("=== файл fileName существует, будет перезапись: ${fileName}k")
-            val existingFile = File(getExternalFilesDir(null), "${fileName}k")
-            existingFile.delete()
-        }
-        Timber.d("=== готовится к шифрованию: ${encryptedFile.name}")
-        Timber.d("=== путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
-        val outputStream = FileOutputStream(encryptedFile)
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        Timber.d("=== файл messageDigest: ${messageDigest}")
-        val hashedKey = messageDigest.digest(encryptionKey.toByteArray())
-        Timber.d("=== файл hashedKey: ${hashedKey}")
-        val keySpec = SecretKeySpec(hashedKey, "AES")
-        val cipher = Cipher.getInstance("AES")
-        Timber.d("=== файл cipher: ${cipher}")
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec)
-
-        val buffer = ByteArray(1024)
-        var read: Int
-        while (inputStream.read(buffer).also { read = it } != -1) {
-            val encryptedBytes = cipher.update(buffer, 0, read)
-            outputStream.write(encryptedBytes)
-        }
-        val encryptedBytes = cipher.doFinal()
-        outputStream.write(encryptedBytes)
-
-        if (File(getExternalFilesDir(null), fileName).exists()) {
-            Timber.d("=== сейчас в директории существует файл fileName: ${fileName}")
-        }
-        if (File(getExternalFilesDir(null), "${fileName}k").exists()) {
-            Timber.d("=== сейчас в директории существует файл {fileName}k: ${fileName}k")
-        }
-
-        val isEncryptedFileSaved = encryptedFile.exists()
-        if (!isEncryptedFileSaved) {// Проверка на сохранение файла
-            Timber.e("=== Ошибка сохранения зашифрованного файла")
-            return
-        }
-        toast("Изображение зашифровано")
-        Timber.d("=== Зашифрованный файл сохранен: ${encryptedFile.name}")
-        Timber.d("=== Путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
-        //если задать имя fileName = "my_secret_photo.jpg", то файл будет сохранен в следующем виде:
-        //storage/emulated/0/Android/data/[app_package_name]/files/my_secret_photo.jpg
-
-        val originalFile = File(imageUri.path) // Удаление оригинального изображения
-        val isOriginalFileDeleted = originalFile.delete()
-        if (!isOriginalFileDeleted) { // Проверка на удаление оригинала
-            Timber.e("=== Ошибка удаления оригинального файла")
-            inputStream.close()        // Закрытие потоков
-            outputStream.flush()
-            outputStream.close()
-        }
-    }
-
-    private fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
-        val savedFiles = mutableListOf<String>()
-        val directory = this.getExternalFilesDir(null)
-        if (directory != null && directory.exists() && directory.isDirectory) {
-            val files = directory.listFiles()
-            if (files != null) {
-                for (file in files.reversed()) {
-                    if (file.extension != "kk") {
-                        savedFiles.add(file.name)
-                    }
-                }
-            }
-        }
-        return savedFiles
+    fun notifyDSC() {
+        photoListAdapter.notifyDataSetChanged()
     }
 }
 
@@ -369,14 +298,19 @@ fun Activity.toast(text: String) {
 }
 
 //==================================================================================================
-class PhotoListAdapter(private val context: Context, private val photoList: MutableList<String>) :
-    RecyclerView.Adapter<PhotoListAdapter.ViewHolder>() {
+
+class PhotoListAdapter(
+    private val context: Context,
+    private val encryption: Encryption
+) : RecyclerView.Adapter<PhotoListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.image_view_photo)
         val textViewName: TextView = itemView.findViewById(R.id.text_view_name_preview)
         val dataSecTextView: TextView = itemView.findViewById(R.id.data_sec_text_view_preview)
     }
+
+    //    private lateinit var encryption: Encryption
     private var imageDialog: Dialog? = null
     private val dateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault())
 
@@ -385,20 +319,21 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
             LayoutInflater.from(context).inflate(R.layout.util_item_photo_unit, parent, false)
         return ViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageView = holder.imageView
         val textViewName = holder.textViewName
         val dataSecTextView = holder.dataSecTextView
+        val fileName = encryption.getPhotoList()[position]
 
         Glide.with(context)
-            .load(File(context.getExternalFilesDir(null), photoList[position]))
+            .load(File(context.getExternalFilesDir(null), fileName))
             .fitCenter()
             .placeholder(android.R.drawable.ic_lock_idle_lock)
             .transform(RoundedCorners(16))
             .into(imageView)
 
-
-        val thumbnailName = photoList[position]
+        val thumbnailName = fileName
         dataSecTextView.text =
             dateFormat.format(File(context.getExternalFilesDir(null), thumbnailName).lastModified())
         textViewName.text = thumbnailName
@@ -406,7 +341,7 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
         holder.itemView.setOnClickListener {
 
             val decryptionKey = encryptionKey
-            val encryptedFileName = photoList[position]
+            val encryptedFileName = fileName
             val encryptedFile = File(context.getExternalFilesDir(null), encryptedFileName)
             Timber.d("=== Glide : encryptedFile: ${encryptedFile.name}")
             val decryptedFile =
@@ -436,125 +371,41 @@ class PhotoListAdapter(private val context: Context, private val photoList: Muta
                 }
             } else if (encryptedFileName.endsWith(".p", true)) { // кодированные пикчи
                 try {
-                    decryptImage(decryptedFile, decryptionKey)
+                    var rotatedBitmap = encryption.decryptImage(decryptedFile, decryptionKey)
+                    imageDialog = Dialog(context)
+                    imageDialog?.setContentView(R.layout.util_dialog_image_view)
+                    val imageViewDialog =
+                        imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
+                    val glideRequest = Glide.with(context)
+                        .load(rotatedBitmap)
+                        .fitCenter()
+                        .transform(RoundedCorners(8))
+                    glideRequest.into(imageViewDialog)
+                    imageViewDialog.setImageBitmap(rotatedBitmap)
+                    imageDialog?.show()
+                    Timber.d("=== Вывод дешифрованного изображения через Dialog")
+                    imageViewDialog.setOnClickListener {
+                        imageDialog?.dismiss()
+                    }
                 } catch (e: Exception) {
+                    // Отобразить сообщение об ошибке
                     context.toast("Ошибка. Возможно ключ был изменён")
                 }
             } else {
+                // Отобразить сообщение об ошибке
                 context.toast("Ошибка. Возможно формат изображения не соответствует")
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return photoList.size
-    }
-
-    private fun decryptImage(file: File, decryptionKey: String) {
-        Timber.d("=== Начало декодирования. файл file: ${file.name}")
-        val encryptedBytes = file.readBytes()
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        Timber.d("=== файл messageDigest: ${messageDigest}")
-        val hashedKey = messageDigest.digest(decryptionKey.toByteArray())
-        Timber.d("=== файл hashedKey: $hashedKey")
-        val keySpec = SecretKeySpec(hashedKey, "AES")
-        val cipher = Cipher.getInstance("AES")
-        Timber.d("=== файл cipher: ${cipher}")
-        cipher.init(Cipher.DECRYPT_MODE, keySpec)
-        val decryptedBytes = cipher.doFinal(encryptedBytes)
-        val decryptedBitmap = BitmapFactory.decodeByteArray(decryptedBytes, 0, decryptedBytes.size)
-        val matrix = Matrix()
-        matrix.postRotate(90f)
-        val rotatedBitmap = Bitmap.createBitmap(
-            decryptedBitmap,
-            0,
-            0,
-            decryptedBitmap.width,
-            decryptedBitmap.height,
-            matrix,
-            true
-        )
-        Timber.d("=== Успешный конец декодирования. файл rotatedBitmap: ${rotatedBitmap}")
-        context.toast("Дешифрование ${file.name} выполнено успешно")
-        imageDialog = Dialog(context)
-        imageDialog?.setContentView(R.layout.util_dialog_image_view)
-        val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
-        val glideRequest = Glide.with(context)
-            .load(rotatedBitmap)
-            .fitCenter()
-            .transform(RoundedCorners(8))
-        glideRequest.into(imageViewDialog)
-        imageViewDialog.setImageBitmap(rotatedBitmap)
-        imageDialog?.show()
-        Timber.d("=== Вывод дешифрованного изображения через Dialog")
-        imageViewDialog.setOnClickListener {
-            imageDialog?.dismiss()
-        }
-    }
-
-    fun createThumbnail(context: Context, imageUri: Uri) {
-        val requestOptions = RequestOptions().override(100, 100)
-        Glide.with(context)
-            .asBitmap()
-            .load(imageUri)
-            .apply(requestOptions)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val thumbnailName = saveThumbnailWithRandomFileName(context, resource, imageUri)
-                    if (thumbnailName.isNotEmpty()) {
-                        photoList.add(0, thumbnailName)
-                        notifyDataSetChanged()
-                        context.toast("Превью сохранено")
-                        deleteOriginalImage(imageUri)
-                    } else {
-                        context.toast("Ошибка: Не удалось сохранить превью")
-                    }
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-            })
-    }
-
-    private fun saveThumbnailWithRandomFileName(
-        context: Context,
-        thumbnail: Bitmap,
-        imageUri: Uri
-    ): String {
-        val fileName = File(imageUri.path).name
-
-        val fileExtension = fileName.substringAfterLast(".")
-        val previewFileName = if (fileExtension.isNotEmpty()) {
-            val fileNameWithoutExtension = fileName.substringBeforeLast(".")
-            "${fileNameWithoutExtension}.p"
-        } else {
-            "Пустая превьюшка"
-        }
-        val file = File(context.getExternalFilesDir(null), previewFileName)
-        try {
-            val outputStream = FileOutputStream(file)
-            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            outputStream.flush()
-            outputStream.close()
-            return previewFileName
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return ""
-    }
-
-    private fun deleteOriginalImage(imageUri: Uri) {
-        val file = File(imageUri.path)
-        if (file.exists()) {
-            file.delete()
-        }
+        return encryption.getPhotoList().size
     }
 
     private fun Context.toast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
+
 }
-
-
-
 
 

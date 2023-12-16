@@ -37,9 +37,7 @@
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="tiramisu">
 
-        <activity
-            android:name=".WeatherActivity"
-            android:exported="false" />
+
         <activity
             android:name=".KeyInputActivity"
             android:exported="false" />
