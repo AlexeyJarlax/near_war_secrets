@@ -1,46 +1,38 @@
 package com.practicum.kototeka
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
+
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.practicum.kototeka.util.MyCompObj
+
 import com.practicum.kototeka.util.ThemeManager
 
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-        private const val KEY_INPUT_SHOWN_KEY = "key_input_shown"
-        private const val SETTINGS_REQUEST_CODE = 1
-    }
 
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeManager.applyTheme(this) // Применяю тему сразу при запуске
         setContentView(R.layout.activity_main)
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
+        sharedPreferences = getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
+        ThemeManager.applyTheme(this) // Применяю ночную тему
+        var backgroundView = findViewById<ImageView>(R.id.background_image)
+        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val buttonLogin = findViewById<Button>(R.id.button_login)
         val buttonSearch = findViewById<Button>(R.id.button_search)
         val buttonMedialib = findViewById<Button>(R.id.button_item_loader)
         val buttonMyGallery = findViewById<Button>(R.id.button_my_gallery)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
-
-//        val isKeyInputShown = sharedPreferences.getBoolean(KEY_INPUT_SHOWN_KEY, false)
-//
-//        if (!isKeyInputShown) {
-//            val displayIntent = Intent(this, KeyInputActivity::class.java)
-//            startActivity(displayIntent)
-//            sharedPreferences.edit().putBoolean(KEY_INPUT_SHOWN_KEY, true).apply()
-//        } else {
-//            // Handle normal login flow
-//        }
 
         buttonLogin.setOnClickListener {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
@@ -64,36 +56,45 @@ class MainActivity : AppCompatActivity() {
 
         buttonSettings.setOnClickListener {
             val displayIntent = Intent(this, SettingsActivity::class.java)
-            startActivityForResult(displayIntent, SETTINGS_REQUEST_CODE)
+            startActivityForResult(displayIntent, MyCompObj.SETTINGS_REQUEST_CODE)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SETTINGS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val switchState = data?.getBooleanExtra("switchState", false) ?: false
-            updateBackgroundImage(switchState)
+//        if (requestCode == MyCompObj.SETTINGS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+//            val gachiModeState = data?.getBooleanExtra(MyCompObj.USER_SWITCH, false) ?: false
+//            updateBackgroundImage(gachiModeState)
+        var backgroundView = findViewById<ImageView>(R.id.background_image)
+        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         }
-    }
+
 
     // Функция для обновления фона активности в зависимости от состояния переключателя
-    private fun updateBackgroundImage(isChecked: Boolean) {
-        val backgroundView = findViewById<ImageView>(R.id.background_image)
-        if (isChecked) {
-            backgroundView.setImageResource(R.drawable.gachi)
-        } else {
-            backgroundView.setImageResource(R.drawable.cat)
-        }
-    }
+//    private fun updateBackgroundImage(isChecked: Boolean) {
+//        val backgroundView = findViewById<ImageView>(R.id.background_image)
+//        if (isChecked) {
+//            backgroundView.setImageResource(R.drawable.mountains)
+//        } else {
+//            backgroundView.setImageResource(R.drawable.cat)
+//        }
+//    }
 
     override fun onResume() {
         super.onResume()
-        val isKeyInputShown = sharedPreferences.getBoolean(KEY_INPUT_SHOWN_KEY, false)
+        val isKeyInputShown = sharedPreferences.getBoolean(MyCompObj.KEY_INPUT_SHOWN_KEY, false)
+        val keySimbl = findViewById<Button>(R.id.button_login)
 
         if (!isKeyInputShown) {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
-            sharedPreferences.edit().putBoolean(KEY_INPUT_SHOWN_KEY, true).apply()
+            sharedPreferences.edit().putBoolean(MyCompObj.KEY_INPUT_SHOWN_KEY, true).apply()
+            keySimbl.setText("🔐")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
+            } else {  // Для версий до Lollipop
+                keySimbl.setBackgroundColor(ContextCompat.getColor(this, R.color.yp_blue))
+            }
         }
     }
 }

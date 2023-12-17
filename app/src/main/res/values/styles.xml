@@ -72,9 +72,20 @@
         <item name="android:backgroundTint">@color/yp_white__yp_black</item>
     </style>
 
+    <style name="SettingsButtonsAndText" parent="SecondaryButtonsAndText">
+        <item name="buttonStyle">@style/SettingsButtonsAndText</item>
+        <item name="android:background">@android:color/transparent</item> <!-- Прозрачный фон -->
+        <item name="android:textStyle">bold</item>
+        <item name="iconPadding">@dimen/dp4</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconTint">@color/alex_gray__yp_white</item>
+    </style>
+
     <!-- Стиль для кнопки возврата назад во вложенных менюхах-->
     <style name="GoBackButtons" parent="Widget.MaterialComponents.Button">
-        <item name="buttonStyle">@style/SecondaryButtonsAndText</item>
+        <item name="buttonStyle">@style/GoBackButtons</item>
         <item name="android:textSize">@dimen/text_size_sp22</item>
         <item name="android:textColor">@color/yp_black__yp_white</item>
         <item name="android:gravity">start</item>
@@ -151,6 +162,7 @@
         <item name="android:textColor">@color/yp_text_gray__yp_white</item>
     </style>
 
+    <!-- Стиль кнопки обновить в тревожном меню-->
     <style name="ErrorButtons" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/yp_white__yp_black</item>
         <item name="android:textSize">@dimen/text_size_sp14</item>
@@ -162,6 +174,15 @@
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
     </style>
+
+    <!-- Стиль кнопки логин в главном-->
+    <style name="LoginButtons" parent="ErrorButtons">
+        <item name="android:gravity">center</item>
+        <item name="android:backgroundTint">@color/kototeka_thumb_color</item>
+        <item name="android:textSize">@dimen/text_size_sp22</item>
+    </style>
+
+
 
     <style name="ErrorTextBig" parent="TrackText">
         <item name="android:textSize">@dimen/text_size_sp19</item>

@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">kototeka</string>
-    <string name="app_name_in_main_page">Теневая галерея</string>
+    <string name="app_name">МТГ</string>
+    <string name="app_name_in_main_page">Моя теневая галерея</string>
     <string name="button_search">Поиск</string>
     <string name="button_back">Назад</string>
     <string name="button_item_loader">Добавить</string>
@@ -24,7 +24,7 @@
     <string name="cam_bat">Камера</string>
     <string name="snapshot">Сделать\nснимок</string>
     <string name="galery">Открыть\nгалерею</string>
-    <string name="gachi_switch">Визуальный стиль:\nКототека / Гачимучи</string>
+    <string name="gachi_switch">Визуальный стиль:\nКототека / Горы</string>
     <string name="sample">Один два три</string>
     <string name="key_info">Введенные символы станут уникальным ключом шифрования на устройстве. Ключ шифрования может состоять из любых символов, включая русские буквы, цифры, специальные символы и т.д. Однако, для повышения уровня безопасности рекомендуется использовать длинные и сложные ключи, состоящие из различных символов.
 После выхода из приложения ключ будет сохранён, и его не обязательно вводить при следующем входе в приложение. В настройках можно изменить опцию на отчистку ключа при каждом выходе из приложения.

@@ -52,6 +52,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     private lateinit var encryption: Encryption
     private var outputGalleryFile: File? = null
 
+
     companion object {
         const val REQUEST_PERMISSIONS = 1
         const val REQUEST_SELECT_PHOTO = 2
@@ -79,9 +80,10 @@ class ItemLoaderActivity : AppCompatActivity() {
         val savedFiles = encryption.getPreviouslySavedFiles()
         for (fileUri in savedFiles) {
             val uri: Uri = Uri.parse(fileUri)
-            encryption.addPhotoToList(uri)
+            encryption.addPhotoToList(0, uri)
         }
         photoListAdapter = PhotoListAdapter(this, encryption)
+
     }
 
     private fun requestPermissions() {
@@ -178,29 +180,9 @@ class ItemLoaderActivity : AppCompatActivity() {
             builder.show()
         }
 
-        buttonGallery.setOnClickListener {
-            openGallery()
-        }
-    }
-
-    private val getContent =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {// Выбран файл
-                outputGalleryFile?.let { file ->
-                    encryption.fileSavingOperat(file, "g.jpg")
-                }
-            }
-        }
-
-    private fun openGallery() {
-        val pickPhotoIntent =
-            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        if (pickPhotoIntent.resolveActivity(packageManager) != null) {
-            outputGalleryFile = File(getExternalFilesDir(null), "g.jpg")
-            getContent.launch("image/*")
-        } else {
-            toast("Невозможно открыть галерею")
-        }
+//        buttonGallery.setOnClickListener {
+//            openGallery()
+//        }
     }
 
     private fun openCamera(cameraSelector: CameraSelector, encryptionKey: String) {
@@ -240,6 +222,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                     }
 
                     val folder = getExternalFilesDir(null)
+
+                    if (folder != null) {
+                        if (!folder.exists()) {
+                            folder.mkdirs()// Папка не существует
+                        }
+                    }
+
                     if (folder != null) {
                         var counter = 1
                         var file = File(folder, fileName)
@@ -270,7 +259,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                         )
                                     } else {
                                         toast("Изображение сохранено без шифрования")
-                                        encryption.addPhotoToList(outputFile.toUri())
+                                        encryption.addPhotoToList(0, outputFile.toUri())
                                         notifyDSC()
                                     }
                                 }

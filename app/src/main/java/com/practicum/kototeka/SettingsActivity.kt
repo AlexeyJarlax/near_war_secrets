@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -14,32 +16,54 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
+import com.practicum.kototeka.util.MyCompObj
 import com.practicum.kototeka.util.ThemeManager
 
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // ThemeManager.applyTheme(this)
         setContentView(R.layout.activity_settings)
-
         val videoView = findViewById<VideoView>(R.id.videoView)
         val themeManager = ThemeManager
         val backMenuLayout = findViewById<LinearLayout>(R.id.act_settings_layout)
+        var backgroundView = findViewById<ImageView>(R.id.background_image)
+        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
 
-        if (themeManager.isNightModeEnabled(this)) {
-            videoView.alpha = 0.5f
-            backMenuLayout.alpha = 0.5f
-            videoView.setVideoURI(Uri.parse("android.resource://${packageName}/${R.raw.murcat}"))
-            videoView.setOnPreparedListener { mediaPlayer ->
-                mediaPlayer.isLooping = true
-                // Уменьшаем звук в два раза
-                mediaPlayer.setVolume(0.0f, 0.0f)
-                mediaPlayer.start()
+        if (themeManager.isNightModeEnabled(this)) {// ночная
+            if (themeManager.isUserSwitchEnabled(this)) { // горы
+                videoView.alpha = 0.0f
+                backMenuLayout.alpha = 1.0f
+                backgroundView.alpha = 1.0f
+            } else { // котики
+                videoView.alpha = 0.5f
+                backMenuLayout.alpha = 1.0f
+                backgroundView.alpha = 0.0f
+                videoView.setVideoURI(Uri.parse("android.resource://${packageName}/${R.raw.murcat}"))
+                videoView.setOnPreparedListener { mediaPlayer ->
+                    mediaPlayer.isLooping = true
+                    // Уменьшаем звук в два раза
+                    mediaPlayer.setVolume(0.0f, 0.0f)
+                    mediaPlayer.start()
+                }
             }
-        } else {
+        } else {  // дневная
+            if (themeManager.isUserSwitchEnabled(this)) { // горы
+                videoView.alpha = 0.0f
+                backMenuLayout.alpha = 1.0f
+                backgroundView.alpha = 0.5f
+            } else { // котики
+                videoView.alpha = 0.0f
+                backMenuLayout.alpha = 1.0f
+                backgroundView.alpha = 0.5f
+            }
         }
+
+
 
         val button_weather = findViewById<Button>(R.id.button_weather)
         val back = findViewById<Button>(R.id.button_back_from_settings) // КНОПКА НАЗАД
@@ -103,27 +127,34 @@ class SettingsActivity : AppCompatActivity() {
             ThemeManager.applyTheme(this) // Добавьте эту строку здесь
         }
 
-        // ТУМБЛЕР СТИЛЯ\ТЕМЫ КОТОТЕКА\ГАЧИМУЧИ
+        // Пользовательский стиль
         val switchCompat: SwitchCompat = findViewById(R.id.button_tumbler)
-        switchCompat.isChecked = ThemeManager.getSwitchState(this)
-
-        switchCompat.setOnCheckedChangeListener { buttonView, isChecked ->
+        switchCompat.isChecked = ThemeManager.isUserSwitchEnabled(this)
+        switchCompat.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                switchCompat.thumbTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.gachimuchi_thumb_color))
-                // Изменить фон активности в состоянии "Гачимучи"
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    switchCompat.thumbTintList = ColorStateList.valueOf(resources.getColor(R.color.mount_thumb_color))
+                } else {  // Для версий до Lollipop
+                    switchCompat.setBackgroundColor(ContextCompat.getColor(this, R.color.mount_thumb_color))
+                }
                 val resultIntent = Intent()
-                resultIntent.putExtra("switchState", isChecked)
+                resultIntent.putExtra(MyCompObj.USER_SWITCH, isChecked)
                 setResult(RESULT_OK, resultIntent)
             } else {
-                switchCompat.thumbTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.kototeka_thumb_color))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    switchCompat.thumbTintList = ColorStateList.valueOf(resources.getColor(R.color.kototeka_thumb_color))
+                } else {  // Для версий до Lollipop
+                    switchCompat.setBackgroundColor(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
+                }
                 val resultIntent = Intent()
-                resultIntent.putExtra("switchState", isChecked)
+                resultIntent.putExtra(MyCompObj.USER_SWITCH, isChecked)
                 setResult(RESULT_OK, resultIntent)
             }
-            ThemeManager.saveSwitchState(this, isChecked)
+            ThemeManager.saveUserSwitch(this, isChecked)
+            ThemeManager.applyUserSwitch(this)
+            recreate()
         }
+
 
         // КНОПКА ПОДЕЛИТЬСЯ
         val shareButton = findViewById<Button>(R.id.button_settings_share)
@@ -160,7 +191,6 @@ class SettingsActivity : AppCompatActivity() {
 
         // КНОПКА ПОГОДА
         button_weather.setOnClickListener {
-
         }
     }
 }

@@ -45,15 +45,15 @@ class KeyInputActivity : AppCompatActivity() {
 
                     val message = when {
                         remainingBytes > 0 -> {
-                            confirmButton.isEnabled =
-                                false // Заблокировать кнопку, если байтов меньше 16
-                            "осталось $remainingBytes байт"
+//                            confirmButton.isEnabled =
+//                                false // Заблокировать кнопку, если байтов меньше 16
+                            "рекомендуется добавить: $remainingBytes байт"
                         }
 
                         remainingBytes < 0 -> {
-                            confirmButton.isEnabled =
-                                false // Заблокировать кнопку, если байтов больше 16
-                            "лишние ${-remainingBytes} байт"
+//                            confirmButton.isEnabled =
+//                                false // Заблокировать кнопку, если байтов больше 16
+                            "излишние: ${-remainingBytes} байт"
                         }
 
                         else -> {
@@ -83,7 +83,7 @@ class KeyInputActivity : AppCompatActivity() {
 
             if (keyValue.isNotEmpty()) {
                 encryptionKey = keyValue// Здесь можно использовать значение keyValue
-                Toast.makeText(this, "Ключ шифрования успешно задан", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
                 setResult(RESULT_CANCELED)

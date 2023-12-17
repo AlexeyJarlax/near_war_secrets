@@ -9,9 +9,10 @@
     <color name="yp_text_gray">#AEAFB4</color>               <!-- ║╔╗║ ║║║║ ╚═╗║ ║╔═╗║ -->
     <color name="yp_light_gray">#E6E8EB</color>              <!-- ║║║║ ║╚╝║   ║║ ║╚═╝║ -->
     <color name="yp_black">#1A1B22</color>                   <!-- ╚╝╚╝ ╚══╝   ╚╝ ╚═══╝ -->
+    <color name="alex_gray">#373737</color>
     <color name="black">#FF000000</color>
-        <color name="gachimuchi_thumb_color">#CCFF1493</color> <!-- Розовый с альфой 0.8 -->
-        <color name="kototeka_thumb_color">#CCFFA500</color> <!-- Оранжевый с альфой 0.8 -->
+    <color name="mount_thumb_color">#3F51B5</color> <!-- Розовый с альфой 0.8 -->
+    <color name="kototeka_thumb_color">#C94E3A</color> <!-- Оранжевый с альфой 0.8 -->
 
     <!-- ЦВЕТОВЫЕ ПАРЫ ДЛЯ ТЕМ И СТИЛЕЙ (ночь)-->
     <!-- цвет фона главного меню -->
@@ -33,6 +34,8 @@
     <color name="yp_text_gray__yp_black">@color/yp_black</color>
     <!-- цвет подложки для закругления углов поисковой строки -->
     <color name="yp_light_gray__yp_white">@color/yp_white</color>
+    <!-- новый цвет для иконок меню настроек -->
+    <color name="alex_gray__yp_white">@color/yp_white</color>
 </resources>
 
 <!--<resources>-->

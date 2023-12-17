@@ -41,13 +41,19 @@ class Encryption(private val context: Context, private val encryptionKey: String
         return photoList
     }
 
-    fun addPhotoToList(photoUri: Uri) {
+    fun addPhotoToList(int : Int, photoUri: Uri) {
         val fileName = photoUri.lastPathSegment ?: ""
-        photoList.add(fileName)
+        photoList.add(int, fileName)
     }
 
-    fun fileSavingOperat(outputFile: File, fileName: String) {
-        toast("функцию с галереей отложил")
+    fun canSaveFilesFromGallery(): Boolean {
+        return true
+        Timber.d("canSaveFilesFromGallery: ${Boolean}")
+    }
+
+//    fun fileSavingOperat(outputFile: File, fileName: String) {
+//        initialize()
+//        canSaveFilesFromGallery()
 //        var outputFile = outputFile
 //        var fileName = fileName
 //        Timber.d("=== из галереи: ${outputFile.name} === путь: ${outputFile.absolutePath}")
@@ -92,12 +98,14 @@ class Encryption(private val context: Context, private val encryptionKey: String
 //                )
 //            } else {
 //                toast("Изображение сохранено без шифрования")
-//                addPhotoToList(outputFile.toUri())
+//                addPhotoToList(0, outputFile.toUri())
 //                itemLoaderActivity.notifyDSC()
 //            }
+//        } else {
+//            toast("Ошибка сохранения изображения")
 //        }
-//        toast("Ошибка сохранения изображения")
-    }
+//
+//    }
 
 fun encryptImage(imageUri: Uri, encryptionKey: String, fileName: String) {
     Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")

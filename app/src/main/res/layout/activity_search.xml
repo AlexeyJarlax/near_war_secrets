@@ -7,10 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+    <ImageView
+        android:id="@+id/background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="0dp"
+        android:scaleType="centerCrop" />
+
     <Button
         android:id="@+id/button_back_from_search_activity"
         style="@style/GoBackButtons"
-        android:text="@string/button_settings"
+        android:background="@android:color/transparent"
+        android:text="@string/button_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +46,8 @@
         app:tint="@color/yp_light_gray__yp_white"
         tools:context=".MedialabActivity"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/util_item_track" />
+        tools:listitem="@layout/util_item_track"
+        android:alpha="0.9"/>
 
     <ProgressBar
         android:id="@+id/loading_indicator"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">kototeka</string>
-    <string name="app_name_in_main_page">Kototeka</string>
+    <string name="app_name">MSG</string>
+    <string name="app_name_in_main_page">My Shadow Gallery</string>
     <string name="button_search">Search</string>
     <string name="button_item_loader">Load</string>
     <string name="button_settings">Settings</string>
@@ -24,7 +24,7 @@
     <string name="cam_bat">cam</string>
     <string name="snapshot">snapshot</string>
     <string name="galery">galery</string>
-    <string name="gachi_switch">gachi mod switch</string>
+    <string name="gachi_switch">Visual style - cats \ mountains</string>
     <string name="button_my_gallery">Мy gallery</string>
     <string name="sample">one two three</string>
     <string name="clearing_the_storage">clearing the storage</string>

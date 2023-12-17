@@ -2,17 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/FrontMenuLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/cat" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
+        style="@style/FrontMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
@@ -20,59 +29,65 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/yp_black__yp_white"
-                android:layout_marginEnd="@dimen/dp44"
-                android:padding="@dimen/dp16"
-                android:text="@string/app_name_in_main_page"
-                android:textSize="@dimen/text_size_sp22" />
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp24"
+                    android:padding="@dimen/dp16"
+                    android:text="@string/app_name_in_main_page"
+                    android:textColor="@color/yp_black__yp_white"
+                    android:textSize="@dimen/text_size_sp22" />
+
+                <Button
+                    android:id="@+id/button_login"
+                    style="@style/LoginButtons"
+                    android:layout_width="@dimen/dp60"
+                    android:layout_height="@dimen/dp44"
+                    android:layout_margin="@dimen/dp8"
+                    android:text="🔓"/>
+
+            </LinearLayout>
 
             <Button
-                android:id="@+id/button_login"
+                android:id="@+id/button_search"
                 style="@style/MainMenuButtons"
-                android:layout_width="@dimen/dp36"
-                android:layout_height="@dimen/dp36"
-                android:layout_margin="@dimen/dp8"
-               android:gravity="center"
-                android:text="****"
-                app:icon="@android:drawable/ic_lock_idle_lock" />
+                android:text="@string/button_search"
+                app:icon="@android:drawable/ic_menu_search"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_item_loader"
+                style="@style/MainMenuButtons"
+                android:text="@string/button_item_loader"
+                app:icon="@android:drawable/ic_menu_add"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_my_gallery"
+                style="@style/MainMenuButtons"
+                android:text="@string/button_my_gallery"
+                app:icon="@android:drawable/ic_menu_gallery"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_settings"
+                style="@style/MainMenuButtons"
+                android:text="@string/button_settings"
+                app:icon="@android:drawable/ic_menu_preferences"
+                tools:ignore="VisualLintButtonSize" />
+
         </LinearLayout>
-
-        <Button
-            android:id="@+id/button_search"
-            style="@style/MainMenuButtons"
-            android:text="@string/button_search"
-            app:icon="@android:drawable/ic_menu_search"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/button_item_loader"
-            style="@style/MainMenuButtons"
-            android:text="@string/button_item_loader"
-            app:icon="@android:drawable/ic_menu_add"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/button_my_gallery"
-            style="@style/MainMenuButtons"
-            android:text="@string/button_my_gallery"
-            app:icon="@android:drawable/ic_menu_gallery"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/button_settings"
-            style="@style/MainMenuButtons"
-            android:text="@string/button_settings"
-            app:icon="@android:drawable/ic_menu_preferences"
-            tools:ignore="VisualLintButtonSize" />
-
     </LinearLayout>
 </RelativeLayout>
