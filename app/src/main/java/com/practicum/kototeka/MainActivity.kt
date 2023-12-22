@@ -1,6 +1,5 @@
 package com.practicum.kototeka
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,9 +10,8 @@ import android.os.Bundle
 
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.practicum.kototeka.util.MyCompObj
+import com.practicum.kototeka.util.AppPreferencesKeys
 
 import com.practicum.kototeka.util.ThemeManager
 
@@ -24,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        sharedPreferences = getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         ThemeManager.applyTheme(this) // Применяю ночную тему
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
@@ -56,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonSettings.setOnClickListener {
             val displayIntent = Intent(this, SettingsActivity::class.java)
-            startActivityForResult(displayIntent, MyCompObj.SETTINGS_REQUEST_CODE)
+            startActivityForResult(displayIntent, AppPreferencesKeys.SETTINGS_REQUEST_CODE)
         }
     }
 
@@ -82,13 +80,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val isKeyInputShown = sharedPreferences.getBoolean(MyCompObj.KEY_INPUT_SHOWN_KEY, false)
+        val isKeyInputShown = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, false)
         val keySimbl = findViewById<Button>(R.id.button_login)
 
         if (!isKeyInputShown) {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
-            sharedPreferences.edit().putBoolean(MyCompObj.KEY_INPUT_SHOWN_KEY, true).apply()
+            sharedPreferences.edit().putBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, true).apply()
             keySimbl.setText("🔐")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))

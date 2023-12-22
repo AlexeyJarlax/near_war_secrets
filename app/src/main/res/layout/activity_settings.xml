@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/BackMenuLayout"
-    android:background="@color/yp_white__yp_black"
+    android:background="@color/yp_white_and_yp_black"
     tools:context=".SettingsActivity">
 
     <VideoView
@@ -116,7 +116,7 @@
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/dp8"
             android:rotation="0"
-            android:text="@string/gachi_switch"
+            android:text="@string/mountin_switch"
             />
 
         <Button

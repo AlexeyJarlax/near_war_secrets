@@ -3,11 +3,12 @@ package com.practicum.kototeka
 // Памятка о содержании файла:
 //SearchActivity - активити и вся обработка поискового запроса юзера.
 //UtilTrackViewHolder - холдер для RecyclerView, отображающий информацию о треках.
-//UtilTrackAdapter - адаптер для RecyclerView, отображающий информацию о треках.
+//AdapterForAPITracks - адаптер для RecyclerView, отображающий информацию о треках.
 //iTunesApiService - интерфейс для iTunes Search API.
 //TrackResponse - класс данных, представляющий ответ от iTunes Search API.
 //ITunesTrack - класс данных для преобразования ответа iTunes Search API в список объектов TrackData.
 //TrackData - класс данных, представляющий список треков на устройстве.
+//OnTrackItemClickListener - интерфейс для обработки истории
 
 // Этапы поиска:
 //1. этап: считываем ввод в queryInput.setOnEditorActionListener и queryInput.addTextChangedListener ===> запуск 2 этапа
@@ -16,9 +17,6 @@ package com.practicum.kototeka
 //3.1 : performSearch => [возникла ошибка с вызовом TrackResponse] => Запускаем метод solvingConnectionProblem() ===> Запускаем повторно 2 этап
 
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -35,7 +33,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.kototeka.util.ThemeManager
+import com.practicum.kototeka.util.AdapterForHistoryTracks
+import com.practicum.kototeka.util.AppPreferencesKeys
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,53 +48,165 @@ import java.util.concurrent.TimeUnit
 class SearchActivity : AppCompatActivity() {
 
     private val iTunesSearch = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesSearch)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit =
+        Retrofit.Builder().baseUrl(iTunesSearch).addConverterFactory(GsonConverterFactory.create())
+            .build()
     private val iTunesSearchAPI = retrofit.create(iTunesApiService::class.java)
+    private var hasFocus = true
     private lateinit var queryInput: EditText
     private lateinit var clearButton: ImageButton
+    private lateinit var backButton: Button
     private lateinit var trackRecyclerView: RecyclerView
     private lateinit var loadingIndicator: ProgressBar
-    private lateinit var trackAdapter: UtilTrackAdapter
-    private val originalTracks = ArrayList<TrackData>()
+    private lateinit var adapterForAPITracks: AdapterForAPITracks
+    private val cleanTrackList = ArrayList<TrackData>()
     private lateinit var utilErrorBox: View
-
-
-    companion object {
-        private const val PREF_SEARCH_HISTORY = "SearchHistory"
-        private const val PREF_KEY_SEARCH_HISTORY = "search_history"
-    }
+    private lateinit var adapterForHistoryTracks: AdapterForHistoryTracks
+    private lateinit var searchHistoryNotification: TextView
+    private lateinit var killTheHistory: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.plant(Timber.DebugTree()) // для логирования ошибок
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        var backgroundView = findViewById<ImageView>(R.id.background_image)
-        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
-        setupViews()
+        setupOneLineViews()
+        clearButton()
         backToMain()
-        setupTrackRecyclerViewAndTrackAdapter()
+        callAdapterForHistoryTracks()
+        setupRecyclerViewAndAdapter()
+        queryTextChangedListener()
+        queryInputListener()
+        fillTrackAdapter()
+        killTheHistory()
     }
 
-    private fun setupViews() {
+    private fun setupOneLineViews() {
+        backButton = findViewById(R.id.button_back_from_search_activity)
         clearButton = findViewById(R.id.clearButton)
         queryInput = findViewById(R.id.search_edit_text)
+        trackRecyclerView = findViewById(R.id.track_recycler_view)
         loadingIndicator = findViewById(R.id.loading_indicator)
         loadingIndicator.visibility = View.GONE
-        clearButton.setOnClickListener {
-            queryInput.text.clear()
-        }
+        utilErrorBox = findViewById<LinearLayout>(R.id.util_error_box)
+        searchHistoryNotification = findViewById(R.id.you_were_looking_for)
+        killTheHistory = findViewById(R.id.kill_the_history)
+    }
 
-        queryInput.setOnEditorActionListener { textView, actionId, keyEvent -> // заполнение с виртуальной клавиатуры
+    private fun callAdapterForHistoryTracks() {
+        adapterForHistoryTracks = AdapterForHistoryTracks(this, object : OnTrackItemClickListener {
+            override fun onTrackItemClick(
+                trackName: String, artistName: String, trackTimeMillis: Long, artworkUrl100: String
+            ) {
+                // повторный клик на треке в истории треков
+                adapterForHistoryTracks.saveTrack(trackName, artistName, trackTimeMillis, artworkUrl100)
+            }
+        })
+        adapterForHistoryTracks.setRecyclerView(trackRecyclerView)
+    }
+
+    private fun setupRecyclerViewAndAdapter() {
+        val layoutManager = LinearLayoutManager(this)
+        adapterForAPITracks =
+            AdapterForAPITracks(this, cleanTrackList, object : OnTrackItemClickListener {
+                override fun onTrackItemClick(
+                    trackName: String,
+                    artistName: String,
+                    trackTimeMillis: Long,
+                    artworkUrl100: String
+                ) {
+                    adapterForHistoryTracks.saveTrack(
+                        trackName, artistName, trackTimeMillis, artworkUrl100
+                    )
+                    toastIt("${getString(R.string.added)} ${trackName}")
+                    Timber.d("historyAdapter.saveTrack:${trackName}${artistName}")
+                }
+            })
+        trackRecyclerView.layoutManager = layoutManager
+        trackRecyclerView.adapter = adapterForAPITracks
+    }
+
+    private fun queryTextChangedListener() {
+        queryInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                val searchText = queryInput.text.toString().trim()
+                clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
+                if (hasFocus && searchText.isEmpty()) {  // обработка ввода без нажатий
+                    showHistoryViewsAndFillTrackAdapter()
+                } else {
+                    hideHistoryViewsAndClearTrackAdapter()
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+            }
+        })
+
+        // Фокус + ЖЦ вход в приложение queryInput пуст
+        queryInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && queryInput.text.isEmpty()) {
+                showHistoryViewsAndFillTrackAdapter()
+            } else if (queryInput.text.isNotEmpty()) {
+                hideHistoryViewsAndClearTrackAdapter()
+            }
+        }
+    }
+
+    private fun showHistoryViewsAndFillTrackAdapter() {
+        fillTrackAdapter()
+        trackRecyclerView.visibility = View.VISIBLE
+        searchHistoryNotification.visibility = View.VISIBLE
+        killTheHistory.visibility = View.VISIBLE
+    }
+
+    private fun fillTrackAdapter() {
+        clearTrackAdapter()
+        adapterForHistoryTracks?.setRecyclerView(trackRecyclerView)
+        adapterForHistoryTracks?.syncTracks()
+        trackRecyclerView.scrollToPosition(0)
+    }
+
+    private fun hideHistoryViewsAndClearTrackAdapter() {
+        clearTrackAdapter()
+        trackRecyclerView.visibility = View.GONE
+        searchHistoryNotification.visibility = View.GONE
+        killTheHistory.visibility = View.GONE
+    }
+
+    private fun clearTrackAdapter() {
+        adapterForHistoryTracks.clearHistoryList() // чистит адаптер с историей
+//        trackAdapter.updateList(cleanTrackList)
+//        trackAdapter.clearList()
+    }
+
+    private fun killTheHistory() {
+        killTheHistory.setOnClickListener {
+            adapterForHistoryTracks.killHistoryList()
+            hideHistoryViewsAndClearTrackAdapter()
+        }
+    }
+
+    private fun queryInputListener() { // обработка ввода с нажатием DONE
+        queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-                    utilErrorBox = findViewById<LinearLayout>(R.id.util_error_box)
-                    utilErrorBox.visibility = View.GONE // исчезновение сообщения с ошибкой
+                    utilErrorBox.visibility = View.GONE
+                    clearTrackAdapter()
                     preparingForSearch(searchText)
-                    showToast("Поиск: $searchText")
+                    toastIt("${getString(R.string.search)} $searchText")
                 }
                 hideKeyboard()
                 true
@@ -103,50 +214,11 @@ class SearchActivity : AppCompatActivity() {
                 false
             }
         }
-
-        queryInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val searchText = s.toString().trim()
-                clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
-                if (searchText.isEmpty()) {
-                    trackAdapter.updateList(originalTracks)
-                    trackRecyclerView.scrollToPosition(0)
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-    private fun backToMain() {
-        val backButton = findViewById<Button>(R.id.button_back_from_search_activity)
-        backButton.setOnClickListener {
-            finish()
-        }
-    }
-
-
-    private fun setupTrackRecyclerViewAndTrackAdapter() {
-        trackRecyclerView = findViewById(R.id.track_recycler_view)
-        val layoutManager = LinearLayoutManager(this)
-        trackAdapter = UtilTrackAdapter(this, originalTracks)
-        trackRecyclerView.layoutManager = layoutManager
-        trackRecyclerView.adapter = trackAdapter
     }
 
     private fun hideKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(queryInput.windowToken, 0)
-    }
-
-    private fun clearSearchFieldAndHideKeyboard() {
-        queryInput.text.clear()
-        hideKeyboard()
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun preparingForSearch(searchText: String) {
@@ -156,24 +228,22 @@ class SearchActivity : AppCompatActivity() {
             performSearch(searchText) { trackItems ->
                 loadingIndicator.visibility = View.GONE
                 clearButton.isEnabled = true
-                trackAdapter.updateList(trackItems)
+                adapterForAPITracks.updateList(trackItems)
+                adapterForAPITracks.setRecyclerView(trackRecyclerView)
+                trackRecyclerView.visibility = View.VISIBLE
             }
-        }, 1500)
+        }, AppPreferencesKeys.SERVER_PROCESSING_MILLISECONDS)
     }
 
     private var lastQuery: String? = null
     private var lastCallback: ((List<TrackData>) -> Unit)? = null
     private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
-        // Сохраняем последний запрос и колбэк
-        lastQuery = query
+        lastQuery = query        // Сохраняем последний запрос и колбэк
         lastCallback = callback
         Timber.d("Запускаем метод performSearch с параметрами Query: $query и Callback")
-
-        // Выполняем поиск с использованием iTunesSearchAPI
         iTunesSearchAPI.search(query).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(
-                call: Call<TrackResponse>,
-                response: Response<TrackResponse>
+                call: Call<TrackResponse>, response: Response<TrackResponse>
             ) {
                 if (response.code() == 200) {
                     val trackResponse = response.body()
@@ -193,24 +263,26 @@ class SearchActivity : AppCompatActivity() {
                         solvingAbsentProblem() // вызываем заглушку о пустом листе запроса
                         emptyList()
                     }
-                    // Вызываем колбэк с полученными данными
-                    callback(trackData)
+                    callback(trackData)         // Вызываем колбэк с полученными данными
                     Timber.d("Метод performSearch => response.isSuccessful! => callback(trackData): $trackData")
                 } else {
                     val error = when (response.code()) {
-                        400 -> "400 (Bad Request) - ошибка запроса"
-                        401 -> "401 (Unauthorized) - неавторизованный запрос"
-                        403 -> "403 (Forbidden) - запрещенный запрос"
-                        404 -> "404 (Not Found) - не найдено"
-                        500 -> "500 (Internal Server Error) - внутренняя ошибка сервера"
-                        503 -> "503 (Service Unavailable) - сервис временно недоступен"
-                        else -> "(unspecified error) - неустановленная ошибка"
+                        400 -> "${getString(R.string.error400)}"
+                        401 -> "${getString(R.string.error401)}"
+                        403 -> "${getString(R.string.error403)}"
+                        404 -> "${getString(R.string.error404)}"
+                        500 -> "${getString(R.string.error500)}"
+                        503 -> "${getString(R.string.error503)}"
+                        else -> "${getString(R.string.error0)}"
                     }
                     Timber.d(error)
-                    showToast(error)
-                    onFailure(call, Throwable(error)) // Вызываем onFailure с информацией об ошибке
+                    toastIt(error)
+                    onFailure(
+                        call, Throwable(error)
+                    )
                 }
             }
+
             override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                 solvingConnectionProblem()
                 val trackData = emptyList<TrackData>()
@@ -221,7 +293,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun solvingAbsentProblem() {
         loadingIndicator.visibility = View.GONE
-        utilErrorBox = findViewById<LinearLayout>(R.id.util_error_box)
         val errorIcon = findViewById<ImageView>(R.id.error_icon)
         val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
         errorIcon.setImageResource(R.drawable.ic_error_notfound)
@@ -236,7 +307,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun solvingConnectionProblem() {
         loadingIndicator.visibility = View.GONE
-        utilErrorBox = findViewById<LinearLayout>(R.id.util_error_box)
         val errorIcon = findViewById<ImageView>(R.id.error_icon)
         val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
         errorIcon.setImageResource(R.drawable.ic_error_internet)
@@ -255,31 +325,24 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-
     interface iTunesApiService {
         @GET("search?entity=song")
         fun search(@Query("term") text: String): Call<TrackResponse>
     }
 
-    override fun onStop() {
-        super.onStop()
-        val preferences: SharedPreferences =
-            getSharedPreferences(PREF_SEARCH_HISTORY, Context.MODE_PRIVATE)
-        val editor = preferences.edit()
-        editor.remove(PREF_KEY_SEARCH_HISTORY)
-        editor.apply()
+    private fun clearButton() {
+        clearButton.setOnClickListener {
+            queryInput.text.clear()
+        }
     }
 
-    fun constructYoutubeLink(title: String, artist: String, duration: String): String {
-        val query = "$title $artist"
-        val encodedQuery = Uri.encode(query)
-        val youtubeUrl = "https://www.youtube.com/results?search_query=$encodedQuery"
-        return youtubeUrl
+    private fun backToMain() {
+        backButton.setOnClickListener {
+            finish()
+        }
     }
-
-    fun openYoutubeLink(link: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-        startActivity(intent)
+    private fun toastIt(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -288,47 +351,44 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val artistNameTextView: TextView = itemView.findViewById(R.id.artist_name_text_view)
     private val trackTimeTextView: TextView = itemView.findViewById(R.id.track_duration_text_view)
     private val artworkImageView: ImageView = itemView.findViewById(R.id.artwork_image_view)
-    private val playButton: ImageView = itemView.findViewById(R.id.button_right_arrow)
-    companion object {
-        private const val ALBUM_ROUNDED_CORNERS = 8
-    }
+    private val onTrackClickButton: LinearLayout = itemView.findViewById(R.id.util_item_track)
 
-    fun bind(trackData: TrackData) {
+    fun bind(trackData: TrackData, trackItemClickListener: OnTrackItemClickListener) {
         trackNameTextView.text = trackData.trackName
         artistNameTextView.text = trackData.artistName
         trackTimeTextView.text = formatTrackDuration(trackData.trackTimeMillis)
         loadImage(trackData.artworkUrl100, artworkImageView)
-        playButton.setOnClickListener {
-            val title = trackData.trackName
-            val artist = trackData.artistName
-            val duration = trackData.formatTrackDuration()
-            val youtubeLink = (itemView.context as SearchActivity).constructYoutubeLink(title, artist, duration)
-            (itemView.context as SearchActivity).openYoutubeLink(youtubeLink)
+
+        onTrackClickButton.setOnClickListener {
+            trackItemClickListener.onTrackItemClick(
+                trackData.trackName,
+                trackData.artistName,
+                trackData.trackTimeMillis,
+                trackData.artworkUrl100
+            )
         }
     }
 
     private fun formatTrackDuration(trackTimeMillis: Long): String {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) -
-                TimeUnit.MINUTES.toSeconds(minutes)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) - TimeUnit.MINUTES.toSeconds(
+            minutes
+        )
         return String.format("%02d:%02d", minutes, seconds)
     }
 
     private fun loadImage(imageUrl: String, imageView: ImageView) {
-        Glide.with(imageView)
-            .load(imageUrl)
-            .placeholder(R.drawable.ic_audio)
-            .transform(RoundedCorners(ALBUM_ROUNDED_CORNERS))
-            .error(R.drawable.ic_error_internet)
+        Glide.with(imageView).load(imageUrl).placeholder(R.drawable.ic_placeholder)
+            .transform(RoundedCorners(AppPreferencesKeys.ALBUM_ROUNDED_CORNERS)).error(R.drawable.ic_error_internet)
             .into(imageView)
     }
 }
 
-class UtilTrackAdapter(
+class AdapterForAPITracks(
     private val context: Context,
     private var trackData: List<TrackData>,
-
-    ) : RecyclerView.Adapter<UtilTrackViewHolder>() {
+    private val trackItemClickListener: OnTrackItemClickListener
+) : RecyclerView.Adapter<UtilTrackViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UtilTrackViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.util_item_track, parent, false)
@@ -336,14 +396,25 @@ class UtilTrackAdapter(
     }
 
     override fun onBindViewHolder(holder: UtilTrackViewHolder, position: Int) {
-        holder.bind(trackData[position])
+        holder.bind(trackData[position], trackItemClickListener)
     }
 
     override fun getItemCount(): Int {
         return trackData.size
     }
 
+    fun setRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.adapter = this
+        recyclerView.layoutManager = LinearLayoutManager(context)
+    }
+
     fun updateList(newList: List<TrackData>) {
+        trackData = newList
+        notifyDataSetChanged()
+    }
+
+    fun clearList() {
+        val newList: MutableList<TrackData> = mutableListOf()
         trackData = newList
         notifyDataSetChanged()
     }
@@ -354,14 +425,7 @@ data class TrackData(
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String
-) {
-    fun formatTrackDuration(): String {
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) -
-                TimeUnit.MINUTES.toSeconds(minutes)
-        return String.format("%02d:%02d", minutes, seconds)
-    }
-}
+)
 
 data class TrackResponse(val results: List<ITunesTrack>)
 data class ITunesTrack(
@@ -370,3 +434,10 @@ data class ITunesTrack(
     val trackTimeMillis: Long,
     val artworkUrl100: String
 )
+
+interface OnTrackItemClickListener {
+    fun onTrackItemClick(
+        trackName: String, artistName: String, trackTimeMillis: Long, artworkUrl100: String
+    )
+}
+

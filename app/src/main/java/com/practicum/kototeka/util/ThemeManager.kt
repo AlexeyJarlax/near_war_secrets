@@ -10,8 +10,8 @@ object ThemeManager {
 
     fun applyTheme(context: Context) { //достаем ночную тему из памяти и применяем в активности вызова
         val sharedPreferences =
-            context.getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
-        val nightModeEnabled = sharedPreferences.getBoolean(MyCompObj.KEY_NIGHT_MODE, false)
+            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val nightModeEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_NIGHT_MODE, false)
         if (nightModeEnabled) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
@@ -20,8 +20,8 @@ object ThemeManager {
     }
 
     fun applyUserSwitch(context: Context): Int {
-        val sharedPreferences = context.getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
-        val userSwitchEnabled = sharedPreferences.getBoolean(MyCompObj.USER_SWITCH, false)
+        val sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val userSwitchEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.USER_SWITCH, false)
 
         // Задаем значение по умолчанию
         var background: Int = R.drawable.cat
@@ -38,31 +38,31 @@ object ThemeManager {
 
     fun isNightModeEnabled(context: Context): Boolean {
         val sharedPreferences =
-            context.getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean(MyCompObj.KEY_NIGHT_MODE, false)
+            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(AppPreferencesKeys.KEY_NIGHT_MODE, false)
     }
 
     fun setNightModeEnabled(context: Context, enabled: Boolean) {
         val sharedPreferences =
-            context.getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
+            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putBoolean(MyCompObj.KEY_NIGHT_MODE, enabled)
+        editor.putBoolean(AppPreferencesKeys.KEY_NIGHT_MODE, enabled)
         editor.apply()
         applyTheme(context)
     }
 
     fun saveUserSwitch(context: Context, isChecked: Boolean) {
         val sharedPreferences =
-            context.getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
+            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putBoolean(MyCompObj.USER_SWITCH, isChecked)
+        editor.putBoolean(AppPreferencesKeys.USER_SWITCH, isChecked)
         editor.apply()
         applyUserSwitch(context)
     }
 
     fun isUserSwitchEnabled(context: Context): Boolean {
         val sharedPreferences =
-            context.getSharedPreferences(MyCompObj.PREFS_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean(MyCompObj.USER_SWITCH, false)
+            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(AppPreferencesKeys.USER_SWITCH, false)
     }
 }

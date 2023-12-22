@@ -19,4 +19,5 @@
     <dimen name="dp68">68dp</dimen>
     <dimen name="dp78">77dp</dimen>
     <dimen name="dp96">91dp</dimen>
+    <dimen name="dp6">6dp</dimen>
 </resources>

@@ -1,9 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/util_item_track"
 android:layout_width="match_parent"
 android:layout_height="@dimen/dp60"
-android:background="@color/yp_white__yp_black"
+android:background="@color/yp_white_and_yp_black"
 android:gravity="center"
 android:orientation="horizontal"
 android:paddingStart="@dimen/dp12">
@@ -31,7 +32,7 @@ android:paddingStart="@dimen/dp12">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/z"
-        tools:text="@string/placeholder_track_name"
+        tools:text="@string/sample"
         android:maxLines="2"/>
 
     <LinearLayout
@@ -44,7 +45,8 @@ android:paddingStart="@dimen/dp12">
             style="@style/TrackTextSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/placeholder_artist_name" />
+            android:maxLength="30"
+            tools:text="@string/sample" />
 
         <ImageView
             android:id="@+id/ic_point"
@@ -60,7 +62,7 @@ android:paddingStart="@dimen/dp12">
             style="@style/TrackTextSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/placeholder_track_time" />
+            tools:text="@string/sample" />
     </LinearLayout>
 
 </LinearLayout>

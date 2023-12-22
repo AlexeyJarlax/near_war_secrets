@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">МТГ</string>
     <string name="app_name_in_main_page">Моя теневая галерея</string>
-    <string name="button_search">Поиск</string>
+    <string name="search">Поиск</string>
     <string name="button_back">Назад</string>
     <string name="button_item_loader">Добавить</string>
     <string name="button_my_gallery">Хранилище</string>
@@ -24,7 +24,7 @@
     <string name="cam_bat">Камера</string>
     <string name="snapshot">Сделать\nснимок</string>
     <string name="galery">Открыть\nгалерею</string>
-    <string name="gachi_switch">Визуальный стиль:\nКототека / Горы</string>
+    <string name="mountin_switch">Визуальный стиль:\nКототека / Горы</string>
     <string name="sample">Один два три</string>
     <string name="key_info">Введенные символы станут уникальным ключом шифрования на устройстве. Ключ шифрования может состоять из любых символов, включая русские буквы, цифры, специальные символы и т.д. Однако, для повышения уровня безопасности рекомендуется использовать длинные и сложные ключи, состоящие из различных символов.
 После выхода из приложения ключ будет сохранён, и его не обязательно вводить при следующем входе в приложение. В настройках можно изменить опцию на отчистку ключа при каждом выходе из приложения.
@@ -33,15 +33,21 @@
     <string name="clearing_the_storage">Очистить хранилище</string>
     <string name="key_input_clear">Удалять ключ при закрытии сессии \n(ключ будет запрашиваться при входе)</string>
     <string name="preview_off">Использовать ключ шифрования</string>
-    <string name="something_went_wrong">Упс. Что-то пошло не так...</string>
-    <string name="nothing_found">Упс. Ничего не найдено...</string>
-    <string name="placeholder_track_name">No Reply</string>
-    <string name="placeholder_artist_name">The Beatles</string>
-    <string name="placeholder_track_time">5:12</string>
     <string name="error_text_web">Проблемы со связью \n
         \n Загрузка не удалась. Проверьте\n
         подключение к интернету</string>
     <string name="nothing_was_found">Ничего не нашлось</string>
     <string name="refresh">Обновить</string>
     <string name="any_mistake">тут будет сообщение об ошибке,\nиконка поменяется в зависимости\nот характера ошибки</string>
+    <string name="you_were_looking_for">Вы искали</string>
+    <string name="clear_the_history">Очистить историю</string>
+    <string name="error400">400 - ошибка запроса</string>
+    <string name="error401">401 - неавторизованный запрос</string>
+    <string name="error403">403 - запрещенный запрос</string>
+    <string name="error404">404 - не найдено</string>
+    <string name="error500">500 - внутренняя ошибка сервера</string>
+    <string name="error503">503 - сервис временно недоступен</string>
+    <string name="error0">неустановленная ошибка</string>
+    <string name="added">Добавлен: </string>
+
 </resources>

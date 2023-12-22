@@ -37,7 +37,6 @@
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="tiramisu">
 
-
         <activity
             android:name=".KeyInputActivity"
             android:exported="false" />

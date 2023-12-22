@@ -17,7 +17,7 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import com.practicum.kototeka.util.MyCompObj
+import com.practicum.kototeka.util.AppPreferencesKeys
 import com.practicum.kototeka.util.ThemeManager
 
 
@@ -138,7 +138,7 @@ class SettingsActivity : AppCompatActivity() {
                     switchCompat.setBackgroundColor(ContextCompat.getColor(this, R.color.mount_thumb_color))
                 }
                 val resultIntent = Intent()
-                resultIntent.putExtra(MyCompObj.USER_SWITCH, isChecked)
+                resultIntent.putExtra(AppPreferencesKeys.USER_SWITCH, isChecked)
                 setResult(RESULT_OK, resultIntent)
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -147,7 +147,7 @@ class SettingsActivity : AppCompatActivity() {
                     switchCompat.setBackgroundColor(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
                 }
                 val resultIntent = Intent()
-                resultIntent.putExtra(MyCompObj.USER_SWITCH, isChecked)
+                resultIntent.putExtra(AppPreferencesKeys.USER_SWITCH, isChecked)
                 setResult(RESULT_OK, resultIntent)
             }
             ThemeManager.saveUserSwitch(this, isChecked)

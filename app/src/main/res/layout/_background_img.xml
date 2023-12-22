@@ -7,6 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/cat"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:layout_margin="@dimen/dp16"
+        android:padding="@dimen/dp24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

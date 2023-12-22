@@ -47,7 +47,7 @@
                     android:layout_marginEnd="@dimen/dp24"
                     android:padding="@dimen/dp16"
                     android:text="@string/app_name_in_main_page"
-                    android:textColor="@color/yp_black__yp_white"
+                    android:textColor="@color/yp_black_and_yp_white"
                     android:textSize="@dimen/text_size_sp22" />
 
                 <Button
@@ -63,7 +63,7 @@
             <Button
                 android:id="@+id/button_search"
                 style="@style/MainMenuButtons"
-                android:text="@string/button_search"
+                android:text="@string/search"
                 app:icon="@android:drawable/ic_menu_search"
                 tools:ignore="VisualLintButtonSize" />
 
