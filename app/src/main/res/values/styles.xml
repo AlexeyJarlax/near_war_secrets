@@ -159,7 +159,7 @@
     <!-- Стиль строки c автором, продолжительностью-->
     <style name="TrackTextSmall" parent="TrackText">
         <item name="android:textSize">@dimen/text_size_sp11</item>
-        <item name="android:textColor">@color/yp_text_gray_and_yp_white</item>
+        <item name="android:textColor">@color/alex_gray_and_yp_white</item>
     </style>
 
     <!-- Стиль кнопки обновить в тревожном меню-->

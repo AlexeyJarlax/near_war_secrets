@@ -24,13 +24,13 @@ object ThemeManager {
         val userSwitchEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USER_SWITCH, false)
 
         // Задаем значение по умолчанию
-        var background: Int = R.drawable.cat
+        var background: Int = R.drawable.cat_background2
 
         if (context is Activity) {
             if (userSwitchEnabled) {
                 background = R.drawable.mountains
             } else {
-                background = R.drawable.cat
+                background = R.drawable.cat_background2
             }
         }
         return background

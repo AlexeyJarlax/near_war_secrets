@@ -4,7 +4,7 @@ xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/util_item_track"
 android:layout_width="match_parent"
 android:layout_height="@dimen/dp60"
-android:background="@color/yp_white_and_yp_black"
+android:background="@android:color/transparent"
 android:gravity="center"
 android:orientation="horizontal"
 android:paddingStart="@dimen/dp12">
@@ -55,6 +55,7 @@ android:paddingStart="@dimen/dp12">
             android:layout_height="@dimen/dp12"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_point"
+            android:background="@android:color/transparent"
             tools:src="@drawable/ic_point" />
 
         <TextView
@@ -72,6 +73,7 @@ android:paddingStart="@dimen/dp12">
     style="@style/TrackStyleCustom"
     android:layout_width="@dimen/dp24"
     android:layout_height="@dimen/dp24"
+    android:background="@android:color/transparent"
     android:src="@android:drawable/ic_media_play" />
 
 </LinearLayout>

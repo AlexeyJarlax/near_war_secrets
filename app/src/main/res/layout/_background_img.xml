@@ -6,7 +6,7 @@
         android:id="@+id/background_image_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/cat"
+        android:src="@drawable/cat_background2"
         android:scaleType="centerCrop"
         android:layout_margin="@dimen/dp16"
         android:padding="@dimen/dp24"/>

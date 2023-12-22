@@ -37,6 +37,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.kototeka.util.AdapterForHistoryTracks
 import com.practicum.kototeka.util.AppPreferencesKeys
+import com.practicum.kototeka.util.ThemeManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,6 +72,8 @@ class SearchActivity : AppCompatActivity() {
         Timber.plant(Timber.DebugTree()) // для логирования ошибок
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        var backgroundView = findViewById<ImageView>(R.id.background_image)
+        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         setupOneLineViews()
         clearButton()
         backToMain()

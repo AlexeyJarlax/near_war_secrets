@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,14 +10,22 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SearchActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:alpha="0.4"
+            android:scaleType="centerCrop" />
 
         <Button
             android:id="@+id/button_back_from_search_activity"
             style="@style/GoBackButtons"
-            android:text="@string/search"
+            android:background="@android:color/transparent"
+            android:text="@string/button_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,25 +64,25 @@
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:layout_editor_absoluteX="0dp"
             tools:listitem="@layout/util_item_track"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            />
 
-        <Button
-            android:id="@+id/kill_the_history"
-            style="@style/ErrorButtons"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp36"
-            android:layout_marginTop="@dimen/dp24"
-            android:layout_marginBottom="@dimen/dp24"
-            android:gravity="center"
-            android:paddingVertical="@dimen/dp6"
-            android:paddingStart="@dimen/dp12"
-            android:paddingEnd="@dimen/dp12"
-            android:text="@string/clear_the_history"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_recycler_view"
-            tools:visibility="visible" />
+    <Button
+        android:id="@+id/kill_the_history"
+        style="@style/ErrorButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp36"
+        android:gravity="center"
+        android:paddingVertical="@dimen/dp6"
+        android:paddingStart="@dimen/dp12"
+        android:paddingEnd="@dimen/dp12"
+        android:text="@string/clear_the_history"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+android:layout_marginBottom="@dimen/dp16"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/loading_indicator"
@@ -95,5 +103,3 @@
             android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>
