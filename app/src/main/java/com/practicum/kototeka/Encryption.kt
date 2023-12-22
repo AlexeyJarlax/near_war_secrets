@@ -7,15 +7,10 @@ import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.Toast
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.practicum.kototeka.util.NameUtil
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -23,9 +18,10 @@ import java.io.IOException
 import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
+import com.practicum.kototeka.util.AppPreferencesKeys
 
 
-class Encryption(private val context: Context, private val encryptionKey: String) {
+class Encryption(private val context: Context) {
 
     val itemLoaderActivity = context as ItemLoaderActivity
     private val photoList = ArrayList<String>()
@@ -107,7 +103,7 @@ class Encryption(private val context: Context, private val encryptionKey: String
 //
 //    }
 
-fun encryptImage(imageUri: Uri, encryptionKey: String, fileName: String) {
+fun encryptImage(imageUri: Uri, fileName: String) {
     Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
     // Получаем путь к файлу, который нужно зашифровать
     val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
@@ -122,7 +118,7 @@ fun encryptImage(imageUri: Uri, encryptionKey: String, fileName: String) {
     val outputStream = FileOutputStream(encryptedFile)
     val messageDigest = MessageDigest.getInstance("SHA-256")
     Timber.d("=== файл messageDigest: ${messageDigest}")
-    val hashedKey = messageDigest.digest(encryptionKey.toByteArray())
+    val hashedKey = messageDigest.digest(AppPreferencesKeys.ENCRYPTION_KLUCHIK.toByteArray())
     Timber.d("=== файл hashedKey: ${hashedKey}")
     val keySpec = SecretKeySpec(hashedKey, "AES")
     val cipher = Cipher.getInstance("AES")
@@ -166,7 +162,8 @@ fun encryptImage(imageUri: Uri, encryptionKey: String, fileName: String) {
     }
 }
 
-fun decryptImage(file: File, decryptionKey: String): Bitmap {
+fun decryptImage(file: File): Bitmap {
+    val decryptionKey = AppPreferencesKeys.ENCRYPTION_KLUCHIK
     Timber.d("=== Начало декодирования. файл file: ${file.name}")
     val encryptedBytes = file.readBytes()
     val messageDigest = MessageDigest.getInstance("SHA-256")

@@ -21,7 +21,7 @@ object ThemeManager {
 
     fun applyUserSwitch(context: Context): Int {
         val sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        val userSwitchEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.USER_SWITCH, false)
+        val userSwitchEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USER_SWITCH, false)
 
         // Задаем значение по умолчанию
         var background: Int = R.drawable.cat
@@ -55,7 +55,7 @@ object ThemeManager {
         val sharedPreferences =
             context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putBoolean(AppPreferencesKeys.USER_SWITCH, isChecked)
+        editor.putBoolean(AppPreferencesKeys.KEY_USER_SWITCH, isChecked)
         editor.apply()
         applyUserSwitch(context)
     }
@@ -63,6 +63,6 @@ object ThemeManager {
     fun isUserSwitchEnabled(context: Context): Boolean {
         val sharedPreferences =
             context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean(AppPreferencesKeys.USER_SWITCH, false)
+        return sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USER_SWITCH, false)
     }
 }

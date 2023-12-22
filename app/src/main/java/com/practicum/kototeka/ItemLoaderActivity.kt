@@ -4,12 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -35,7 +33,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.github.chrisbanes.photoview.PhotoView
-import com.practicum.kototeka.KeyInputActivity.Companion.encryptionKey
+import com.practicum.kototeka.util.AppPreferencesKeys
+import com.practicum.kototeka.util.AppPreferencesKeysMethods
 import com.practicum.kototeka.util.NameUtil
 import timber.log.Timber
 import java.io.File
@@ -44,6 +43,7 @@ import java.util.*
 
 class ItemLoaderActivity : AppCompatActivity() {
 
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var recyclerView: RecyclerView
     var photoList = ArrayList<String>()
     private var isPreviewVisible = false
@@ -69,21 +69,21 @@ class ItemLoaderActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val permission5: String = Manifest.permission.READ_MEDIA_IMAGES
 
-    var encryptionKey: String = ""
+    //    var encryptionKey: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_itemloader)
-        encryptionKey = KeyInputActivity.encryptionKey
+//        encryptionKey = AppPreferencesKeys.ENCRYPTION_KEY
         requestPermissions()
         Timber.plant(Timber.DebugTree()) // для логирования багов
-        encryption = Encryption(this, encryptionKey)
+        encryption = Encryption(this)
         val savedFiles = encryption.getPreviouslySavedFiles()
         for (fileUri in savedFiles) {
             val uri: Uri = Uri.parse(fileUri)
             encryption.addPhotoToList(0, uri)
         }
         photoListAdapter = PhotoListAdapter(this, encryption)
-
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
     }
 
     private fun requestPermissions() {
@@ -141,23 +141,17 @@ class ItemLoaderActivity : AppCompatActivity() {
         buttonCamera.setOnClickListener { // пользователь жмакает кнопку КАМЕРА,он хочет изменить её статус
             if (isPreviewVisible) { // Если видео-искатель включен (=это не первый запуск, так как первый с выключенным видеоискателем)
                 buttonCapture.visibility = View.GONE
-                buttonGallery.visibility =
-                    View.VISIBLE
-                buttonCamera.text =
-                    getString(R.string.cam_bat_off)
-                previewView.visibility =
-                    if (isPreviewVisible) View.GONE else View.VISIBLE
+                buttonGallery.visibility = View.VISIBLE
+                buttonCamera.text = getString(R.string.cam_bat_off)
+                previewView.visibility = if (isPreviewVisible) View.GONE else View.VISIBLE
                 isPreviewVisible = !isPreviewVisible
                 return@setOnClickListener
 
             } else { // Если превью не видимо
-                buttonCapture.visibility =
-                    View.VISIBLE
+                buttonCapture.visibility = View.VISIBLE
                 buttonGallery.visibility = View.GONE
-                buttonCamera.text =
-                    getString(R.string.cam_bat_on)
-                previewView.visibility =
-                    if (isPreviewVisible) View.GONE else View.VISIBLE
+                buttonCamera.text = getString(R.string.cam_bat_on)
+                previewView.visibility = if (isPreviewVisible) View.GONE else View.VISIBLE
                 isPreviewVisible = !isPreviewVisible
             }
 
@@ -167,11 +161,11 @@ class ItemLoaderActivity : AppCompatActivity() {
             builder.setItems(options) { _, which ->
                 when (which) {
                     0 -> {
-                        openCamera(CameraSelector.DEFAULT_FRONT_CAMERA, encryptionKey)
+                        openCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
                     }
 
                     1 -> {
-                        openCamera(CameraSelector.DEFAULT_BACK_CAMERA, encryptionKey)
+                        openCamera(CameraSelector.DEFAULT_BACK_CAMERA)
                     }
 
                     else -> toast("Некорректный выбор")
@@ -185,7 +179,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 //        }
     }
 
-    private fun openCamera(cameraSelector: CameraSelector, encryptionKey: String) {
+    private fun openCamera(cameraSelector: CameraSelector) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -213,7 +207,10 @@ class ItemLoaderActivity : AppCompatActivity() {
                     val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
                     fileName = "${randomName}.unknown"
 
-                    if (encryptionKey.isNotEmpty()) {
+                    if (sharedPreferences.getBoolean(
+                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                            false)
+                    ) {
                         fileName = fileName.substringBeforeLast(".")
                         fileName = "${fileName}.k"
                     } else {
@@ -247,15 +244,16 @@ class ItemLoaderActivity : AppCompatActivity() {
                             ContextCompat.getMainExecutor(this),
                             object : ImageCapture.OnImageSavedCallback {
                                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                    if (encryptionKey.isNotEmpty()) {
+                                    if (sharedPreferences.getBoolean(
+                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                                            false
+                                        )
+                                    ) {
                                         encryption.createThumbnail(
-                                            this@ItemLoaderActivity,
-                                            outputFile.toUri()
+                                            this@ItemLoaderActivity, outputFile.toUri()
                                         )
                                         encryption.encryptImage(
-                                            outputFile.toUri(),
-                                            encryptionKey,
-                                            fileName
+                                            outputFile.toUri(), fileName
                                         )
                                     } else {
                                         toast("Изображение сохранено без шифрования")
@@ -263,6 +261,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                         notifyDSC()
                                     }
                                 }
+
                                 override fun onError(exception: ImageCaptureException) {
                                     toast("Ошибка сохранения изображения")
                                 }
@@ -289,8 +288,7 @@ fun Activity.toast(text: String) {
 //==================================================================================================
 
 class PhotoListAdapter(
-    private val context: Context,
-    private val encryption: Encryption
+    private val context: Context, private val encryption: Encryption
 ) : RecyclerView.Adapter<PhotoListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -315,11 +313,8 @@ class PhotoListAdapter(
         val dataSecTextView = holder.dataSecTextView
         val fileName = encryption.getPhotoList()[position]
 
-        Glide.with(context)
-            .load(File(context.getExternalFilesDir(null), fileName))
-            .fitCenter()
-            .placeholder(android.R.drawable.ic_lock_idle_lock)
-            .transform(RoundedCorners(16))
+        Glide.with(context).load(File(context.getExternalFilesDir(null), fileName)).fitCenter()
+            .placeholder(android.R.drawable.ic_lock_idle_lock).transform(RoundedCorners(16))
             .into(imageView)
 
         val thumbnailName = fileName
@@ -329,7 +324,7 @@ class PhotoListAdapter(
 
         holder.itemView.setOnClickListener {
 
-            val decryptionKey = encryptionKey
+            // val decryptionKey = AppPreferencesKeys.ENCRYPTION_KEY
             val encryptedFileName = fileName
             val encryptedFile = File(context.getExternalFilesDir(null), encryptedFileName)
             Timber.d("=== Glide : encryptedFile: ${encryptedFile.name}")
@@ -337,21 +332,20 @@ class PhotoListAdapter(
                 File(context.getExternalFilesDir(null), encryptedFileName.replace(".p", ".kk"))
             Timber.d("=== Glide : decryptedFile: ${decryptedFile.name}")
 
-            if (encryptedFileName.endsWith(".o", true) ||
-                encryptedFileName.endsWith(".jpg", true) ||
-                encryptedFileName.endsWith(".jpeg", true) ||
-                encryptedFileName.endsWith(".png", true) ||
-                encryptedFileName.endsWith(".gif", true) ||
-                encryptedFileName.endsWith(".bmp", true) ||
-                encryptedFileName.endsWith(".webp", true) ||
-                encryptedFileName.endsWith(".unknown", true)
+            if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
+                    ".jpg", true
+                ) || encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
+                    ".png", true
+                ) || encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(
+                    ".bmp", true
+                ) || encryptedFileName.endsWith(
+                    ".webp", true
+                ) || encryptedFileName.endsWith(".unknown", true)
             ) {
                 imageDialog = Dialog(context)
                 imageDialog?.setContentView(R.layout.util_dialog_image_view)
                 val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
-                val glideRequest = Glide.with(context)
-                    .load(Uri.fromFile(encryptedFile))
-                    .fitCenter()
+                val glideRequest = Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
                     .transform(RoundedCorners(32))
                 glideRequest.into(imageViewDialog)
                 imageDialog?.show()
@@ -360,14 +354,12 @@ class PhotoListAdapter(
                 }
             } else if (encryptedFileName.endsWith(".p", true)) { // кодированные пикчи
                 try {
-                    var rotatedBitmap = encryption.decryptImage(decryptedFile, decryptionKey)
+                    var rotatedBitmap = encryption.decryptImage(decryptedFile)
                     imageDialog = Dialog(context)
                     imageDialog?.setContentView(R.layout.util_dialog_image_view)
                     val imageViewDialog =
                         imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
-                    val glideRequest = Glide.with(context)
-                        .load(rotatedBitmap)
-                        .fitCenter()
+                    val glideRequest = Glide.with(context).load(rotatedBitmap).fitCenter()
                         .transform(RoundedCorners(8))
                     glideRequest.into(imageViewDialog)
                     imageViewDialog.setImageBitmap(rotatedBitmap)

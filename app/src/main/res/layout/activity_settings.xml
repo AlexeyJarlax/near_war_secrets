@@ -12,16 +12,16 @@
         android:layout_height="match_parent"
         android:layout_marginTop="0dp"
         android:alpha="0.0"
-        android:scaleType="fitCenter"
         android:fitsSystemWindows="true"
+        android:scaleType="fitCenter"
         android:visibility="visible" />
 
     <ImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:contentDescription="TODO" />
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:id="@+id/act_settings_layout"
@@ -45,18 +45,18 @@
             tools:ignore="VisualLintButtonSize" />
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/key_input_off"
+            android:id="@+id/use_the_encryption_key"
             style="@style/SettingsButtonsAndText"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/dp8"
-            android:checked="true"
             android:text="@string/preview_off"
             app:icon="@android:drawable/ic_menu_delete"
             tools:ignore="VisualLintButtonSize" />
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/key_input_clear"
+            android:id="@+id/delete_the_encryption_key_when_closing_the_session"
             style="@style/SettingsButtonsAndText"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -70,30 +70,30 @@
             style="@style/SettingsButtonsAndText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/dp8"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/dp8"
-            android:layout_marginTop="@dimen/dp8"
-            android:text="Размер превью: 200"
-            android:layout_gravity="start" />
+            android:text="Размер превью: 200" />
 
         <SeekBar
             android:id="@+id/preview_size"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            style="@style/SettingsButtonsAndText"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp44"
             android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:text="Не сохранять превью"
             android:max="4"
-            android:progress="3" />
+            android:paddingEnd="@dimen/dp8"
+            android:progress="3"
+            android:text="Не сохранять превью" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/disguise"
             style="@style/SettingsButtonsAndText"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/dp8"
-            android:checked="true"
             android:text="Мимикрировать под другое приложение"
             app:icon="@android:drawable/ic_menu_delete"
             tools:ignore="VisualLintButtonSize" />
@@ -116,8 +116,7 @@
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/dp8"
             android:rotation="0"
-            android:text="@string/mountin_switch"
-            />
+            android:text="@string/mountin_switch" />
 
         <Button
             android:id="@+id/button_settings_share"
@@ -147,14 +146,13 @@
             tools:ignore="VisualLintButtonSize" />
 
         <Button
-            android:id="@+id/button_weather"
+            android:id="@+id/about_the_developer"
             style="@style/SettingsButtonsAndText"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="О Разработчике"
-            app:icon="@android:drawable/ic_menu_mapmode"
+            app:icon="@android:drawable/ic_menu_myplaces"
             tools:ignore="VisualLintButtonSize" />
-
 
     </LinearLayout>
 

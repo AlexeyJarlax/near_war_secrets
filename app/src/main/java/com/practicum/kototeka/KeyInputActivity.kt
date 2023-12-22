@@ -1,6 +1,7 @@
 package com.practicum.kototeka
 
-import android.content.Intent
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,20 +11,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.practicum.kototeka.util.AppPreferencesKeys
 import kotlin.random.Random
 
 class KeyInputActivity : AppCompatActivity() {
 
-    companion object {
-        var encryptionKey: String = ""
-        const val EXTRA_KEY_VALUE = "key_value"
-        const val DEF_KEY_VALUE = "7@1&0Sex7gEwq#51"
-    }
-//    var encryptionKey: String  = ""// Переменная для хранения ключа шифрования
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_key_input)
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         val confirmButton = findViewById<Button>(R.id.button_confirm)
         val cancelButton = findViewById<Button>(R.id.button_cancel)
@@ -60,7 +58,8 @@ class KeyInputActivity : AppCompatActivity() {
                             confirmButton.isEnabled =
                                 true
                             "" // Для случая, когда количество байт равно 16
-                    }}
+                        }
+                    }
 
                     val containsInvalidCharacters = keyValue.contains(" ")
                     val isValid = !containsInvalidCharacters && remainingBytes >= 0
@@ -82,22 +81,23 @@ class KeyInputActivity : AppCompatActivity() {
             val keyValue = keyInputEditText.text.toString().trim()
 
             if (keyValue.isNotEmpty()) {
-                encryptionKey = keyValue// Здесь можно использовать значение keyValue
+                val editor = sharedPreferences.edit()
+                editor.putString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, keyValue)
+                editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, true)
+                editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
+                editor.apply()
                 Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
-                setResult(RESULT_CANCELED)
+                userEscape()
             }
             finish()
         }
 
-
-        cancelButton.setOnClickListener {
-            if (encryptionKey.isEmpty()) {
-                encryptionKey = ""
-                Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
-            }
-            setResult(RESULT_CANCELED)
+        cancelButton.setOnClickListener { // Не использовать ключ шифрования
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
+            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
+            editor.apply()
             finish() // Завершение активности KeyInputActivity без передачи значения ключа
         }
 
@@ -106,6 +106,17 @@ class KeyInputActivity : AppCompatActivity() {
             val generatedKey = generateRandomKey(16) // Генерация 16-битного случайного ключа
             keyEditText.setText(generatedKey)
         }
+
+
+    }
+
+    fun userEscape() { // пользователь сбегает и не вводит ключ
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
+        editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
+        editor.apply()
+        Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
+        setResult(RESULT_CANCELED)
     }
 
     fun generateRandomKey(length: Int): String {
@@ -122,9 +133,10 @@ class KeyInputActivity : AppCompatActivity() {
         return key.toString()
     }
 
+
     override fun onBackPressed() {
         super.onBackPressed()
-        setResult(RESULT_CANCELED)
+        userEscape()
         finish()
     }
 }

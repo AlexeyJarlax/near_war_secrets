@@ -17,6 +17,8 @@ package com.practicum.kototeka
 //3.1 : performSearch => [возникла ошибка с вызовом TrackResponse] => Запускаем метод solvingConnectionProblem() ===> Запускаем повторно 2 этап
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -341,6 +343,19 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    fun constructYoutubeLink(title: String, artist: String, duration: String): String {
+        val query = "$title $artist"
+        val encodedQuery = Uri.encode(query)
+        val youtubeUrl = "https://www.youtube.com/results?search_query=$encodedQuery"
+        return youtubeUrl
+    }
+
+    fun openYoutubeLink(link: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        startActivity(intent)
+    }
+
     private fun toastIt(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
@@ -352,13 +367,13 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackTimeTextView: TextView = itemView.findViewById(R.id.track_duration_text_view)
     private val artworkImageView: ImageView = itemView.findViewById(R.id.artwork_image_view)
     private val onTrackClickButton: LinearLayout = itemView.findViewById(R.id.util_item_track)
+    private val playButton: ImageView = itemView.findViewById(R.id.button_right_arrow)
 
     fun bind(trackData: TrackData, trackItemClickListener: OnTrackItemClickListener) {
         trackNameTextView.text = trackData.trackName
         artistNameTextView.text = trackData.artistName
         trackTimeTextView.text = formatTrackDuration(trackData.trackTimeMillis)
         loadImage(trackData.artworkUrl100, artworkImageView)
-
         onTrackClickButton.setOnClickListener {
             trackItemClickListener.onTrackItemClick(
                 trackData.trackName,
@@ -366,6 +381,13 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 trackData.trackTimeMillis,
                 trackData.artworkUrl100
             )
+        }
+        playButton.setOnClickListener {
+            val title = trackData.trackName
+            val artist = trackData.artistName
+            val duration = trackData.formatTrackDuration()
+            val youtubeLink = (itemView.context as SearchActivity).constructYoutubeLink(title, artist, duration)
+            (itemView.context as SearchActivity).openYoutubeLink(youtubeLink)
         }
     }
 
@@ -425,7 +447,14 @@ data class TrackData(
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String
-)
+) {
+    fun formatTrackDuration(): String {
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTimeMillis)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTimeMillis) -
+                TimeUnit.MINUTES.toSeconds(minutes)
+        return String.format("%02d:%02d", minutes, seconds)
+    }
+}
 
 data class TrackResponse(val results: List<ITunesTrack>)
 data class ITunesTrack(
