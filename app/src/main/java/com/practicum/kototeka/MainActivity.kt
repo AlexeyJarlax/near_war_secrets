@@ -80,19 +80,27 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val isKeyInputShown = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, false)
+//        val isKeyInputShown = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, false)
+        val isExistsOfEncryptionKey = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
+        val isUseTheEncryptionKey = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
         val keySimbl = findViewById<Button>(R.id.button_login)
-
-        if (!isKeyInputShown) {
+        if (isExistsOfEncryptionKey) {
+            keySimbl.setText("🔐")
+            keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
+        } else {
+            keySimbl.setText("🔓")
+            keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
+        }
+        if (!isExistsOfEncryptionKey && isUseTheEncryptionKey) {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
-            sharedPreferences.edit().putBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, true).apply()
-            keySimbl.setText("🔐")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
-            } else {  // Для версий до Lollipop
-                keySimbl.setBackgroundColor(ContextCompat.getColor(this, R.color.yp_blue))
-            }
+//            sharedPreferences.edit().putBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, true).apply()
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
+//            } else {  // Для версий до Lollipop
+//                keySimbl.setBackgroundColor(ContextCompat.getColor(this, R.color.yp_blue))
+//            }
         }
+
     }
 }

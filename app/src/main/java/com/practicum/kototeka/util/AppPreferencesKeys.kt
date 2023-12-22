@@ -9,7 +9,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // ключи и файлы
     const val KEY_INPUT_SHOWN_KEY = "key_input_shown"
     const val SETTINGS_REQUEST_CODE = 1 // первый запуск = запрос ключа шифрования сразу
-    const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ, перенесем в защищенное хранилище
+    const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
     const val KEY_EXIST_OF_ENCRYPTION_KLUCHIK = "exists_of_encryption_kluchik"
 
     const val KEY_HISTORY_LIST = "key_for_history_list"
