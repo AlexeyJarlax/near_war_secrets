@@ -27,7 +27,7 @@ class Encryption(private val context: Context) {
 
     val itemLoaderActivity = context as ItemLoaderActivity
     private val photoList = ArrayList<String>()
-    private lateinit var sharedPreferences: SharedPreferences
+//    private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
 
@@ -50,13 +50,14 @@ class Encryption(private val context: Context) {
         Timber.d("canSaveFilesFromGallery: ${Boolean}")
     }
 
-    private fun getDecryptionKey(): String {
-        sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, "") ?: ""
-    }
+//    private fun getDecryptionKey(): String {
+//        sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK, Context.MODE_PRIVATE)
+//        return sharedPreferences.getString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, "") ?: ""
+//    }
 
 fun encryptImage(imageUri: Uri, fileName: String) {
-    val encryptionKey = getDecryptionKey()
+//    val encryptionKey = getDecryptionKey()
+    val encryptionKey = AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
     Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
     // Получаем путь к файлу, который нужно зашифровать
     val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
@@ -117,7 +118,8 @@ fun encryptImage(imageUri: Uri, fileName: String) {
 }
 
 fun decryptImage(file: File): Bitmap {
-    val decryptionKey = getDecryptionKey()
+//    val decryptionKey = getDecryptionKey()
+    val decryptionKey = AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
     Timber.d("=== Начало декодирования. файл file: ${file.name}")
     val encryptedBytes = file.readBytes()
     val messageDigest = MessageDigest.getInstance("SHA-256")

@@ -62,6 +62,10 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
         ) // Значение по умолчанию, если ключ не найден
     }
 
+    fun loadStringFromSharedPreferences(key: String): String {
+        return sharedPreferences.getString(key, "упс...ах") ?: "упс...ах"
+    }
+
 }
 
 
