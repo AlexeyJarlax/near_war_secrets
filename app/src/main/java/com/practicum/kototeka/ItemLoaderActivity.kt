@@ -69,11 +69,9 @@ class ItemLoaderActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val permission5: String = Manifest.permission.READ_MEDIA_IMAGES
 
-    //    var encryptionKey: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_itemloader)
-//        encryptionKey = AppPreferencesKeys.ENCRYPTION_KEY
         requestPermissions()
         Timber.plant(Timber.DebugTree()) // для логирования багов
         encryption = Encryption(this)

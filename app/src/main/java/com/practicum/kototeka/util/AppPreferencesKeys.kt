@@ -17,7 +17,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // числовые константы
     const val ALBUM_ROUNDED_CORNERS = 8
     const val SERVER_PROCESSING_MILLISECONDS: Long = 1500
-    const val HISTORY_TRACK_LIST_SIZE = 7
+    const val HISTORY_TRACK_LIST_SIZE = 8
 
     // переключатели в настройках
     const val KEY_NIGHT_MODE = "nightMode"
@@ -30,7 +30,9 @@ internal object AppPreferencesKeys { // Internal - доступно только
 
 internal class AppPreferencesKeysMethods(private val context: Context) {
 
-    private val sharedPreferences =
+    private val sharedPreferences = getSharedPreferences()
+
+    private fun getSharedPreferences() =
         context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
     // Обработка методов сохранения и загрузки значений
@@ -46,6 +48,20 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
             false
         ) // Значение по умолчанию, если ключ не найден
     }
+
+    fun savePreviewSizeValue(key: String, value: Int) {
+        val editor = sharedPreferences.edit()
+        editor.putInt(key, value)
+        editor.apply()
+    }
+
+    fun loadPreviewSizeValue(key: String): Int {
+        return sharedPreferences.getInt(
+            key,
+            0
+        ) // Значение по умолчанию, если ключ не найден
+    }
+
 }
 
 

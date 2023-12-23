@@ -54,7 +54,8 @@ class MainActivity : AppCompatActivity() {
 
         buttonSettings.setOnClickListener {
             val displayIntent = Intent(this, SettingsActivity::class.java)
-            startActivityForResult(displayIntent, AppPreferencesKeys.SETTINGS_REQUEST_CODE)
+//            startActivityForResult(displayIntent, AppPreferencesKeys.SETTINGS_REQUEST_CODE)
+            startActivity(displayIntent)
         }
     }
 

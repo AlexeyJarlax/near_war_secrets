@@ -1,6 +1,7 @@
 package com.practicum.kototeka
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -19,12 +20,14 @@ import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import com.practicum.kototeka.util.AppPreferencesKeys
+import com.practicum.kototeka.util.AppPreferencesKeysMethods
 
 
 class Encryption(private val context: Context) {
 
     val itemLoaderActivity = context as ItemLoaderActivity
     private val photoList = ArrayList<String>()
+    private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
 
@@ -47,63 +50,13 @@ class Encryption(private val context: Context) {
         Timber.d("canSaveFilesFromGallery: ${Boolean}")
     }
 
-//    fun fileSavingOperat(outputFile: File, fileName: String) {
-//        initialize()
-//        canSaveFilesFromGallery()
-//        var outputFile = outputFile
-//        var fileName = fileName
-//        Timber.d("=== из галереи: ${outputFile.name} === путь: ${outputFile.absolutePath}")
-//        val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
-//        fileName = "${randomName}.unknown"
-//
-//        if (encryptionKey.isNotEmpty()) {
-//            fileName = fileName.substringBeforeLast(".")
-//            fileName = "${fileName}.k"
-//        } else {
-//            fileName = fileName.substringBeforeLast(".")
-//            fileName = "${fileName}.o"
-//        }
-//
-//        val folder = context.getExternalFilesDir(null)
-//        if (folder != null) {
-//            var counter = 1
-//            var file = File(folder, fileName)
-//
-//            while (file.exists()) {
-//                fileName = "${fileName}_$counter"
-//                file = File(folder, fileName)
-//                counter++
-//            }
-//            outputFile = File(folder, fileName)
-//            if (File(context.getExternalFilesDir(null), "${fileName}").exists()) {
-//                Timber.d("=== файл из галереи в храналище уже существует, будет перезапись: ${fileName}k")
-//                val existingFile = File(context.getExternalFilesDir(null), "${fileName}k")
-//                existingFile.delete()
-//                outputFile = File(context.getExternalFilesDir(null), "${fileName}")
-//            }
-//            Timber.d("=== из галереи этап 2: ${fileName} === путь: ${outputFile.absolutePath}")
-//            if (encryptionKey.isNotEmpty()) {
-//                createThumbnail(
-//                    context,
-//                    outputFile.toUri()
-//                )
-//                encryptImage(
-//                    outputFile.toUri(),
-//                    encryptionKey,
-//                    fileName
-//                )
-//            } else {
-//                toast("Изображение сохранено без шифрования")
-//                addPhotoToList(0, outputFile.toUri())
-//                itemLoaderActivity.notifyDSC()
-//            }
-//        } else {
-//            toast("Ошибка сохранения изображения")
-//        }
-//
-//    }
+    private fun getDecryptionKey(): String {
+        sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, "") ?: ""
+    }
 
 fun encryptImage(imageUri: Uri, fileName: String) {
+    val encryptionKey = getDecryptionKey()
     Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
     // Получаем путь к файлу, который нужно зашифровать
     val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
@@ -118,11 +71,12 @@ fun encryptImage(imageUri: Uri, fileName: String) {
     val outputStream = FileOutputStream(encryptedFile)
     val messageDigest = MessageDigest.getInstance("SHA-256")
     Timber.d("=== файл messageDigest: ${messageDigest}")
-    val hashedKey = messageDigest.digest(AppPreferencesKeys.ENCRYPTION_KLUCHIK.toByteArray())
+    val hashedKey = messageDigest.digest(encryptionKey.toByteArray())
+    Timber.d("=== ключ: ${encryptionKey}")
     Timber.d("=== файл hashedKey: ${hashedKey}")
     val keySpec = SecretKeySpec(hashedKey, "AES")
     val cipher = Cipher.getInstance("AES")
-    Timber.d("=== файл cipher: ${cipher}")
+    Timber.d("cipher")
     cipher.init(Cipher.ENCRYPT_MODE, keySpec)
 
     val buffer = ByteArray(1024)
@@ -163,16 +117,17 @@ fun encryptImage(imageUri: Uri, fileName: String) {
 }
 
 fun decryptImage(file: File): Bitmap {
-    val decryptionKey = AppPreferencesKeys.ENCRYPTION_KLUCHIK
+    val decryptionKey = getDecryptionKey()
     Timber.d("=== Начало декодирования. файл file: ${file.name}")
     val encryptedBytes = file.readBytes()
     val messageDigest = MessageDigest.getInstance("SHA-256")
     Timber.d("=== файл messageDigest: ${messageDigest}")
     val hashedKey = messageDigest.digest(decryptionKey.toByteArray())
+    Timber.d("=== ключ: ${decryptionKey}")
     Timber.d("=== файл hashedKey: $hashedKey")
     val keySpec = SecretKeySpec(hashedKey, "AES")
     val cipher = Cipher.getInstance("AES")
-    Timber.d("=== файл cipher: ${cipher}")
+    Timber.d("cipher")
     cipher.init(Cipher.DECRYPT_MODE, keySpec)
     val decryptedBytes = cipher.doFinal(encryptedBytes)
     val decryptedBitmap =
@@ -194,7 +149,8 @@ fun decryptImage(file: File): Bitmap {
 }
 
 fun createThumbnail(context: Context, imageUri: Uri) {
-    val requestOptions = RequestOptions().override(30, 30)
+    val scaledNumber = AppPreferencesKeysMethods(context).loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+    val requestOptions = RequestOptions().override(scaledNumber, scaledNumber)
 
     Glide.with(context)
         .asBitmap()
@@ -257,21 +213,20 @@ private fun deleteOriginalImage(imageUri: Uri) {
     }
 }
 
-fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
-    val savedFiles = mutableListOf<String>()
-    val directory = context.getExternalFilesDir(null)
-    if (directory != null && directory.exists() && directory.isDirectory) {
-        val files = directory.listFiles()
-        if (files != null) {
-            for (file in files.reversed()) {
-                if (file.extension != "kk") {
-                    savedFiles.add(file.name)
-                }
+    fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
+        val savedFiles = mutableListOf<String>()
+        val directory = context.getExternalFilesDir(null)
+        if (directory != null && directory.exists() && directory.isDirectory) {
+            val files = directory.listFiles()
+            if (files != null) {
+                val sortedFiles = files
+                    .filter { it.extension != "kk" }
+                    .sortedBy { it.lastModified() } // Сортировка по времени создания в возрастающем порядке
+                savedFiles.addAll(sortedFiles.map { it.name })
             }
         }
+        return savedFiles
     }
-    return savedFiles
-}
 
 fun toast(text: String) {
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()

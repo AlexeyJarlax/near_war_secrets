@@ -49,7 +49,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class SearchActivity : AppCompatActivity() {
-
+    private lateinit var backgroundView: ImageView
     private val iTunesSearch = "https://itunes.apple.com"
     private val retrofit =
         Retrofit.Builder().baseUrl(iTunesSearch).addConverterFactory(GsonConverterFactory.create())
@@ -68,12 +68,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryNotification: TextView
     private lateinit var killTheHistory: Button
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.plant(Timber.DebugTree()) // для логирования ошибок
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        var backgroundView = findViewById<ImageView>(R.id.background_image)
-        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
+
         setupOneLineViews()
         clearButton()
         backToMain()
@@ -86,12 +86,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupOneLineViews() {
+        backgroundView = findViewById<ImageView>(R.id.background_image)
+        backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         backButton = findViewById(R.id.button_back_from_search_activity)
         clearButton = findViewById(R.id.clearButton)
         queryInput = findViewById(R.id.search_edit_text)
         trackRecyclerView = findViewById(R.id.track_recycler_view)
         loadingIndicator = findViewById(R.id.loading_indicator)
-        loadingIndicator.visibility = View.GONE
+        loadingIndicator.visibility = View.INVISIBLE
         utilErrorBox = findViewById<LinearLayout>(R.id.util_error_box)
         searchHistoryNotification = findViewById(R.id.you_were_looking_for)
         killTheHistory = findViewById(R.id.kill_the_history)
@@ -140,15 +142,15 @@ class SearchActivity : AppCompatActivity() {
             ) {
             }
 
-            override fun onTextChanged(
+            override fun onTextChanged(  // ВВОД БЕЗ НАЖАТИЯ
                 charSequence: CharSequence?,
                 start: Int,
                 before: Int,
                 count: Int
             ) {
                 val searchText = queryInput.text.toString().trim()
-                clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.GONE
-                if (hasFocus && searchText.isEmpty()) {  // обработка ввода без нажатий
+                clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.INVISIBLE
+                if (hasFocus && searchText.isEmpty()) {
                     showHistoryViewsAndFillTrackAdapter()
                 } else {
                     hideHistoryViewsAndClearTrackAdapter()
@@ -159,7 +161,7 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        // Фокус + ЖЦ вход в приложение queryInput пуст
+        // ФОКУС И ВВОД
         queryInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && queryInput.text.isEmpty()) {
                 showHistoryViewsAndFillTrackAdapter()
@@ -170,6 +172,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistoryViewsAndFillTrackAdapter() {
+        utilErrorBox.visibility = View.INVISIBLE
+        backgroundView.visibility = View.INVISIBLE
         fillTrackAdapter()
         trackRecyclerView.visibility = View.VISIBLE
         searchHistoryNotification.visibility = View.VISIBLE
@@ -180,14 +184,14 @@ class SearchActivity : AppCompatActivity() {
         clearTrackAdapter()
         adapterForHistoryTracks?.setRecyclerView(trackRecyclerView)
         adapterForHistoryTracks?.syncTracks()
-        trackRecyclerView.scrollToPosition(0)
+//        trackRecyclerView.scrollToPosition(0)
     }
 
     private fun hideHistoryViewsAndClearTrackAdapter() {
         clearTrackAdapter()
-        trackRecyclerView.visibility = View.GONE
-        searchHistoryNotification.visibility = View.GONE
-        killTheHistory.visibility = View.GONE
+        trackRecyclerView.visibility = View.INVISIBLE
+        searchHistoryNotification.visibility = View.INVISIBLE
+        killTheHistory.visibility = View.INVISIBLE
     }
 
     private fun clearTrackAdapter() {
@@ -208,7 +212,7 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-                    utilErrorBox.visibility = View.GONE
+                    utilErrorBox.visibility = View.INVISIBLE
                     clearTrackAdapter()
                     preparingForSearch(searchText)
                     toastIt("${getString(R.string.search)} $searchText")
@@ -231,7 +235,7 @@ class SearchActivity : AppCompatActivity() {
         clearButton.isEnabled = false
         Handler(Looper.getMainLooper()).postDelayed({
             performSearch(searchText) { trackItems ->
-                loadingIndicator.visibility = View.GONE
+                loadingIndicator.visibility = View.INVISIBLE
                 clearButton.isEnabled = true
                 adapterForAPITracks.updateList(trackItems)
                 adapterForAPITracks.setRecyclerView(trackRecyclerView)
@@ -297,21 +301,21 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun solvingAbsentProblem() {
-        loadingIndicator.visibility = View.GONE
+        loadingIndicator.visibility = View.INVISIBLE
         val errorIcon = findViewById<ImageView>(R.id.error_icon)
         val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
         errorIcon.setImageResource(R.drawable.ic_error_notfound)
         errorTextWeb.text = resources.getString(R.string.nothing_was_found)
         val retryButton = findViewById<Button>(R.id.retry_button)
-        retryButton.visibility = View.GONE // тут кнопка не нужна
+        retryButton.visibility = View.INVISIBLE // тут кнопка не нужна
         utilErrorBox.visibility = View.VISIBLE
         utilErrorBox.setOnClickListener {
-            utilErrorBox.visibility = View.GONE
+            utilErrorBox.visibility = View.INVISIBLE
         }
     }
 
     private fun solvingConnectionProblem() {
-        loadingIndicator.visibility = View.GONE
+        loadingIndicator.visibility = View.INVISIBLE
         val errorIcon = findViewById<ImageView>(R.id.error_icon)
         val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
         errorIcon.setImageResource(R.drawable.ic_error_internet)
@@ -326,7 +330,7 @@ class SearchActivity : AppCompatActivity() {
                     preparingForSearch(query)
                 }
             }
-            utilErrorBox.visibility = View.GONE
+            utilErrorBox.visibility = View.INVISIBLE
         }
     }
 

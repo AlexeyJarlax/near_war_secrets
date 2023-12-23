@@ -58,5 +58,7 @@
     <string name="error503">503 - сервис временно недоступен</string>
     <string name="error0">неустановленная ошибка</string>
     <string name="added">Добавлен: </string>
+    <string name="preview_scaling_factor">Коэффициент скалирования превью(px):</string>
+    <string name="reset_settings">Cбросить настройки</string>
 
 </resources>

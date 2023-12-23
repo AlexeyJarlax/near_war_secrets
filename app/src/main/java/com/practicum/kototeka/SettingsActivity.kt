@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,18 +30,19 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // ThemeManager.applyTheme(this)
         setContentView(R.layout.activity_settings)
+        val savedContext = this
+//        appPreferencesKeysMethods = AppPreferencesKeysMethods(context = this)
         val videoView = findViewById<VideoView>(R.id.videoView)
         val themeManager = ThemeManager
         val backMenuLayout = findViewById<LinearLayout>(R.id.act_settings_layout)
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val back = findViewById<Button>(R.id.button_back_from_settings)
+        val resetSettings = findViewById<Button>(R.id.reset_settings) // сброс настроек
         val buttonClearStorage = findViewById<Button>(R.id.clearing_the_storage) // удал всех файлов
         val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
         val delEKWhenClosingTheSession: SwitchCompat =
             findViewById(R.id.delete_the_encryption_key_when_closing_the_session)
-        val previewSizeSeekBar: SeekBar = findViewById(R.id.preview_size)
-        val sizeLabel = findViewById<TextView>(R.id.preview_size_label)
         val switchDarkMode: SwitchCompat = findViewById(R.id.switch_dark_mode)
         val switchCompat: SwitchCompat = findViewById(R.id.button_tumbler)
         val shareButton = findViewById<Button>(R.id.button_settings_share)
@@ -52,9 +55,24 @@ class SettingsActivity : AppCompatActivity() {
             AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK)
         delEKWhenClosingTheSession.isChecked =
             AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
-        previewSizeSeekBar.progress = loadPreviewSizeValue()
-        mimicrySwitch.isChecked = AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_MIMICRY_SWITCH)
-
+        mimicrySwitch.isChecked =
+            AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_MIMICRY_SWITCH)
+        // Загрузка ебаного SeekBar с его конченными значениями
+        val previewSizeSeekBar: SeekBar = findViewById(R.id.preview_size)
+        val imagePreviewForSeekbar1: ImageView = findViewById(R.id.image_preview_for_seekbar_1)
+        val imagePreviewForSeekbar2: ImageView = findViewById(R.id.image_preview_for_seekbar_2)
+        val imagePreviewForSeekbar3: ImageView = findViewById(R.id.image_preview_for_seekbar_3)
+        previewSizeSeekBar.progress = 1
+        val sizeLabel = findViewById<TextView>(R.id.preview_size_label)
+        val previewScalingFactorLabel: String by lazy {
+            getString(R.string.preview_scaling_factor)
+        }
+        val previewSizeSeekBarProgress =
+            AppPreferencesKeysMethods(context = this).loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+        previewSizeSeekBar.post {
+            previewSizeSeekBar.progress = previewSizeSeekBarProgress
+            sizeLabel.text = "$previewScalingFactorLabel ${previewSizeSeekBarProgress}x${previewSizeSeekBarProgress}"
+        }
 
         if (themeManager.isNightModeEnabled(this)) {// применяем тему в старте: ночная
             if (themeManager.isUserSwitchEnabled(this)) { // горы
@@ -89,6 +107,14 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
+        resetSettings.setOnClickListener { // сброс настроек
+            resetSettings(this, AppPreferencesKeys.PREFS_NAME)
+            val intent = Intent(applicationContext, SettingsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+        }
+
         buttonClearStorage.setOnClickListener { // чистим хранилище
             val externalFilesDir = getExternalFilesDir(null)
             val fileList = externalFilesDir?.listFiles()
@@ -116,15 +142,27 @@ class SettingsActivity : AppCompatActivity() {
 
         // Использовать ключ шифрования
         useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
-            AppPreferencesKeysMethods(context = this).saveSwitchValue(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, isChecked)
+            AppPreferencesKeysMethods(context = this).saveSwitchValue(
+                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK,
+                isChecked
+            )
         }
 
         previewSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val size = when (progress) {
-                    0 -> 0; 1 -> 50; 2 -> 100; 3 -> 200; else -> 400
-                }
-                sizeLabel.text = "Размер превью: $size"
+                val size = progress + 1
+                sizeLabel.text = "$previewScalingFactorLabel ${size}x${size}"
+
+                // Загружаем изображения из файла и масштабируем его
+                val originalBitmap1 = BitmapFactory.decodeResource(resources, R.drawable.m100)
+                val originalBitmap2 = BitmapFactory.decodeResource(resources, R.drawable.c100)
+                val originalBitmap3 = BitmapFactory.decodeResource(resources, R.drawable.t100)
+                val scaledBitmap1 = Bitmap.createScaledBitmap(originalBitmap1, size, size, false)
+                val scaledBitmap2 = Bitmap.createScaledBitmap(originalBitmap2, size, size, false)
+                val scaledBitmap3 = Bitmap.createScaledBitmap(originalBitmap3, size, size, false)
+                imagePreviewForSeekbar1.setImageBitmap(scaledBitmap1)
+                imagePreviewForSeekbar2.setImageBitmap(scaledBitmap2)
+                imagePreviewForSeekbar3.setImageBitmap(scaledBitmap3)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -133,11 +171,12 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 seekBar?.let {
-                    val size = when (it.progress) {
-                        0 -> 0; 1 -> 50; 2 -> 100; 3 -> 200; else -> 400
-                    }
-                    sizeLabel.text = "Размер превью: $size"
-                    savePreviewSizeValue(size)
+                    val size = it.progress + 1
+                    sizeLabel.text = "$previewScalingFactorLabel ${size}x${size}"
+                    AppPreferencesKeysMethods(context = savedContext).savePreviewSizeValue(
+                        AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR,
+                        size
+                    )
                 }
             }
         })
@@ -221,52 +260,31 @@ class SettingsActivity : AppCompatActivity() {
 
         // Обработка события для Удалить ключ при закрытии сессии
         delEKWhenClosingTheSession.setOnCheckedChangeListener { _, isChecked ->
-            AppPreferencesKeysMethods(context = this).saveSwitchValue(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, isChecked)
+            AppPreferencesKeysMethods(context = this).saveSwitchValue(
+                AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
+                isChecked
+            )
         }
 
         // Обработка события для Маскировки
         mimicrySwitch.setOnCheckedChangeListener { _, isChecked ->
-            AppPreferencesKeysMethods(context = this).saveSwitchValue(AppPreferencesKeys.KEY_MIMICRY_SWITCH, isChecked)
+            AppPreferencesKeysMethods(context = this).saveSwitchValue(
+                AppPreferencesKeys.KEY_MIMICRY_SWITCH,
+                isChecked
+            )
         }
 
         // Обработка события для: О разработчике
         aboutTheDeveloperButton.setOnClickListener {
-
         }
     }
 
-    // Обработка методов сохранения и загрузки значений
-//    private fun saveSwitchValue(key: String, isChecked: Boolean) {
-//        val sharedPreferences =
-//            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        editor.putBoolean(key, isChecked)
-//        editor.apply()
-//    }
-//
-//    private fun loadSwitchValue(key: String): Boolean {
-//        val sharedPreferences =
-//            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-//        return sharedPreferences.getBoolean(
-//            key,
-//            false
-//        ) // Значение по умолчанию, если ключ не найден
-//    }
-
-    private fun savePreviewSizeValue(value: Int) {
+    fun resetSettings(context: Context, sharedPreferencesName: String) {
         val sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, value)
+        editor.clear()
         editor.apply()
     }
 
-    private fun loadPreviewSizeValue(): Int {
-        val sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getInt(
-            AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR,
-            0
-        ) // Значение по умолчанию, если ключ не найден
-    }
 }
