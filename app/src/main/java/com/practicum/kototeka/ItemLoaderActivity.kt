@@ -39,6 +39,7 @@ import com.practicum.kototeka.util.AppPreferencesKeysMethods
 import com.practicum.kototeka.util.NameUtil
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,7 +86,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val buttonGallery = findViewById<Button>(R.id.button_gallery)
         buttonGallery.setOnClickListener {
-//            openFilePicker()
+            openFilePicker()
         }
     }
 
@@ -277,111 +278,110 @@ class ItemLoaderActivity : AppCompatActivity() {
     fun notifyDSC() {
         photoListAdapter.notifyDataSetChanged()
     }
-//    private fun generateFileName(): String {
-//        val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
-//        var fileName = "${randomName}.unknown"
-//
-//        if (sharedPreferences.getBoolean(
-//                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
-//                false
-//            )
-//        ) {
-//            fileName = fileName.substringBeforeLast(".")
-//            fileName = "${fileName}.k"
-//        } else {
-//            fileName = fileName.substringBeforeLast(".")
-//            fileName = "${fileName}.o"
-//        }
-//
-//        val folder = getExternalFilesDir(null)
-//
-//        if (folder != null) {
-//            if (!folder.exists()) {
-//                folder.mkdirs()
-//            }
-//        }
-//
-//        if (folder != null) {
-//            var counter = 1
-//            var file = File(folder, fileName)
-//
-//            while (file.exists()) {
-//                fileName = "${fileName}_$counter"
-//                file = File(folder, fileName)
-//                counter++
-//            }
-//        } else {
-//            toast("Ошибка: Не удалось получить папку для сохранения файла")
-//        }
-//
-//        return fileName
-//    }
 
-//    private val PICK_FILE_REQUEST = 1
-//    private val PICK_IMAGE_REQUEST = 2
+    private fun generateFileName(): String {
+        val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
+        var fileName = "${randomName}.unknown"
 
-// ... (ваш существующий код)
+        if (sharedPreferences.getBoolean(
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                false
+            )
+        ) {
+            fileName = fileName.substringBeforeLast(".")
+            fileName = "${fileName}.k"
+        } else {
+            fileName = fileName.substringBeforeLast(".")
+            fileName = "${fileName}.o"
+        }
 
+        val folder = getExternalFilesDir(null)
 
-//    private fun openFilePicker() {
-//        val filePickerIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-//        filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE)
-//        filePickerIntent.type = "*/*"  // Любые типы файлов
-//        val imagePickerIntent = Intent(Intent.ACTION_PICK)
-//        imagePickerIntent.type = "image/*"
-//        val chooserIntent = Intent.createChooser(
-//            filePickerIntent,
-//            "Выберите файл или изображение"
-//        )
-//        chooserIntent.putExtra(
-//            Intent.EXTRA_INITIAL_INTENTS,
-//            arrayOf(imagePickerIntent)
-//        )
-//        startActivityForResult(chooserIntent, PICK_FILE_REQUEST)
-//    }
-//
-//// ... (ваш существующий код)
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        when (requestCode) {
-//            PICK_FILE_REQUEST -> {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    data?.data?.let { uri ->
-//                        handleSelectedFile(uri)
-//                    }
-//                }
-//            }
-//            PICK_IMAGE_REQUEST -> {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    data?.data?.let { uri ->
-//                        handleSelectedImage(uri)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun handleSelectedFile(uri: Uri) {
-//        toast("Грузим файл")
-//        generateFileName()
-//
-////        val textView = findViewById<TextView>(R.id.selected_file_path)
-////        textView.text = uri.toString()
-//        // Добавьте здесь свою логику обработки файла
-//    }
-//
-//    private fun handleSelectedImage(uri: Uri) {
-//        // Обрабатывайте выбранный URI изображения по мере необходимости
-//        // Например, вы можете отобразить выбранное изображение в ImageView
-////        val imageView = findViewById<ImageView>(R.id.selected_image_view)
-////        imageView.setImageURI(uri)
-//        toast("Грузим пикчу")
-//        // Добавьте здесь свою логику обработки изображения
-//    }
-//}
+        if (folder != null) {
+            if (!folder.exists()) {
+                folder.mkdirs()
+            }
+        }
+
+        if (folder != null) {
+            var counter = 1
+            var file = File(folder, fileName)
+
+            while (file.exists()) {
+                fileName = "${fileName}_$counter"
+                file = File(folder, fileName)
+                counter++
+            }
+        } else {
+            toast("Ошибка: Не удалось получить папку для сохранения файла")
+        }
+
+        return fileName
+    }
+
+    private val PICK_FILE_REQUEST = 1
+    private val PICK_IMAGE_REQUEST = 2
+
+    private fun openFilePicker() {
+        val filePickerIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE)
+        filePickerIntent.type = "*/*"  // Любые типы файлов
+        val imagePickerIntent = Intent(Intent.ACTION_PICK)
+        imagePickerIntent.type = "image/*"
+        val chooserIntent = Intent.createChooser(
+            filePickerIntent,
+            "Выберите файл или изображение"
+        )
+        chooserIntent.putExtra(
+            Intent.EXTRA_INITIAL_INTENTS,
+            arrayOf(imagePickerIntent)
+        )
+        startActivityForResult(chooserIntent, PICK_FILE_REQUEST)
+    }
+
+    private fun handleSelectedFileOrImage(uri: Uri) {
+        toast("Грузим файл или пикчу")
+
+        val folder = getExternalFilesDir(null)
+        val fileName = generateFileName()
+
+        val outputFile = File(folder, fileName)
+
+        contentResolver.openInputStream(uri)?.use { input ->
+            FileOutputStream(outputFile).use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        // Теперь у вас есть outputFile.toUri(), который содержит скопированный файл
+        // Продолжайте обработку файла, как вам необходимо
+        // Например, вы можете передать outputFile.toUri() в вашу функцию encryptImage
+        // и использовать fileName для дополнительных действий.
+        if (sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)) {
+            encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
+            encryption.encryptImage(outputFile.toUri(), fileName)
+        } else {
+            toast("Файл сохранен без шифрования")
+            encryption.addPhotoToList(0, outputFile.toUri())
+            notifyDSC()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            PICK_FILE_REQUEST, PICK_IMAGE_REQUEST -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.data?.let { uri ->
+                        handleSelectedFileOrImage(uri)
+                    }
+                }
+            }
+        }
+    }
 }
+
 fun Activity.toast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
