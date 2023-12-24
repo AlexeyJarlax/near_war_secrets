@@ -187,11 +187,11 @@
             tools:ignore="VisualLintButtonSize" />
 
         <Button
-            android:id="@+id/about_the_developer"
+            android:id="@+id/about_the_app"
             style="@style/SettingsButtonsAndText"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="О Разработчике"
+            android:text="@string/about_app"
             app:icon="@android:drawable/ic_menu_myplaces"
             tools:ignore="VisualLintButtonSize" />
 

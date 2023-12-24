@@ -439,7 +439,7 @@ class PhotoListAdapter(
                 imageDialogFileName?.text = "${encryptedFileName}"
                 val btnShare = imageDialog?.findViewById<Button>(R.id.imageDialogBtnShare)
                 btnShare?.setOnClickListener {
-                    shareImage(Uri.fromFile(encryptedFile), encryptedFileName, "external_files")
+                    shareImage(Uri.fromFile(encryptedFile), encryptedFileName)
                 }
                 imageDialog?.show()
                 btnShare?.visibility = View.VISIBLE
@@ -484,75 +484,62 @@ class PhotoListAdapter(
         }
     }
 
-    private fun shareImage(imageUri: Uri, encryptedFileName: String, pathType: String) {
+    private fun shareImage(imageUri: Uri, encryptedFileName: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "image/*"
 
-        val contentUri = when (pathType) {
-            "cache" -> {
-                FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider.cache",
-                    File(imageUri.path!!)
-                )
-            }
-            else -> {
-                FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider.external_files",
-                    File(imageUri.path!!)
-                )
-            }
-        }
+        // Используйте FileProvider для предоставления безопасного Uri
+        val contentUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            File(imageUri.path ?: "")
+        )
 
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
         context.startActivity(Intent.createChooser(shareIntent, "Поделиться изображением"))
     }
 
+
     private fun showShareOptionsDialog(decryptedFile: File, decryptedBitmap: Bitmap, encryptedFileName: String) {
         val options = arrayOf("Зашифрованное изображение", "Расшифрованное изображение", "Миниатюра")
-        val encryptedFileName = encryptedFileName
+        val fileNameWithExtension = "$encryptedFileName.ko"
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Выберите файл для отправки")
 
         builder.setItems(options) { _, which ->
             when (which) {
-                0 -> {
-                    shareImage(Uri.fromFile(decryptedFile), encryptedFileName, "external_files")
-                }
+                0 -> shareImage(Uri.fromFile(decryptedFile), encryptedFileName)
                 1 -> {
-                    val decryptedBitmapToFile = bitmapToFile(decryptedBitmap, "cache")
-                    shareImage(Uri.fromFile(decryptedBitmapToFile), encryptedFileName, "cache")
+                    val decryptedFile = bitmapToFile(decryptedBitmap, context, fileNameWithExtension)
+                    shareImage(Uri.fromFile(decryptedFile), encryptedFileName)
                 }
-                2 -> {
-                    shareImage(Uri.fromFile(File(context.getExternalFilesDir(null), encryptedFileName)), encryptedFileName, "external_files")
-                }
+                2 -> shareImage(Uri.fromFile(File(context.getExternalFilesDir(null), encryptedFileName)), encryptedFileName)
             }
         }
 
         builder.show()
     }
 
-    private fun bitmapToFile(bitmap: Bitmap, pathType: String): File {
-        val directory = when (pathType) {
-            "cache" -> context.externalCacheDir
-            "external_files" -> context.getExternalFilesDir(null)
-            else -> context.externalCacheDir // По умолчанию используется cache
-        }
+    private fun bitmapToFile(bitmap: Bitmap, context: Context, fileName: String): File {
+        // Получаем корневую директорию для файлов приложения
+        val externalFilesDir = context.getExternalFilesDir(null)
 
-        // Создаем временный файл в каталоге приложения
-        val file = File(directory, "temp_image.png")
+        // Создаем файл в корневой директории с указанным именем
+        val file = File(externalFilesDir, fileName)
 
         try {
             // Создаем поток для записи в файл
             val stream = FileOutputStream(file)
+
             // Сжимаем изображение и записываем его в файл в формате PNG
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
             // Закрываем поток
             stream.close()
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
         return file
     }
 

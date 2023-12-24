@@ -49,7 +49,7 @@ class SettingsActivity : AppCompatActivity() {
         val helpButton = findViewById<Button>(R.id.button_settings_write_to_supp)
         val userAgreementButton = findViewById<Button>(R.id.button_settings_user_agreement)
         val mimicrySwitch: SwitchCompat = findViewById(R.id.disguise)
-        val aboutTheDeveloperButton: Button = findViewById(R.id.about_the_developer)
+        val aboutTheDeveloperButton: Button = findViewById(R.id.about_the_app)
         // Загрузка сохраненных значений
         useTheEncryptionKey.isChecked =
             AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK)
@@ -276,6 +276,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Обработка события для: О разработчике
         aboutTheDeveloperButton.setOnClickListener {
+
         }
     }
 
