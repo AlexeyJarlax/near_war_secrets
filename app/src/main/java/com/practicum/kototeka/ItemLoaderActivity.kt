@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,8 +37,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.github.chrisbanes.photoview.PhotoView
 import com.practicum.kototeka.util.AppPreferencesKeys
-import com.practicum.kototeka.util.AppPreferencesKeysMethods
 import com.practicum.kototeka.util.NameUtil
+import okio.IOException
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -204,8 +206,6 @@ class ItemLoaderActivity : AppCompatActivity() {
                 var fileName = ""
 
                 buttonCapture.setOnClickListener {
-//                    val folder = getExternalFilesDir(null)
-//                    fileName = generateFileName()
                     val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
                     fileName = "${randomName}.unknown"
                     if (sharedPreferences.getBoolean(
@@ -352,11 +352,6 @@ class ItemLoaderActivity : AppCompatActivity() {
                 input.copyTo(output)
             }
         }
-
-        // Теперь у вас есть outputFile.toUri(), который содержит скопированный файл
-        // Продолжайте обработку файла, как вам необходимо
-        // Например, вы можете передать outputFile.toUri() в вашу функцию encryptImage
-        // и использовать fileName для дополнительных действий.
         if (sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)) {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
             encryption.encryptImage(outputFile.toUri(), fileName)
@@ -424,24 +419,14 @@ class PhotoListAdapter(
         textViewName.text = thumbnailName
 
         holder.itemView.setOnClickListener {
-
-            // val decryptionKey = AppPreferencesKeys.ENCRYPTION_KEY
             val encryptedFileName = fileName
             val encryptedFile = File(context.getExternalFilesDir(null), encryptedFileName)
-            Timber.d("=== Glide : encryptedFile: ${encryptedFile.name}")
-            val decryptedFile =
-                File(context.getExternalFilesDir(null), encryptedFileName.replace(".p", ".kk"))
-            Timber.d("=== Glide : decryptedFile: ${decryptedFile.name}")
+            val decryptedFile = File(context.getExternalFilesDir(null), encryptedFileName.replace(".p", ".kk"))
 
-            if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
-                    ".jpg", true
-                ) || encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
-                    ".png", true
-                ) || encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(
-                    ".bmp", true
-                ) || encryptedFileName.endsWith(
-                    ".webp", true
-                ) || encryptedFileName.endsWith(".unknown", true)
+            if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(".jpg", true) ||
+                encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(".png", true) ||
+                encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(".bmp", true) ||
+                encryptedFileName.endsWith(".webp", true) || encryptedFileName.endsWith(".unknown", true)
             ) {
                 imageDialog = Dialog(context)
                 imageDialog?.setContentView(R.layout.util_dialog_image_view)
@@ -449,22 +434,41 @@ class PhotoListAdapter(
                 val glideRequest = Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
                     .transform(RoundedCorners(32))
                 glideRequest.into(imageViewDialog)
+
+                val imageDialogFileName = imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
+                imageDialogFileName?.text = "${encryptedFileName}"
+                val btnShare = imageDialog?.findViewById<Button>(R.id.imageDialogBtnShare)
+                btnShare?.setOnClickListener {
+                    shareImage(Uri.fromFile(encryptedFile), encryptedFileName, "external_files")
+                }
                 imageDialog?.show()
+                btnShare?.visibility = View.VISIBLE
+                imageDialogFileName?.visibility = View.VISIBLE
+
                 imageViewDialog.setOnClickListener {
                     imageDialog?.dismiss()
                 }
-            } else if (encryptedFileName.endsWith(".p", true)) { // кодированные пикчи
+            } else if (encryptedFileName.endsWith(".p", true)) {
                 try {
                     var rotatedBitmap = encryption.decryptImage(decryptedFile)
                     imageDialog = Dialog(context)
                     imageDialog?.setContentView(R.layout.util_dialog_image_view)
-                    val imageViewDialog =
-                        imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
+                    val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
                     val glideRequest = Glide.with(context).load(rotatedBitmap).fitCenter()
                         .transform(RoundedCorners(8))
                     glideRequest.into(imageViewDialog)
                     imageViewDialog.setImageBitmap(rotatedBitmap)
+
+                    val imageDialogFileName = imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
+                    imageDialogFileName?.text = "${encryptedFileName}"
+                    val btnShare = imageDialog?.findViewById<Button>(R.id.imageDialogBtnShare)
+                    btnShare?.setOnClickListener {
+                        showShareOptionsDialog(decryptedFile, rotatedBitmap, encryptedFileName)
+                    }
                     imageDialog?.show()
+                    btnShare?.visibility = View.VISIBLE
+                    imageDialogFileName?.visibility = View.VISIBLE
+
                     Timber.d("=== Вывод дешифрованного изображения через Dialog")
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
@@ -478,6 +482,78 @@ class PhotoListAdapter(
                 context.toast("Ошибка. Возможно формат изображения не соответствует")
             }
         }
+    }
+
+    private fun shareImage(imageUri: Uri, encryptedFileName: String, pathType: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "image/*"
+
+        val contentUri = when (pathType) {
+            "cache" -> {
+                FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider.cache",
+                    File(imageUri.path!!)
+                )
+            }
+            else -> {
+                FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider.external_files",
+                    File(imageUri.path!!)
+                )
+            }
+        }
+
+        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
+        context.startActivity(Intent.createChooser(shareIntent, "Поделиться изображением"))
+    }
+
+    private fun showShareOptionsDialog(decryptedFile: File, decryptedBitmap: Bitmap, encryptedFileName: String) {
+        val options = arrayOf("Зашифрованное изображение", "Расшифрованное изображение", "Миниатюра")
+        val encryptedFileName = encryptedFileName
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Выберите файл для отправки")
+
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> {
+                    shareImage(Uri.fromFile(decryptedFile), encryptedFileName, "external_files")
+                }
+                1 -> {
+                    val decryptedBitmapToFile = bitmapToFile(decryptedBitmap, "cache")
+                    shareImage(Uri.fromFile(decryptedBitmapToFile), encryptedFileName, "cache")
+                }
+                2 -> {
+                    shareImage(Uri.fromFile(File(context.getExternalFilesDir(null), encryptedFileName)), encryptedFileName, "external_files")
+                }
+            }
+        }
+
+        builder.show()
+    }
+
+    private fun bitmapToFile(bitmap: Bitmap, pathType: String): File {
+        val directory = when (pathType) {
+            "cache" -> context.externalCacheDir
+            "external_files" -> context.getExternalFilesDir(null)
+            else -> context.externalCacheDir // По умолчанию используется cache
+        }
+
+        // Создаем временный файл в каталоге приложения
+        val file = File(directory, "temp_image.png")
+
+        try {
+            // Создаем поток для записи в файл
+            val stream = FileOutputStream(file)
+            // Сжимаем изображение и записываем его в файл в формате PNG
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            // Закрываем поток
+            stream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return file
     }
 
     override fun getItemCount(): Int {

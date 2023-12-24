@@ -8,6 +8,8 @@ import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -150,36 +152,55 @@ fun decryptImage(file: File): Bitmap {
     return rotatedBitmap
 }
 
-fun createThumbnail(context: Context, imageUri: Uri) {
-    val scaledNumber = AppPreferencesKeysMethods(context).loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
-    val requestOptions = RequestOptions().override(scaledNumber, scaledNumber)
+    fun createThumbnail(context: Context, imageUri: Uri) {
+        val scaledNumber = AppPreferencesKeysMethods(context)
+            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+        val requestOptions = RequestOptions().override(scaledNumber, scaledNumber)
 
-    Glide.with(context)
-        .asBitmap()
-        .load(imageUri)
-        .apply(requestOptions)
-        .into(object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(
-                resource: Bitmap,
-                transition: Transition<in Bitmap>?
-            ) {
-                val thumbnailName =
-                    saveThumbnailWithRandomFileName(context, resource, imageUri)
-                if (thumbnailName.isNotEmpty()) {
+        Glide.with(context)
+            .asBitmap()
+            .load(imageUri)
+            .apply(requestOptions)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
                     val thumbnailName =
                         saveThumbnailWithRandomFileName(context, resource, imageUri)
-                    photoList.add(0, thumbnailName)
-                    itemLoaderActivity.notifyDSC()
-                    toast("Превью сохранено")
-                    deleteOriginalImage(imageUri)
-                } else {
-                    toast("Ошибка: Не удалось сохранить превью")
+                    if (thumbnailName.isNotEmpty()) {
+                        photoList.add(0, thumbnailName)
+                        itemLoaderActivity.notifyDSC()
+                        toast("Превью сохранено")
+                        deleteOriginalImage(imageUri)
+                    } else {
+                        toast("Ошибка: Не удалось сохранить превью")
+                    }
                 }
-            }
-            override fun onLoadCleared(placeholder: Drawable?) {
-            }
-        })
-}
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // Для случая, когда изображение не загружено, например, если файл не является изображением
+                    val defaultThumbnail = getDefaultThumbnail(context)
+                    val defaultThumbnailName =
+                        saveThumbnailWithRandomFileName(context, defaultThumbnail, imageUri)
+
+                    if (defaultThumbnailName.isNotEmpty()) {
+                        photoList.add(0, defaultThumbnailName)
+                        itemLoaderActivity.notifyDSC()
+                        toast("Превью сохранено (дефолтное изображение)")
+                        deleteOriginalImage(imageUri)
+                    } else {
+                        toast("Ошибка: Не удалось сохранить превью (дефолтное изображение)")
+                    }
+                }
+            })
+    }
+
+    private fun getDefaultThumbnail(context: Context): Bitmap {
+        // Здесь вы можете использовать свою иконку документа или другое дефолтное изображение
+        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_search)
+        return drawable?.toBitmap() ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+    }
 
 private fun saveThumbnailWithRandomFileName(
     context: Context,
