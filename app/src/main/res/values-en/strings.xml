@@ -10,11 +10,11 @@
     <string name="write_to_support">Write to support</string>
     <string name="user_agreement">Privacy Policy</string>
     <string name="button_back">back</string>
-    <string name="share_app_text">Try this app that I wrote furiously: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_app_text">My Shadow Gallery is an image encryption application:: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_title">share app</string>
     <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">Message to the developers and developers of the kototeka app</string>
-    <string name="support_email_text">Thanks to the developers and developers for the cool app!</string>
+    <string name="support_email_subject">Message to the developer of this app</string>
+    <string name="support_email_text">Message</string>
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
     <string name="heading_search_history_list_view">Search string query history</string>
     <string name="todo">this app is not suitable for the disabled</string>

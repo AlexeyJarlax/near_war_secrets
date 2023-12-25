@@ -1,11 +1,13 @@
 package com.practicum.kototeka
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.kototeka.util.ThemeManager
@@ -41,6 +43,7 @@ class About : AppCompatActivity() {
                     mediaPlayer.start()
                 }
             }
+            scrollView()
         } else {  // дневная
             if (themeManager.isUserSwitchEnabled(this)) { // горы
                 videoView.alpha = 0.0f
@@ -51,6 +54,7 @@ class About : AppCompatActivity() {
                 backMenuLayout.alpha = 1.0f
                 backgroundView.alpha = 0.5f
             }
+            scrollView()
         }
 
         back.setOnClickListener { // КНОПКА НАЗАД
@@ -86,6 +90,13 @@ class About : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
             startActivity(intent)
+        }
+    }
+
+    fun scrollView() {
+        val scrollView = findViewById<ScrollView>(R.id.aboutTheAppActivity)
+        scrollView?.post {
+            scrollView.smoothScrollTo(0, 0) // Прокрутить вверх
         }
     }
 }

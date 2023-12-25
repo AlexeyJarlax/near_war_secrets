@@ -10,14 +10,14 @@
     <string name="share_the_app">Поделиться приложением</string>
     <string name="write_to_support">Написать в поддержку</string>
     <string name="user_agreement">Политика конфиденциальности</string>
-    <string name="share_app_text">Попробуй это приложение, которое я яростно написал: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_app_text">Моя теневая галерея - приложение для шифрования изображений: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_title">Поделиться приложением</string>
     <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">Сообщение разработчикам и разработчицам приложения kototeka</string>
-    <string name="support_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="support_email_subject">Сообщение разработчику этого приложения</string>
+    <string name="support_email_text">текст сообщения</string>
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
-    <string name="todo">это приложение не пригодно для инвалидов</string>
+    <string name="todo">Туду</string>
     <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
     <string name="cam_bat_on">Скрыть\nкамеру</string>
     <string name="cam_bat_off">Запустить\nкамеру</string>
@@ -56,7 +56,7 @@
     Если вы забыли пароль для входа в приложение, лучшим решением будет удалить приложение и установить вновь. В случае утраты ключа шифрования вы можете создать
     другой ключ без переустановки приложения, однако изображения, сохраненные со старым ключом, будут недоступны к просмотру. Очистить хранилище изображений,
     сменить ключ или пароль можно через меню Настройки.</string>
-    <string name="about_app_long5">Особенности работы системы шифрования.</string>
+    <string name="about_app_long5">Особенности работы системы шифрования</string>
     <string name="about_app_long6">У приложения имеется три режима для системы шифрования:\n\n
 1. БЕЗ ШИФРОВАНИЯ. Сохранение файлов без ввода ключа шифрования – файлы сохраняются на устройстве в недоступном другим приложениям и галерее формате, однако
         злоумышленник сможет извлечь и считать их, если завладеет устройством. Получив отправленный с устройства файл, он сможет считать содержимое.\n\n

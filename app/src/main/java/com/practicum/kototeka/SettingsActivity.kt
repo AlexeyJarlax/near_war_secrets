@@ -33,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
         val savedContext = this
 //        val videoView = findViewById<VideoView>(R.id.videoView)
 //        val themeManager = ThemeManager
-//        val backMenuLayout = findViewById<LinearLayout>(R.id.act_settings_layout)
+        val backMenuLayout = findViewById<LinearLayout>(R.id.act_settings_layout)
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val aboutTheDeveloperButton = findViewById<Button>(R.id.about_the_app)
@@ -105,9 +105,10 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
+        // Обработка события для: О разработчике
         aboutTheDeveloperButton.setOnClickListener {
-            val Intent = Intent(this, MainActivity::class.java)
-            startActivity(Intent)
+            val intent = Intent(this, About::class.java)
+            startActivity(intent)
         }
 
         resetSettings.setOnClickListener { // сброс настроек
@@ -245,17 +246,12 @@ class SettingsActivity : AppCompatActivity() {
             )
         }
 
-        // Обработка события для: О разработчике
-        aboutTheDeveloperButton.setOnClickListener {
-
-        }
-
-        val scrollView = findViewById<ScrollView>(R.id.settingsScrollView)
-        scrollView?.descendantFocusability = ScrollView.FOCUS_BEFORE_DESCENDANTS
-        scrollView?.isFocusable = true
-        scrollView?.isFocusableInTouchMode = true
-        scrollView?.requestFocus()
-        scrollView?.paddingTop
+//        val scrollView = findViewById<ScrollView>(R.id.settingsScrollView)
+//        scrollView?.descendantFocusability = ScrollView.FOCUS_BEFORE_DESCENDANTS
+//        scrollView?.isFocusable = true
+//        scrollView?.isFocusableInTouchMode = true
+//        scrollView?.requestFocus()
+//        scrollView?.paddingTop
     }
 
     fun resetSettings(context: Context, sharedPreferencesName: String) {

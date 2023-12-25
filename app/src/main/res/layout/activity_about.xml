@@ -17,27 +17,18 @@
         <ImageView
             android:id="@+id/background_image"
             android:layout_width="match_parent"
-            android:layout_height="1100dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:contentDescription="TODO"
+            android:alpha="0.4"
             android:scaleType="centerCrop" />
-
-        <VideoView
-            android:id="@+id/videoView0"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="940dp"
-            android:alpha="0.0"
-            android:fitsSystemWindows="true"
-            android:scaleType="fitCenter"
-            android:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/act_abouttheapp_layout"
             style="@style/BackMenuLayout"
             android:layout_gravity="top"
-            android:background="@android:color/transparent">
+            android:background="@android:color/transparent"
+            android:textAlignment="center">
 
             <Button
                 android:id="@+id/button_back_from_abouttheapp"
@@ -77,9 +68,9 @@
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:textAlignment="center"
                 android:layout_marginTop="@dimen/dp16"
-                android:gravity="start|end|center_vertical"
+                android:textSize="@dimen/text_size_sp19"
                 android:text="@string/about_app_long1" />
 
             <TextView
@@ -87,20 +78,19 @@
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/dp16"
-                android:gravity="start|end|center_vertical"
                 android:text="@string/about_app_long2"
-                android:textStyle="normal" />
+                android:textAlignment="center"
+                 />
 
             <TextView
                 android:id="@+id/preview_size_label3"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/dp16"
-                android:gravity="start|end|center_vertical"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_sp19"
                 android:text="@string/about_app_long3" />
 
             <TextView
@@ -108,20 +98,19 @@
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:textAlignment="center"
                 android:layout_marginTop="@dimen/dp16"
-                android:gravity="start|end|center_vertical"
                 android:text="@string/about_app_long4"
-                android:textStyle="normal" />
+                 />
 
             <TextView
                 android:id="@+id/preview_size_label5"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_sp19"
                 android:layout_marginTop="@dimen/dp16"
-                android:gravity="start|end|center_vertical"
                 android:text="@string/about_app_long5" />
 
             <TextView
@@ -129,11 +118,33 @@
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="@dimen/dp16"
+                android:text="@string/about_app_long6"
+                 />
+
+            <VideoView
+                android:id="@+id/videoView0"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:alpha="0.0"
+                android:fitsSystemWindows="true"
+                android:scaleType="fitCenter"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/preview_size_label7"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginTop="@dimen/dp16"
+                android:layout_marginBottom="@dimen/dp16"
                 android:gravity="start|end|center_vertical"
-                android:text="@string/about_app_long6"
+                android:text=""
                 android:textStyle="normal" />
+
         </LinearLayout>
 
     </FrameLayout>
