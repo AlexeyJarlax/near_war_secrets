@@ -8,14 +8,14 @@
     <string name="dark_mod">Dark mod</string>
     <string name="share_the_app">Share the app</string>
     <string name="write_to_support">Write to support</string>
-    <string name="user_agreement">User agreement</string>
+    <string name="user_agreement">Privacy Policy</string>
     <string name="button_back">back</string>
     <string name="share_app_text">Try this app that I wrote furiously: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_title">share app</string>
-    <string name="support_email">mailto:al3ksei.pav@yandex.ru</string>
+    <string name="support_email">mailto:a9633238@gmail.com</string>
     <string name="support_email_subject">Message to the developers and developers of the kototeka app</string>
     <string name="support_email_text">Thanks to the developers and developers for the cool app!</string>
-    <string name="user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
     <string name="heading_search_history_list_view">Search string query history</string>
     <string name="todo">this app is not suitable for the disabled</string>
     <string name="there_wil_be_media_library">there will be a media library in this window</string>
@@ -46,4 +46,6 @@
     <string name="added">Added: </string>
     <string name="preview_scaling_factor">preview scaling factor</string>
     <string name="reset_settings">Reset settings</string>
+    <string name="personal_data">Personal data</string>
+    <string name="disguise_it_as_a_music_player">Disguise it as a music player</string>
 </resources>

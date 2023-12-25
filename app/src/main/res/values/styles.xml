@@ -66,8 +66,8 @@
         <item name="iconTint">@color/yp_text_gray_and_yp_white</item>
         <item name="android:textAllCaps">false</item> <!-- капс -->
         <item name="android:padding">@dimen/dp16</item>
-        <item name="android:elevation">0dp</item> <!-- тени -->
-        <item name="android:stateListAnimator">@null</item> <!-- анимации нажатия -->
+<!--        <item name="android:elevation">0dp</item> &lt;!&ndash; тени &ndash;&gt;-->
+<!--        <item name="android:stateListAnimator">@null</item> &lt;!&ndash; анимации нажатия &ndash;&gt;-->
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:backgroundTint">@color/yp_white_and_yp_black</item>
     </style>

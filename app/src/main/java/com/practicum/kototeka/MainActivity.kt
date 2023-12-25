@@ -32,6 +32,17 @@ class MainActivity : AppCompatActivity() {
         val buttonMyGallery = findViewById<Button>(R.id.button_my_gallery)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
 
+        // Проверяем, является ли текущий запуск приложения первым
+        val isFirstRun = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_FIRST_RUN, true)
+
+        if (isFirstRun) { // Устанавливаем значения по умолчанию
+            with(sharedPreferences.edit()) {
+                putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
+                putBoolean(AppPreferencesKeys.KEY_FIRST_RUN, false) // Помечаем, что приложение уже запускалось
+                apply()
+            }
+        }
+
         buttonLogin.setOnClickListener {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
@@ -54,34 +65,19 @@ class MainActivity : AppCompatActivity() {
 
         buttonSettings.setOnClickListener {
             val displayIntent = Intent(this, SettingsActivity::class.java)
-//            startActivityForResult(displayIntent, AppPreferencesKeys.SETTINGS_REQUEST_CODE)
             startActivity(displayIntent)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == MyCompObj.SETTINGS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-//            val gachiModeState = data?.getBooleanExtra(MyCompObj.USER_SWITCH, false) ?: false
-//            updateBackgroundImage(gachiModeState)
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         }
 
 
-    // Функция для обновления фона активности в зависимости от состояния переключателя
-//    private fun updateBackgroundImage(isChecked: Boolean) {
-//        val backgroundView = findViewById<ImageView>(R.id.background_image)
-//        if (isChecked) {
-//            backgroundView.setImageResource(R.drawable.mountains)
-//        } else {
-//            backgroundView.setImageResource(R.drawable.cat)
-//        }
-//    }
-
     override fun onResume() {
         super.onResume()
-//        val isKeyInputShown = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, false)
         val isExistsOfEncryptionKey = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
         val isUseTheEncryptionKey = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
         val keySimbl = findViewById<Button>(R.id.button_login)
@@ -95,12 +91,6 @@ class MainActivity : AppCompatActivity() {
         if (!isExistsOfEncryptionKey && isUseTheEncryptionKey) {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
-//            sharedPreferences.edit().putBoolean(AppPreferencesKeys.KEY_INPUT_SHOWN_KEY, true).apply()
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                keySimbl.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
-//            } else {  // Для версий до Lollipop
-//                keySimbl.setBackgroundColor(ContextCompat.getColor(this, R.color.yp_blue))
-//            }
         }
 
     }

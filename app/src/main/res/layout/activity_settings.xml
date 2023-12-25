@@ -1,200 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/BackMenuLayout"
-    android:background="@color/yp_white_and_yp_black"
+    android:id="@+id/settingsScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top"
     tools:context=".SettingsActivity">
 
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="0dp"
-        android:alpha="0.0"
-        android:fitsSystemWindows="true"
-        android:scaleType="fitCenter"
-        android:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/background_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="TODO"
-        android:scaleType="centerCrop" />
-
-    <LinearLayout
-        android:id="@+id/act_settings_layout"
+    <FrameLayout
         style="@style/BackMenuLayout"
-        android:background="@android:color/transparent"
+        android:layout_gravity="top"
+        android:background="@color/yp_white_and_yp_black"
         tools:context=".SettingsActivity">
 
-        <Button
-            android:id="@+id/button_back_from_settings"
-            style="@style/GoBackButtons"
-            android:background="@android:color/transparent"
-            android:text="@string/button_back" />
-
-        <Button
-            android:id="@+id/reset_settings"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/reset_settings"
-            app:icon="@android:drawable/ic_lock_idle_charging"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/clearing_the_storage"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/clearing_the_storage"
-            app:icon="@android:drawable/ic_menu_delete"
-            tools:ignore="VisualLintButtonSize" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/use_the_encryption_key"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:text="@string/preview_off"
-            app:icon="@android:drawable/ic_menu_delete"
-            tools:ignore="VisualLintButtonSize" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/delete_the_encryption_key_when_closing_the_session"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:text="@string/key_input_clear"
-            app:icon="@android:drawable/ic_menu_delete"
-            tools:ignore="VisualLintButtonSize" />
-
-        <TextView
-            android:id="@+id/preview_size_label"
-            style="@style/SettingsButtonsAndText"
+        <ImageView
+            android:id="@+id/background_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginTop="@dimen/dp8"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:text="@string/preview_scaling_factor" />
+            android:layout_height="1000dp"
+            android:layout_gravity="top"
+            android:scaleType="centerCrop" />
 
-        <SeekBar
-            android:id="@+id/preview_size"
-            style="@style/SettingsButtonsAndText"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp44"
-            android:gravity="center_vertical"
-            android:max="99"
-            android:paddingEnd="@dimen/dp8" />
+        <!--        <VideoView-->
+        <!--            android:id="@+id/videoView"-->
+        <!--            android:layout_width="300dp"-->
+        <!--            android:layout_height="300dp"-->
+        <!--            android:layout_marginTop="940dp"-->
+        <!--            android:alpha="0.0"-->
+        <!--            android:layout_gravity="center_horizontal"-->
+        <!--            android:fitsSystemWindows="true"-->
+        <!--            android:scaleType="fitCenter"-->
+        <!--            android:visibility="visible" />-->
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:id="@+id/act_settings_layout"
+            style="@style/BackMenuLayout"
+            android:layout_gravity="top"
+            android:background="@android:color/transparent">
 
-            <ImageView
-                android:id="@+id/image_preview_for_seekbar_1"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_margin="@dimen/dp4"
-                android:scaleType="centerCrop"
-                android:src="@drawable/m100"
-                tools:src="@drawable/m100" />
+            <Button
+                android:id="@+id/button_back_from_settings"
+                style="@style/GoBackButtons"
+                android:background="@android:color/transparent"
+                android:text="@string/button_back" />
 
-            <ImageView
-                android:id="@+id/image_preview_for_seekbar_2"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_margin="@dimen/dp4"
-                android:scaleType="centerCrop"
-                android:src="@drawable/c100"
-                tools:src="@drawable/c100" />
+            <Button
+                android:id="@+id/about_the_app"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/about_app"
+                app:icon="@android:drawable/ic_menu_directions" />
 
-            <ImageView
-                android:id="@+id/image_preview_for_seekbar_3"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_margin="@dimen/dp4"
-                android:scaleType="centerCrop"
-                android:src="@drawable/t100"
-                tools:src="@drawable/t100" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_dark_mode"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp8"
+                android:text="@string/dark_mod"
+                tools:ignore="VisualLintButtonSize" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/button_tumbler"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp8"
+                android:rotation="0"
+                android:text="@string/mountin_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/disguise"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp8"
+                android:text="@string/disguise_it_as_a_music_player"
+                tools:ignore="VisualLintButtonSize" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/use_the_encryption_key"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp8"
+                android:text="@string/preview_off"
+                tools:ignore="VisualLintButtonSize" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/delete_the_encryption_key_when_closing_the_session"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp8"
+                android:text="@string/key_input_clear"
+                tools:ignore="VisualLintButtonSize" />
+
+            <TextView
+                android:id="@+id/preview_size_label"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp8"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp8"
+                android:text="@string/preview_scaling_factor" />
+
+            <SeekBar
+                android:id="@+id/preview_size"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp44"
+                android:gravity="center_vertical"
+                android:max="99"
+                android:paddingEnd="@dimen/dp8" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/image_preview_for_seekbar_1"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_margin="@dimen/dp4"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/m100"
+                    tools:src="@drawable/m100" />
+
+                <ImageView
+                    android:id="@+id/image_preview_for_seekbar_2"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_margin="@dimen/dp4"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/c100"
+                    tools:src="@drawable/c100" />
+
+                <ImageView
+                    android:id="@+id/image_preview_for_seekbar_3"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_margin="@dimen/dp4"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/t100"
+                    tools:src="@drawable/t100" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/personal_data"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/personal_data"
+                app:icon="@android:drawable/ic_menu_edit"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/clearing_the_storage"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/clearing_the_storage"
+                app:icon="@android:drawable/ic_menu_delete"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/reset_settings"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/reset_settings"
+                app:icon="@android:drawable/ic_lock_idle_charging"
+                tools:ignore="VisualLintButtonSize" />
+
         </LinearLayout>
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/disguise"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:text="Мимикрировать под другое приложение"
-            app:icon="@android:drawable/ic_menu_delete"
-            tools:ignore="VisualLintButtonSize" />
+    </FrameLayout>
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_dark_mode"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:text="@string/dark_mod"
-            tools:ignore="VisualLintButtonSize" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/button_tumbler"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp8"
-            android:rotation="0"
-            android:text="@string/mountin_switch" />
-
-        <Button
-            android:id="@+id/button_settings_share"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/share_the_app"
-            app:icon="@android:drawable/ic_menu_share"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/button_settings_write_to_supp"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/write_to_support"
-            app:icon="@android:drawable/ic_dialog_email"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/button_settings_user_agreement"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/user_agreement"
-            app:icon="@android:drawable/ic_menu_edit"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/about_the_app"
-            style="@style/SettingsButtonsAndText"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/about_app"
-            app:icon="@android:drawable/ic_menu_myplaces"
-            tools:ignore="VisualLintButtonSize" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</ScrollView>

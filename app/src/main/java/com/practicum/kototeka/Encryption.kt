@@ -148,13 +148,17 @@ fun decryptImage(file: File): Bitmap {
         true
     )
     Timber.d("=== Успешный конец декодирования. файл rotatedBitmap: ${rotatedBitmap}")
-    toast("Дешифрование ${file.name} выполнено успешно")
+    toast("Дешифрую ${file.name}")
     return rotatedBitmap
 }
 
     fun createThumbnail(context: Context, imageUri: Uri) {
+//        val scaledNumber = AppPreferencesKeysMethods(context)
+//            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+
         val scaledNumber = AppPreferencesKeysMethods(context)
-            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR) ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
+
         val requestOptions = RequestOptions().override(scaledNumber, scaledNumber)
 
         Glide.with(context)

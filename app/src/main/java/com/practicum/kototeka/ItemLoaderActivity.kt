@@ -472,6 +472,10 @@ class PhotoListAdapter(
                     Timber.d("=== Вывод дешифрованного изображения через Dialog")
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
+                        rotatedBitmap?.recycle() // явное освобождение памяти
+                        val fileNameWithExtension = "${encryptedFileName}eekaboo"
+                        context.toast("Удаляю экземпляр ${fileNameWithExtension}")
+                        deleteDecBitmapAfterSharing(fileNameWithExtension)
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
@@ -502,7 +506,7 @@ class PhotoListAdapter(
 
     private fun showShareOptionsDialog(decryptedFile: File, decryptedBitmap: Bitmap, encryptedFileName: String) {
         val options = arrayOf("Зашифрованное изображение", "Расшифрованное изображение", "Миниатюра")
-        val fileNameWithExtension = "$encryptedFileName.ko"
+        val fileNameWithExtension = "${encryptedFileName}eekaboo"
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Выберите файл для отправки")
 
@@ -510,8 +514,11 @@ class PhotoListAdapter(
             when (which) {
                 0 -> shareImage(Uri.fromFile(decryptedFile), encryptedFileName)
                 1 -> {
+                    context.toast("Создаю экземпляр: ${fileNameWithExtension}")
                     val decryptedFile = bitmapToFile(decryptedBitmap, context, fileNameWithExtension)
                     shareImage(Uri.fromFile(decryptedFile), encryptedFileName)
+                    decryptedBitmap?.recycle() // явное освобождение памяти под decryptedBitmap
+
                 }
                 2 -> shareImage(Uri.fromFile(File(context.getExternalFilesDir(null), encryptedFileName)), encryptedFileName)
             }
@@ -541,6 +548,15 @@ class PhotoListAdapter(
         }
 
         return file
+    }
+
+    // Метод для удаления файла после bitmapToFile
+    private fun deleteDecBitmapAfterSharing(thisFileName: String) {
+        val fileToDelete = File(context.getExternalFilesDir(null), thisFileName)
+        if (fileToDelete.exists()) {
+            File(context.getExternalFilesDir(null), thisFileName).delete()
+            fileToDelete.delete()
+        }
     }
 
     override fun getItemCount(): Int {

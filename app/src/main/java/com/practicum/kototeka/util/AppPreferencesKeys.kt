@@ -7,8 +7,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val PREFS_HISTORY_NAME = "SearchHistory"
 
     // ключи и файлы
-    const val KEY_INPUT_SHOWN_KEY = "key_input_shown"
-    const val SETTINGS_REQUEST_CODE = 1 // первый запуск = запрос ключа шифрования сразу
+    const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
     const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
     const val KEY_EXIST_OF_ENCRYPTION_KLUCHIK = "exists_of_encryption_kluchik"
 
@@ -18,6 +17,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val ALBUM_ROUNDED_CORNERS = 8
     const val SERVER_PROCESSING_MILLISECONDS: Long = 1500
     const val HISTORY_TRACK_LIST_SIZE = 8
+    const val DEFAULT_PREVIEW_SIZE = 30
 
     // переключатели в настройках
     const val KEY_NIGHT_MODE = "nightMode"

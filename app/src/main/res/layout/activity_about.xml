@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/aboutTheAppActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top"
+    tools:context=".About">
+
+    <FrameLayout
+        style="@style/BackMenuLayout"
+        android:layout_gravity="top"
+        android:background="@color/yp_white_and_yp_black"
+        tools:context=".SettingsActivity">
+
+        <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="match_parent"
+            android:layout_height="1100dp"
+            android:layout_gravity="top"
+            android:contentDescription="TODO"
+            android:scaleType="centerCrop" />
+
+        <VideoView
+            android:id="@+id/videoView0"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="940dp"
+            android:alpha="0.0"
+            android:fitsSystemWindows="true"
+            android:scaleType="fitCenter"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/act_abouttheapp_layout"
+            style="@style/BackMenuLayout"
+            android:layout_gravity="top"
+            android:background="@android:color/transparent">
+
+            <Button
+                android:id="@+id/button_back_from_abouttheapp"
+                style="@style/GoBackButtons"
+                android:background="@android:color/transparent"
+                android:text="@string/button_back" />
+
+            <Button
+                android:id="@+id/button_settings_share"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/share_the_app"
+                app:icon="@android:drawable/ic_menu_share"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_settings_write_to_supp"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/write_to_support"
+                app:icon="@android:drawable/ic_dialog_email"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_settings_user_agreement"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/user_agreement"
+                app:icon="@android:drawable/ic_menu_edit"
+                tools:ignore="VisualLintButtonSize" />
+
+            <TextView
+                android:id="@+id/preview_size_label1"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp16"
+                android:gravity="start|end|center_vertical"
+                android:text="@string/about_app_long1" />
+
+            <TextView
+                android:id="@+id/preview_size_label2"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp16"
+                android:gravity="start|end|center_vertical"
+                android:text="@string/about_app_long2"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/preview_size_label3"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp16"
+                android:gravity="start|end|center_vertical"
+                android:text="@string/about_app_long3" />
+
+            <TextView
+                android:id="@+id/preview_size_label4"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp16"
+                android:gravity="start|end|center_vertical"
+                android:text="@string/about_app_long4"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/preview_size_label5"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp16"
+                android:gravity="start|end|center_vertical"
+                android:text="@string/about_app_long5" />
+
+            <TextView
+                android:id="@+id/preview_size_label6"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/dp16"
+                android:gravity="start|end|center_vertical"
+                android:text="@string/about_app_long6"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</ScrollView>
