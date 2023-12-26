@@ -115,7 +115,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         buttonClearStorage.setOnClickListener { // чистим хранилище
-            val externalFilesDir = getExternalFilesDir(null)
+            val externalFilesDir = applicationContext.filesDir
             val fileList = externalFilesDir?.listFiles()
             if (fileList != null) {
                 for (file in fileList) {

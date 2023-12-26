@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.storage.StorageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,10 +86,10 @@ class ItemLoaderActivity : AppCompatActivity() {
             encryption.addPhotoToList(0, uri)
         }
         photoListAdapter = PhotoListAdapter(this, encryption)
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val buttonGallery = findViewById<Button>(R.id.button_gallery)
         buttonGallery.setOnClickListener {
-            openFilePicker()
+            openImagePicker()
         }
     }
 
@@ -206,36 +207,8 @@ class ItemLoaderActivity : AppCompatActivity() {
                 var fileName = ""
 
                 buttonCapture.setOnClickListener {
-                    val folder = getExternalFilesDir(null)
+                    val folder = applicationContext.filesDir
                     val fileName = generateFileName()
-//                    val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
-//                    fileName = "${randomName}.unknown"
-//                    if (sharedPreferences.getBoolean(
-//                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
-//                            false
-//                        )
-//                    ) {
-//                        fileName = fileName.substringBeforeLast(".")
-//                        fileName = "${fileName}.k"
-//                    } else {
-//                        fileName = fileName.substringBeforeLast(".")
-//                        fileName = "${fileName}.o"
-//                    }
-//                    val folder = getExternalFilesDir(null)
-//
-//                    if (folder != null) {
-//                        if (!folder.exists()) {
-//                            folder.mkdirs()// Папка не существует
-//                        }
-//                    }
-//                    if (folder != null) {
-//                        var counter = 1
-//                        var file = File(folder, fileName)
-//                        while (file.exists()) {
-//                            fileName = "${fileName}_$counter"
-//                            file = File(folder, fileName)
-//                            counter++
-//                        }
 
                         outputFile = File(folder, fileName)
                         val outputOptions =
@@ -257,7 +230,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             outputFile.toUri(), fileName
                                         )
                                     } else {
-                                        toast("Изображение сохранено без шифрования")
+                                        toast("Сохранил без шифрования")
                                         encryption.addPhotoToList(0, outputFile.toUri())
                                         notifyDSC()
                                     }
@@ -267,9 +240,6 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     toast("Ошибка сохранения изображения")
                                 }
                             })
-//                    } else {
-//                        toast("Ошибка: Не удалось получить папку для сохранения изображения")
-//                    }
                 }
             } catch (e: Exception) {
                 toast("Ошибка: Не удалось открыть камеру")
@@ -297,7 +267,7 @@ class ItemLoaderActivity : AppCompatActivity() {
             fileName = "${fileName}.o"
         }
 
-        val folder = getExternalFilesDir(null)
+        val folder = applicationContext.filesDir
 
         if (folder != null) {
             if (!folder.exists()) {
@@ -321,30 +291,18 @@ class ItemLoaderActivity : AppCompatActivity() {
         return fileName
     }
 
-    private val PICK_FILE_REQUEST = 1
-    private val PICK_IMAGE_REQUEST = 2
+    private val PICK_IMAGE_REQUEST = 1
 
-    private fun openFilePicker() {
-        val filePickerIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE)
-        filePickerIntent.type = "*/*"  // Любые типы файлов
+    private fun openImagePicker() {
         val imagePickerIntent = Intent(Intent.ACTION_PICK)
         imagePickerIntent.type = "image/*"
-        val chooserIntent = Intent.createChooser(
-            filePickerIntent,
-            "Выберите файл или изображение"
-        )
-        chooserIntent.putExtra(
-            Intent.EXTRA_INITIAL_INTENTS,
-            arrayOf(imagePickerIntent)
-        )
-        startActivityForResult(chooserIntent, PICK_FILE_REQUEST)
+        startActivityForResult(imagePickerIntent, PICK_IMAGE_REQUEST)
     }
 
-    private fun handleSelectedFileOrImage(uri: Uri) {
-        toast("Грузим файл или пикчу")
+    private fun handleSelectedImage(uri: Uri) {
+        toast("Загружаю изображение")
 
-        val folder = getExternalFilesDir(null)
+        val folder = applicationContext.filesDir
         val fileName = generateFileName()
 
         val outputFile = File(folder, fileName)
@@ -354,11 +312,12 @@ class ItemLoaderActivity : AppCompatActivity() {
                 input.copyTo(output)
             }
         }
+
         if (sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)) {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
             encryption.encryptImage(outputFile.toUri(), fileName)
         } else {
-            toast("Файл сохранен без шифрования")
+            toast("Изображение сохранено без шифрования")
             encryption.addPhotoToList(0, outputFile.toUri())
             notifyDSC()
         }
@@ -368,16 +327,15 @@ class ItemLoaderActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            PICK_FILE_REQUEST, PICK_IMAGE_REQUEST -> {
+            PICK_IMAGE_REQUEST -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.data?.let { uri ->
-                        handleSelectedFileOrImage(uri)
+                        handleSelectedImage(uri)
                     }
                 }
             }
         }
-    }
-}
+    }}
 
 fun Activity.toast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
@@ -411,19 +369,19 @@ class PhotoListAdapter(
         val dataSecTextView = holder.dataSecTextView
         val fileName = encryption.getPhotoList()[position]
 
-        Glide.with(context).load(File(context.getExternalFilesDir(null), fileName)).fitCenter()
+        Glide.with(context).load(File(context.applicationContext.filesDir, fileName)).fitCenter()
             .placeholder(android.R.drawable.ic_lock_idle_lock).transform(RoundedCorners(16))
             .into(imageView)
 
         val thumbnailName = fileName
         dataSecTextView.text =
-            dateFormat.format(File(context.getExternalFilesDir(null), thumbnailName).lastModified())
+            dateFormat.format(File(context.applicationContext.filesDir, thumbnailName).lastModified())
         textViewName.text = thumbnailName
 
         holder.itemView.setOnClickListener {
             val encryptedFileName = fileName
-            val encryptedFile = File(context.getExternalFilesDir(null), encryptedFileName)
-            val decryptedFile = File(context.getExternalFilesDir(null), encryptedFileName.replace(".p", ".kk"))
+            val encryptedFile = File(context.applicationContext.filesDir, encryptedFileName)
+            val decryptedFile = File(context.applicationContext.filesDir, encryptedFileName.replace(".p", ".kk"))
 
             if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(".jpg", true) ||
                 encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(".png", true) ||
@@ -522,7 +480,7 @@ class PhotoListAdapter(
                     decryptedBitmap?.recycle() // явное освобождение памяти под decryptedBitmap
 
                 }
-                2 -> shareImage(Uri.fromFile(File(context.getExternalFilesDir(null), encryptedFileName)), encryptedFileName)
+                2 -> shareImage(Uri.fromFile(File(context.applicationContext.filesDir, encryptedFileName)), encryptedFileName)
             }
         }
 
@@ -531,7 +489,7 @@ class PhotoListAdapter(
 
     private fun bitmapToFile(bitmap: Bitmap, context: Context, fileName: String): File {
         // Получаем корневую директорию для файлов приложения
-        val externalFilesDir = context.getExternalFilesDir(null)
+        val externalFilesDir = context.applicationContext.filesDir
 
         // Создаем файл в корневой директории с указанным именем
         val file = File(externalFilesDir, fileName)
@@ -554,9 +512,9 @@ class PhotoListAdapter(
 
     // Метод для удаления файла после bitmapToFile
     private fun deleteDecBitmapAfterSharing(thisFileName: String) {
-        val fileToDelete = File(context.getExternalFilesDir(null), thisFileName)
+        val fileToDelete = File(context.applicationContext.filesDir, thisFileName)
         if (fileToDelete.exists()) {
-            File(context.getExternalFilesDir(null), thisFileName).delete()
+            File(context.applicationContext.filesDir, thisFileName).delete()
             fileToDelete.delete()
         }
     }

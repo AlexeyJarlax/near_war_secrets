@@ -62,10 +62,10 @@ fun encryptImage(imageUri: Uri, fileName: String) {
     Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
     // Получаем путь к файлу, который нужно зашифровать
     val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
-    var encryptedFile = File(context.getExternalFilesDir(null), "${fileName}k")
-    if (File(context.getExternalFilesDir(null), "${fileName}k").exists()) {
+    var encryptedFile = File(context.applicationContext.filesDir, "${fileName}k")
+    if (File(context.applicationContext.filesDir, "${fileName}k").exists()) {
         Timber.d("=== файл fileName существует, будет перезапись: ${fileName}k")
-        val existingFile = File(context.getExternalFilesDir(null), "${fileName}k")
+        val existingFile = File(context.applicationContext.filesDir, "${fileName}k")
         existingFile.delete()
     }
     Timber.d("=== готовится к шифрованию: ${encryptedFile.name}")
@@ -90,10 +90,10 @@ fun encryptImage(imageUri: Uri, fileName: String) {
     val encryptedBytes = cipher.doFinal()
     outputStream.write(encryptedBytes)
 
-    if (File(context.getExternalFilesDir(null), fileName).exists()) {
+    if (File(context.applicationContext.filesDir, fileName).exists()) {
         Timber.d("=== сейчас в директории существует файл fileName: ${fileName}")
     }
-    if (File(context.getExternalFilesDir(null), "${fileName}k").exists()) {
+    if (File(context.applicationContext.filesDir, "${fileName}k").exists()) {
         Timber.d("=== сейчас в директории существует файл {fileName}k: ${fileName}k")
     }
 
@@ -174,7 +174,7 @@ fun decryptImage(file: File): Bitmap {
                     if (thumbnailName.isNotEmpty()) {
                         photoList.add(0, thumbnailName)
                         itemLoaderActivity.notifyDSC()
-                        toast("Превью сохранено")
+                        Timber.d("Превью сохранено")
                         deleteOriginalImage(imageUri)
                     } else {
                         toast("Ошибка: Не удалось сохранить превью")
@@ -190,7 +190,7 @@ fun decryptImage(file: File): Bitmap {
                     if (defaultThumbnailName.isNotEmpty()) {
                         photoList.add(0, defaultThumbnailName)
                         itemLoaderActivity.notifyDSC()
-                        toast("Превью сохранено (дефолтное изображение)")
+                        Timber.d("Превью сохранено (дефолтное изображение)")
                         deleteOriginalImage(imageUri)
                     } else {
                         toast("Ошибка: Не удалось сохранить превью (дефолтное изображение)")
@@ -219,7 +219,7 @@ private fun saveThumbnailWithRandomFileName(
     } else {
         "Пустая превьюшка"
     }
-    val file = File(context.getExternalFilesDir(null), previewFileName)
+    val file = File(context.applicationContext.filesDir, previewFileName)
     try {
         val outputStream = FileOutputStream(file)
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
@@ -241,12 +241,12 @@ private fun deleteOriginalImage(imageUri: Uri) {
 
     fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
         val savedFiles = mutableListOf<String>()
-        val directory = context.getExternalFilesDir(null)
+        val directory = context.applicationContext.filesDir
         if (directory != null && directory.exists() && directory.isDirectory) {
             val files = directory.listFiles()
             if (files != null) {
                 val sortedFiles = files
-                    .filter { it.extension != "kk" }
+                    .filter { it.extension != "kk" && it.name != "profileInstalled" }
                     .sortedBy { it.lastModified() } // Сортировка по времени создания в возрастающем порядке
                 savedFiles.addAll(sortedFiles.map { it.name })
             }
