@@ -1,4 +1,4 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
 // Памятка о содержании файла:
 //SearchActivity - активити и вся обработка поискового запроса юзера.
@@ -35,9 +35,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.kototeka.util.AdapterForHistoryTracks
-import com.practicum.kototeka.util.AppPreferencesKeys
-import com.practicum.kototeka.util.ThemeManager
+import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.ThemeManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

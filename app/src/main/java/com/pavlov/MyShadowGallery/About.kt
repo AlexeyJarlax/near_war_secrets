@@ -1,6 +1,5 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
-import com.practicum.kototeka.util.ThemeManager
+import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class About : AppCompatActivity() {
 
@@ -64,7 +63,7 @@ class About : AppCompatActivity() {
 
         // КНОПКА ПОДЕЛИТЬСЯ
         shareButton.setOnClickListener {
-            val appId = "com.Practicum.kototeka"
+            val appId = "com.pavlov.MyShadowGallery"
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(

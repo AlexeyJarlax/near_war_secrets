@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MSG</string>
+    <string name="app_name">MyShadowGallery</string>
     <string name="app_name_in_main_page">My Shadow Gallery</string>
     <string name="search">Search</string>
     <string name="button_item_loader">Load</string>

@@ -53,9 +53,11 @@
             android:theme="@style/Theme.MyApp" />
         <activity
             android:name=".KeyInputActivity"
+            android:screenOrientation="fullSensor"
             android:exported="false" />
         <activity
             android:name=".GalleryActivity"
+            android:screenOrientation="fullSensor"
             android:exported="false" />
         <activity
             android:name=".SearchActivity"

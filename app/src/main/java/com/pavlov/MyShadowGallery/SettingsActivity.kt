@@ -1,28 +1,24 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import com.practicum.kototeka.util.AppPreferencesKeys
-import com.practicum.kototeka.util.AppPreferencesKeysMethods
-import com.practicum.kototeka.util.ThemeManager
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class SettingsActivity : AppCompatActivity() {
 //    @SuppressLint("UseSwitchCompatOrMaterialCode")

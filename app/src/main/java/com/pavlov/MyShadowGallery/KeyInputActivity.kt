@@ -1,4 +1,4 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.practicum.kototeka.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import kotlin.random.Random
 
 class KeyInputActivity : AppCompatActivity() {

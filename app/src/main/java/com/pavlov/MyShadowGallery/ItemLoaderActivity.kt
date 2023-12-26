@@ -1,4 +1,4 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
 import android.Manifest
 import android.app.Activity
@@ -36,8 +36,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.github.chrisbanes.photoview.PhotoView
-import com.practicum.kototeka.util.AppPreferencesKeys
-import com.practicum.kototeka.util.NameUtil
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.NameUtil
 import okio.IOException
 import timber.log.Timber
 import java.io.File
@@ -206,34 +206,36 @@ class ItemLoaderActivity : AppCompatActivity() {
                 var fileName = ""
 
                 buttonCapture.setOnClickListener {
-                    val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
-                    fileName = "${randomName}.unknown"
-                    if (sharedPreferences.getBoolean(
-                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
-                            false
-                        )
-                    ) {
-                        fileName = fileName.substringBeforeLast(".")
-                        fileName = "${fileName}.k"
-                    } else {
-                        fileName = fileName.substringBeforeLast(".")
-                        fileName = "${fileName}.o"
-                    }
                     val folder = getExternalFilesDir(null)
-
-                    if (folder != null) {
-                        if (!folder.exists()) {
-                            folder.mkdirs()// Папка не существует
-                        }
-                    }
-                    if (folder != null) {
-                        var counter = 1
-                        var file = File(folder, fileName)
-                        while (file.exists()) {
-                            fileName = "${fileName}_$counter"
-                            file = File(folder, fileName)
-                            counter++
-                        }
+                    val fileName = generateFileName()
+//                    val randomName = "${NameUtil.adjectives.random()}\n${NameUtil.nouns.random()}"
+//                    fileName = "${randomName}.unknown"
+//                    if (sharedPreferences.getBoolean(
+//                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+//                            false
+//                        )
+//                    ) {
+//                        fileName = fileName.substringBeforeLast(".")
+//                        fileName = "${fileName}.k"
+//                    } else {
+//                        fileName = fileName.substringBeforeLast(".")
+//                        fileName = "${fileName}.o"
+//                    }
+//                    val folder = getExternalFilesDir(null)
+//
+//                    if (folder != null) {
+//                        if (!folder.exists()) {
+//                            folder.mkdirs()// Папка не существует
+//                        }
+//                    }
+//                    if (folder != null) {
+//                        var counter = 1
+//                        var file = File(folder, fileName)
+//                        while (file.exists()) {
+//                            fileName = "${fileName}_$counter"
+//                            file = File(folder, fileName)
+//                            counter++
+//                        }
 
                         outputFile = File(folder, fileName)
                         val outputOptions =
@@ -265,9 +267,9 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     toast("Ошибка сохранения изображения")
                                 }
                             })
-                    } else {
-                        toast("Ошибка: Не удалось получить папку для сохранения изображения")
-                    }
+//                    } else {
+//                        toast("Ошибка: Не удалось получить папку для сохранения изображения")
+//                    }
                 }
             } catch (e: Exception) {
                 toast("Ошибка: Не удалось открыть камеру")

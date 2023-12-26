@@ -1,9 +1,9 @@
-package com.practicum.kototeka.util
+package com.pavlov.MyShadowGallery.util
 
 import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.kototeka.R
+import com.pavlov.MyShadowGallery.R
 
 object ThemeManager {
 

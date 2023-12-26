@@ -1,7 +1,6 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -21,8 +20,8 @@ import java.io.IOException
 import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
-import com.practicum.kototeka.util.AppPreferencesKeys
-import com.practicum.kototeka.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 
 
 class Encryption(private val context: Context) {

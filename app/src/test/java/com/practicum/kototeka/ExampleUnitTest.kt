@@ -1,4 +1,4 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
 import org.junit.Test
 

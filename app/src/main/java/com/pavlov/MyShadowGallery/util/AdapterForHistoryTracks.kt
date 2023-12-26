@@ -1,4 +1,4 @@
-package com.practicum.kototeka.util
+package com.pavlov.MyShadowGallery.util
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.kototeka.OnTrackItemClickListener
-import com.practicum.kototeka.AdapterForAPITracks
-import com.practicum.kototeka.TrackData
+import com.pavlov.MyShadowGallery.OnTrackItemClickListener
+import com.pavlov.MyShadowGallery.AdapterForAPITracks
+import com.pavlov.MyShadowGallery.TrackData
 
 class AdapterForHistoryTracks(
     private val context: Context,

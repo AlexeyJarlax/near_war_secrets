@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.practicum.kototeka"
+    namespace = "com.pavlov.MyShadowGallery"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.practicum.kototeka"
+        applicationId = "com.pavlov.MyShadowGallery"
         minSdk = 29
         targetSdk = 34
         versionCode = 2

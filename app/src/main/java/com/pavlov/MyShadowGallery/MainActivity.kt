@@ -1,19 +1,18 @@
-package com.practicum.kototeka
+package com.pavlov.MyShadowGallery
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import com.practicum.kototeka.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 
-import com.practicum.kototeka.util.ThemeManager
+import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class MainActivity : AppCompatActivity() {
 

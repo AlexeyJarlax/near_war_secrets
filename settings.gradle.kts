@@ -15,5 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kototeka"
+rootProject.name = "MyShadowGallery"
 include(":app")

@@ -1,4 +1,4 @@
-package com.practicum.kototeka.util
+package com.pavlov.MyShadowGallery.util
 import android.content.Context
 
 internal object AppPreferencesKeys { // Internal - доступно только в модуле

@@ -1,4 +1,4 @@
-package com.practicum.kototeka.util
+package com.pavlov.MyShadowGallery.util
 
 object NameUtil {
     val adjectives = listOf(
