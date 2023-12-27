@@ -530,7 +530,7 @@ class PhotoListAdapter(
                     imageDialogFileName?.text = "${encryptedFileName}"
                     val btnShare = imageDialog?.findViewById<Button>(R.id.imageDialogBtnShare)
                     btnShare?.setOnClickListener {
-                        showShareOptionsDialog(decryptedFile, rotatedBitmap, encryptedFileName)
+                        showShareOptionsDialog(decryptedFile, rotatedBitmap, encryptedFileName, encryptedFile)
                     }
                     imageDialog?.show()
                     btnShare?.visibility = View.VISIBLE
@@ -581,7 +581,8 @@ class PhotoListAdapter(
     private fun showShareOptionsDialog(
         decryptedFile: File,
         decryptedBitmap: Bitmap,
-        encryptedFileName: String
+        encryptedFileName: String,
+        encryptedFile: File // тут привью
     ) {
         val options =
             arrayOf("Зашифрованное изображение", "Расшифрованное изображение", "Миниатюра")
@@ -602,12 +603,14 @@ class PhotoListAdapter(
                 }
 
                 2 -> {
-                    val originalFile = File(
-                        context.filesDir,
-                        encryptedFileName
-                    )
-                    val originalUri = ImageUtils.getUriForFile(context, originalFile)
-                    shareEncryptedImage(originalUri, fileNameWithExtension)
+                    shareEncryptedImage(Uri.fromFile(encryptedFile), "")
+
+//                    val originalFile = File(
+//                        context.filesDir,
+//                        encryptedFileName
+//                    )
+//                    val originalUri = ImageUtils.getUriForFile(context, originalFile)
+//                    shareEncryptedImage(originalUri, fileNameWithExtension)
                 }
             }
         }
