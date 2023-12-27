@@ -110,46 +110,39 @@ fun encryptImage(imageUri: Uri, fileName: String) {
 
     val originalFile = File(imageUri.path) // Удаление оригинального изображения
     val isOriginalFileDeleted = originalFile.delete()
+    Timber.e("чекаем оригинал файла до удаления ${originalFile.name}")
+    Timber.e("чекаем оригинал файла до удаления${imageUri.path}")
     if (!isOriginalFileDeleted) { // Проверка на удаление оригинала
-        Timber.e("=== Ошибка удаления оригинального файла")
         inputStream.close()        // Закрытие потоков
         outputStream.flush()
         outputStream.close()
+        Timber.e("чекаем оригинал файла после удаления ${originalFile.name}")
+        Timber.e("чекаем оригинал файла после удаления${imageUri.path}")
     }
 }
 
-fun decryptImage(file: File): Bitmap {
-//    val decryptionKey = getDecryptionKey()
-    val decryptionKey = AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
-    Timber.d("=== Начало декодирования. файл file: ${file.name}")
-    val encryptedBytes = file.readBytes()
-    val messageDigest = MessageDigest.getInstance("SHA-256")
-    Timber.d("=== файл messageDigest: ${messageDigest}")
-    val hashedKey = messageDigest.digest(decryptionKey.toByteArray())
-    Timber.d("=== ключ: ${decryptionKey}")
-    Timber.d("=== файл hashedKey: $hashedKey")
-    val keySpec = SecretKeySpec(hashedKey, "AES")
-    val cipher = Cipher.getInstance("AES")
-    Timber.d("cipher")
-    cipher.init(Cipher.DECRYPT_MODE, keySpec)
-    val decryptedBytes = cipher.doFinal(encryptedBytes)
-    val decryptedBitmap =
-        BitmapFactory.decodeByteArray(decryptedBytes, 0, decryptedBytes.size)
-    val matrix = Matrix()
-    matrix.postRotate(90f)
-    val rotatedBitmap = Bitmap.createBitmap(
-        decryptedBitmap,
-        0,
-        0,
-        decryptedBitmap.width,
-        decryptedBitmap.height,
-        matrix,
-        true
-    )
-    Timber.d("=== Успешный конец декодирования. файл rotatedBitmap: ${rotatedBitmap}")
-    toast("Дешифрую ${file.name}")
-    return rotatedBitmap
-}
+    fun decryptImage(file: File): Bitmap {
+        val decryptionKey = AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+        Timber.d("=== Начало декодирования. файл file: ${file.name}")
+
+        val encryptedBytes = file.readBytes()
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val hashedKey = messageDigest.digest(decryptionKey.toByteArray())
+
+        val keySpec = SecretKeySpec(hashedKey, "AES")
+        val cipher = Cipher.getInstance("AES")
+        Timber.d("cipher")
+
+        cipher.init(Cipher.DECRYPT_MODE, keySpec)
+        val decryptedBytes = cipher.doFinal(encryptedBytes)
+
+        val decryptedBitmap = BitmapFactory.decodeByteArray(decryptedBytes, 0, decryptedBytes.size)
+
+        Timber.d("=== Успешный конец декодирования. файл decryptedBitmap: ${decryptedBitmap}")
+        toast("Дешифрую ${file.name}")
+
+        return decryptedBitmap
+    }
 
     fun createThumbnail(context: Context, imageUri: Uri) {
 //        val scaledNumber = AppPreferencesKeysMethods(context)

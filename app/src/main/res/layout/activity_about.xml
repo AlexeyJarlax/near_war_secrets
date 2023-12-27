@@ -19,16 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:contentDescription="TODO"
             android:alpha="0.4"
+            android:contentDescription="TODO"
             android:scaleType="centerCrop" />
 
         <LinearLayout
             android:id="@+id/act_abouttheapp_layout"
             style="@style/BackMenuLayout"
-            android:layout_gravity="top"
-            android:background="@android:color/transparent"
-            android:textAlignment="center">
+            android:background="@android:color/transparent">
 
             <Button
                 android:id="@+id/button_back_from_abouttheapp"
@@ -68,10 +66,10 @@
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:layout_marginTop="@dimen/dp16"
-                android:textSize="@dimen/text_size_sp19"
-                android:text="@string/about_app_long1" />
+                android:text="@string/about_app_long1"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_sp19" />
 
             <TextView
                 android:id="@+id/preview_size_label2"
@@ -80,8 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp16"
                 android:text="@string/about_app_long2"
-                android:textAlignment="center"
-                 />
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/preview_size_label3"
@@ -89,39 +86,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp16"
+                android:text="@string/about_app_long3"
                 android:textAlignment="center"
-                android:textSize="@dimen/text_size_sp19"
-                android:text="@string/about_app_long3" />
+                android:textSize="@dimen/text_size_sp19" />
 
             <TextView
                 android:id="@+id/preview_size_label4"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:layout_marginTop="@dimen/dp16"
                 android:text="@string/about_app_long4"
-                 />
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/preview_size_label5"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textSize="@dimen/text_size_sp19"
                 android:layout_marginTop="@dimen/dp16"
-                android:text="@string/about_app_long5" />
+                android:text="@string/about_app_long5"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_sp19" />
 
             <TextView
                 android:id="@+id/preview_size_label6"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:layout_marginTop="@dimen/dp16"
                 android:text="@string/about_app_long6"
-                 />
+                android:textAlignment="center" />
 
             <VideoView
                 android:id="@+id/videoView0"

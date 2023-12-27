@@ -175,6 +175,12 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <!-- Стиль кнопок с символами-->
+    <style name="SymbolButtons" parent="ErrorButtons">
+        <item name="android:textSize">@dimen/text_size_sp22</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Стиль кнопки логин в главном-->
     <style name="LoginButtons" parent="ErrorButtons">
         <item name="android:gravity">center</item>
