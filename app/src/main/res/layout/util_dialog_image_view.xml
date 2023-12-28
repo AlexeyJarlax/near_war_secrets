@@ -1,40 +1,130 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/image_view_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="6dp"
-        android:scaleType="centerInside"
-        tools:visibility="visible" />
-
-    <TextView
-        android:id="@+id/imageDialogFileName"
-        style="@style/ErrorTextBig"
+    <FrameLayout
+        android:id="@+id/frameLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="@dimen/dp44"
-        android:paddingBottom="@dimen/dp12"
-        android:text="@string/sample"
-        android:textSize="@dimen/text_size_sp19"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp">
 
-    <Button
-        android:id="@+id/imageDialogBtnShare"
-        style="@style/ErrorButtons"
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/image_view_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/imageDialogFileName"
+            style="@style/ErrorTextBig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp44"
+            android:paddingBottom="@dimen/dp12"
+            android:text="@string/sample"
+            android:textSize="@dimen/text_size_sp19"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/loading_indicator3"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="top"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/button_camera_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="68dp"
-        android:layout_marginStart="@dimen/dp16"
-        android:text="Поделиться"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        android:foregroundGravity="center_vertical"
+        android:layout_margin="@dimen/dp12">
+
+        <Button
+            android:id="@+id/image_dialog_btn_share"
+            style="@style/ErrorButtons"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:layout_marginEnd="@dimen/dp4"
+            android:visibility="gone"
+            android:text="✉️"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_left"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/image_dialog_tern_left"
+            style="@style/ErrorButtons"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:layout_marginEnd="@dimen/dp4"
+            android:text="↶"
+            android:textSize="36sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_btn_share"
+            app:layout_constraintEnd_toStartOf="@+id/image_dialog_faq"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/image_dialog_faq"
+            style="@style/ErrorButtons"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:layout_marginEnd="@dimen/dp4"
+            android:padding="@dimen/z"
+            android:paddingTop="-10dp"
+            android:text="❔"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_left"
+            app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_right"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/image_dialog_tern_right"
+            style="@style/ErrorButtons"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:layout_marginEnd="@dimen/dp4"
+            android:text="↷"
+            android:textSize="36sp"
+            android:paddingTop="-12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_faq"
+            app:layout_constraintEnd_toStartOf="@+id/image_dialog_del_pct"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/image_dialog_del_pct"
+            style="@style/ErrorButtons"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:text="🗑️"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_right"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

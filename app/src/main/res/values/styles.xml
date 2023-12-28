@@ -173,6 +173,8 @@
         <item name="android:padding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="iconGravity">textEnd</item>
+        <item name="android:tint">@color/yp_black_and_yp_white</item>
     </style>
 
     <!-- Стиль кнопок с символами-->
