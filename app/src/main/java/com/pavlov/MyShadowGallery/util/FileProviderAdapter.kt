@@ -2,6 +2,7 @@ package com.pavlov.MyShadowGallery.util
 // класс для конвертирования форматов изображений
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -13,7 +14,9 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class FileProviderAdapter {
+
     companion object {
+
         fun bitmapToFile(bitmap: Bitmap, context: Context, fileName: String): File {
             try {
                 // Проверяем, существует ли файл с указанным именем
@@ -31,7 +34,7 @@ class FileProviderAdapter {
                 val stream = FileOutputStream(file)
 
                 // Сжимаем изображение и записываем его в файл в формате PNG
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream)
 
                 // Закрываем поток
                 stream.close()
@@ -63,8 +66,8 @@ class FileProviderAdapter {
             // Уменьшаем размер изображения на 50%
             val compressedBitmap = Bitmap.createScaledBitmap(
                 originalBitmap,
-                (originalBitmap.width * 0.5).toInt(),
-                (originalBitmap.height * 0.5).toInt(),
+                (originalBitmap.width * 1).toInt(),
+                (originalBitmap.height * 1).toInt(),
                 true
             )
             // Поворачиваем изображение
@@ -104,6 +107,41 @@ class FileProviderAdapter {
             } else {
                 toast(context, "Файл $thisFileName не существует")
             }
+        }
+
+        fun generateFileName(boolean: Boolean, folder: File): String {
+
+            val randomName = "${NameUtil.adjectives.random()}_${NameUtil.nouns.random()}"
+            var fileName = "${randomName}.unknown"
+
+            if (boolean) {
+                fileName = fileName.substringBeforeLast(".")
+                fileName = "${fileName}.k"
+            } else {
+                fileName = fileName.substringBeforeLast(".")
+                fileName = "${fileName}.o"
+            }
+
+            if (folder != null) {
+                if (!folder.exists()) {
+                    folder.mkdirs()
+                }
+            }
+
+            if (folder != null) {
+                var counter = 1
+                var file = File(folder, fileName)
+
+                while (file.exists()) {
+                    fileName = "${fileName}_$counter"
+                    file = File(folder, fileName)
+                    counter++
+                }
+            } else {
+//                toast(context, "Ошибка: Не удалось получить папку для сохранения файла")
+            }
+
+            return fileName
         }
 
         private fun toast(context: Context, text: String) {

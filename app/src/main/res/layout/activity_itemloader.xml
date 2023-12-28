@@ -8,12 +8,12 @@
     <Button
         android:id="@+id/button_back_from_loader"
         style="@style/SecondaryButtonsAndText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_back"
         android:textSize="@dimen/text_size_sp22"
         app:icon="@android:drawable/ic_menu_revert"
-        app:iconGravity="textStart"
-        tools:ignore="VisualLintButtonSize" />
+        app:iconGravity="textStart" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_view_photos"
@@ -43,8 +43,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <include
         layout="@layout/util_dialog_image_view"
@@ -116,8 +115,8 @@
 
     <FrameLayout
         android:id="@+id/frameLayout2"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -126,6 +125,17 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp">
+
+        <Button
+            android:id="@+id/button_for_cover2"
+            style="@style/ButtonForCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp60"
+            android:alpha="0.4"
+            android:text="ожидайте..."
+            android:visibility="invisible"
+            tools:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/loading_indicator2"

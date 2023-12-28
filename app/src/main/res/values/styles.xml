@@ -177,6 +177,11 @@
         <item name="android:tint">@color/yp_black_and_yp_white</item>
     </style>
 
+    <!-- Стиль кнопки заглушки на весь экран при прогресс баре-->
+    <style name="ButtonForCover" parent="ErrorButtons">
+        <item name="cornerRadius">0dp</item>
+    </style>
+
     <!-- Стиль кнопок с символами-->
     <style name="SymbolButtons" parent="ErrorButtons">
         <item name="android:textSize">@dimen/text_size_sp22</item>

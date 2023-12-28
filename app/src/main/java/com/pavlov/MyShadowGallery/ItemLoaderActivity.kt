@@ -64,9 +64,9 @@ class ItemLoaderActivity : AppCompatActivity() {
     private lateinit var loadingIndicator2: ProgressBar
     private lateinit var frameLayout3: FrameLayout
     private lateinit var loadingIndicator3: ProgressBar
+    private lateinit var buttonForCover2: Button
     private lateinit var buttonCapture: Button
     private lateinit var buttonGallery: Button
-
 
     companion object {
         const val REQUEST_PERMISSIONS = 1
@@ -102,6 +102,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 
         frameLayout2 = findViewById(R.id.frameLayout2)
         loadingIndicator2 = findViewById(R.id.loading_indicator2)
+        buttonForCover2 = findViewById(R.id.button_for_cover2)
         frameLayout3 = findViewById(R.id.frameLayout3)
         loadingIndicator3 = findViewById(R.id.loading_indicator3)
         buttonCapture = findViewById<Button>(R.id.button_capture)
@@ -228,9 +229,11 @@ class ItemLoaderActivity : AppCompatActivity() {
 
                 buttonCapture.setOnClickListener {
                     showLoadingIndicator()
-
                     val folder = applicationContext.filesDir
-                    fileName = generateFileName()
+                    var existOrNot: Boolean = sharedPreferences.getBoolean(
+                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                            false)
+                    fileName = FileProviderAdapter.generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
 
@@ -327,45 +330,45 @@ class ItemLoaderActivity : AppCompatActivity() {
         photoListAdapter.notifyDataSetChanged()
     }
 
-    private fun generateFileName(): String {
-        val randomName = "${NameUtil.adjectives.random()}_${NameUtil.nouns.random()}"
-        var fileName = "${randomName}.unknown"
-
-        if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
-                false
-            )
-        ) {
-            fileName = fileName.substringBeforeLast(".")
-            fileName = "${fileName}.k"
-        } else {
-            fileName = fileName.substringBeforeLast(".")
-            fileName = "${fileName}.o"
-        }
-
-        val folder = applicationContext.filesDir
-
-        if (folder != null) {
-            if (!folder.exists()) {
-                folder.mkdirs()
-            }
-        }
-
-        if (folder != null) {
-            var counter = 1
-            var file = File(folder, fileName)
-
-            while (file.exists()) {
-                fileName = "${fileName}_$counter"
-                file = File(folder, fileName)
-                counter++
-            }
-        } else {
-            toast("Ошибка: Не удалось получить папку для сохранения файла")
-        }
-
-        return fileName
-    }
+//    private fun generateFileName(): String {
+//        val randomName = "${NameUtil.adjectives.random()}_${NameUtil.nouns.random()}"
+//        var fileName = "${randomName}.unknown"
+//
+//        if (sharedPreferences.getBoolean(
+//                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+//                false
+//            )
+//        ) {
+//            fileName = fileName.substringBeforeLast(".")
+//            fileName = "${fileName}.k"
+//        } else {
+//            fileName = fileName.substringBeforeLast(".")
+//            fileName = "${fileName}.o"
+//        }
+//
+//        val folder = applicationContext.filesDir
+//
+//        if (folder != null) {
+//            if (!folder.exists()) {
+//                folder.mkdirs()
+//            }
+//        }
+//
+//        if (folder != null) {
+//            var counter = 1
+//            var file = File(folder, fileName)
+//
+//            while (file.exists()) {
+//                fileName = "${fileName}_$counter"
+//                file = File(folder, fileName)
+//                counter++
+//            }
+//        } else {
+//            toast("Ошибка: Не удалось получить папку для сохранения файла")
+//        }
+//
+//        return fileName
+//    }
 
     private
     val PICK_IMAGE_REQUEST = 1
@@ -380,7 +383,11 @@ class ItemLoaderActivity : AppCompatActivity() {
         toast("Загружаю изображение")
 
         val folder = applicationContext.filesDir
-        val fileName = generateFileName()
+//        val fileName = generateFileName()
+        var existOrNot: Boolean = sharedPreferences.getBoolean(
+            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+            false)
+        val fileName = FileProviderAdapter.generateFileName(existOrNot, folder)
 
         val outputFile = File(folder, fileName)
 
@@ -424,29 +431,18 @@ class ItemLoaderActivity : AppCompatActivity() {
 
     // Метод для отображения индикатора загрузки
     fun showLoadingIndicator() {
-        frameLayout2.setEnabled(false)
-        loadingIndicator2.setVisibility(View.VISIBLE)
+//        frameLayout2.setEnabled(false)
+        buttonForCover2.visibility = View.VISIBLE
+        loadingIndicator2.visibility = View.VISIBLE
     }
 
     // Метод для скрытия индикатора загрузки
     fun hideLoadingIndicator() {
         Handler(Looper.getMainLooper()).postDelayed({
-            frameLayout2.isEnabled = true
+//            frameLayout2.isEnabled = true
+            buttonForCover2.visibility = View.INVISIBLE
             loadingIndicator2.visibility = View.INVISIBLE
-        }, AppPreferencesKeys.SERVER_PROCESSING_MILLISECONDS)
-    }
-
-    private fun cleanupOnPeekaboo() {
-        // Очистка файлов с расширением peekaboo
-        val folder = applicationContext.filesDir
-        val peekabooFiles = folder.listFiles { _, name -> name.endsWith(".peekaboo") }
-        peekabooFiles?.forEach { file ->
-            file.delete()
-        }}
-
-    override fun onDestroy() { // выход из приложения
-        super.onDestroy()
-        cleanupOnPeekaboo()
+        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
     }
 
     fun Activity.toast(text: String) {
@@ -473,16 +469,6 @@ class PhotoListAdapter(
             LayoutInflater.from(context).inflate(R.layout.util_item_photo_unit, parent, false)
         return ViewHolder(view)
     }
-
-//    // Метод для отображения индикатора загрузки
-//    fun showLoadingIndicator() {
-//        (context as? ItemLoaderActivity)?.showLoadingIndicator(a: A, b: B)
-//    }
-//
-//    // Метод для скрытия индикатора загрузки
-//    fun hideLoadingIndicator() {
-//        (context as? ItemLoaderActivity)?.hideLoadingIndicator()
-//    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageView = holder.imageView
@@ -586,8 +572,8 @@ class PhotoListAdapter(
                         imageDialog?.dismiss()
                         recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
                         val fileNameWithExtension = "${encryptedFileName}eekaboo"
-                        context.toast("Удаляю экземпляр ${fileNameWithExtension}")
-                        deleteDecBitmapAfterSharing(fileNameWithExtension)  // явное удаление файла, в который превратили битмапу
+//                        context.toast("Удаляю экземпляр ${fileNameWithExtension}")
+                        FileProviderAdapter.deleteFile(fileNameWithExtension, context)  // явное удаление файла, в который превратили битмапу
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
@@ -646,6 +632,7 @@ class PhotoListAdapter(
 //                    frameLayout3Dialog.setEnabled(false)
 //                    loadingIndicator3Dialog.setVisibility(View.VISIBLE)
                     context.toast("Создаю экземпляр: $fileNameWithExtension")
+                    context.toast("Ожидайте завершения процесса...")
                     val decryptedFile =
                         FileProviderAdapter.bitmapToFile(decryptedBitmap, context, fileNameWithExtension)
                     val decryptedUri = FileProviderAdapter.getUriForFile(context, decryptedFile)
@@ -673,22 +660,22 @@ class PhotoListAdapter(
         }
     }
 
-    // Метод для удаления файла после bitmapToFile
-    private fun deleteDecBitmapAfterSharing(thisFileName: String) {
-        val fileToDelete = File(context.filesDir, thisFileName)
-
-        if (fileToDelete.exists()) {
-            val isDeleted = fileToDelete.delete()
-
-            if (isDeleted) {
-                context.toast("Файл успешно удален: $thisFileName")
-            } else {
-                context.toast("Ошибка при удалении файла: $thisFileName")
-            }
-        } else {
-            context.toast("Файл не существует: $thisFileName")
-        }
-    }
+//    // Метод для удаления файла после bitmapToFile
+//    private fun deleteDecBitmapAfterSharing(thisFileName: String) {
+//        val fileToDelete = File(context.filesDir, thisFileName)
+//
+//        if (fileToDelete.exists()) {
+//            val isDeleted = fileToDelete.delete()
+//
+//            if (isDeleted) {
+//                context.toast("Файл успешно удален: $thisFileName")
+//            } else {
+//                context.toast("Ошибка при удалении файла: $thisFileName")
+//            }
+//        } else {
+//            context.toast("Файл не существует: $thisFileName")
+//        }
+//    }
 
 
 

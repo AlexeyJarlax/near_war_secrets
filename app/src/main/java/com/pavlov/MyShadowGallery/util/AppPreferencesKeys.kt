@@ -16,6 +16,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // числовые константы
     const val ALBUM_ROUNDED_CORNERS = 8
     const val SERVER_PROCESSING_MILLISECONDS: Long = 1500
+    const val LOAD_PROCESSING_MILLISECONDS: Long = 800
     const val HISTORY_TRACK_LIST_SIZE = 8
     const val DEFAULT_PREVIEW_SIZE = 30
 

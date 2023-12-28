@@ -54,8 +54,13 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp12"
+        android:layout_marginTop="@dimen/dp12"
+        android:layout_marginEnd="@dimen/dp12"
+        android:layout_marginBottom="@dimen/dp12"
         android:foregroundGravity="center_vertical"
-        android:layout_margin="@dimen/dp12">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <Button
             android:id="@+id/image_dialog_btn_share"
@@ -63,55 +68,59 @@
             android:layout_width="@dimen/dp44"
             android:layout_height="@dimen/dp44"
             android:layout_marginEnd="@dimen/dp4"
-            android:visibility="gone"
+            android:layout_marginBottom="32dp"
             android:text="✉️"
             android:textSize="22sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_left"
             app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
 
         <Button
             android:id="@+id/image_dialog_tern_left"
             style="@style/ErrorButtons"
             android:layout_width="@dimen/dp44"
-            android:layout_height="@dimen/dp44"
+            android:layout_height="64dp"
             android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginBottom="22dp"
             android:text="↶"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_btn_share"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_faq"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_btn_share"
             tools:visibility="visible" />
 
         <Button
             android:id="@+id/image_dialog_faq"
             style="@style/ErrorButtons"
             android:layout_width="@dimen/dp44"
-            android:layout_height="@dimen/dp44"
+            android:layout_height="84dp"
             android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginBottom="@dimen/dp12"
             android:padding="@dimen/z"
             android:paddingTop="-10dp"
             android:text="❔"
             android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_left"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_right"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_left"
             tools:visibility="visible" />
 
         <Button
             android:id="@+id/image_dialog_tern_right"
             style="@style/ErrorButtons"
             android:layout_width="@dimen/dp44"
-            android:layout_height="@dimen/dp44"
+            android:layout_height="64dp"
             android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginBottom="22dp"
+            android:paddingTop="-12sp"
             android:text="↷"
             android:textSize="36sp"
-            android:paddingTop="-12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_faq"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_del_pct"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_faq"
             tools:visibility="visible" />
 
         <Button
@@ -119,11 +128,12 @@
             style="@style/ErrorButtons"
             android:layout_width="@dimen/dp44"
             android:layout_height="@dimen/dp44"
+            android:layout_marginBottom="32dp"
             android:text="🗑️"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_right"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_right"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
