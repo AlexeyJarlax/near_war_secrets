@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/util_dialog_image_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -36,19 +37,21 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <ProgressBar
-            android:id="@+id/loading_indicator3"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="top"
-            android:visibility="invisible"
-            tools:visibility="visible" />
+<!--        <ProgressBar-->
+<!--            android:id="@+id/loading_indicator3"-->
+<!--            style="?android:attr/progressBarStyle"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="top"-->
+<!--            android:layout_margin="@dimen/dp36"-->
+<!--            android:visibility="gone"-->
+<!--            tools:visibility="visible"-->
+<!--            />-->
 
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/button_camera_set"
+        android:id="@+id/buttons_for_image_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -71,12 +74,10 @@
             android:layout_marginBottom="32dp"
             android:text="✉️"
             android:textSize="22sp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_left"
             app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/image_dialog_tern_left"
@@ -89,8 +90,7 @@
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_faq"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_btn_share"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_btn_share" />
 
         <Button
             android:id="@+id/image_dialog_faq"
@@ -105,8 +105,7 @@
             android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_right"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_left"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_left" />
 
         <Button
             android:id="@+id/image_dialog_tern_right"
@@ -120,8 +119,7 @@
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image_dialog_del_pct"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_faq"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_faq" />
 
         <Button
             android:id="@+id/image_dialog_del_pct"
@@ -133,8 +131,17 @@
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_right"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toEndOf="@+id/image_dialog_tern_right" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/button_for_cover3"
+        style="@style/ButtonForCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.4"
+        android:text=""
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </RelativeLayout>
