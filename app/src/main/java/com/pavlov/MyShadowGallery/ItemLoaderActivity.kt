@@ -19,7 +19,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -60,6 +62,8 @@ class ItemLoaderActivity : AppCompatActivity() {
     private lateinit var imageDialog: Dialog
     private lateinit var encryption: Encryption
     private var outputGalleryFile: File? = null
+    val frameLayout = findViewById<FrameLayout>(R.id.frameLayout)
+    val loadingIndicator = findViewById<ProgressBar>(R.id.loading_indicator)
 
 
     companion object {
@@ -175,6 +179,10 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     private fun openCamera(cameraSelector: CameraSelector) {
+// индикатор загрузки долгого процесса
+//        loadingIndicator.visibility = View.VISIBLE
+//        frameLayout.isEnabled = false
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -278,6 +286,9 @@ class ItemLoaderActivity : AppCompatActivity() {
                 toast("Ошибка: Не удалось открыть камеру")
             }
         }, ContextCompat.getMainExecutor(this))
+        // После завершения долгого процесса
+//        loadingIndicator.visibility = View.INVISIBLE
+//        frameLayout.isEnabled = true
     }
 
     // Функция для поворота Bitmap на заданный угол
