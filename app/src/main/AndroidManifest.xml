@@ -56,7 +56,7 @@
             android:screenOrientation="fullSensor"
             android:exported="false" />
         <activity
-            android:name=".GalleryActivity"
+            android:name=".StorageLog"
             android:screenOrientation="fullSensor"
             android:exported="false" />
         <activity

@@ -4,7 +4,7 @@
     <string name="search">Поиск</string>
     <string name="button_back">Назад</string>
     <string name="button_item_loader">Добавить</string>
-    <string name="button_my_gallery">Хранилище</string>
+    <string name="storage_log">Журнал хранения</string>
     <string name="button_settings">Настройки</string>
     <string name="dark_mod">Темная тема</string>
     <string name="share_the_app">Поделиться приложением</string>

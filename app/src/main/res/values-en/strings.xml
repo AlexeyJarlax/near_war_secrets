@@ -25,7 +25,7 @@
     <string name="snapshot">snapshot</string>
     <string name="galery">galery</string>
     <string name="mountin_switch">Visual style - cats \ mountains</string>
-    <string name="button_my_gallery">Мy gallery</string>
+    <string name="storage_log">Storage log</string>
     <string name="sample">one two three</string>
     <string name="clearing_the_storage">clearing the storage</string>
     <string name="error_text_web">Communication problems \n

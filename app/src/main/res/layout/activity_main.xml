@@ -77,8 +77,8 @@
             <Button
                 android:id="@+id/button_my_gallery"
                 style="@style/MainMenuButtons"
-                android:text="@string/button_my_gallery"
-                app:icon="@android:drawable/ic_menu_gallery"
+                android:text="@string/storage_log"
+                app:icon="@android:drawable/ic_input_get"
                 tools:ignore="VisualLintButtonSize" />
 
             <Button
