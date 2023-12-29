@@ -11,7 +11,7 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
-class About : AppCompatActivity() {
+class AboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

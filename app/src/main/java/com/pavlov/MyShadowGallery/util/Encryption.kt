@@ -1,9 +1,8 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.util
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.Toast
@@ -13,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.pavlov.MyShadowGallery.ItemLoaderActivity
+import com.pavlov.MyShadowGallery.R
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -20,8 +21,6 @@ import java.io.IOException
 import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 
 
 class Encryption(private val context: Context) {
@@ -39,6 +38,16 @@ class Encryption(private val context: Context) {
 
     fun getPhotoList(): List<String> {
         return photoList
+    }
+
+    fun deleteFile(fileName: String) {
+        // Удаляем файл из списка
+        photoList.remove(fileName)
+
+        // Здесь добавьте логику удаления файла с файловой системы
+        // Например:
+         val fileToDelete = File(context.filesDir, fileName)
+         fileToDelete.delete()
     }
 
     fun addPhotoToList(int : Int, photoUri: Uri) {
@@ -102,7 +111,7 @@ fun encryptImage(imageUri: Uri, fileName: String) {
         Timber.e("=== Ошибка сохранения зашифрованного файла")
         return
     }
-    toast("Изображение зашифровано")
+    toast("Зашифрованный ${encryptedFile.name} сохранен")
     Timber.d("=== Зашифрованный файл сохранен: ${encryptedFile.name}")
     Timber.d("=== Путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
     //если задать имя fileName = "my_secret_photo.jpg", то файл будет сохранен в следующем виде:

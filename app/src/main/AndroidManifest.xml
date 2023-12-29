@@ -47,7 +47,7 @@
         </provider>
 
         <activity
-            android:name=".About"
+            android:name=".AboutActivity"
             android:exported="true"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.MyApp" />

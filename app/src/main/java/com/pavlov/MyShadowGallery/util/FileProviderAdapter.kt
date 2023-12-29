@@ -1,55 +1,63 @@
 package com.pavlov.MyShadowGallery.util
 // класс для конвертирования форматов изображений
-import android.app.Activity
+import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class FileProviderAdapter {
 
     companion object {
 
-        fun bitmapToFile(bitmap: Bitmap, context: Context, fileName: String): File {
-            try {
-                // Проверяем, существует ли файл с указанным именем
-                val existingFile = File(context.filesDir, fileName)
-                if (existingFile.exists()) {
-                    // Файл уже существует, выдаем Toast и возвращаем существующий файл
-                    toast(context, "Файл $fileName в хранилище")
-                    return existingFile
+        suspend fun bitmapToFileByKorutin(bitmap: Bitmap, context: Context, fileName: String): File {
+            return withContext(Dispatchers.IO) {
+                try {
+                    // Создаем новый файл в каталоге filesDir с указанным именем
+                    val file = File(context.filesDir, fileName)
+
+                    // Если файл существует, удаляем его перед созданием нового
+                    if (file.exists()) {
+                        if (file.delete()) {
+                            Log.d("=== ЛОГИ: ", "Прежний файл удален")
+                        } else {
+                            Log.d("=== ЛОГИ: ", "Не удалось удалить прежний файл")
+                        }
+                    }
+
+                    // Создаем поток для записи в файл
+                    val stream = FileOutputStream(file)
+
+                    // Сжимаем изображение и записываем его в файл в формате PNG
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream)
+
+                    // Закрываем поток
+                    stream.close()
+
+                    recycleBitmap(bitmap)
+
+                    // Выводим сообщение о успешном преобразовании
+                    Log.d("=== ЛОГИ: ", "Bitmap преобразован в файл")
+
+                    // Возвращаем созданный файл
+                    file
+                } catch (e: IOException) {
+                    recycleBitmap(bitmap)
+                    e.printStackTrace()
+                    // Пробросим исключение дальше, чтобы вызывающий код мог обработать ошибку
+                    throw e
                 }
-
-                // Создаем новый файл в каталоге filesDir с указанным именем
-                val file = File(context.filesDir, fileName)
-
-                // Создаем поток для записи в файл
-                val stream = FileOutputStream(file)
-
-                // Сжимаем изображение и записываем его в файл в формате PNG
-                bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream)
-
-                // Закрываем поток
-                stream.close()
-
-                recycleBitmap(bitmap)
-
-                // Возвращаем созданный файл
-                return file
-
-            } catch (e: IOException) {
-                recycleBitmap(bitmap)
-                e.printStackTrace()
-                throw e // Пробросим исключение дальше, чтобы вызывающий код мог обработать ошибку
             }
-
         }
 
         fun getUriForFile(context: Context, file: File): Uri {
@@ -60,29 +68,48 @@ class FileProviderAdapter {
             )
         }
 
-        fun rotateBitmap(file: File, degrees: Int): Bitmap {
-            val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
+        suspend fun <T> rotateImageByKorutin(input: T, degrees: Int): Bitmap = withContext(Dispatchers.Default) {
+            val originalBitmap: Bitmap = when (input) {
+                is File -> BitmapFactory.decodeFile(input.absolutePath)
+                is Bitmap -> input
+                else -> throw IllegalArgumentException("Input must be a File or Bitmap")
+            }
 
-            // Уменьшаем размер изображения на 50%
-            val compressedBitmap = Bitmap.createScaledBitmap(
-                originalBitmap,
-                (originalBitmap.width * 1).toInt(),
-                (originalBitmap.height * 1).toInt(),
-                true
-            )
             // Поворачиваем изображение
             val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
-            return Bitmap.createBitmap(
-                compressedBitmap,
+            return@withContext Bitmap.createBitmap(
+                originalBitmap,
                 0,
                 0,
-                compressedBitmap.width,
-                compressedBitmap.height,
+                originalBitmap.width,
+                originalBitmap.height,
                 matrix,
                 true
             )
-
         }
+
+//        fun rotateBitmap(file: File, degrees: Int): Bitmap {
+//            val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
+//
+//            // Уменьшаем размер изображения на 50%
+//            val compressedBitmap = Bitmap.createScaledBitmap(
+//                originalBitmap,
+//                (originalBitmap.width * 1).toInt(),
+//                (originalBitmap.height * 1).toInt(),
+//                true
+//            )
+//            // Поворачиваем изображение
+//            val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
+//            return Bitmap.createBitmap(
+//                compressedBitmap,
+//                0,
+//                0,
+//                compressedBitmap.width,
+//                compressedBitmap.height,
+//                matrix,
+//                true
+//            )
+//        }
 
         fun recycleBitmap(bitmap: Bitmap?) {
             bitmap?.let {
@@ -100,18 +127,21 @@ class FileProviderAdapter {
                 val isDeleted = fileToDelete.delete()
 
                 if (isDeleted) {
-                    toast(context, "Файл успешно удален: $thisFileName")
+                    showToast(context, "Файл успешно удален: $thisFileName")
                 } else {
-                    toast(context, "Ошибка при удалении файла: $thisFileName")
+                    showToast(context, "Ошибка при удалении файла: $thisFileName")
                 }
             } else {
-                toast(context, "Файл $thisFileName не существует")
+                showToast(context, "Файл $thisFileName не существует")
             }
         }
 
-        fun generateFileName(boolean: Boolean, folder: File): String {
+        fun generateFileName(context: Application, boolean: Boolean, folder: File): String {
+            val isRussian = isRussianLanguage(context)
+            val adjectives = if (isRussian) NameUtil.adjectives else EnglishNameUtil.adjectives
+            val nouns = if (isRussian) NameUtil.nouns else EnglishNameUtil.nouns
 
-            val randomName = "${NameUtil.adjectives.random()}_${NameUtil.nouns.random()}"
+            val randomName = "${adjectives.random()}_${nouns.random()}"
             var fileName = "${randomName}.unknown"
 
             if (boolean) {
@@ -144,7 +174,16 @@ class FileProviderAdapter {
             return fileName
         }
 
-        private fun toast(context: Context, text: String) {
+        fun isRussianLanguage(context: Application): Boolean {
+            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                context.resources.configuration.locales[0]
+            } else {
+                context.resources.configuration.locale
+            }
+            return locale.language == "ru"
+        }
+
+        private fun showToast(context: Context, text: String) {
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
     }

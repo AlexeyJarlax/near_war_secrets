@@ -103,7 +103,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Обработка события для: О разработчике
         aboutTheDeveloperButton.setOnClickListener {
-            val intent = Intent(this, About::class.java)
+            val intent = Intent(this, AboutActivity::class.java)
             startActivity(intent)
         }
 

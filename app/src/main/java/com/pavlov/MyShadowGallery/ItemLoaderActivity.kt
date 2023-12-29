@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -47,6 +49,13 @@ import java.util.*
 import android.os.Handler
 import android.os.Looper
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.pavlov.MyShadowGallery.util.Encryption
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okio.IOException
 
 class ItemLoaderActivity : AppCompatActivity() {
 
@@ -55,16 +64,22 @@ class ItemLoaderActivity : AppCompatActivity() {
     var photoList = ArrayList<String>()
     private var isPreviewVisible = false
     private lateinit var photoListAdapter: PhotoListAdapter
-    private lateinit var imageDialog: Dialog
+    private var imageDialog: Dialog? = null
     private lateinit var encryption: Encryption
     private var outputGalleryFile: File? = null
     private lateinit var frameLayout2: FrameLayout
     private lateinit var loadingIndicator2: ProgressBar
     private lateinit var frameLayout3: FrameLayout
-//    private lateinit var loadingIndicator3: ProgressBar
+    private var cornerLeft = false
+    private var imageDialogAcceptance = false
+
+    //    private lateinit var loadingIndicator3: ProgressBar
     private lateinit var buttonForCover2: Button
     private lateinit var buttonCapture: Button
     private lateinit var buttonGallery: Button
+
+    //    private var isProcessingImage = false
+
 
     companion object {
         const val REQUEST_PERMISSIONS = 1
@@ -134,7 +149,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                 }
             }
             if (allPermissionsGranted) {
-                toast("Доступ к камере и галерее получен")
+                showToast("Доступ к камере и галерее получен")
             } else {
             }
         }
@@ -156,7 +171,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         imageDialog = Dialog(
             this, android.R.style.Theme_Black_NoTitleBar_Fullscreen
         )  // открытие изображения в новом окне
-        imageDialog.setContentView(R.layout.util_dialog_image_view)
+        imageDialog!!.setContentView(R.layout.util_dialog_image_view)
 
         val buttonCamera = findViewById<Button>(R.id.button_camera)
         val buttonFlip = findViewById<Button>(R.id.flip)
@@ -232,7 +247,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                         AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
                         false
                     )
-                    fileName = FileProviderAdapter.generateFileName(existOrNot, folder)
+                    fileName = FileProviderAdapter.generateFileName(application, existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
 
@@ -241,96 +256,208 @@ class ItemLoaderActivity : AppCompatActivity() {
                         ContextCompat.getMainExecutor(this),
                         object : ImageCapture.OnImageSavedCallback {
                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                if (sharedPreferences.getBoolean(
-                                        AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
-                                        false
-                                    )
-                                ) {
-                                    val rotationDegrees = when (currentCameraSelector) {
-                                        CameraSelector.DEFAULT_FRONT_CAMERA -> -90
-                                        CameraSelector.DEFAULT_BACK_CAMERA -> 90
-                                        else -> 0
+                                // диалоговое окно после клика (развернуть или удалить пикчу)
+                                imageDialog = Dialog(this@ItemLoaderActivity)
+                                imageDialog?.setContentView(R.layout.util_dialog_image_view)
+                                val imageViewDialog =
+                                    imageDialog?.findViewById<PhotoView>(R.id.image_view_dialog)
+
+                                // Проверка наличия imageViewDialog и outputFile
+                                if (imageViewDialog != null && outputFile.exists()) {
+                                    // Загрузка изображения в PhotoView с использованием Glide
+                                    Glide.with(this@ItemLoaderActivity)
+                                        .load(outputFile)
+                                        .into(imageViewDialog)
+                                }
+                                val buttonsForImageDialog =
+                                    imageDialog?.findViewById<ConstraintLayout>(R.id.buttons_for_image_dialog)
+//                                val buttonForCover3 =
+//                                    imageDialog?.findViewById<Button>(R.id.button_for_cover3)
+                                val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
+                                val imageDialogFileName =
+                                    imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
+                                imageDialogFileName?.text = "${fileName}"
+                                val imageDialogAcceptanceButton =
+                                    imageDialog?.findViewById<Button>(R.id.image_dialog_acceptance_button)
+                                val btnTernLeft =
+                                    imageDialog?.findViewById<Button>(R.id.image_dialog_tern_left)
+                                val btnFAQ =
+                                    imageDialog?.findViewById<Button>(R.id.image_dialog_faq)
+                                val btnTernRight =
+                                    imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
+                                val btnDelete =
+                                    imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
+
+                                imageDialog?.show()
+                                imageDialogFileName?.visibility = View.VISIBLE
+                                buttonsForImageDialog?.visibility = View.VISIBLE
+                                btnShare?.visibility = View.INVISIBLE
+                                imageDialogAcceptanceButton?.visibility = View.VISIBLE
+                                btnFAQ?.setOnClickListener {
+                                    // тут будет справка по меню
+                                }
+
+                                btnTernLeft?.setOnClickListener {
+                                    MainScope().launch { // КАРУТИН
+                                        rotateFile(outputFile)
                                     }
+                                }
 
-                                    val rotatedBitmap = FileProviderAdapter.rotateBitmap(
-                                        outputFile,
-                                        rotationDegrees
+                                btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
+                                    imageDialogAcceptance = false
+                                    FileProviderAdapter.deleteFile(
+                                        outputFile.name,
+                                        this@ItemLoaderActivity
                                     )
+                                    imageDialog?.dismiss()
+                                    imageDialogAcceptanceButton?.visibility = View.GONE
+                                    hideLoadingIndicator(cornerLeft) // завершение индикатора
+                                }
 
-                                    val imageFile = FileProviderAdapter.bitmapToFile(
-                                        rotatedBitmap,
-                                        application,
-                                        outputFile.name
-                                    )
-                                    // Явное освобождение ресурсов
-                                    FileProviderAdapter.recycleBitmap(rotatedBitmap)
+                                imageDialogAcceptanceButton?.setOnClickListener {  // сохраняем пикчу и выходим из imageDialog
+                                    imageDialog?.dismiss()
+                                    imageDialogAcceptance = true
+//                                    buttonsForImageDialog?.visibility = View.VISIBLE
+
+//                                if (imageDialogAcceptance) {  // согласие сохранять фотку
+
+                                    if (sharedPreferences.getBoolean(
+                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                                            false
+                                        )
+                                    ) {
+//                                    GlobalScope.launch(Dispatchers.Main) { // в фоновом потоке, Корутина
+                                        MainScope().launch {
+                                            showToast("Добавляю файл в фоновом потоке...")
+
+                                            val rotationDegrees = when (currentCameraSelector) {
+                                                CameraSelector.DEFAULT_FRONT_CAMERA -> {
+                                                    cornerLeft = true
+                                                    -90
+                                                }
+
+                                                CameraSelector.DEFAULT_BACK_CAMERA -> {
+                                                    cornerLeft = false
+                                                    90
+                                                }
+
+                                                else -> {
+                                                    cornerLeft = false
+                                                    0
+                                                }
+                                            }
+
+                                            val rotatedBitmap =
+                                                FileProviderAdapter.rotateImageByKorutin(
+                                                    outputFile,
+                                                    rotationDegrees
+                                                )
+
+                                            val imageFile =
+                                                FileProviderAdapter.bitmapToFileByKorutin(
+                                                    rotatedBitmap,
+                                                    application,
+                                                    outputFile.name
+                                                )
+
+                                            // Явное освобождение ресурсов
+                                            FileProviderAdapter.recycleBitmap(rotatedBitmap)
 //                                    FileProviderAdapter.deleteFile(outputFile.name, application)
 
-                                    val fileUri =
-                                        FileProviderAdapter.getUriForFile(application, imageFile)
-                                    encryption.createThumbnail(application, fileUri)
+                                            val fileUri =
+                                                FileProviderAdapter.getUriForFile(
+                                                    application,
+                                                    imageFile
+                                                )
+                                            encryption.createThumbnail(application, fileUri)
 
-                                    try {
-                                        encryption.encryptImage(fileUri, fileName)
+                                            try {
+                                                encryption.encryptImage(fileUri, fileName)
 
-                                        // Явное освобождение ресурсов
-//                                        rotatedBitmap?.recycle()
-
-                                        // Удаление временного файла
-                                        val fileToDelete =
-                                            File(application.filesDir, imageFile.name)
-                                        if (fileToDelete.exists()) {
-                                            fileToDelete.delete()
-                                        }
-                                    } catch (e: Exception) {
-                                        toast("Ошибка: Не удалось завершить шифрование")
+                                                // Удаление временного файла
+                                                val fileToDelete =
+                                                    File(application.filesDir, imageFile.name)
+                                                if (fileToDelete.exists()) {
+                                                    fileToDelete.delete()
+                                                }
+                                            } catch (e: Exception) {
+                                                showToast("Ошибка: Не удалось завершить шифрование")
+                                            }
+                                            hideLoadingIndicator(cornerLeft) // завершение индикатора
+                                        } // завершение корутины
+                                    } else {
+                                        showToast("Сохранил без шифрования")
+                                        encryption.addPhotoToList(0, outputFile.toUri())
+                                        notifyDSC()
+                                        hideLoadingIndicator(cornerLeft) // завершение индикатора
+//                                        imageDialogAcceptanceButton?.visibility = View.GONE
                                     }
-
-                                } else {
-                                    toast("Сохранил без шифрования")
-                                    encryption.addPhotoToList(0, outputFile.toUri())
-                                    notifyDSC()
                                 }
+
                             }
 
                             override fun onError(exception: ImageCaptureException) {
-                                toast("Ошибка сохранения изображения")
+                                showToast("Ошибка сохранения изображения")
                             }
                         })
-                    hideLoadingIndicator()
+//                    hideLoadingIndicator(cornerLeft)
                 }
             } catch (e: Exception) {
-                toast("Ошибка: Не удалось открыть камеру")
+                showToast("Ошибка: Не удалось открыть камеру")
             }
         }, ContextCompat.getMainExecutor(this))
 
     }
 
-//    private fun rotateBitmap(file: File, degrees: Int): Bitmap {
-//        val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
-//
-//        // Уменьшаем размер изображения на 50%
-//        val compressedBitmap = Bitmap.createScaledBitmap(
-//            originalBitmap,
-//            (originalBitmap.width * 0.5).toInt(),
-//            (originalBitmap.height * 0.5).toInt(),
-//            true
-//        )
-//        // Поворачиваем изображение
-//        val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
-//        return Bitmap.createBitmap(
-//            compressedBitmap,
-//            0,
-//            0,
-//            compressedBitmap.width,
-//            compressedBitmap.height,
-//            matrix,
-//            true
-//        )
-//    }
-
     fun notifyDSC() {
         photoListAdapter.notifyDataSetChanged()
+    }
+
+    suspend fun rotateFile(file: File): File = withContext(Dispatchers.IO) {
+        try {
+            val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                ?: throw IOException("Failed to decode the original bitmap")
+
+            // Поворачиваем изображение на 90 градусов против часовой стрелки
+            val matrix = Matrix().apply { postRotate(-90f) }
+            val rotatedBitmap = Bitmap.createBitmap(
+                originalBitmap,
+                0,
+                0,
+                originalBitmap.width,
+                originalBitmap.height,
+                matrix,
+                true
+            )
+
+            // Создаем новый файл для сохранения повернутого изображения
+            val rotatedFile = File(file.parent, "rotated_${file.name}")
+
+            // Создаем поток для записи в файл
+            val stream = FileOutputStream(rotatedFile)
+
+            // Сжимаем изображение и записываем его в файл в формате PNG
+            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+            // Закрываем поток
+            stream.close()
+
+            // Освобождаем ресурсы
+            originalBitmap.recycle()
+            rotatedBitmap.recycle()
+
+            // Удаляем оригинальный файл
+            if (file.exists()) {
+                file.delete()
+            }
+
+            // Возвращаем новый файл
+            rotatedFile
+        } catch (e: IOException) {
+            e.printStackTrace()
+            // Пробросим исключение дальше, чтобы вызывающий код мог обработать ошибку
+            throw e
+        }
     }
 
 
@@ -344,7 +471,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     private fun handleSelectedImage(uri: Uri) {
-        toast("Загружаю изображение")
+        showToast("Загружаю изображение")
 
         val folder = applicationContext.filesDir
 //        val fileName = generateFileName()
@@ -352,7 +479,8 @@ class ItemLoaderActivity : AppCompatActivity() {
             AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
             false
         )
-        val fileName = FileProviderAdapter.generateFileName(existOrNot, folder)
+        val fileName =
+            FileProviderAdapter.generateFileName(application, existOrNot, folder)
 
         val outputFile = File(folder, fileName)
 
@@ -370,7 +498,7 @@ class ItemLoaderActivity : AppCompatActivity() {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
             encryption.encryptImage(outputFile.toUri(), fileName)
         } else {
-            toast("Изображение сохранено без шифрования")
+            showToast("Изображение сохранено без шифрования")
             encryption.addPhotoToList(0, outputFile.toUri())
             notifyDSC()
         }
@@ -402,18 +530,20 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     // Метод для скрытия индикатора загрузки
-    fun hideLoadingIndicator() {
+    fun hideLoadingIndicator(cornerLeft: Boolean) {
+//        showToast("Ожидайте завершение процесса...")
+        val multiplier = if (cornerLeft) 3 else 1
         Handler(Looper.getMainLooper()).postDelayed({
-//            frameLayout2.isEnabled = true
             buttonForCover2.visibility = View.INVISIBLE
             loadingIndicator2.visibility = View.INVISIBLE
-        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
+        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS * multiplier)
     }
 
-    fun Activity.toast(text: String) {
+    fun Activity.showToast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 }
+
 //==================================================================================================
 
 class PhotoListAdapter(
@@ -458,7 +588,7 @@ class PhotoListAdapter(
 
         holder.itemView.setOnClickListener {
             val encryptedFileName = fileName
-            val encryptedFile = File(context.applicationContext.filesDir, encryptedFileName)
+            var encryptedFile = File(context.applicationContext.filesDir, encryptedFileName)
             val decryptedFile =
                 File(
                     context.applicationContext.filesDir,
@@ -473,12 +603,27 @@ class PhotoListAdapter(
 
             val buttonsForImageDialog =
                 imageDialog?.findViewById<ConstraintLayout>(R.id.buttons_for_image_dialog)
-//            val loadingIndicator3 = imageDialog?.findViewById<ProgressBar>(R.id.loading_indicator3)
+
             val buttonForCover3 = imageDialog?.findViewById<Button>(R.id.button_for_cover3)
+
             val imageDialogFileName =
                 imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
             imageDialogFileName?.text = "${encryptedFileName}"
+
             val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
+            val imageDialogAcceptanceButton =
+                imageDialog?.findViewById<Button>(R.id.image_dialog_acceptance_button)
+            val btnTernLeft = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_left)
+
+            val btnFAQ = imageDialog?.findViewById<Button>(R.id.image_dialog_faq)
+            btnFAQ?.setOnClickListener {
+                // тут будет справка по меню
+            }
+            val btnTernRight = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
+            val btnDelete = imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
+
+            btnShare?.visibility = View.VISIBLE
+            imageDialogAcceptanceButton?.visibility = View.GONE
 
             if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
                     ".jpg",
@@ -497,40 +642,32 @@ class PhotoListAdapter(
                     true
                 )
             ) {
-//                imageDialog = Dialog(context)
-//                imageDialog?.setContentView(R.layout.util_dialog_image_view)
-//                val imageViewDialog =
-//                    imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
+
                 val glideRequest =
                     Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
                         .transform(RoundedCorners(32))
                 glideRequest.into(imageViewDialog)
-//                val buttons_for_image_dialog =
-//                imageDialog?.findViewById<TextView>(R.id.buttons_for_image_dialog)
-//                val buttonForCover3 = imageDialog?.findViewById<Button>(R.id.button_for_cover3)
-//                buttonForCover3?.setOnClickListener {}
-//                val imageDialogFileName =
-//                    imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
-//                imageDialogFileName?.text = "${encryptedFileName}"
-//                val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
+
                 btnShare?.setOnClickListener {
                     if (buttonForCover3 != null) {
                         buttonForCover3.visibility = View.VISIBLE
                     }
-//                    if (loadingIndicator3 != null) {
-//                        loadingIndicator3.visibility = View.VISIBLE
-//                    }
+
                     shareAnyOthertedImage(
                         Uri.fromFile(encryptedFile),
                         "",
                         buttonForCover3!!,
-//                        loadingIndicator3!!
                     )
                 }
                 imageDialog?.show()
-//                btnShare?.visibility = View.VISIBLE
-//                buttonForCover3.visibility = View.VISIBLE
-//                loadingIndicator3.visibility = View.VISIBLE
+                if (btnTernLeft != null) {
+                    btnTernLeft?.setOnClickListener {
+                        MainScope().launch { // КАРУТИН
+//                            rotateFile(encryptedFile)
+                        }
+                    }
+                }
+
                 imageDialogFileName?.visibility = View.VISIBLE
                 buttonsForImageDialog?.visibility = View.VISIBLE
                 imageViewDialog.setOnClickListener {
@@ -539,25 +676,17 @@ class PhotoListAdapter(
             } else if (encryptedFileName.endsWith(".p", true)) {
                 try {
                     var rotatedBitmap = encryption.decryptImage(decryptedFile)
-//                    imageDialog = Dialog(context)
-//                    imageDialog?.setContentView(R.layout.util_dialog_image_view)
-//                    val imageViewDialog =
-//                        imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
+
                     val glideRequest = Glide.with(context).load(rotatedBitmap).fitCenter()
                         .transform(RoundedCorners(8))
                     glideRequest.into(imageViewDialog)
                     imageViewDialog.setImageBitmap(rotatedBitmap)
-//                    val imageDialogFileName =
-//                        imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
-//                    imageDialogFileName?.text = "${encryptedFileName}"
-//                    val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
+
                     btnShare?.setOnClickListener {
                         if (buttonForCover3 != null) {
                             buttonForCover3.visibility = View.VISIBLE
                         }
-//                        if (loadingIndicator3 != null) {
-//                            loadingIndicator3.visibility = View.VISIBLE
-//                        }
+
                         showShareOptionsDialog(
                             decryptedFile,
                             rotatedBitmap,
@@ -570,9 +699,7 @@ class PhotoListAdapter(
                     buttonForCover3?.setOnClickListener {
                         Handler(Looper.getMainLooper()).postDelayed({
                             buttonForCover3.visibility = View.GONE
-//                            if (loadingIndicator3 != null) {
-//                                loadingIndicator3.visibility = View.GONE
-//                            }
+
                         }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
                     }
 
@@ -662,24 +789,25 @@ class PhotoListAdapter(
                 }
 
                 1 -> {
-//                    frameLayout3Dialog.setEnabled(false)
-//                    loadingIndicator3Dialog.setVisibility(View.VISIBLE)
-                    context.toast("Создаю экземпляр: $fileNameWithExtension")
-                    context.toast("Ожидайте завершения процесса...")
-                    val decryptedFile =
-                        FileProviderAdapter.bitmapToFile(
-                            decryptedBitmap,
-                            context,
-                            fileNameWithExtension
-                        )
-                    val decryptedUri = FileProviderAdapter.getUriForFile(context, decryptedFile)
-                    shareDecryptedImage(
-                        decryptedUri,
-                        encryptedFileName,
-                        buttonForCover3,
+                    GlobalScope.launch(Dispatchers.Main) {
+                        context.toast("Создаю экземпляр: $fileNameWithExtension")
+                        context.toast("Ожидайте завершения процесса...")
+                        val decryptedFile =
+                            FileProviderAdapter.bitmapToFileByKorutin(
+                                decryptedBitmap,
+                                context,
+                                fileNameWithExtension
+                            )
+                        val decryptedUri =
+                            FileProviderAdapter.getUriForFile(context, decryptedFile)
+                        shareDecryptedImage(
+                            decryptedUri,
+                            encryptedFileName,
+                            buttonForCover3,
 //                        loadingIndicator3
-                    )
-                    recycleBitmap(decryptedBitmap)// Явное освобождение памяти из decryptedBitmap
+                        )
+                        recycleBitmap(decryptedBitmap)// Явное освобождение памяти из decryptedBitmap
+                    }
                 }
 
                 2 -> {
@@ -727,6 +855,7 @@ class PhotoListAdapter(
     override fun getItemCount(): Int {
         return encryption.getPhotoList().size
     }
+
 
     private fun Context.toast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()

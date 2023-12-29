@@ -80,6 +80,20 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
+            android:id="@+id/image_dialog_acceptance_button"
+            style="@style/ErrorButtons"
+            android:layout_width="@dimen/dp44"
+            android:layout_height="@dimen/dp44"
+            android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginBottom="32dp"
+            android:text="✔️"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/image_dialog_tern_left"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
             android:id="@+id/image_dialog_tern_left"
             style="@style/ErrorButtons"
             android:layout_width="@dimen/dp44"
