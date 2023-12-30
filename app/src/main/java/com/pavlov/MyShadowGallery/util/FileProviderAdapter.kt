@@ -127,7 +127,7 @@ class FileProviderAdapter {
                 val isDeleted = fileToDelete.delete()
 
                 if (isDeleted) {
-                    showToast(context, "Файл успешно удален: $thisFileName")
+//                    showToast(context, "Файл успешно удален: $thisFileName")
                 } else {
                     showToast(context, "Ошибка при удалении файла: $thisFileName")
                 }
