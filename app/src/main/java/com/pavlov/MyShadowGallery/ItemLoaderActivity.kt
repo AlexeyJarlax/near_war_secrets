@@ -8,8 +8,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -54,8 +52,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.IOException
 
 class ItemLoaderActivity : AppCompatActivity() {
 
@@ -70,7 +66,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     private lateinit var frameLayout2: FrameLayout
     private lateinit var loadingIndicator2: ProgressBar
     private lateinit var frameLayout3: FrameLayout
-    private var cornerLeft = false
+    private var isItFrontCamera = false
     private var imageDialogAcceptance = false
 
     //    private lateinit var loadingIndicator3: ProgressBar
@@ -194,7 +190,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                 previewView.visibility = if (isPreviewVisible) View.GONE else View.VISIBLE
                 isPreviewVisible = !isPreviewVisible
             }
-            openCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
+            openCamera(CameraSelector.DEFAULT_BACK_CAMERA)
         }
 
     }
@@ -233,6 +229,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                         } else {
                             CameraSelector.DEFAULT_FRONT_CAMERA
                         }
+                    isItFrontCamera = currentCameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA
 
                     cameraProvider.unbindAll()
                     cameraProvider.bindToLifecycle(
@@ -273,7 +270,8 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.findViewById<ConstraintLayout>(R.id.buttons_for_image_dialog)
 //                                val buttonForCover3 =
 //                                    imageDialog?.findViewById<Button>(R.id.button_for_cover3)
-                                val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
+                                val btnShare =
+                                    imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
                                 val imageDialogFileName =
                                     imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
                                 imageDialogFileName?.text = "${fileName}"
@@ -287,20 +285,75 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
                                 val btnDelete =
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
+                                val buttonForCover3 =
+                                    imageDialog?.findViewById<Button>(R.id.button_for_cover3)
+                                buttonForCover3?.text = "Ожидайте..."
+                                val loadingIndicator3 =
+                                    imageDialog?.findViewById<ProgressBar>(R.id.loading_indicator3)
 
                                 imageDialog?.show()
                                 imageDialogFileName?.visibility = View.VISIBLE
                                 buttonsForImageDialog?.visibility = View.VISIBLE
                                 btnShare?.visibility = View.INVISIBLE
                                 imageDialogAcceptanceButton?.visibility = View.VISIBLE
-                                btnFAQ?.setOnClickListener {
-                                    // тут будет справка по меню
+
+                                fun rotatingMethod(int1: Int, int2: Int) { // диалог с вращением
+                                    if (buttonForCover3 != null) {
+                                        buttonForCover3.visibility = View.VISIBLE
+                                    }
+                                    if (loadingIndicator3 != null) {
+                                        loadingIndicator3.visibility = View.VISIBLE
+                                    }
+                                    MainScope().launch { // КАРУТИН
+
+                                        val rotBitmap = if (isItFrontCamera) {
+                                            FileProviderAdapter.rotateImageByKorutin(
+                                                outputFile,
+                                                int1
+                                            )
+                                        } else {
+                                            FileProviderAdapter.rotateImageByKorutin(
+                                                outputFile,
+                                                int2
+                                            )
+                                        }
+                                        if (imageViewDialog != null) {
+                                            imageViewDialog.setImageBitmap(rotBitmap)
+                                        }
+                                        FileProviderAdapter.deleteFile(
+                                            outputFile.name,
+                                            this@ItemLoaderActivity
+                                        )
+                                        outputFile = FileProviderAdapter.bitmapToFileByKorutin(
+                                            rotBitmap,
+                                            this@ItemLoaderActivity,
+                                            outputFile.name
+                                        )
+                                        FileProviderAdapter.recycleBitmap(rotBitmap)
+
+                                        Handler(Looper.getMainLooper()).postDelayed(
+                                            {
+                                                if (buttonForCover3 != null) {
+                                                    buttonForCover3.visibility = View.GONE
+                                                }
+                                                if (loadingIndicator3 != null) {
+                                                    loadingIndicator3.visibility = View.GONE
+                                                }
+                                            },
+                                            AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS
+                                        ) // завершение индикатора
+                                    }
                                 }
 
-                                btnTernLeft?.setOnClickListener {
-                                    MainScope().launch { // КАРУТИН
-                                        rotateFile(outputFile)
-                                    }
+                                btnTernLeft?.setOnClickListener { // диалог с вращением на лево
+                                    rotatingMethod(-90, -90)
+                                }
+                                btnTernRight?.setOnClickListener { // диалог с вращением на право
+                                    rotatingMethod(90, 90)
+                                }
+
+                                btnFAQ?.setOnClickListener {
+                                    // тут будет справка по меню
                                 }
 
                                 btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
@@ -311,7 +364,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     )
                                     imageDialog?.dismiss()
                                     imageDialogAcceptanceButton?.visibility = View.GONE
-                                    hideLoadingIndicator(cornerLeft) // завершение индикатора
+                                    hideLoadingIndicator(isItFrontCamera) // завершение индикатора
                                 }
 
                                 imageDialogAcceptanceButton?.setOnClickListener {  // сохраняем пикчу и выходим из imageDialog
@@ -319,30 +372,25 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialogAcceptance = true
 //                                    buttonsForImageDialog?.visibility = View.VISIBLE
 
-//                                if (imageDialogAcceptance) {  // согласие сохранять фотку
-
                                     if (sharedPreferences.getBoolean(
                                             AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
                                             false
                                         )
                                     ) {
-//                                    GlobalScope.launch(Dispatchers.Main) { // в фоновом потоке, Корутина
-                                        MainScope().launch {
+
+                                        MainScope().launch {  // в фоновом потоке, Корутина
                                             showToast("Добавляю файл в фоновом потоке...")
 
                                             val rotationDegrees = when (currentCameraSelector) {
                                                 CameraSelector.DEFAULT_FRONT_CAMERA -> {
-                                                    cornerLeft = true
                                                     -90
                                                 }
 
                                                 CameraSelector.DEFAULT_BACK_CAMERA -> {
-                                                    cornerLeft = false
                                                     90
                                                 }
 
                                                 else -> {
-                                                    cornerLeft = false
                                                     0
                                                 }
                                             }
@@ -383,13 +431,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             } catch (e: Exception) {
                                                 showToast("Ошибка: Не удалось завершить шифрование")
                                             }
-                                            hideLoadingIndicator(cornerLeft) // завершение индикатора
+                                            hideLoadingIndicator(isItFrontCamera) // завершение индикатора
                                         } // завершение корутины
                                     } else {
                                         showToast("Сохранил без шифрования")
                                         encryption.addPhotoToList(0, outputFile.toUri())
                                         notifyDSC()
-                                        hideLoadingIndicator(cornerLeft) // завершение индикатора
+                                        hideLoadingIndicator(isItFrontCamera) // завершение индикатора
 //                                        imageDialogAcceptanceButton?.visibility = View.GONE
                                     }
                                 }
@@ -411,53 +459,6 @@ class ItemLoaderActivity : AppCompatActivity() {
 
     fun notifyDSC() {
         photoListAdapter.notifyDataSetChanged()
-    }
-
-    suspend fun rotateFile(file: File): File = withContext(Dispatchers.IO) {
-        try {
-            val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                ?: throw IOException("Failed to decode the original bitmap")
-
-            // Поворачиваем изображение на 90 градусов против часовой стрелки
-            val matrix = Matrix().apply { postRotate(-90f) }
-            val rotatedBitmap = Bitmap.createBitmap(
-                originalBitmap,
-                0,
-                0,
-                originalBitmap.width,
-                originalBitmap.height,
-                matrix,
-                true
-            )
-
-            // Создаем новый файл для сохранения повернутого изображения
-            val rotatedFile = File(file.parent, "rotated_${file.name}")
-
-            // Создаем поток для записи в файл
-            val stream = FileOutputStream(rotatedFile)
-
-            // Сжимаем изображение и записываем его в файл в формате PNG
-            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-            // Закрываем поток
-            stream.close()
-
-            // Освобождаем ресурсы
-            originalBitmap.recycle()
-            rotatedBitmap.recycle()
-
-            // Удаляем оригинальный файл
-            if (file.exists()) {
-                file.delete()
-            }
-
-            // Возвращаем новый файл
-            rotatedFile
-        } catch (e: IOException) {
-            e.printStackTrace()
-            // Пробросим исключение дальше, чтобы вызывающий код мог обработать ошибку
-            throw e
-        }
     }
 
 
@@ -613,13 +614,13 @@ class PhotoListAdapter(
             val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
             val imageDialogAcceptanceButton =
                 imageDialog?.findViewById<Button>(R.id.image_dialog_acceptance_button)
-            val btnTernLeft = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_left)
+//            val btnTernLeft = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_left)
 
             val btnFAQ = imageDialog?.findViewById<Button>(R.id.image_dialog_faq)
             btnFAQ?.setOnClickListener {
                 // тут будет справка по меню
             }
-            val btnTernRight = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
+//            val btnTernRight = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
             val btnDelete = imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
 
             btnShare?.visibility = View.VISIBLE
@@ -660,13 +661,13 @@ class PhotoListAdapter(
                     )
                 }
                 imageDialog?.show()
-                if (btnTernLeft != null) {
-                    btnTernLeft?.setOnClickListener {
-                        MainScope().launch { // КАРУТИН
-//                            rotateFile(encryptedFile)
-                        }
-                    }
-                }
+//                if (btnTernLeft != null) {
+//                    btnTernLeft?.setOnClickListener {
+//                        MainScope().launch { // КАРУТИН
+////                            rotateFile(encryptedFile)
+//                        }
+//                    }
+//                }
 
                 imageDialogFileName?.visibility = View.VISIBLE
                 buttonsForImageDialog?.visibility = View.VISIBLE
@@ -791,7 +792,7 @@ class PhotoListAdapter(
                 1 -> {
                     GlobalScope.launch(Dispatchers.Main) {
                         context.toast("Создаю экземпляр: $fileNameWithExtension")
-                        context.toast("Ожидайте завершения процесса...")
+                        context.toast("Ожидайте...")
                         val decryptedFile =
                             FileProviderAdapter.bitmapToFileByKorutin(
                                 decryptedBitmap,
