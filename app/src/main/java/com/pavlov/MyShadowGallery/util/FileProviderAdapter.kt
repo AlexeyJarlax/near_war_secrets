@@ -88,29 +88,6 @@ class FileProviderAdapter {
             )
         }
 
-//        fun rotateBitmap(file: File, degrees: Int): Bitmap {
-//            val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
-//
-//            // Уменьшаем размер изображения на 50%
-//            val compressedBitmap = Bitmap.createScaledBitmap(
-//                originalBitmap,
-//                (originalBitmap.width * 1).toInt(),
-//                (originalBitmap.height * 1).toInt(),
-//                true
-//            )
-//            // Поворачиваем изображение
-//            val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
-//            return Bitmap.createBitmap(
-//                compressedBitmap,
-//                0,
-//                0,
-//                compressedBitmap.width,
-//                compressedBitmap.height,
-//                matrix,
-//                true
-//            )
-//        }
-
         fun recycleBitmap(bitmap: Bitmap?) {
             bitmap?.let {
                 if (!it.isRecycled) {
@@ -156,19 +133,25 @@ class FileProviderAdapter {
                 if (!folder.exists()) {
                     folder.mkdirs()
                 }
-            }
 
-            if (folder != null) {
                 var counter = 1
                 var file = File(folder, fileName)
 
+                // Проверяем существование файла с таким именем и добавляем суффикс, если нужно
                 while (file.exists()) {
-                    fileName = "${fileName}_$counter"
+                    fileName = "${randomName}_$counter"
+
+                    if (boolean) {
+                        fileName = "${fileName}.k"
+                    } else {
+                        fileName = "${fileName}.o"
+                    }
+
                     file = File(folder, fileName)
                     counter++
                 }
             } else {
-//                toast(context, "Ошибка: Не удалось получить папку для сохранения файла")
+                // toast(context, "Ошибка: Не удалось получить папку для сохранения файла")
             }
 
             return fileName

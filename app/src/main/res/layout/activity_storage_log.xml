@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/BackMenuLayout"
-    tools:context=".StorageLog">
+    tools:context=".StorageLogActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"

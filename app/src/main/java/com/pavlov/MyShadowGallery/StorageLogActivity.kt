@@ -9,7 +9,7 @@ import androidx.core.widget.NestedScrollView
 import java.util.Date
 import java.util.Locale
 
-class StorageLog : AppCompatActivity() {
+class StorageLogActivity : AppCompatActivity() {
 
     private lateinit var scrollView: NestedScrollView
     private lateinit var logTextView: TextView
@@ -17,7 +17,7 @@ class StorageLog : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.storage_log)
+        setContentView(R.layout.activity_storage_log)
 
         scrollView = findViewById(R.id.scrollView)
         logTextView = findViewById(R.id.logTextView)

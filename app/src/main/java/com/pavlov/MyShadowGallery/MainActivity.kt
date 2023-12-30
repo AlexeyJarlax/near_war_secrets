@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonMyGallery.setOnClickListener {
-            val displayIntent = Intent(this, StorageLog::class.java)
+            val displayIntent = Intent(this, StorageLogActivity::class.java)
             startActivity(displayIntent)
         }
 

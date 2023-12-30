@@ -59,5 +59,5 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.jakewharton.timber:timber:4.7.1") // для логирования серверных ошибок
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2") // Корутины многопоточности
 }
