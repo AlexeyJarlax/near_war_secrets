@@ -72,6 +72,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     private lateinit var buttonForCover2: Button
     private lateinit var buttonCapture: Button
     private lateinit var buttonGallery: Button
+    private lateinit var buttonCameraSet: ConstraintLayout
 
     companion object {
         const val REQUEST_PERMISSIONS = 1
@@ -110,6 +111,12 @@ class ItemLoaderActivity : AppCompatActivity() {
         buttonGallery = findViewById<Button>(R.id.button_gallery)
         buttonGallery.setOnClickListener {
             openImagePicker()
+        }
+        buttonCameraSet = findViewById(R.id.button_camera_set)
+        // Проверяем, был ли передан флаг о режиме Галереи
+        val hideConstraintLayout = intent.getBooleanExtra("hideConstraintLayout", false)
+        if (hideConstraintLayout) {
+            buttonCameraSet.visibility = View.GONE
         }
     }
 
@@ -574,7 +581,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 
 //==================================================================================================
 
-class PhotoListAdapter(
+open class PhotoListAdapter(
     private val context: Context, private val encryption: Encryption
 ) : RecyclerView.Adapter<PhotoListAdapter.ViewHolder>() {
 

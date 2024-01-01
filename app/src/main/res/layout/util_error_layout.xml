@@ -4,6 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center">
+<!--    android:background="@color/yp_white_and_yp_black"-->
+<!--    android:alpha="0.5"-->
+
 
     <ImageView
         android:id="@+id/error_icon"
@@ -24,9 +27,8 @@
     <Button
         android:id="@+id/retry_button"
         style="@style/ErrorButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp24"
-        android:layout_width="@dimen/dp96"
-        android:layout_height="@dimen/dp36"
-        android:text="@string/refresh"
-         />
+        android:text="@string/refresh" />
 </LinearLayout>

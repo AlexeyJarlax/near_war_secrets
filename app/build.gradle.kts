@@ -10,13 +10,17 @@ android {
     namespace = "com.pavlov.MyShadowGallery"
     compileSdk = 34
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.pavlov.MyShadowGallery"
+        resConfigs("ru", "en", "zh")
         minSdk = 29
         targetSdk = 34
         versionCode = 2
         versionName = "1.2"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -35,7 +39,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
+//    kotlin {
+//
+//        ksp {
+//            useAggregating = true
+//        }
+//    }
 }
 
 dependencies {
@@ -60,4 +71,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.jakewharton.timber:timber:4.7.1") // для логирования серверных ошибок
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2") // Корутины многопоточности
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")  // хэширование
+//    implementation ("androidx.security:security-crypto:1.0.0-alpha02")
 }

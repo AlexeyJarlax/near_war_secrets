@@ -51,7 +51,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/about_app"
-                app:icon="@android:drawable/ic_menu_directions" />
+                app:icon="@android:drawable/ic_input_get" />
+
+            <Button
+                android:id="@+id/language_options"
+                style="@style/SettingsButtonsAndText2"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/language"
+                app:icon="@android:drawable/ic_menu_sort_alphabetically" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_dark_mode"

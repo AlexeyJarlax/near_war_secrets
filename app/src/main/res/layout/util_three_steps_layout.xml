@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0.8"
+    android:background="@color/yp_white_and_yp_black"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/error_icon"
+        style="@style/ErrorTransparent"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <TextView
+        android:id="@+id/error_text_web"
+        style="@style/ErrorTextBig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/any_mistake"
+        android:textSize="@dimen/text_size_sp22" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp12"
+        android:background="@color/yp_white_and_yp_black" />
+
+    <Button
+        android:id="@+id/yes_button"
+        style="@style/ErrorButtons"
+        android:layout_width="@dimen/dp60"
+        android:layout_height="@dimen/dp60"
+        android:text="✔️"
+        android:textSize="22sp"
+        android:visibility="invisible"
+        tools:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp12"
+        android:background="@color/yp_white_and_yp_black" />
+
+    <Button
+        android:id="@+id/retry_button"
+        style="@style/ErrorButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp60"
+        android:text="@string/goAhead" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp12"
+        android:background="@color/yp_white_and_yp_black" />
+
+    <Button
+        android:id="@+id/no_button"
+        style="@style/ErrorButtons"
+        android:layout_width="@dimen/dp60"
+        android:layout_height="@dimen/dp60"
+        android:text="❌"
+        android:textSize="22sp"
+        android:visibility="invisible"
+        tools:visibility="visible" />
+
+</LinearLayout>

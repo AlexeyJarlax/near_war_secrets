@@ -70,7 +70,7 @@
         android:id="@+id/kill_the_history"
         style="@style/ErrorButtons"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp36"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp16"
         android:gravity="center"
         android:paddingVertical="@dimen/dp6"

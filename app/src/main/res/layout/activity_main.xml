@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/main_activity_layout">
 
     <ImageView
         android:id="@+id/background_image"
@@ -60,12 +61,7 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button_search"
-                style="@style/MainMenuButtons"
-                android:text="@string/search"
-                app:icon="@android:drawable/ic_menu_search"
-                tools:ignore="VisualLintButtonSize" />
+
 
             <Button
                 android:id="@+id/button_item_loader"
@@ -75,12 +71,26 @@
                 tools:ignore="VisualLintButtonSize" />
 
             <Button
-                android:id="@+id/button_my_gallery"
+                android:id="@+id/button_gallery"
+                style="@style/MainMenuButtons"
+                android:text="Моя галерея"
+                app:icon="@android:drawable/ic_menu_search"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_storage_log"
                 style="@style/MainMenuButtons"
                 android:text="@string/storage_log"
                 app:icon="@android:drawable/ic_input_get"
                 tools:ignore="VisualLintButtonSize" />
 
+            <Button
+                android:id="@+id/button_search"
+                style="@style/MainMenuButtons"
+                android:text="@string/disguise_btn"
+                app:icon="@android:drawable/ic_menu_search"
+                tools:ignore="VisualLintButtonSize" />
+            <!--                android:visibility="gone"-->
             <Button
                 android:id="@+id/button_settings"
                 style="@style/MainMenuButtons"

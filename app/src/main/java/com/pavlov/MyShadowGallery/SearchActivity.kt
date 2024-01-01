@@ -18,6 +18,7 @@ package com.pavlov.MyShadowGallery
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -31,8 +32,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
@@ -50,6 +54,7 @@ import java.util.concurrent.TimeUnit
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var backgroundView: ImageView
+    private lateinit var sharedPreferences: SharedPreferences
     private val iTunesSearch = "https://itunes.apple.com"
     private val retrofit =
         Retrofit.Builder().baseUrl(iTunesSearch).addConverterFactory(GsonConverterFactory.create())
@@ -67,22 +72,138 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapterForHistoryTracks: AdapterForHistoryTracks
     private lateinit var searchHistoryNotification: TextView
     private lateinit var killTheHistory: Button
-
+    var countPass = 0
+    var firstPass = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.plant(Timber.DebugTree()) // для логирования ошибок
+        Timber.plant(Timber.DebugTree())
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        // Extracting flag from Intent
+        val isPasswordActivity = intent.getBooleanExtra("isPasswordActivity", false)
+        sharedPreferences =
+            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
+        // Проверяем, является ли текущий запуск приложения первым
+        val isFirstRun = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_FIRST_RUN, true)
+        if (isFirstRun) { // Устанавливаем значения по умолчанию
+            with(sharedPreferences.edit()) {
+                putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
+                putBoolean(
+                    AppPreferencesKeys.KEY_FIRST_RUN,
+                    false
+                ).apply()// Помечаем, что приложение уже запускалось
+                goToZeroActivity()
+            }
+        }
+
+        // Проверка на маскировку
+        if (!sharedPreferences.getBoolean(
+                AppPreferencesKeys.KEY_MIMICRY_SWITCH,
+                false
+            )
+        ) {
+            if (masterAlias().isNullOrBlank()) {
+                goToMainActivity()
+            } else {
+                goToPasswordActivity()
+            }
+        }
         setupOneLineViews()
         clearButton()
         backToMain()
         callAdapterForHistoryTracks()
         setupRecyclerViewAndAdapter()
         queryTextChangedListener()
-        queryInputListener()
+        queryInputListener(isPasswordActivity)
         fillTrackAdapter()
         killTheHistory()
+
+    }
+
+    fun goToZeroActivity() {
+        val displayIntent = Intent(this, ZeroActivity::class.java)
+        startActivity(displayIntent)
+        finish()
+    }
+
+    fun goToMainActivity() {
+        val displayIntent = Intent(this, MainActivity::class.java)
+        startActivity(displayIntent)
+        finish()
+    }
+
+    fun goToPasswordActivity() {
+        val displayIntent = Intent(this, SetPasswordActivity::class.java)
+        startActivity(displayIntent)
+        finish()
+    }
+
+//    private fun saveMasterSSecret(password: String) {
+//        countPass += 1
+//        if (countPass == 1) {
+//            firstPass = password
+//            toastIt("Введите этот пароль еще раз")
+//        } else {
+//
+//            if (firstPass == password) {
+//                firstPass = ""
+//                val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//                val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+//                    "secret_shared_prefs",
+//                    masterAlias,
+//                    applicationContext,
+//                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//                )
+//
+//                sharedPreferences.edit {
+//                    putString("my_secret", password).apply()
+//                    toastIt("${password} сохранен")
+//                }
+//                finish()
+//
+//            } else {
+//                toastIt("Пароль не совпадет, повторите ввод")
+//            }
+//        }
+//        clearButton()
+//    }
+
+    fun masterAlias(): String? {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPreferences: SharedPreferences =
+            EncryptedSharedPreferences.create(
+                "secret_shared_prefs",
+                masterAlias,
+                applicationContext,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        return sharedPreferences.getString("my_secret", "")
+    }
+
+    private fun checkMasterSSecret(password: String) {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val sharedPreferences: SharedPreferences =
+//            EncryptedSharedPreferences.create(
+//                "secret_shared_prefs",
+//                masterAlias,
+//                applicationContext,
+//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//            )
+
+        val savedPassword = masterAlias()
+        if (password == savedPassword) {
+            goToMainActivity()
+        } else {
+            // Password is incorrect, perform standard search logic
+            utilErrorBox.visibility = View.INVISIBLE
+            clearTrackAdapter()
+            preparingForSearch(password)
+            toastIt("${getString(R.string.search)} $password")
+        }
     }
 
     private fun setupOneLineViews() {
@@ -105,7 +226,12 @@ class SearchActivity : AppCompatActivity() {
                 trackName: String, artistName: String, trackTimeMillis: Long, artworkUrl100: String
             ) {
                 // повторный клик на треке в истории треков
-                adapterForHistoryTracks.saveTrack(trackName, artistName, trackTimeMillis, artworkUrl100)
+                adapterForHistoryTracks.saveTrack(
+                    trackName,
+                    artistName,
+                    trackTimeMillis,
+                    artworkUrl100
+                )
             }
         })
         adapterForHistoryTracks.setRecyclerView(trackRecyclerView)
@@ -149,7 +275,8 @@ class SearchActivity : AppCompatActivity() {
                 count: Int
             ) {
                 val searchText = queryInput.text.toString().trim()
-                clearButton.visibility = if (searchText.isNotEmpty()) View.VISIBLE else View.INVISIBLE
+                clearButton.visibility =
+                    if (searchText.isNotEmpty()) View.VISIBLE else View.INVISIBLE
                 if (hasFocus && searchText.isEmpty()) {
                     showHistoryViewsAndFillTrackAdapter()
                 } else {
@@ -207,15 +334,23 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun queryInputListener() { // обработка ввода с нажатием DONE
+    private fun queryInputListener(isPasswordActivity: Boolean) {
         queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-                    utilErrorBox.visibility = View.INVISIBLE
-                    clearTrackAdapter()
-                    preparingForSearch(searchText)
-                    toastIt("${getString(R.string.search)} $searchText")
+//                    if (isPasswordActivity) {
+//                        saveMasterSSecret(searchText)
+//                    } else {
+                        checkMasterSSecret(searchText)
+//                        var truth = checkMasterSSecret(searchText)
+//                        if (!truth) {
+//                            utilErrorBox.visibility = View.INVISIBLE
+//                            clearTrackAdapter()
+//                            preparingForSearch(searchText)
+//                            toastIt("${getString(R.string.search)} $searchText")
+//                        }
+//                    }
                 }
                 hideKeyboard()
                 true
@@ -393,7 +528,8 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val title = trackData.trackName
             val artist = trackData.artistName
             val duration = trackData.formatTrackDuration()
-            val youtubeLink = (itemView.context as SearchActivity).constructYoutubeLink(title, artist, duration)
+            val youtubeLink =
+                (itemView.context as SearchActivity).constructYoutubeLink(title, artist, duration)
             (itemView.context as SearchActivity).openYoutubeLink(youtubeLink)
         }
     }
@@ -408,7 +544,8 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private fun loadImage(imageUrl: String, imageView: ImageView) {
         Glide.with(imageView).load(imageUrl).placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(AppPreferencesKeys.ALBUM_ROUNDED_CORNERS)).error(R.drawable.ic_error_internet)
+            .transform(RoundedCorners(AppPreferencesKeys.ALBUM_ROUNDED_CORNERS))
+            .error(R.drawable.ic_error_internet)
             .into(imageView)
     }
 }

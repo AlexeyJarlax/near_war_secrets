@@ -3,6 +3,7 @@ package com.pavlov.MyShadowGallery
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -13,12 +14,14 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
+import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
 //    @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -33,6 +36,7 @@ class SettingsActivity : AppCompatActivity() {
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val aboutTheDeveloperButton = findViewById<Button>(R.id.about_the_app)
+        val languageOptions = findViewById<Button>(R.id.language_options)
         val back = findViewById<Button>(R.id.button_back_from_settings)
         val resetSettings = findViewById<Button>(R.id.reset_settings) // сброс настроек
         val buttonClearStorage = findViewById<Button>(R.id.clearing_the_storage) // удал всех файлов
@@ -67,44 +71,17 @@ class SettingsActivity : AppCompatActivity() {
             sizeLabel.text = "$previewScalingFactorLabel ${previewSizeSeekBarProgress}x${previewSizeSeekBarProgress}"
         }
 
-//        if (themeManager.isNightModeEnabled(this)) {// применяем тему в старте: ночная
-//            if (themeManager.isUserSwitchEnabled(this)) { // горы
-//                videoView.alpha = 0.0f
-//                backMenuLayout.alpha = 1.0f
-//                backgroundView.alpha = 1.0f
-//            } else { // котики
-//                videoView.alpha = 0.5f
-//                backMenuLayout.alpha = 1.0f
-//                backgroundView.alpha = 0.0f
-//                videoView.setVideoURI(Uri.parse("android.resource://${packageName}/${R.raw.murcat}"))
-//                videoView.setOnPreparedListener { mediaPlayer ->
-//                    mediaPlayer.isLooping = true
-//                    // Уменьшаем звук в два раза
-//                    mediaPlayer.setVolume(0.0f, 0.0f)
-//                    mediaPlayer.start()
-//                }
-//            }
-//        } else {  // дневная
-//            if (themeManager.isUserSwitchEnabled(this)) { // горы
-//                videoView.alpha = 0.0f
-//                backMenuLayout.alpha = 1.0f
-//                backgroundView.alpha = 0.5f
-//            } else { // котики
-//                videoView.alpha = 0.0f
-//                backMenuLayout.alpha = 1.0f
-//                backgroundView.alpha = 0.5f
-//            }
-//        }
-
-
         back.setOnClickListener { // КНОПКА НАЗАД
             finish()
         }
 
-        // Обработка события для: О разработчике
         aboutTheDeveloperButton.setOnClickListener {
             val intent = Intent(this, AboutActivity::class.java)
             startActivity(intent)
+        }
+
+        languageOptions.setOnClickListener {
+            showLanguageSelectionDialog()
         }
 
         resetSettings.setOnClickListener { // сброс настроек
@@ -242,13 +219,7 @@ class SettingsActivity : AppCompatActivity() {
             )
         }
 
-//        val scrollView = findViewById<ScrollView>(R.id.settingsScrollView)
-//        scrollView?.descendantFocusability = ScrollView.FOCUS_BEFORE_DESCENDANTS
-//        scrollView?.isFocusable = true
-//        scrollView?.isFocusableInTouchMode = true
-//        scrollView?.requestFocus()
-//        scrollView?.paddingTop
-    }
+    } // конец onCreate
 
     fun resetSettings(context: Context, sharedPreferencesName: String) {
         val sharedPreferences =
@@ -256,6 +227,42 @@ class SettingsActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()
+    }
+
+    private fun showLanguageSelectionDialog() {
+        val languageOptions = arrayOf("Русский", "English", "汉语")
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Выберите язык приложения")
+
+        builder.setItems(languageOptions) { dialog, which ->
+            // Обработка выбора языка
+            when (which) {
+                0 -> setAppLanguage("ru")
+                1 -> setAppLanguage("en")
+                2 -> setAppLanguage("zh")
+            }
+            dialog.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun setAppLanguage(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val config = Configuration(resources.configuration)
+        config.setLocale(locale)
+
+        // Сохранение выбранного языка в настройках приложения (если необходимо)
+        val preferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        preferences.edit().putString(AppPreferencesKeys.APP_LANGUAGE, languageCode).apply()
+        // Обновление ресурсов приложения
+
+        // Перезапуск активити, чтобы применить изменения
+        val newContext = createConfigurationContext(config)
+        startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        finish()
     }
 
 }

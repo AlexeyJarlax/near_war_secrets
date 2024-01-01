@@ -1,12 +1,14 @@
 package com.pavlov.MyShadowGallery
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -17,17 +19,28 @@ import kotlin.random.Random
 class KeyInputActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
+    private var confirmable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_key_input)
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-
-        val confirmButton = findViewById<Button>(R.id.button_confirm)
-        val cancelButton = findViewById<Button>(R.id.button_cancel)
+        sharedPreferences =
+            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val generateButton = findViewById<Button>(R.id.button_generate)
         val helperText = findViewById<TextView>(R.id.edit_text_key_helper)
         val keyInputEditText = findViewById<EditText>(R.id.edit_text_key)
+        val cancelButton = findViewById<Button>(R.id.button_cancel)
+        val constantKey = findViewById<Button>(R.id.constant_key)
+        val variableKey = findViewById<Button>(R.id.variable_key)
+        val buttonOldKey = findViewById<Button>(R.id.button_old_key)
+
+        if (sharedPreferences.getBoolean(
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                false
+            )
+        ) {
+            buttonOldKey.visibility = View.VISIBLE
+        }
 
         keyInputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -51,12 +64,12 @@ class KeyInputActivity : AppCompatActivity() {
                         remainingBytes < 0 -> {
 //                            confirmButton.isEnabled =
 //                                false // Заблокировать кнопку, если байтов больше 16
-                            "излишние: ${-remainingBytes} байт"
+//                            "излишние: ${-remainingBytes} байт"
+                            ""
                         }
 
                         else -> {
-                            confirmButton.isEnabled =
-                                true
+                            confirmable = true
                             "" // Для случая, когда количество байт равно 16
                         }
                     }
@@ -67,8 +80,9 @@ class KeyInputActivity : AppCompatActivity() {
                     helperText.text = message
                     helperText.setTextColor(if (isValid) Color.GREEN else Color.RED)
                 } else {
-                    helperText.text = ""
-                    confirmButton.isEnabled = true // Разблокировать кнопку при пустом вводе
+                    confirmable = false
+//                    helperText.text = ""
+//                    confirmButton.isEnabled = true // Разблокировать кнопку при пустом вводе
                 }
             }
 
@@ -77,7 +91,7 @@ class KeyInputActivity : AppCompatActivity() {
             }
         })
 
-        confirmButton.setOnClickListener {
+        fun confirmButton() {
             val keyValue = keyInputEditText.text.toString().trim()
 
             if (keyValue.isNotEmpty()) {
@@ -87,11 +101,35 @@ class KeyInputActivity : AppCompatActivity() {
                 editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
                 editor.apply()
                 Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
+                val displayIntent = Intent(this, MainActivity::class.java)
+                startActivity(displayIntent)
             } else {
-                userEscape()
+                Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
+//                userEscape()
             }
-            finish()
+//            finish()
         }
+
+        constantKey.setOnClickListener { // постоянный ключ
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
+            confirmButton()
+        }
+
+        variableKey.setOnClickListener { // переменный ключ
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, true)
+            confirmButton()
+        }
+
+        buttonOldKey.setOnClickListener { // старый ключ
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
+            Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
+            val displayIntent = Intent(this, MainActivity::class.java)
+            startActivity(displayIntent)
+        }
+
 
         cancelButton.setOnClickListener { // Юзер выбрал: Не использовать ключ шифрования
             val editor = sharedPreferences.edit()
@@ -99,8 +137,11 @@ class KeyInputActivity : AppCompatActivity() {
             editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
             editor.remove(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
             editor.apply()
-            Toast.makeText(this, "Файлы будут сохранены без шифрования", Toast.LENGTH_SHORT).show()
-            finish() // Завершение активности KeyInputActivity без передачи значения ключа
+            Toast.makeText(this, "Файлы будут сохранены без шифрования", Toast.LENGTH_SHORT)
+                .show()
+//            finish() // Завершение активности KeyInputActivity без передачи значения ключа
+            val displayIntent = Intent(this, MainActivity::class.java)
+            startActivity(displayIntent)
         }
 
         generateButton.setOnClickListener {
@@ -139,6 +180,8 @@ class KeyInputActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         userEscape()
-        finish()
+//        finish()
+        val displayIntent = Intent(this, MainActivity::class.java)
+        startActivity(displayIntent)
     }
 }

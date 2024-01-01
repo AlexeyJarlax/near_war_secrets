@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/FrontMenuLayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/BackMenuLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="6dp"
@@ -24,74 +23,115 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <EditText
                 android:id="@+id/edit_text_key"
                 style="@style/KeyButtons"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:gravity="center"
+                android:layout_weight="2"
                 android:hint="хххххххххххххххх"
                 android:inputType="text" />
 
-            <TextView
-                android:id="@+id/edit_text_key_helper"
-                style="@style/FrontMenuLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp24"
-                android:gravity="center"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_confirm"
-                style="@style/MainMenuButtons"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Подтвердить"
-                android:textSize="@dimen/dp16" />
-
             <Button
                 android:id="@+id/button_generate"
-                style="@style/MainMenuButtons"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                style="@style/ErrorButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_weight="0.1"
+                android:padding="@dimen/z"
                 android:text="Сгенерировать"
-                android:textSize="@dimen/dp16" />
+                android:textSize="@dimen/text_size_sp14" />
+
         </LinearLayout>
+
+            <TextView
+                android:id="@+id/edit_text_key_helper"
+                style="@style/TrackTextSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp24"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:textSize="12sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp12"
+                android:background="@color/yp_white_and_yp_black" />
 
             <Button
                 android:id="@+id/button_cancel"
-                style="@style/MainMenuButtons"
+                style="@style/ErrorButtons"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:text="Не использовать шифрование"
-                android:textSize="@dimen/dp16" />
+                android:layout_height="@dimen/dp60"
+                android:text="Без ключа" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp12"
+                android:background="@color/yp_white_and_yp_black" />
+
+            <Button
+                android:id="@+id/constant_key"
+                style="@style/ErrorButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp60"
+                android:text="Постоянный ключ" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp12"
+                android:background="@color/yp_white_and_yp_black" />
+
+            <Button
+                android:id="@+id/variable_key"
+                style="@style/ErrorButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp60"
+                android:text="Переменный ключ" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp12"
+                android:background="@color/yp_white_and_yp_black" />
+
+            <Button
+                android:id="@+id/button_old_key"
+                style="@style/ErrorButtons"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:layout_weight="0.1"
+                android:padding="@dimen/z"
+                android:backgroundTint="@color/kototeka_thumb_color"
+                android:text="В хранилище обнаружен ранее введённый ключ шифрования. НАЖМИТЕ, если хотите оставить старый ключ"
+                android:textSize="@dimen/text_size_sp16"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp12"
+                android:background="@color/yp_white_and_yp_black" />
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/key_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="19dp"
             android:gravity="center"
             android:text="@string/key_info_new"
-            android:textSize="@dimen/text_size_sp14" />
+            android:textSize="@dimen/text_size_sp19" />
 
     </LinearLayout>
 </ScrollView>

@@ -10,8 +10,8 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
     const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
     const val KEY_EXIST_OF_ENCRYPTION_KLUCHIK = "exists_of_encryption_kluchik"
-
     const val KEY_HISTORY_LIST = "key_for_history_list"
+//    const val IV_LENGTH = "IV"
 
     // числовые константы
     const val ALBUM_ROUNDED_CORNERS = 8
@@ -20,13 +20,17 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val HISTORY_TRACK_LIST_SIZE = 8
     const val DEFAULT_PREVIEW_SIZE = 30
 
-    // переключатели в настройках
+    // переключатели в настройках SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
     const val KEY_USER_SWITCH = "userMode"
     const val KEY_USE_THE_ENCRYPTION_KLUCHIK = "useTheEncryptionKey"
     const val KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION = "deleteEKWhenClosingTheSession"
     const val KEY_PREVIEW_SIZE_SEEK_BAR = "previewSizeSeekBar"
     const val KEY_MIMICRY_SWITCH = "mimicry"
+    const val APP_LANGUAGE = "appLanguage"
+
+    //  константы в рамках сессии
+    var KEY_MIMICRY_THIS_SESSION_SWITCH = false
 }
 
 internal class AppPreferencesKeysMethods(private val context: Context) {
