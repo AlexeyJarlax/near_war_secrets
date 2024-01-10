@@ -11,6 +11,7 @@
     <color name="black">#FF000000</color>
     <color name="mount_thumb_color">#3F51B5</color> <!-- Розовый с альфой 0.8 -->
     <color name="kototeka_thumb_color">#C94E3A</color> <!-- Оранжевый с альфой 0.8 -->
+    <color name="kototeka_thumb_color2">#CA7B6E</color> <!-- Оранжевый с альфой 0.8 -->
 
     <!-- ЦВЕТОВЫЕ ПАРЫ ДЛЯ ТЕМ И СТИЛЕЙ (день)-->
     <!-- цвет фона главного меню -->

@@ -115,18 +115,21 @@ class KeyInputActivity : AppCompatActivity() {
         constantKey.setOnClickListener { // постоянный ключ
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
+            editor.apply()
             confirmButton()
         }
 
         variableKey.setOnClickListener { // переменный ключ
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, true)
+            editor.apply()
             confirmButton()
         }
 
         buttonOldKey.setOnClickListener { // старый ключ
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
+            editor.apply()
             Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)

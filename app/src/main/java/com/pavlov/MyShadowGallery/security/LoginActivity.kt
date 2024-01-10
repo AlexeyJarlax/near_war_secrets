@@ -27,6 +27,7 @@ import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class LoginActivity : AppCompatActivity() {
 
+    private var delPassword: Boolean = false
     private lateinit var loadingIndicator: ProgressBar
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var backgroundView: ImageView
@@ -42,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        delPassword = intent.getBooleanExtra("delPassword", false) // ФЛАГ С intent
 
         loadingIndicator = findViewById(R.id.loading_indicator)
         sharedPreferences =
@@ -65,61 +66,44 @@ class LoginActivity : AppCompatActivity() {
     }  // конец онкриейт
 
     private fun firstStart() {  // ПЕРВЫЙ ЗАПУСК ?????
+        if (!delPassword) {
+            if (sharedPreferences.getBoolean(
+                    AppPreferencesKeys.KEY_FIRST_RUN, true
+                )
+            ) { // Устанавливаем значения по умолчанию
 
-        if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_FIRST_RUN, true
-            )
-        ) { // Устанавливаем значения по умолчанию
-
-            with(sharedPreferences.edit()) {
-                putInt(
-                    AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30
-                )
-                putBoolean(
-                    AppPreferencesKeys.KEY_FIRST_RUN, false
-                )
-                apply()
-            }
-            goToZeroActivity() // ИДЕМ В ТРИ ШАГА К ЗАЩИТЕ
-        } else {
-//            with(sharedPreferences.edit()) {
-//                putBoolean(
-//                    AppPreferencesKeys.KEY_FIRST_RUN,
-//                    false
-//                )
-//                apply()// Помечаем, что приложение уже запускалось
-//            }
-            if (sharedPreferences.getBoolean(   // МИМИКРИРУЮЩИЙ ЗАПУСК ?????
-                    AppPreferencesKeys.KEY_MIMICRY_SWITCH, false
-                )
-            ) {
-                mimicry = true
-                entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
+                with(sharedPreferences.edit()) {
+                    putInt(
+                        AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30
+                    )
+                    putBoolean(
+                        AppPreferencesKeys.KEY_FIRST_RUN, false
+                    )
+                    apply()
+                }
+                goToZeroActivity() // ИДЕМ В ТРИ ШАГА К ЗАЩИТЕ
             } else {
-                mimicry = false
-                val savedPassword = masterAlias()
-                if (savedPassword.isNullOrBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
-                    isPasswordExist = false
-                    entranceMain()  // ИДЕМ В МЕЙН
+                if (sharedPreferences.getBoolean(   // МИМИКРИРУЮЩИЙ ЗАПУСК ?????
+                        AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false
+                    )
+                ) {
+                    mimicry = true
+                    entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
                 } else {
+                    mimicry = false
+                    val savedPassword = masterAlias()
+                    if (savedPassword.isNullOrBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
+                        isPasswordExist = false
+                        entranceMain()  // ИДЕМ В МЕЙН
+                    } else {
 
+                    }
                 }
             }
+        } else {
+
         }
     }
-
-//    private fun mimicryCheck() { // Проверка на маскировку
-//
-//    }
-
-//    fun parolchikCheck() {
-//        val savedPassword = masterAlias()
-//        if (savedPassword.isNullOrBlank()) {
-//            isPasswordExist = false
-//            entranceMain()
-//        } else {
-//        }
-//    }
 
     fun listener() {
         oldPasswordEditText.addTextChangedListener(object : TextWatcher {
@@ -152,7 +136,13 @@ class LoginActivity : AppCompatActivity() {
                     if (oldPassword == oldPasswordEditText.text.toString().trim()) {
                         counter = 30
                         saveCounter()
-                        entranceMain()
+                        if (delPassword) {
+                            doDelPassword()
+                            toastIt("Пароль успешно удален")
+                            goToZeroActivityWithFlag()
+                        } else {
+                            entranceMain()
+                        }
                     } else {
                         saveCounter()
                         toastIt("Пароль не совпадает")
@@ -223,8 +213,35 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun goToZeroActivity() {
+    private fun doDelPassword() {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            masterAlias,
+            applicationContext,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        encryptedSharedPreferences.edit {
+            remove(AppPreferencesKeys.KEY_SMALL_SECRET)
+            apply()
+
+        val sharedPreferences =
+            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
+        editor.apply()
+    }}
+
+    private fun goToZeroActivity() {
         val intent = Intent(this, ThreeStepsActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goToZeroActivityWithFlag() {
+        val intent = Intent(this, ThreeStepsActivity::class.java)
+        intent.putExtra("isPasswordExists", true)
         startActivity(intent)
         finish()
     }

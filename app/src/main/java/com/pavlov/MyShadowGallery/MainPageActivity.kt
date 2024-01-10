@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import com.pavlov.MyShadowGallery.security.KeyInputActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 
@@ -20,9 +19,10 @@ class MainPageActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var threeStepsActivity: ThreeStepsActivity
-//    private lateinit var loadingIndicator: ProgressBar
-//    private lateinit var utilStepsBox: View
-//    private lateinit var mainActivityLayout: RelativeLayout
+    private var simblPass = "🏳️"
+    private var simblMimic = "🏳️"
+    private var simblEncryption = "🏳️"
+    private var text = "🏳️"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,28 +40,10 @@ class MainPageActivity : AppCompatActivity() {
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
         threeStepsActivity = ThreeStepsActivity()
-//        loadingIndicator = findViewById(R.id.loading_indicator)
-//        loadingIndicator.visibility = View.INVISIBLE
-//        utilStepsBox = findViewById<LinearLayout>(R.id.util_three_steps_layout)
 
-        // Проверяем, является ли текущий запуск приложения первым
-//        val isFirstRun = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_FIRST_RUN, true)
-//        if (isFirstRun) { // Устанавливаем значения по умолчанию
-//            with(sharedPreferences.edit()) {
-//                putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
-//                putBoolean(
-//                    AppPreferencesKeys.KEY_FIRST_RUN,
-//                    false
-//                ) // Помечаем, что приложение уже запускалось
-//                apply()
-//                goToZeroActivity()
-//            }
-//        }
 
         buttonLogin.setOnClickListener {
             goToThreeStepsActivity()
-//            val displayIntent = Intent(this, KeyInputActivity::class.java)
-//            startActivity(displayIntent)
         }
 
         buttonSearch.setOnClickListener {
@@ -91,7 +73,7 @@ class MainPageActivity : AppCompatActivity() {
             val displayIntent = Intent(this, SettingsActivity::class.java)
             startActivity(displayIntent)
         }
-//        goToZeroActivity()
+        locker()
     } // конец OnCreate
 
     fun goToThreeStepsActivity() {
@@ -105,25 +87,47 @@ class MainPageActivity : AppCompatActivity() {
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun locker() {
+        val passKey =
+            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
         val isExistsOfEncryptionKey =
             sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
-        val isUseTheEncryptionKey =
-            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
-        val keySimbl = findViewById<Button>(R.id.button_login)
-        if (isExistsOfEncryptionKey) {
-            keySimbl.setText("🔐")
-            keySimbl.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
+        val mimikKey =
+            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
+
+        var keySimbl = findViewById<Button>(R.id.button_login)
+
+        simblPass = if (passKey) {
+            "🔐"
         } else {
-            keySimbl.setText("🔓")
+            ""
+        }
+        simblMimic = if (mimikKey) {
+            "🕶️"
+        } else {
+            ""
+        }
+        simblEncryption = if (isExistsOfEncryptionKey) {
+            "🔏"
+        } else {
+            ""
+        }
+        text = "${simblPass}${simblMimic}${simblEncryption}"
+        keySimbl.text = text
+
+        if (text.length < 2) {
             keySimbl.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
+            keySimbl.text = "🏳️"
+        } else if (text.length < 4) {
+            keySimbl.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
+        } else if (text.length < 6) {
+            keySimbl.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue_light))
+        } else if (text.length < 8) {
+            keySimbl.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
         }
-//        if (!isExistsOfEncryptionKey && isUseTheEncryptionKey) {
-//            val displayIntent = Intent(this, KeyInputActivity::class.java)
-//            startActivity(displayIntent)
-//        }
     }
 }

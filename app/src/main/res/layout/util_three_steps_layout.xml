@@ -66,4 +66,21 @@
         android:visibility="invisible"
         tools:visibility="visible" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp12"
+        android:background="@color/yp_white_and_yp_black" />
+
+    <Button
+        android:id="@+id/button_old_key"
+        style="@style/ErrorButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp4"
+        android:backgroundTint="@color/kototeka_thumb_color"
+        android:text="В хранилище обнаружен ранее введённый ключ шифрования. НАЖМИТЕ, если хотите оставить старый ключ"
+        android:textSize="@dimen/text_size_sp19"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
 </LinearLayout>

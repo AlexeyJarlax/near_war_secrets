@@ -27,6 +27,7 @@ class ThreeStepsActivity : AppCompatActivity() {
     private lateinit var inputButton: Button
     private lateinit var yesButton: Button
     private lateinit var noButton: Button
+    private lateinit var oldKeyButton: Button
     private var isPasswordExists: Boolean = false // Add this variable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +40,9 @@ class ThreeStepsActivity : AppCompatActivity() {
         inputButton = findViewById(R.id.retry_button)
         yesButton = findViewById(R.id.yes_button)
         noButton = findViewById(R.id.no_button)
+        oldKeyButton = findViewById(R.id.button_old_key)
 
-        // Retrieve the flag from the intent
-        isPasswordExists = intent.getBooleanExtra("isPasswordExists", false)
+        isPasswordExists = intent.getBooleanExtra("isPasswordExists", false) // ФЛАГ С intent
 
         // Call the appropriate method based on the flag
         if (isPasswordExists) {
@@ -93,7 +94,9 @@ class ThreeStepsActivity : AppCompatActivity() {
             inputButton.visibility = View.VISIBLE
             inputButton.text = resources.getString(R.string.step01_03)
             inputButton.setOnClickListener {
-                val intent = Intent(this, SetPasswordActivity::class.java)
+//                val delPassword = true
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.putExtra("delPassword", true)
                 startActivity(intent)
             }
         }
@@ -113,11 +116,14 @@ class ThreeStepsActivity : AppCompatActivity() {
         val transitionDrawable = TransitionDrawable(arrayOf(drawable1, drawable2))
         errorIcon.background = transitionDrawable
         transitionDrawable.startTransition(4000)
-
+        val editor = sharedPreferences.edit()
         yesButton.setOnClickListener {
-            val editor = sharedPreferences.edit()
-            editor.putBoolean(AppPreferencesKeys.KEY_MIMICRY_SWITCH, true).apply()
-            if (isPasswordExists) {
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, true)
+            editor.apply()
+            if (sharedPreferences.getBoolean(
+                    AppPreferencesKeys.KEY_EXIST_OF_PASSWORD,
+                    false
+                )) {
                 errorTextWeb.text = resources.getString(R.string.step02_01)
             } else {
                 errorTextWeb.text = resources.getString(R.string.step02_02)
@@ -132,14 +138,14 @@ class ThreeStepsActivity : AppCompatActivity() {
 
         }
         noButton.setOnClickListener {
-            val editor = sharedPreferences.edit()
-            editor.putBoolean(AppPreferencesKeys.KEY_MIMICRY_SWITCH, false).apply()
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
+            editor.apply()
             step3()
         }
     }
 
     private fun step3() { // КЛЮЧ ШИФРОВАНИЯ
-        errorTextWeb.text = resources.getString(R.string.step03_00)
+        errorTextWeb.text = resources.getString(R.string.step03_01)
 //        val pixels = (60 * resources.displayMetrics.density).toInt()
 //        val params = LinearLayout.LayoutParams(pixels, ViewGroup.LayoutParams.WRAP_CONTENT)
 //        inputButton.layoutParams = params
@@ -148,21 +154,38 @@ class ThreeStepsActivity : AppCompatActivity() {
 //        yesButton.text = "✔️"
 //        noButton.layoutParams = params
 //        noButton.text = "❌"
-        inputButton.visibility = View.VISIBLE
+        inputButton.visibility = View.GONE
         yesButton.visibility = View.VISIBLE
         noButton.visibility = View.VISIBLE
+        errorIcon.visibility = View.GONE
 
         yesButton.setOnClickListener {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
         }
         noButton.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
+            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
+            editor.apply()
+
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
-        inputButton.setOnClickListener {
-            val displayIntent = Intent(this, KeyInputActivity::class.java)
-            startActivity(displayIntent)
+//        inputButton.setOnClickListener {
+//            val displayIntent = Intent(this, KeyInputActivity::class.java)
+//            startActivity(displayIntent)
+//        }
+        if (sharedPreferences.getBoolean(
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                false
+            )){
+            oldKeyButton.visibility = View.VISIBLE
+            oldKeyButton.setOnClickListener {
+                oldKeyButton.visibility = View.GONE
+                val displayIntent = Intent(this, MainPageActivity::class.java)
+                startActivity(displayIntent)
+            }
         }
     }
 

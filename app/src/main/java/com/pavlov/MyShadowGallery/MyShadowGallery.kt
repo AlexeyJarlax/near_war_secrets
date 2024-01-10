@@ -1,8 +1,12 @@
 package com.pavlov.MyShadowGallery;
 
 import android.app.Activity
-import android.app.Application;
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import android.os.Bundle
+import androidx.core.content.edit
 
 class MyShadowGallery : Application() {
     private var cleanupDone = false
@@ -58,6 +62,21 @@ class MyShadowGallery : Application() {
 
         peekabooFiles?.forEach { file ->
             file.delete()
+        }
+
+        // Проверка и удаление ключа шифрования, если флаг установлен
+        val sharedPreferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val shouldDeleteEk = sharedPreferences.getBoolean(
+            AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
+            false
+        )
+
+        if (shouldDeleteEk) {
+            sharedPreferences.edit {
+                remove(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+                putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
+                putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
+            }
         }
     }
 }

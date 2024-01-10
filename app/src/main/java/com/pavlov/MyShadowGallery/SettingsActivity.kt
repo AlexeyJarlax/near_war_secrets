@@ -19,8 +19,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -61,7 +59,7 @@ class SettingsActivity : AppCompatActivity() {
         delEKWhenClosingTheSession.isChecked =
             AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
         mimicrySwitch.isChecked =
-            AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_MIMICRY_SWITCH)
+            AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
         // Загрузка ебаного SeekBar с его конченными значениями
         val previewSizeSeekBar: SeekBar = findViewById(R.id.preview_size)
         val imagePreviewForSeekbar1: ImageView = findViewById(R.id.image_preview_for_seekbar_1)
@@ -204,7 +202,7 @@ class SettingsActivity : AppCompatActivity() {
         // Обработка события для Маскировки
         mimicrySwitch.setOnCheckedChangeListener { _, isChecked ->
             AppPreferencesKeysMethods(context = this).saveSwitchValue(
-                AppPreferencesKeys.KEY_MIMICRY_SWITCH,
+                AppPreferencesKeys.KEY_EXIST_OF_MIMICRY,
                 isChecked
             )
         }
@@ -260,14 +258,16 @@ class SettingsActivity : AppCompatActivity() {
                 )
             nonEncryptedSharedPreferences.edit().clear().apply()
 
-            val EncryptedSharedPreferences: SharedPreferences =
+        // Удаление шифрованного хранилища
+            val encryptedSharedPreferences: SharedPreferences =
                 context.getSharedPreferences(
                     AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
                     Context.MODE_PRIVATE
                 )
-            EncryptedSharedPreferences.edit().clear().apply()
+            encryptedSharedPreferences.edit().clear().apply()
 
         }
+
         fun finishAffinity(context: Context) {
             val intent = Intent(context, MainPageActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
