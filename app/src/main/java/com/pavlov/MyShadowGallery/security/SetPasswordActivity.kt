@@ -125,7 +125,7 @@ class SetPasswordActivity : AppCompatActivity() {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
+                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
                 masterAlias,
                 applicationContext,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -137,7 +137,7 @@ class SetPasswordActivity : AppCompatActivity() {
     private fun saveMasterSSecret(password: String) {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
+            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
             masterAlias,
             applicationContext,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,

@@ -34,9 +34,6 @@ class ThreeStepsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_three_steps)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-//        loadingIndicator = findViewById(R.id.loading_indicator)
-//        loadingIndicator.visibility = View.INVISIBLE
-//        utilStepsBox = findViewById(R.id.util_three_steps_layout)
         errorIcon = findViewById(R.id.error_icon)
         errorTextWeb = findViewById(R.id.error_text_web)
         inputButton = findViewById(R.id.retry_button)
@@ -95,6 +92,10 @@ class ThreeStepsActivity : AppCompatActivity() {
             errorTextWeb.text = resources.getString(R.string.step01_02)
             inputButton.visibility = View.VISIBLE
             inputButton.text = resources.getString(R.string.step01_03)
+            inputButton.setOnClickListener {
+                val intent = Intent(this, SetPasswordActivity::class.java)
+                startActivity(intent)
+            }
         }
 
 
@@ -108,7 +109,7 @@ class ThreeStepsActivity : AppCompatActivity() {
         errorTextWeb.text = resources.getString(R.string.step02_00)
         yesButton.visibility = View.VISIBLE
         noButton.visibility = View.VISIBLE
-
+        inputButton.visibility = View.GONE
         val transitionDrawable = TransitionDrawable(arrayOf(drawable1, drawable2))
         errorIcon.background = transitionDrawable
         transitionDrawable.startTransition(4000)
@@ -169,7 +170,7 @@ class ThreeStepsActivity : AppCompatActivity() {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
+                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
                 masterAlias,
                 applicationContext,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,

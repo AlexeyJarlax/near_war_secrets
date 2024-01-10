@@ -38,7 +38,6 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -126,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
+                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
                 masterAlias,
                 applicationContext,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,

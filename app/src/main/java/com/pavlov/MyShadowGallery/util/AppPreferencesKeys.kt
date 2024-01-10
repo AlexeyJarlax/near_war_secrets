@@ -5,7 +5,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // хранилища SharedPreferences
     const val PREFS_NAME = "MyPrefs" // открытое хранилище
     const val PREFS_HISTORY_NAME = "SearchHistory" // история песен
-    const val SMALL_SECRETS_PREFS_NAME = "secret_shared_prefs" // защищенное хранилище
+    const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs" // защищенное хранилище
 
     // ключи и файлы
     const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
@@ -14,6 +14,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val KEY_HISTORY_LIST = "key_for_history_list"
     const val KEY_SMALL_SECRET = "my_secret"  // короткий секретик
     const val KEY_BIG_SECRET = "my_big_secret"  // длинный секретик
+    const val KEY_COUNT_TRY = "my_big_secret"  // счетчик
 
     // числовые константы
     const val ALBUM_ROUNDED_CORNERS = 8
