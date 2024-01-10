@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.security
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,7 +8,6 @@ import android.text.InputFilter
 import android.text.Spanned
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -18,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.pavlov.MyShadowGallery.R
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class SetPasswordActivity : AppCompatActivity() {
@@ -108,7 +109,7 @@ class SetPasswordActivity : AppCompatActivity() {
         }
     }  // конец онкриейт
 
-    fun startPreparation() {
+    fun startPreparation() {  // извлекаем парольку
         val savedPassword = masterAlias()
         if (savedPassword.isNullOrBlank()) {
             oldPasswordEditText.visibility = View.INVISIBLE
@@ -124,26 +125,26 @@ class SetPasswordActivity : AppCompatActivity() {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                "secret_shared_prefs",
+                AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
                 masterAlias,
                 applicationContext,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
-        return sharedPreferences.getString("my_secret", "")
+        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
     }
 
     private fun saveMasterSSecret(password: String) {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            "secret_shared_prefs",
+            AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
             masterAlias,
             applicationContext,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
         sharedPreferences.edit {
-            putString("my_secret", password).apply()
+            putString(AppPreferencesKeys.KEY_SMALL_SECRET, password).apply()
             toastIt("${password} сохранен")
         }
         oldPasswordType = ""
@@ -152,7 +153,7 @@ class SetPasswordActivity : AppCompatActivity() {
 //        oldPasswordEditText.setText("1")
 //        newPasswordEditText2.setText("1")
         isPasswordExist = true
-        val intent = Intent(this, ZeroActivity::class.java)
+        val intent = Intent(this, ThreeStepsActivity::class.java)
         intent.putExtra("isPasswordExists", true) // Set the flag based on your requirement
         startActivity(intent)
         finish()

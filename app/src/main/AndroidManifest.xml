@@ -35,9 +35,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:targetApi="tiramisu">
-        <activity
-            android:name=".ZeroActivity"
-            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -50,21 +47,31 @@
         </provider>
 
         <activity
-            android:name=".SetPasswordActivity"
+            android:name=".security.ThreeStepsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".security.SetPasswordActivity"
             android:exported="true"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.MyApp" />
 
         <activity
-            android:name=".LoginActivity"
-            android:exported="true"/>
+            android:name=".security.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".KeyInputActivity"
+            android:name=".security.KeyInputActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
@@ -74,38 +81,22 @@
         <activity
             android:name=".SearchActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-            </intent-filter>
-        </activity>
-
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ItemLoaderActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".SettingsActivity"
+            android:configChanges="locale|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="fullSensor"
-            android:configChanges="locale|orientation|screenSize"
             android:theme="@style/Theme.MyApp" />
         <activity
-            android:name=".MainActivity"
+            android:name=".MainPageActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor"/>
-<!--            <intent-filter>-->
-                <!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--                <action android:name="android.intent.action.CREATE_SHORTCUT" />-->
-                <!--                <category android:name="android.intent.category.DEFAULT" />-->
-                <!-- <data -->
-                <!-- android:host="play.google.com" -->
-                <!-- android:scheme="https" /> -->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+            android:screenOrientation="fullSensor" />
+
     </application>
 
 </manifest>

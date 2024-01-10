@@ -165,15 +165,6 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/personal_data"
-                style="@style/SettingsButtonsAndText"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/personal_data"
-                app:icon="@android:drawable/ic_menu_edit"
-                tools:ignore="VisualLintButtonSize" />
-
-            <Button
                 android:id="@+id/clearing_the_storage"
                 style="@style/SettingsButtonsAndText"
                 android:layout_height="wrap_content"
@@ -189,6 +180,15 @@
                 android:gravity="center_vertical"
                 android:text="@string/reset_settings"
                 app:icon="@android:drawable/ic_lock_idle_charging"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/personal_data"
+                style="@style/SettingsButtonsAndText"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/personal_data"
+                app:icon="@android:drawable/ic_menu_help"
                 tools:ignore="VisualLintButtonSize" />
 
         </LinearLayout>

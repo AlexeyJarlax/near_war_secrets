@@ -593,6 +593,7 @@ open class PhotoListAdapter(
 
     private var imageDialog: Dialog? = null
     private val dateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault())
+    private lateinit var rotatedBitmap: Bitmap
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -664,6 +665,7 @@ open class PhotoListAdapter(
 
             btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
                 context.showToast("Удаляю изображение, ожидайте...")
+                delPeekaboo(encryptedFileName)
                 FileProviderAdapter.deleteFile(
                     encryptedFile.name,
                     context.applicationContext
@@ -672,12 +674,11 @@ open class PhotoListAdapter(
                     decryptedFile.name,
                     context.applicationContext
                 )
-
                 (context as Activity).finish()
                 val intent = Intent(context, ItemLoaderActivity::class.java)
                 context.startActivity(intent)
                 imageDialog?.dismiss()
-//                        hideLoadingIndicator(isItFrontCamera) // завершение индикатора
+
             }
 
             if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
@@ -724,7 +725,7 @@ open class PhotoListAdapter(
                 }
             } else if (encryptedFileName.endsWith(".p", true)) {
                 try {
-                    var rotatedBitmap = encryption.decryptImage(decryptedFile)
+                    rotatedBitmap = encryption.decryptImage(decryptedFile)
 
                     val glideRequest = Glide.with(context).load(rotatedBitmap).fitCenter()
                         .transform(RoundedCorners(8))
@@ -758,13 +759,13 @@ open class PhotoListAdapter(
                     Timber.d("=== Вывод дешифрованного изображения через Dialog")
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
-                        recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
-                        val fileNameWithExtension = "${encryptedFileName}eekaboo"
-//                        context.toast("Удаляю экземпляр ${fileNameWithExtension}")
-                        FileProviderAdapter.deleteFile(
-                            fileNameWithExtension,
-                            context
-                        )  // явное удаление файла, в который превратили битмапу
+                        delPeekaboo(encryptedFileName)
+//                        recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
+//                        val fileNameWithExtension = "${encryptedFileName}eekaboo"
+//                        FileProviderAdapter.deleteFile(
+//                            fileNameWithExtension,
+//                            context
+//                        )  // явное удаление файла, в который превратили битмапу
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
@@ -775,6 +776,12 @@ open class PhotoListAdapter(
                 context.showToast("Ошибка. Возможно формат изображения не соответствует")
             }
         }
+    }
+
+    private fun delPeekaboo(encryptedFileName: String) {// явное удаление битмапы и peekaboo
+        recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
+        val fileNameWithExtension = "${encryptedFileName}eekaboo"
+        FileProviderAdapter.deleteFile(fileNameWithExtension, context)
     }
 
     private fun shareDecryptedImage(

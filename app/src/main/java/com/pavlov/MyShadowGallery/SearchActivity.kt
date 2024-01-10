@@ -32,13 +32,13 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -54,6 +54,7 @@ import java.util.concurrent.TimeUnit
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var backgroundView: ImageView
+    private var clickCounter = 0
     private lateinit var sharedPreferences: SharedPreferences
     private val iTunesSearch = "https://itunes.apple.com"
     private val retrofit =
@@ -63,6 +64,7 @@ class SearchActivity : AppCompatActivity() {
     private var hasFocus = true
     private lateinit var queryInput: EditText
     private lateinit var clearButton: ImageButton
+    private lateinit var searchIcon: ImageButton
     private lateinit var backButton: Button
     private lateinit var trackRecyclerView: RecyclerView
     private lateinit var loadingIndicator: ProgressBar
@@ -80,129 +82,85 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         // Extracting flag from Intent
-        val isPasswordActivity = intent.getBooleanExtra("isPasswordActivity", false)
+        val isPasswordExists = intent.getBooleanExtra("isPasswordExists", false)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
-        // Проверяем, является ли текущий запуск приложения первым
-        val isFirstRun = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_FIRST_RUN, true)
-        if (isFirstRun) { // Устанавливаем значения по умолчанию
-            with(sharedPreferences.edit()) {
-                putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
-                putBoolean(
-                    AppPreferencesKeys.KEY_FIRST_RUN,
-                    false
-                ).apply()// Помечаем, что приложение уже запускалось
-                goToZeroActivity()
-            }
-        }
-
-        // Проверка на маскировку
-        if (!sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_MIMICRY_SWITCH,
-                false
-            )
-        ) {
-            if (masterAlias().isNullOrBlank()) {
-                goToMainActivity()
-            } else {
-                goToPasswordActivity()
-            }
-        }
         setupOneLineViews()
         clearButton()
         backToMain()
         callAdapterForHistoryTracks()
         setupRecyclerViewAndAdapter()
         queryTextChangedListener()
-        queryInputListener(isPasswordActivity)
+        queryInputListener(isPasswordExists)
         fillTrackAdapter()
         killTheHistory()
-
+//        goToClickCounter()
     }
 
-    fun goToZeroActivity() {
-        val displayIntent = Intent(this, ZeroActivity::class.java)
-        startActivity(displayIntent)
-        finish()
-    }
+//    fun goToZeroActivity() {
+//        val displayIntent = Intent(this, ThreeStepsActivity::class.java)
+//        startActivity(displayIntent)
+//        finish()
+//    }
 
     fun goToMainActivity() {
-        val displayIntent = Intent(this, MainActivity::class.java)
+        val displayIntent = Intent(this, MainPageActivity::class.java)
         startActivity(displayIntent)
         finish()
     }
 
-    fun goToPasswordActivity() {
-        val displayIntent = Intent(this, SetPasswordActivity::class.java)
-        startActivity(displayIntent)
-        finish()
-    }
-
-//    private fun saveMasterSSecret(password: String) {
-//        countPass += 1
-//        if (countPass == 1) {
-//            firstPass = password
-//            toastIt("Введите этот пароль еще раз")
-//        } else {
-//
-//            if (firstPass == password) {
-//                firstPass = ""
-//                val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//                val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-//                    "secret_shared_prefs",
-//                    masterAlias,
-//                    applicationContext,
-//                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//                )
-//
-//                sharedPreferences.edit {
-//                    putString("my_secret", password).apply()
-//                    toastIt("${password} сохранен")
-//                }
-//                finish()
-//
-//            } else {
-//                toastIt("Пароль не совпадет, повторите ввод")
-//            }
+//    fun goToClickCounter() {
+//        backgroundView.setOnClickListener {// Увеличиваем счетчик кликов
+//            clickCounter++
 //        }
-//        clearButton()
+//        if (clickCounter >= 5) {
+//            // Сбрасываем счетчик
+//            clickCounter = 0
+//            // Запускаем метод goToMainActivity()
+//            goToMainActivity()
+//        }
 //    }
 
     fun masterAlias(): String? {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                "secret_shared_prefs",
+                AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
                 masterAlias,
                 applicationContext,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
-        return sharedPreferences.getString("my_secret", "")
+        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
     }
 
-    private fun checkMasterSSecret(password: String) {
-//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//        val sharedPreferences: SharedPreferences =
-//            EncryptedSharedPreferences.create(
-//                "secret_shared_prefs",
-//                masterAlias,
-//                applicationContext,
-//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//            )
-
-        val savedPassword = masterAlias()
-        if (password == savedPassword) {
-            goToMainActivity()
+    private fun checkMasterSSecret(
+        password: String,
+        isPasswordExists: Boolean
+    ) { //проверка на режим пароль, маскировка
+        if (isPasswordExists) {
+            val savedPassword = masterAlias()
+            if (password == savedPassword) {
+                goToMainActivity()
+            } else {
+                // Password is incorrect, perform standard search logic
+                utilErrorBox.visibility = View.INVISIBLE
+                clearTrackAdapter()
+                preparingForSearch(password)
+                toastIt("${getString(R.string.search)} $password")
+            }
         } else {
-            // Password is incorrect, perform standard search logic
-            utilErrorBox.visibility = View.INVISIBLE
-            clearTrackAdapter()
-            preparingForSearch(password)
-            toastIt("${getString(R.string.search)} $password")
+            val savedPassword = AppPreferencesKeys.DEFAULT_MIMIC_PASS
+            if (password == savedPassword) {
+                goToMainActivity()
+            } else {
+                // Password is incorrect, perform standard search logic
+                utilErrorBox.visibility = View.INVISIBLE
+                clearTrackAdapter()
+                preparingForSearch(password)
+                toastIt("${getString(R.string.search)} $password")
+            }
         }
     }
 
@@ -211,6 +169,7 @@ class SearchActivity : AppCompatActivity() {
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         backButton = findViewById(R.id.button_back_from_search_activity)
         clearButton = findViewById(R.id.clearButton)
+        searchIcon = findViewById(R.id.search_icon)
         queryInput = findViewById(R.id.search_edit_text)
         trackRecyclerView = findViewById(R.id.track_recycler_view)
         loadingIndicator = findViewById(R.id.loading_indicator)
@@ -334,23 +293,12 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun queryInputListener(isPasswordActivity: Boolean) {
+    private fun queryInputListener(isPasswordExists: Boolean) {  // ВВОД пользователя
         queryInput.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchText = queryInput.text.toString().trim()
                 if (searchText.isNotEmpty()) {
-//                    if (isPasswordActivity) {
-//                        saveMasterSSecret(searchText)
-//                    } else {
-                        checkMasterSSecret(searchText)
-//                        var truth = checkMasterSSecret(searchText)
-//                        if (!truth) {
-//                            utilErrorBox.visibility = View.INVISIBLE
-//                            clearTrackAdapter()
-//                            preparingForSearch(searchText)
-//                            toastIt("${getString(R.string.search)} $searchText")
-//                        }
-//                    }
+                    checkMasterSSecret(searchText, isPasswordExists)
                 }
                 hideKeyboard()
                 true

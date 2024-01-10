@@ -46,7 +46,7 @@
     <string name="error401">error 401 (Unauthorized)</string>
     <string name="added">Added: </string>
     <string name="preview_scaling_factor">preview scaling factor</string>
-    <string name="reset_settings">Reset settings</string>
+    <string name="reset_settings">Очистить все данные: сбросить настройки, ключь, пароль, очистить хранилище</string>
     <string name="personal_data">Personal data</string>
     <string name="disguise_it_as_a_music_player">Disguise it as a music player</string>
     <string name="language">Язык / language / 应用语言</string>

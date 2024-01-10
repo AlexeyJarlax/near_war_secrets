@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.security
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.pavlov.MyShadowGallery.MainPageActivity
+import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import kotlin.random.Random
 
@@ -101,7 +103,7 @@ class KeyInputActivity : AppCompatActivity() {
                 editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
                 editor.apply()
                 Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
-                val displayIntent = Intent(this, MainActivity::class.java)
+                val displayIntent = Intent(this, MainPageActivity::class.java)
                 startActivity(displayIntent)
             } else {
                 Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
@@ -126,7 +128,7 @@ class KeyInputActivity : AppCompatActivity() {
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
             Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
-            val displayIntent = Intent(this, MainActivity::class.java)
+            val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
 
@@ -140,7 +142,7 @@ class KeyInputActivity : AppCompatActivity() {
             Toast.makeText(this, "Файлы будут сохранены без шифрования", Toast.LENGTH_SHORT)
                 .show()
 //            finish() // Завершение активности KeyInputActivity без передачи значения ключа
-            val displayIntent = Intent(this, MainActivity::class.java)
+            val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
 
@@ -181,7 +183,7 @@ class KeyInputActivity : AppCompatActivity() {
         super.onBackPressed()
         userEscape()
 //        finish()
-        val displayIntent = Intent(this, MainActivity::class.java)
+        val displayIntent = Intent(this, MainPageActivity::class.java)
         startActivity(displayIntent)
     }
 }

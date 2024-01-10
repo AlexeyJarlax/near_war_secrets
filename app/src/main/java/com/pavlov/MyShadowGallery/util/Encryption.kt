@@ -25,7 +25,8 @@ import javax.crypto.spec.SecretKeySpec
 
 class Encryption(private val context: Context) {
     val itemLoaderActivity = context as ItemLoaderActivity
-//    val galleryActivity = context as GalleryActivity
+
+    //    val galleryActivity = context as GalleryActivity
     private val photoList = ArrayList<String>()
 //    private lateinit var sharedPreferences: SharedPreferences
 
@@ -46,11 +47,11 @@ class Encryption(private val context: Context) {
 
         // Здесь добавьте логику удаления файла с файловой системы
         // Например:
-         val fileToDelete = File(context.filesDir, fileName)
-         fileToDelete.delete()
+        val fileToDelete = File(context.filesDir, fileName)
+        fileToDelete.delete()
     }
 
-    fun addPhotoToList(int : Int, photoUri: Uri) {
+    fun addPhotoToList(int: Int, photoUri: Uri) {
         val fileName = photoUri.lastPathSegment ?: ""
         photoList.add(int, fileName)
     }
@@ -65,73 +66,75 @@ class Encryption(private val context: Context) {
 //        return sharedPreferences.getString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, "") ?: ""
 //    }
 
-fun encryptImage(imageUri: Uri, fileName: String) {
+    fun encryptImage(imageUri: Uri, fileName: String) {
 //    val encryptionKey = getDecryptionKey()
-    val encryptionKey = AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
-    Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
-    // Получаем путь к файлу, который нужно зашифровать
-    val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
-    var encryptedFile = File(context.applicationContext.filesDir, "${fileName}k")
-    if (File(context.applicationContext.filesDir, "${fileName}k").exists()) {
-        Timber.d("=== файл fileName существует, будет перезапись: ${fileName}k")
-        val existingFile = File(context.applicationContext.filesDir, "${fileName}k")
-        existingFile.delete()
-    }
-    Timber.d("=== готовится к шифрованию: ${encryptedFile.name}")
-    Timber.d("=== путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
-    val outputStream = FileOutputStream(encryptedFile)
-    val messageDigest = MessageDigest.getInstance("SHA-256")
-    Timber.d("=== файл messageDigest: ${messageDigest}")
-    val hashedKey = messageDigest.digest(encryptionKey.toByteArray())
-    Timber.d("=== ключ: ${encryptionKey}")
-    Timber.d("=== файл hashedKey: ${hashedKey}")
-    val keySpec = SecretKeySpec(hashedKey, "AES")
-    val cipher = Cipher.getInstance("AES")
-    Timber.d("cipher")
-    cipher.init(Cipher.ENCRYPT_MODE, keySpec)
+        val encryptionKey =
+            AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+        Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
+        // Получаем путь к файлу, который нужно зашифровать
+        val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
+        var encryptedFile = File(context.applicationContext.filesDir, "${fileName}k")
+        if (File(context.applicationContext.filesDir, "${fileName}k").exists()) {
+            Timber.d("=== файл fileName существует, будет перезапись: ${fileName}k")
+            val existingFile = File(context.applicationContext.filesDir, "${fileName}k")
+            existingFile.delete()
+        }
+        Timber.d("=== готовится к шифрованию: ${encryptedFile.name}")
+        Timber.d("=== путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
+        val outputStream = FileOutputStream(encryptedFile)
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        Timber.d("=== файл messageDigest: ${messageDigest}")
+        val hashedKey = messageDigest.digest(encryptionKey.toByteArray())
+        Timber.d("=== ключ: ${encryptionKey}")
+        Timber.d("=== файл hashedKey: ${hashedKey}")
+        val keySpec = SecretKeySpec(hashedKey, "AES")
+        val cipher = Cipher.getInstance("AES")
+        Timber.d("cipher")
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec)
 
-    val buffer = ByteArray(1024)
-    var read: Int
-    while (inputStream.read(buffer).also { read = it } != -1) {
-        val encryptedBytes = cipher.update(buffer, 0, read)
+        val buffer = ByteArray(1024)
+        var read: Int
+        while (inputStream.read(buffer).also { read = it } != -1) {
+            val encryptedBytes = cipher.update(buffer, 0, read)
+            outputStream.write(encryptedBytes)
+        }
+        val encryptedBytes = cipher.doFinal()
         outputStream.write(encryptedBytes)
-    }
-    val encryptedBytes = cipher.doFinal()
-    outputStream.write(encryptedBytes)
 
-    if (File(context.applicationContext.filesDir, fileName).exists()) {
-        Timber.d("=== сейчас в директории существует файл fileName: ${fileName}")
-    }
-    if (File(context.applicationContext.filesDir, "${fileName}k").exists()) {
-        Timber.d("=== сейчас в директории существует файл {fileName}k: ${fileName}k")
-    }
+        if (File(context.applicationContext.filesDir, fileName).exists()) {
+            Timber.d("=== сейчас в директории существует файл fileName: ${fileName}")
+        }
+        if (File(context.applicationContext.filesDir, "${fileName}k").exists()) {
+            Timber.d("=== сейчас в директории существует файл {fileName}k: ${fileName}k")
+        }
 
-    val isEncryptedFileSaved = encryptedFile.exists()
-    if (!isEncryptedFileSaved) {// Проверка на сохранение файла
-        Timber.e("=== Ошибка сохранения зашифрованного файла")
-        return
-    }
-    toast("Зашифрованный ${encryptedFile.name} сохранен")
-    Timber.d("=== Зашифрованный файл сохранен: ${encryptedFile.name}")
-    Timber.d("=== Путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
-    //если задать имя fileName = "my_secret_photo.jpg", то файл будет сохранен в следующем виде:
-    //storage/emulated/0/Android/data/[app_package_name]/files/my_secret_photo.jpg
+        val isEncryptedFileSaved = encryptedFile.exists()
+        if (!isEncryptedFileSaved) {// Проверка на сохранение файла
+            Timber.e("=== Ошибка сохранения зашифрованного файла")
+            return
+        }
+        toast("Зашифрованный ${encryptedFile.name} сохранен")
+        Timber.d("=== Зашифрованный файл сохранен: ${encryptedFile.name}")
+        Timber.d("=== Путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
+        //если задать имя fileName = "my_secret_photo.jpg", то файл будет сохранен в следующем виде:
+        //storage/emulated/0/Android/data/[app_package_name]/files/my_secret_photo.jpg
 
-    val originalFile = File(imageUri.path) // Удаление оригинального изображения
-    val isOriginalFileDeleted = originalFile.delete()
-    Timber.e("чекаем оригинал файла до удаления ${originalFile.name}")
-    Timber.e("чекаем оригинал файла до удаления${imageUri.path}")
-    if (!isOriginalFileDeleted) { // Проверка на удаление оригинала
-        inputStream.close()        // Закрытие потоков
-        outputStream.flush()
-        outputStream.close()
-        Timber.e("чекаем оригинал файла после удаления ${originalFile.name}")
-        Timber.e("чекаем оригинал файла после удаления${imageUri.path}")
+        val originalFile = File(imageUri.path) // Удаление оригинального изображения
+        val isOriginalFileDeleted = originalFile.delete()
+        Timber.e("чекаем оригинал файла до удаления ${originalFile.name}")
+        Timber.e("чекаем оригинал файла до удаления${imageUri.path}")
+        if (!isOriginalFileDeleted) { // Проверка на удаление оригинала
+            inputStream.close()        // Закрытие потоков
+            outputStream.flush()
+            outputStream.close()
+            Timber.e("чекаем оригинал файла после удаления ${originalFile.name}")
+            Timber.e("чекаем оригинал файла после удаления${imageUri.path}")
+        }
     }
-}
 
     fun decryptImage(file: File): Bitmap {
-        val decryptionKey = AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+        val decryptionKey =
+            AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
         Timber.d("=== Начало декодирования. файл file: ${file.name}")
 
         val encryptedBytes = file.readBytes()
@@ -154,12 +157,15 @@ fun encryptImage(imageUri: Uri, fileName: String) {
     }
 
     fun createThumbnail(context: Context, imageUri: Uri) {
-//        val scaledNumber = AppPreferencesKeysMethods(context)
-//            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
-
-        val scaledNumber = AppPreferencesKeysMethods(context)
-            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR) ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
-
+        var scaledNumber = AppPreferencesKeysMethods(context)
+            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+            ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
+        if (scaledNumber <= 0) {
+            scaledNumber = 1
+        }
+        if (scaledNumber > 100) {
+            scaledNumber = 100
+        }
         val requestOptions = RequestOptions().override(scaledNumber, scaledNumber)
 
         Glide.with(context)
@@ -207,39 +213,39 @@ fun encryptImage(imageUri: Uri, fileName: String) {
         return drawable?.toBitmap() ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     }
 
-private fun saveThumbnailWithRandomFileName(
-    context: Context,
-    thumbnail: Bitmap,
-    imageUri: Uri
-): String {
-    val fileName = File(imageUri.path).name
+    private fun saveThumbnailWithRandomFileName(
+        context: Context,
+        thumbnail: Bitmap,
+        imageUri: Uri
+    ): String {
+        val fileName = File(imageUri.path).name
 
-    val fileExtension = fileName.substringAfterLast(".")
-    val previewFileName = if (fileExtension.isNotEmpty()) {
-        val fileNameWithoutExtension = fileName.substringBeforeLast(".")
-        "${fileNameWithoutExtension}.p"
-    } else {
-        "Пустая превьюшка"
+        val fileExtension = fileName.substringAfterLast(".")
+        val previewFileName = if (fileExtension.isNotEmpty()) {
+            val fileNameWithoutExtension = fileName.substringBeforeLast(".")
+            "${fileNameWithoutExtension}.p"
+        } else {
+            "Пустая превьюшка"
+        }
+        val file = File(context.applicationContext.filesDir, previewFileName)
+        try {
+            val outputStream = FileOutputStream(file)
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            return previewFileName
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return ""
     }
-    val file = File(context.applicationContext.filesDir, previewFileName)
-    try {
-        val outputStream = FileOutputStream(file)
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        outputStream.flush()
-        outputStream.close()
-        return previewFileName
-    } catch (e: IOException) {
-        e.printStackTrace()
-    }
-    return ""
-}
 
-private fun deleteOriginalImage(imageUri: Uri) {
-    val file = File(imageUri.path)
-    if (file.exists()) {
-        file.delete()
+    private fun deleteOriginalImage(imageUri: Uri) {
+        val file = File(imageUri.path)
+        if (file.exists()) {
+            file.delete()
+        }
     }
-}
 
     fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
         val savedFiles = mutableListOf<String>()
@@ -256,7 +262,7 @@ private fun deleteOriginalImage(imageUri: Uri) {
         return savedFiles
     }
 
-fun toast(text: String) {
-    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-}
+    fun toast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
 }

@@ -39,7 +39,7 @@ class FileProviderAdapter {
                     val stream = FileOutputStream(file)
 
                     // Сжимаем изображение и записываем его в файл в формате PNG
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream)
 
                     // Закрываем поток
                     stream.close()

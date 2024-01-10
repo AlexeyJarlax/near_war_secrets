@@ -2,6 +2,7 @@ package com.pavlov.MyShadowGallery
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -18,13 +19,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
 import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
-//    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    //    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private lateinit var buttonClearStorage: Button
+    private lateinit var resetSettings: Button
+    private lateinit var personalData: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +44,17 @@ class SettingsActivity : AppCompatActivity() {
         val aboutTheDeveloperButton = findViewById<Button>(R.id.about_the_app)
         val languageOptions = findViewById<Button>(R.id.language_options)
         val back = findViewById<Button>(R.id.button_back_from_settings)
-        val resetSettings = findViewById<Button>(R.id.reset_settings) // сброс настроек
-        val buttonClearStorage = findViewById<Button>(R.id.clearing_the_storage) // удал всех файлов
         val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
         val delEKWhenClosingTheSession: SwitchCompat =
             findViewById(R.id.delete_the_encryption_key_when_closing_the_session)
         val switchDarkMode: SwitchCompat = findViewById(R.id.switch_dark_mode)
         val switchCompat: SwitchCompat = findViewById(R.id.button_tumbler)
         val mimicrySwitch: SwitchCompat = findViewById(R.id.disguise)
+        buttonClearStorage = findViewById<Button>(R.id.clearing_the_storage) // удал всех файлов
+        clearStorage()
+        resetSettings = findViewById<Button>(R.id.reset_settings) // сброс настроек
+        personalData = findViewById<Button>(R.id.personal_data) // персональный данные
+        resetSettingsAndClearStorage()
         // Загрузка сохраненных значений
         useTheEncryptionKey.isChecked =
             AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK)
@@ -65,14 +74,25 @@ class SettingsActivity : AppCompatActivity() {
         }
         val previewSizeSeekBarProgress =
             AppPreferencesKeysMethods(context = this)
-                .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR) ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
+                .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+                ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
         previewSizeSeekBar.post {
             previewSizeSeekBar.progress = previewSizeSeekBarProgress
-            sizeLabel.text = "$previewScalingFactorLabel ${previewSizeSeekBarProgress}x${previewSizeSeekBarProgress}"
+            sizeLabel.text =
+                "$previewScalingFactorLabel ${previewSizeSeekBarProgress}x${previewSizeSeekBarProgress}"
         }
 
         back.setOnClickListener { // КНОПКА НАЗАД
             finish()
+        }
+
+        var clickCount = 0
+        personalData.setOnClickListener {
+            when (clickCount % 2) {
+                0 -> personalData.text = "Чувствительная информация и персональные данные могут быть полностью удалены нажатием кнопки ОЧИСТИТЬ ВСЕ ДАННЫЕ, расположенной выше"
+                1 -> personalData.text = getString(R.string.personal_data)
+            }
+            clickCount++
         }
 
         aboutTheDeveloperButton.setOnClickListener {
@@ -82,38 +102,6 @@ class SettingsActivity : AppCompatActivity() {
 
         languageOptions.setOnClickListener {
             showLanguageSelectionDialog()
-        }
-
-        resetSettings.setOnClickListener { // сброс настроек
-            resetSettings(this, AppPreferencesKeys.PREFS_NAME)
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-        }
-
-        buttonClearStorage.setOnClickListener { // чистим хранилище
-            val externalFilesDir = applicationContext.filesDir
-            val fileList = externalFilesDir?.listFiles()
-            if (fileList != null) {
-                for (file in fileList) {
-                    file.delete()
-                }
-            }
-            val internalFilesDir = filesDir
-            val internalFileList = internalFilesDir?.listFiles()
-            if (internalFileList != null) {
-                for (file in internalFileList) {
-                    file.delete()
-                }
-            }
-            val originalAndPreviews = getDir("originalAndPreviews", Context.MODE_PRIVATE)
-            val originalAndPreviewsList = originalAndPreviews?.listFiles()
-            if (originalAndPreviewsList != null) {
-                for (file in originalAndPreviewsList) {
-                    file.delete()
-                }
-            }
-            Toast.makeText(this, "Хранилище очищено!", Toast.LENGTH_SHORT).show()
         }
 
         // Использовать ключ шифрования
@@ -221,12 +209,59 @@ class SettingsActivity : AppCompatActivity() {
 
     } // конец onCreate
 
-    fun resetSettings(context: Context, sharedPreferencesName: String) {
-        val sharedPreferences =
-            context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.apply()
+    fun clearStorage() {
+        buttonClearStorage.setOnClickListener { // чистим хранилище
+            val externalFilesDir = applicationContext.filesDir
+            val fileList = externalFilesDir?.listFiles()
+            if (fileList != null) {
+                for (file in fileList) {
+                    file.delete()
+                }
+            }
+            val internalFilesDir = filesDir
+            val internalFileList = internalFilesDir?.listFiles()
+            if (internalFileList != null) {
+                for (file in internalFileList) {
+                    file.delete()
+                }
+            }
+            val originalAndPreviews = getDir("originalAndPreviews", Context.MODE_PRIVATE)
+            val originalAndPreviewsList = originalAndPreviews?.listFiles()
+            if (originalAndPreviewsList != null) {
+                for (file in originalAndPreviewsList) {
+                    file.delete()
+                }
+            }
+            Toast.makeText(this, "Хранилище очищено!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun resetSettingsAndClearStorage() { // Сброс настроек
+        resetSettings.setOnClickListener { // сброс настроек
+            buttonClearStorage.performClick()
+            // Удаление обычного (нешифрованного) хранилища
+            val nonEncryptedSharedPreferences: SharedPreferences =
+                applicationContext.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            nonEncryptedSharedPreferences.edit().clear().apply()
+
+            // Удаление EncryptedSharedPreferences
+            val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+            val sharedPreferences: SharedPreferences =
+                EncryptedSharedPreferences.create(
+                    AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
+                    masterAlias,
+                    applicationContext,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
+            sharedPreferences.edit().clear().apply()
+            sharedPreferences.edit().remove("KEY_SMALL_SECRET").remove("KEY_BIG_SECRET").apply()
+
+            // Переход к основному экрану
+            val intent = Intent(applicationContext, MainPageActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+        }
     }
 
     private fun showLanguageSelectionDialog() {
@@ -261,7 +296,12 @@ class SettingsActivity : AppCompatActivity() {
 
         // Перезапуск активити, чтобы применить изменения
         val newContext = createConfigurationContext(config)
-        startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        startActivity(
+            Intent(
+                this,
+                MainPageActivity::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
         finish()
     }
 

@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.security
 
 import android.content.Context
 import android.content.Intent
@@ -7,18 +7,17 @@ import android.graphics.drawable.TransitionDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.pavlov.MyShadowGallery.MainPageActivity
+import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 
-class ZeroActivity : AppCompatActivity() {
+class ThreeStepsActivity : AppCompatActivity() {
 
     //    private lateinit var loadingIndicator: ProgressBar
 //    private lateinit var utilStepsBox: LinearLayout
@@ -32,7 +31,7 @@ class ZeroActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_zero)
+        setContentView(R.layout.activity_three_steps)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 //        loadingIndicator = findViewById(R.id.loading_indicator)
@@ -54,12 +53,13 @@ class ZeroActivity : AppCompatActivity() {
             stepZero()
         }
     }
+
     // три шага для входа в приложение
 
     fun stepZero() {
 //        loadingIndicator.visibility = View.INVISIBLE
         errorIcon.setImageResource(R.drawable.ic_launcher_foreground)
-        errorTextWeb.text = resources.getString(R.string.step0)
+        errorTextWeb.text = resources.getString(R.string.step00)
 //        retryButton.text = resources.getString(R.string.goAhead)
 //        retryButton.visibility = View.VISIBLE
 //        utilStepsBox.visibility = View.VISIBLE
@@ -70,7 +70,7 @@ class ZeroActivity : AppCompatActivity() {
     }
 
 
-    private fun step1() {
+    private fun step1() { // ПАРОЛЬ
         val emptyIcon = ContextCompat.getDrawable(this, android.R.color.transparent)
         errorIcon.setImageDrawable(emptyIcon)
         val drawable1 = ContextCompat.getDrawable(this, R.drawable.three_steps1)
@@ -78,10 +78,8 @@ class ZeroActivity : AppCompatActivity() {
         val transitionDrawable = TransitionDrawable(arrayOf(drawable2, drawable1))
         errorIcon.background = transitionDrawable
         transitionDrawable.startTransition(4000)
-        errorTextWeb.text = resources.getString(R.string.step03)
         yesButton.visibility = View.VISIBLE
         noButton.visibility = View.VISIBLE
-        inputButton.visibility = View.GONE
         yesButton.setOnClickListener {
             val intent = Intent(this, SetPasswordActivity::class.java)
             startActivity(intent)
@@ -89,14 +87,25 @@ class ZeroActivity : AppCompatActivity() {
         noButton.setOnClickListener {
             step2()
         }
+        val savedPassword = masterAlias()
+        if (savedPassword.isNullOrBlank()) {
+            errorTextWeb.text = resources.getString(R.string.step01_01)
+            inputButton.visibility = View.GONE
+        } else {
+            errorTextWeb.text = resources.getString(R.string.step01_02)
+            inputButton.visibility = View.VISIBLE
+            inputButton.text = resources.getString(R.string.step01_03)
+        }
+
+
     }
 
-    private fun step2() {
+    private fun step2() { // МАСКИРОВКА
         val emptyIcon = ContextCompat.getDrawable(this, android.R.color.transparent)
         errorIcon.setImageDrawable(emptyIcon)
         val drawable1 = ContextCompat.getDrawable(this, R.drawable.three_steps1)
         val drawable2 = ContextCompat.getDrawable(this, R.drawable.three_steps2)
-        errorTextWeb.text = resources.getString(R.string.step1)
+        errorTextWeb.text = resources.getString(R.string.step02_00)
         yesButton.visibility = View.VISIBLE
         noButton.visibility = View.VISIBLE
 
@@ -108,11 +117,11 @@ class ZeroActivity : AppCompatActivity() {
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_MIMICRY_SWITCH, true).apply()
             if (isPasswordExists) {
-                errorTextWeb.text = resources.getString(R.string.step2_1)
+                errorTextWeb.text = resources.getString(R.string.step02_01)
             } else {
-                errorTextWeb.text = resources.getString(R.string.step2_2)
+                errorTextWeb.text = resources.getString(R.string.step02_02)
             }
-            inputButton.text = resources.getString(R.string.step2_3)
+            inputButton.text = resources.getString(R.string.step02_03)
             inputButton.visibility = View.VISIBLE
             yesButton.visibility = View.GONE
             noButton.visibility = View.GONE
@@ -128,8 +137,8 @@ class ZeroActivity : AppCompatActivity() {
         }
     }
 
-    private fun step3() {
-        errorTextWeb.text = resources.getString(R.string.step3)
+    private fun step3() { // КЛЮЧ ШИФРОВАНИЯ
+        errorTextWeb.text = resources.getString(R.string.step03_00)
 //        val pixels = (60 * resources.displayMetrics.density).toInt()
 //        val params = LinearLayout.LayoutParams(pixels, ViewGroup.LayoutParams.WRAP_CONTENT)
 //        inputButton.layoutParams = params
@@ -147,13 +156,26 @@ class ZeroActivity : AppCompatActivity() {
             startActivity(displayIntent)
         }
         noButton.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
+            val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
         inputButton.setOnClickListener {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
         }
+    }
+
+    fun masterAlias(): String? {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPreferences: SharedPreferences =
+            EncryptedSharedPreferences.create(
+                AppPreferencesKeys.SMALL_SECRETS_PREFS_NAME,
+                masterAlias,
+                applicationContext,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
     }
 
 }

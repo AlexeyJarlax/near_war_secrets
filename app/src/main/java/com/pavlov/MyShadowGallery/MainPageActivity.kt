@@ -6,44 +6,29 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.pavlov.MyShadowGallery.security.KeyInputActivity
+import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.Encryption
 
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
-class MainActivity : AppCompatActivity() {
+class MainPageActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var zeroActivity: ZeroActivity
+    private lateinit var threeStepsActivity: ThreeStepsActivity
 //    private lateinit var loadingIndicator: ProgressBar
 //    private lateinit var utilStepsBox: View
 //    private lateinit var mainActivityLayout: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_page)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-
-        // Проверка на маскировку
-//        if (sharedPreferences.getBoolean(
-//                AppPreferencesKeys.KEY_MIMICRY_SWITCH,
-//                false
-//            )
-//        ) {
-//            AppPreferencesKeys.KEY_MIMICRY_THIS_SESSION_SWITCH = true
-//            val displayIntent = Intent(this, SearchActivity::class.java)
-//            startActivity(displayIntent)
-//        }
 
 //        ThemeManager.applyTheme(this) // Применяю ночную тему
         var backgroundView = findViewById<ImageView>(R.id.background_image)
@@ -54,27 +39,27 @@ class MainActivity : AppCompatActivity() {
         val buttonMedialib = findViewById<Button>(R.id.button_item_loader)
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
-        zeroActivity = ZeroActivity()
+        threeStepsActivity = ThreeStepsActivity()
 //        loadingIndicator = findViewById(R.id.loading_indicator)
 //        loadingIndicator.visibility = View.INVISIBLE
 //        utilStepsBox = findViewById<LinearLayout>(R.id.util_three_steps_layout)
 
         // Проверяем, является ли текущий запуск приложения первым
-        val isFirstRun = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_FIRST_RUN, true)
-        if (isFirstRun) { // Устанавливаем значения по умолчанию
-            with(sharedPreferences.edit()) {
-                putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
-                putBoolean(
-                    AppPreferencesKeys.KEY_FIRST_RUN,
-                    false
-                ) // Помечаем, что приложение уже запускалось
-                apply()
-                goToZeroActivity()
-            }
-        }
+//        val isFirstRun = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_FIRST_RUN, true)
+//        if (isFirstRun) { // Устанавливаем значения по умолчанию
+//            with(sharedPreferences.edit()) {
+//                putInt(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
+//                putBoolean(
+//                    AppPreferencesKeys.KEY_FIRST_RUN,
+//                    false
+//                ) // Помечаем, что приложение уже запускалось
+//                apply()
+//                goToZeroActivity()
+//            }
+//        }
 
         buttonLogin.setOnClickListener {
-            goToZeroActivity()
+            goToThreeStepsActivity()
 //            val displayIntent = Intent(this, KeyInputActivity::class.java)
 //            startActivity(displayIntent)
         }
@@ -109,8 +94,8 @@ class MainActivity : AppCompatActivity() {
 //        goToZeroActivity()
     } // конец OnCreate
 
-    fun goToZeroActivity() {
-        val displayIntent = Intent(this, ZeroActivity::class.java)
+    fun goToThreeStepsActivity() {
+        val displayIntent = Intent(this, ThreeStepsActivity::class.java)
         startActivity(displayIntent)
     }
 
@@ -136,9 +121,9 @@ class MainActivity : AppCompatActivity() {
             keySimbl.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
         }
-        if (!isExistsOfEncryptionKey && isUseTheEncryptionKey) {
-            val displayIntent = Intent(this, KeyInputActivity::class.java)
-            startActivity(displayIntent)
-        }
+//        if (!isExistsOfEncryptionKey && isUseTheEncryptionKey) {
+//            val displayIntent = Intent(this, KeyInputActivity::class.java)
+//            startActivity(displayIntent)
+//        }
     }
 }

@@ -3,15 +3,17 @@ import android.content.Context
 
 internal object AppPreferencesKeys { // Internal - доступно только в модуле
     // хранилища SharedPreferences
-    const val PREFS_NAME = "MyPrefs"
-    const val PREFS_HISTORY_NAME = "SearchHistory"
+    const val PREFS_NAME = "MyPrefs" // открытое хранилище
+    const val PREFS_HISTORY_NAME = "SearchHistory" // история песен
+    const val SMALL_SECRETS_PREFS_NAME = "secret_shared_prefs" // защищенное хранилище
 
     // ключи и файлы
     const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
     const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
     const val KEY_EXIST_OF_ENCRYPTION_KLUCHIK = "exists_of_encryption_kluchik"
     const val KEY_HISTORY_LIST = "key_for_history_list"
-//    const val IV_LENGTH = "IV"
+    const val KEY_SMALL_SECRET = "my_secret"  // короткий секретик
+    const val KEY_BIG_SECRET = "my_big_secret"  // длинный секретик
 
     // числовые константы
     const val ALBUM_ROUNDED_CORNERS = 8
@@ -19,6 +21,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val LOAD_PROCESSING_MILLISECONDS: Long = 800
     const val HISTORY_TRACK_LIST_SIZE = 8
     const val DEFAULT_PREVIEW_SIZE = 30
+    const val DEFAULT_MIMIC_PASS : String = "000"
 
     // переключатели в настройках SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
