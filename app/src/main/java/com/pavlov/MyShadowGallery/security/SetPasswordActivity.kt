@@ -20,6 +20,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class SetPasswordActivity : AppCompatActivity() {
@@ -96,7 +97,8 @@ class SetPasswordActivity : AppCompatActivity() {
 
         setPasswordButton.setOnClickListener { // подтвердить пароль
             if (isPasswordExist) {
-                val oldPassword = masterAlias()
+                val oldPassword =
+                    AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
                 if (oldPassword == oldPasswordType) {
                     confirmButton()
                 }
@@ -106,8 +108,9 @@ class SetPasswordActivity : AppCompatActivity() {
         }
     }  // конец онкриейт
 
-    fun startPreparation() {  // извлекаем парольку
-        val savedPassword = masterAlias()
+    private fun startPreparation() {  // извлекаем парольку
+        val savedPassword =
+            AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
             oldPasswordEditText.visibility = View.INVISIBLE
             oldPasswordText.visibility = View.INVISIBLE
@@ -118,32 +121,36 @@ class SetPasswordActivity : AppCompatActivity() {
         }
     }
 
-    fun masterAlias(): String? {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val encryptedSharedPreferences: SharedPreferences =
-            EncryptedSharedPreferences.create(
-                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-                masterAlias,
-                applicationContext,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-        return encryptedSharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-    }
+//    private fun getMastersSecret(): String? {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val encryptedSharedPreferences: SharedPreferences =
+//            EncryptedSharedPreferences.create(
+//                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//                masterAlias,
+//                applicationContext,
+//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//            )
+//        return encryptedSharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
+//    }
 
     private fun saveMasterSSecret(password: String) {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-            masterAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        AppPreferencesKeysMethods(context = this).saveMastersSecret(
+            password,
+            AppPreferencesKeys.KEY_SMALL_SECRET
         )
-        encryptedSharedPreferences.edit {
-            putString(AppPreferencesKeys.KEY_SMALL_SECRET, password).apply()
-            toastIt("${password} сохранен")
-        }
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+//            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//            masterAlias,
+//            applicationContext,
+//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//        )
+//        encryptedSharedPreferences.edit {
+//            putString(AppPreferencesKeys.KEY_SMALL_SECRET, password).apply()
+        toastIt("Пароль сохранен")
+//        }
         oldPasswordType = ""
         isPasswordExist = true
 

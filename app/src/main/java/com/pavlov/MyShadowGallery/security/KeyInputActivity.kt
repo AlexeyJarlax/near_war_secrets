@@ -13,9 +13,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import kotlin.random.Random
 
 class KeyInputActivity : AppCompatActivity() {
@@ -93,37 +96,20 @@ class KeyInputActivity : AppCompatActivity() {
             }
         })
 
-        fun confirmButton() {
-            val keyValue = keyInputEditText.text.toString().trim()
-
-            if (keyValue.isNotEmpty()) {
-                val editor = sharedPreferences.edit()
-                editor.putString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, keyValue)
-                editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, true)
-                editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
-                editor.apply()
-                Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
-                val displayIntent = Intent(this, MainPageActivity::class.java)
-                startActivity(displayIntent)
-            } else {
-                Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
-//                userEscape()
-            }
-//            finish()
-        }
-
         constantKey.setOnClickListener { // постоянный ключ
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
             editor.apply()
-            confirmButton()
+            val keyValue = keyInputEditText.text.toString().trim()
+            confirmButton(keyValue)
         }
 
         variableKey.setOnClickListener { // переменный ключ
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, true)
             editor.apply()
-            confirmButton()
+            val keyValue = keyInputEditText.text.toString().trim()
+            confirmButton(keyValue)
         }
 
         buttonOldKey.setOnClickListener { // старый ключ
@@ -135,16 +121,16 @@ class KeyInputActivity : AppCompatActivity() {
             startActivity(displayIntent)
         }
 
-
         cancelButton.setOnClickListener { // Юзер выбрал: Не использовать ключ шифрования
+            AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
             editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
             editor.remove(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
             editor.apply()
-            Toast.makeText(this, "Файлы будут сохранены без шифрования", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "Задан режим сохранения: без шифрования", Toast.LENGTH_SHORT)
                 .show()
-//            finish() // Завершение активности KeyInputActivity без передачи значения ключа
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
@@ -155,7 +141,21 @@ class KeyInputActivity : AppCompatActivity() {
             keyEditText.setText(generatedKey)
         }
 
+    } // конец онКриейт
 
+    private fun confirmButton(keyValue: String) {
+        if (keyValue.isNotEmpty()) {
+            AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_BIG_SECRET)
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, true)
+            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
+            editor.apply()
+            Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
+            val displayIntent = Intent(this, MainPageActivity::class.java)
+            startActivity(displayIntent)
+        } else {
+            Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun userEscape() { // пользователь сбегает и не вводит ключ

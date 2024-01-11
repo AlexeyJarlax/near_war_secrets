@@ -1,5 +1,10 @@
 package com.pavlov.MyShadowGallery.util
+
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 
 internal object AppPreferencesKeys { // Internal - доступно только в модуле
     // хранилища SharedPreferences
@@ -26,7 +31,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val LOAD_PROCESSING_MILLISECONDS: Long = 800
     const val HISTORY_TRACK_LIST_SIZE = 8
     const val DEFAULT_PREVIEW_SIZE = 30
-    const val DEFAULT_MIMIC_PASS : String = "000"
+    const val DEFAULT_MIMIC_PASS: String = "000"
 
     // переключатели состояний SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
@@ -45,6 +50,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
 
     private val sharedPreferences = getSharedPreferences()
 
+    //    var internalContext = context
     private fun getSharedPreferences() =
         context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -77,6 +83,75 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
 
     fun loadStringFromSharedPreferences(key: String): String {
         return sharedPreferences.getString(key, "упс...ах") ?: "упс...ах"
+    }
+
+    fun getMastersSecret(key: String): String? {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val encryptedSharedPreferences: SharedPreferences =
+            EncryptedSharedPreferences.create(
+                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+                masterAlias,
+                context,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        return encryptedSharedPreferences.getString(key, "")
+    }
+
+    fun saveMastersSecret(secret: String, key: String) {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            masterAlias,
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        encryptedSharedPreferences.edit {
+            putString(key, secret).apply()
+        }
+    }
+
+    fun delMastersSecret(key: String) {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            masterAlias,
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        encryptedSharedPreferences.edit {
+            remove(key)
+            apply()
+        }
+    }
+
+    fun getCounter(): Int { // счетчик
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            masterAlias,
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        return sharedPreferences.getInt(AppPreferencesKeys.KEY_COUNT_TRY, 30)
+    }
+
+    fun saveCounter(counter: Int) {
+        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            masterAlias,
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        sharedPreferences.edit {
+            putInt(AppPreferencesKeys.KEY_COUNT_TRY, counter).apply()
+//            toastIt("счетчик изменён")
+        }
     }
 
 }

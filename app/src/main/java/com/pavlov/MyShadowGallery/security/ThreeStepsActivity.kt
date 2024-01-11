@@ -16,6 +16,7 @@ import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 
 class ThreeStepsActivity : AppCompatActivity() {
 
@@ -55,18 +56,12 @@ class ThreeStepsActivity : AppCompatActivity() {
     // три шага для входа в приложение
 
     fun stepZero() {
-//        loadingIndicator.visibility = View.INVISIBLE
         errorIcon.setImageResource(R.drawable.ic_launcher_foreground)
         errorTextWeb.text = resources.getString(R.string.step00)
-//        retryButton.text = resources.getString(R.string.goAhead)
-//        retryButton.visibility = View.VISIBLE
-//        utilStepsBox.visibility = View.VISIBLE
-//        mainActivityLayout.alpha = 0.5f
         inputButton.setOnClickListener {
             step1()
         }
     }
-
 
     private fun step1() { // ПАРОЛЬ
         val emptyIcon = ContextCompat.getDrawable(this, android.R.color.transparent)
@@ -85,7 +80,7 @@ class ThreeStepsActivity : AppCompatActivity() {
         noButton.setOnClickListener {
             step2()
         }
-        val savedPassword = masterAlias()
+        val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
             errorTextWeb.text = resources.getString(R.string.step01_01)
             inputButton.visibility = View.GONE
@@ -172,10 +167,6 @@ class ThreeStepsActivity : AppCompatActivity() {
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
-//        inputButton.setOnClickListener {
-//            val displayIntent = Intent(this, KeyInputActivity::class.java)
-//            startActivity(displayIntent)
-//        }
         if (sharedPreferences.getBoolean(
                 AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
                 false
@@ -189,17 +180,17 @@ class ThreeStepsActivity : AppCompatActivity() {
         }
     }
 
-    fun masterAlias(): String? {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences: SharedPreferences =
-            EncryptedSharedPreferences.create(
-                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-                masterAlias,
-                applicationContext,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-    }
+//    fun masterAlias(): String? {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val sharedPreferences: SharedPreferences =
+//            EncryptedSharedPreferences.create(
+//                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//                masterAlias,
+//                applicationContext,
+//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//            )
+//        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
+//    }
 
 }

@@ -23,6 +23,7 @@ import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.SearchActivity
 import com.pavlov.MyShadowGallery.SettingsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class LoginActivity : AppCompatActivity() {
@@ -60,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
 //        parolchikCheck() // подготовка интерфейса
         listener() // TextChangedListener
         setPasswordButton() // клик по кнопке
-        counter = masterAliasInt()
+        counter = AppPreferencesKeysMethods(context = this).getCounter()
         tryCounter.text = counter.toString()
         tryCounter.visibility = View.INVISIBLE
     }  // конец онкриейт
@@ -71,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
                     AppPreferencesKeys.KEY_FIRST_RUN, true
                 )
             ) { // Устанавливаем значения по умолчанию
-
+                SettingsActivity.doClearStorage(applicationContext) // защита от злоумышленника
                 with(sharedPreferences.edit()) {
                     putInt(
                         AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30
@@ -91,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
                     entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
                 } else {
                     mimicry = false
-                    val savedPassword = masterAlias()
+                    val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
                     if (savedPassword.isNullOrBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
                         isPasswordExist = false
                         entranceMain()  // ИДЕМ В МЕЙН
@@ -132,10 +133,10 @@ class LoginActivity : AppCompatActivity() {
             counter = counter - 1
             if (isButtonEnabled) {
                 if (isPasswordExist) {
-                    val oldPassword = masterAlias()
+                    val oldPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
                     if (oldPassword == oldPasswordEditText.text.toString().trim()) {
                         counter = 30
-                        saveCounter()
+                        AppPreferencesKeysMethods(context = this).saveCounter(counter)
                         if (delPassword) {
                             doDelPassword()
                             toastIt("Пароль успешно удален")
@@ -144,7 +145,7 @@ class LoginActivity : AppCompatActivity() {
                             entranceMain()
                         }
                     } else {
-                        saveCounter()
+                        AppPreferencesKeysMethods(context = this).saveCounter(counter)
                         toastIt("Пароль не совпадает")
 
                         if (counter < 27) {
@@ -174,64 +175,65 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun masterAlias(): String? {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-            masterAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-    }
+//    fun masterAlias(): String? {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+//            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//            masterAlias,
+//            applicationContext,
+//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//        )
+//        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
+//    }
 
-    fun masterAliasInt(): Int {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-            masterAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-        return sharedPreferences.getInt(AppPreferencesKeys.KEY_COUNT_TRY, 30)
-    }
-
-    private fun saveCounter() {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-            masterAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-        sharedPreferences.edit {
-            putInt(AppPreferencesKeys.KEY_COUNT_TRY, counter).apply()
-//            toastIt("счетчик изменён")
-        }
-    }
+//    fun masterAliasInt(): Int {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+//            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//            masterAlias,
+//            applicationContext,
+//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//        )
+//        return sharedPreferences.getInt(AppPreferencesKeys.KEY_COUNT_TRY, 30)
+//    }
+//
+//    private fun saveCounter() {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+//            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//            masterAlias,
+//            applicationContext,
+//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//        )
+//        sharedPreferences.edit {
+//            putInt(AppPreferencesKeys.KEY_COUNT_TRY, counter).apply()
+////            toastIt("счетчик изменён")
+//        }
+//    }
 
     private fun doDelPassword() {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-            masterAlias,
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-        encryptedSharedPreferences.edit {
-            remove(AppPreferencesKeys.KEY_SMALL_SECRET)
-            apply()
-
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+//            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//            masterAlias,
+//            applicationContext,
+//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//        )
+//        encryptedSharedPreferences.edit {
+//            remove(AppPreferencesKeys.KEY_SMALL_SECRET)
+//            apply()
+        AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
         val sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
         editor.apply()
-    }}
+//    }
+    }
 
     private fun goToZeroActivity() {
         val intent = Intent(this, ThreeStepsActivity::class.java)

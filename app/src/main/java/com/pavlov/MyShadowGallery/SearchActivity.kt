@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -94,14 +95,8 @@ class SearchActivity : AppCompatActivity() {
         queryInputListener(isPasswordExists)
         fillTrackAdapter()
         killTheHistory()
-//        goToClickCounter()
     }
 
-//    fun goToZeroActivity() {
-//        val displayIntent = Intent(this, ThreeStepsActivity::class.java)
-//        startActivity(displayIntent)
-//        finish()
-//    }
 
     fun goToMainActivity() {
         val displayIntent = Intent(this, MainPageActivity::class.java)
@@ -109,41 +104,29 @@ class SearchActivity : AppCompatActivity() {
         finish()
     }
 
-//    fun goToClickCounter() {
-//        backgroundView.setOnClickListener {// Увеличиваем счетчик кликов
-//            clickCounter++
-//        }
-//        if (clickCounter >= 5) {
-//            // Сбрасываем счетчик
-//            clickCounter = 0
-//            // Запускаем метод goToMainActivity()
-//            goToMainActivity()
-//        }
+//    fun masterAlias(): String? {
+//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+//        val sharedPreferences: SharedPreferences =
+//            EncryptedSharedPreferences.create(
+//                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+//                masterAlias,
+//                applicationContext,
+//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//            )
+//        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
 //    }
-
-    fun masterAlias(): String? {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences: SharedPreferences =
-            EncryptedSharedPreferences.create(
-                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-                masterAlias,
-                applicationContext,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-    }
 
     private fun checkMasterSSecret(
         password: String,
         isPasswordExists: Boolean
     ) { //проверка на режим пароль, маскировка
         if (isPasswordExists) {
-            val savedPassword = masterAlias()
+            val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
             if (password == savedPassword) {
                 goToMainActivity()
             } else {
-                // Password is incorrect, perform standard search logic
+                // ошибка парольки, запускаем поиск песен
                 utilErrorBox.visibility = View.INVISIBLE
                 clearTrackAdapter()
                 preparingForSearch(password)
@@ -154,7 +137,7 @@ class SearchActivity : AppCompatActivity() {
             if (password == savedPassword) {
                 goToMainActivity()
             } else {
-                // Password is incorrect, perform standard search logic
+                // ошибка парольки, запускаем поиск песен
                 utilErrorBox.visibility = View.INVISIBLE
                 clearTrackAdapter()
                 preparingForSearch(password)
