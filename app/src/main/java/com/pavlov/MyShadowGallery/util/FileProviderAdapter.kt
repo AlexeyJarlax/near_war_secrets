@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.pavlov.MyShadowGallery.R
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -106,17 +107,45 @@ class FileProviderAdapter {
                 if (isDeleted) {
 //                    showToast(context, "Файл успешно удален: $thisFileName")
                 } else {
-                    showToast(context, "Ошибка при удалении файла: $thisFileName")
+                    showToast(context, context.getString(R.string.error_del))
+                    showToast(context, "${thisFileName}")
                 }
             } else {
-                showToast(context, "Файл $thisFileName не существует")
+//                showToast(context, "Файл $thisFileName не существует")
+                Log.d("=== ЛОГИ: ", "Файл $thisFileName не существует")
             }
         }
 
         fun generateFileName(context: Application, boolean: Boolean, folder: File): String {
-            val isRussian = isRussianLanguage(context)
-            val adjectives = if (isRussian) NameUtil.adjectives else EnglishNameUtil.adjectives
-            val nouns = if (isRussian) NameUtil.nouns else EnglishNameUtil.nouns
+            val language = try {
+                getLanguage(context)
+            } catch (e: IllegalArgumentException) {
+                // Если язык не поддерживается, используем русский
+                e.printStackTrace()
+                return generateFileNameForRussian(boolean, folder)
+            }
+
+            val adjectives = when (language) {
+                "ru" -> NameUtil.adjectives
+                "en" -> EnglishNameUtil.adjectives
+                "es" -> SpanishNameUtil.adjectives
+                "zh" -> ChineseNameUtil.adjectives
+                else -> {
+                    // Если язык не поддерживается, используем русский
+                    return generateFileNameForRussian(boolean, folder)
+                }
+            }
+
+            val nouns = when (language) {
+                "ru" -> NameUtil.nouns
+                "en" -> EnglishNameUtil.nouns
+                "es" -> SpanishNameUtil.nouns
+                "zh" -> ChineseNameUtil.nouns
+                else -> {
+                    // Если язык не поддерживается, используем русский
+                    return generateFileNameForRussian(boolean, folder)
+                }
+            }
 
             val randomName = "${adjectives.random()}_${nouns.random()}"
             var fileName = "${randomName}.unknown"
@@ -157,13 +186,59 @@ class FileProviderAdapter {
             return fileName
         }
 
-        fun isRussianLanguage(context: Application): Boolean {
-            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        private fun generateFileNameForRussian(boolean: Boolean, folder: File?): String {
+            // Используем русские слова, если язык не поддерживается
+            val adjectives = NameUtil.adjectives
+            val nouns = NameUtil.nouns
+
+            val randomName = "${adjectives.random()}_${nouns.random()}"
+            var fileName = "${randomName}.unknown"
+
+            if (boolean) {
+                fileName = fileName.substringBeforeLast(".")
+                fileName = "${fileName}.k"
+            } else {
+                fileName = fileName.substringBeforeLast(".")
+                fileName = "${fileName}.o"
+            }
+
+            if (folder != null) {
+                if (!folder.exists()) {
+                    folder.mkdirs()
+                }
+
+                var counter = 1
+                var file = File(folder, fileName)
+
+                // Проверяем существование файла с таким именем и добавляем суффикс, если нужно
+                while (file.exists()) {
+                    fileName = "${randomName}_$counter"
+
+                    if (boolean) {
+                        fileName = "${fileName}.k"
+                    } else {
+                        fileName = "${fileName}.o"
+                    }
+
+                    file = File(folder, fileName)
+                    counter++
+                }
+            } else {
+                // toast(context, "Ошибка: Не удалось получить папку для сохранения файла")
+            }
+
+            return fileName
+        }
+
+        fun getLanguage(context: Context): String {
+            val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.resources.configuration.locales[0]
             } else {
+                @Suppress("DEPRECATION")
                 context.resources.configuration.locale
             }
-            return locale.language == "ru"
+
+            return currentLocale.language
         }
 
         private fun showToast(context: Context, text: String) {

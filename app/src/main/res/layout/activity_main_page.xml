@@ -62,8 +62,6 @@
 
             </LinearLayout>
 
-
-
             <Button
                 android:id="@+id/button_item_loader"
                 style="@style/MainMenuButtons"
@@ -75,7 +73,7 @@
                 android:id="@+id/button_gallery"
                 style="@style/MainMenuButtons"
                 android:text="@string/storage"
-                app:icon="@android:drawable/ic_menu_search"
+                app:icon="@android:drawable/ic_dialog_dialer"
                 tools:ignore="VisualLintButtonSize" />
 
             <Button
@@ -89,7 +87,7 @@
                 android:id="@+id/button_search"
                 style="@style/MainMenuButtons"
                 android:text="@string/disguise_btn"
-                app:icon="@android:drawable/ic_menu_search"
+                app:icon="@android:drawable/ic_menu_view"
                 tools:ignore="VisualLintButtonSize" />
             <!--                android:visibility="gone"-->
             <Button

@@ -46,7 +46,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Handler
 import android.os.Looper
-import android.widget.Adapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.pavlov.MyShadowGallery.util.Encryption
 import kotlinx.coroutines.Dispatchers
@@ -144,7 +143,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                 }
             }
             if (allPermissionsGranted) {
-                showToast("Доступ к камере и галерее получен")
+                showToast(getString(R.string.access_obtained))
             } else {
             }
         }
@@ -283,7 +282,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
                                 val buttonForCover3 =
                                     imageDialog?.findViewById<Button>(R.id.button_for_cover3)
-                                buttonForCover3?.text = "Ожидайте..."
+                                buttonForCover3?.text = getString(R.string.wait)
                                 val loadingIndicator3 =
                                     imageDialog?.findViewById<ProgressBar>(R.id.loading_indicator3)
 
@@ -364,7 +363,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 }
 
                                 btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
-                                    showToast("Удаляю изображение, ожидайте...")
+                                    showToast(getString(R.string.wait))
                                     imageDialogAcceptance = false
                                     FileProviderAdapter.deleteFile(
                                         outputFile.name,
@@ -384,7 +383,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     ) {
 
                                         MainScope().launch {  // в фоновом потоке, Корутина
-                                            showToast("Добавляю файл, ожидайте...")
+                                            showToast(getString(R.string.wait))
 
                                             val rotationDegrees = when (currentCameraSelector) {
                                                 CameraSelector.DEFAULT_FRONT_CAMERA -> {
@@ -439,13 +438,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                     fileToDelete.delete()
                                                 }
                                             } catch (e: Exception) {
-                                                showToast("Ошибка: Не удалось завершить шифрование")
+                                                showToast(getString(R.string.enception_error))
                                             }
                                             hideLoadingIndicator(isItFrontCamera) // завершение индикатора
                                         } // завершение корутины
                                     } else {
                                         if (rotationAngle == 0) {
-                                            showToast("Сохранил без шифрования")
+                                            showToast(getString(R.string.enception_no))
                                             encryption.addPhotoToList(0, outputFile.toUri())
                                             notifyDSC()
                                             hideLoadingIndicator(isItFrontCamera) // завершение индикатора
@@ -468,7 +467,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                         outputFile.name
                                                     )
                                                 FileProviderAdapter.recycleBitmap(rotBitmap)
-                                                showToast("Сохранил без шифрования")
+                                                showToast(getString(R.string.enception_no))
                                                 encryption.addPhotoToList(0, outputFile.toUri())
                                                 notifyDSC()
                                                 hideLoadingIndicator(isItFrontCamera) // завершение индикатора
@@ -480,13 +479,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                             }
 
                             override fun onError(exception: ImageCaptureException) {
-                                showToast("Ошибка сохранения изображения")
+                                showToast(getString(R.string.save_error))
                             }
                         })
 
                 }
             } catch (e: Exception) {
-                showToast("Ошибка: Не удалось открыть камеру")
+                showToast(getString(R.string.camera_error))
             }
         }, ContextCompat.getMainExecutor(this))
 
@@ -507,7 +506,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     private fun handleSelectedImage(uri: Uri) {
-        showToast("Загружаю изображение")
+        showToast(getString(R.string.download))
 
         val folder = applicationContext.filesDir
         var existOrNot: Boolean = sharedPreferences.getBoolean(
@@ -533,7 +532,7 @@ class ItemLoaderActivity : AppCompatActivity() {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
             encryption.encryptImage(outputFile.toUri(), fileName)
         } else {
-            showToast("Изображение сохранено без шифрования")
+            showToast(getString(R.string.enception_no))
             encryption.addPhotoToList(0, outputFile.toUri())
             notifyDSC()
         }
@@ -664,7 +663,7 @@ open class PhotoListAdapter(
             btnTernRight?.visibility = View.INVISIBLE
 
             btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
-                context.showToast("Удаляю изображение, ожидайте...")
+                context.showToast(context.getString(R.string.wait))
                 delPeekaboo(encryptedFileName)
                 FileProviderAdapter.deleteFile(
                     encryptedFile.name,
@@ -760,20 +759,15 @@ open class PhotoListAdapter(
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
                         delPeekaboo(encryptedFileName)
-//                        recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
-//                        val fileNameWithExtension = "${encryptedFileName}eekaboo"
-//                        FileProviderAdapter.deleteFile(
-//                            fileNameWithExtension,
-//                            context
-//                        )  // явное удаление файла, в который превратили битмапу
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
-                    context.showToast("Ошибка. Возможно ключ был изменён")
+                    context.showToast(context.getString(R.string.deception_error))
+                    context.showToast(context.getString(R.string.error_key))
                 }
             } else {
                 // Отобразить сообщение об ошибке
-                context.showToast("Ошибка. Возможно формат изображения не соответствует")
+                context.showToast(context.getString(R.string.deception_error))
             }
         }
     }
@@ -792,7 +786,7 @@ open class PhotoListAdapter(
         shareIntent.type = "image/*"
 
         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
-        context.startActivity(Intent.createChooser(shareIntent, "Поделиться изображением"))
+        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_the_img)))
 
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
@@ -811,7 +805,7 @@ open class PhotoListAdapter(
         val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
 
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-        context.startActivity(Intent.createChooser(shareIntent, "Поделиться изображением"))
+        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_the_img)))
 
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
@@ -828,10 +822,10 @@ open class PhotoListAdapter(
 //        loadingIndicator3: ProgressBar
     ) {
         val options =
-            arrayOf("Зашифрованное изображение", "Расшифрованное изображение", "Миниатюра")
+            arrayOf(context.getString(R.string.encrepted_img), context.getString(R.string.decripted_img), context.getString(R.string.timber_img))
         val fileNameWithExtension = "${encryptedFileName}eekaboo"
         val builder = AlertDialog.Builder(context)
-        builder.setTitle("Выберите файл для отправки")
+        builder.setTitle(context.getString(R.string.chuse_img))
 
         builder.setItems(options) { _, which ->
             when (which) {
@@ -846,8 +840,8 @@ open class PhotoListAdapter(
 
                 1 -> {
                     GlobalScope.launch(Dispatchers.Main) {
-                        context.showToast("Создаю экземпляр: $fileNameWithExtension")
-                        context.showToast("Ожидайте...")
+                        context.showToast(context.getString(R.string.wait))
+                        context.showToast(fileNameWithExtension)
                         val decryptedFile =
                             FileProviderAdapter.bitmapToFileByKorutin(
                                 decryptedBitmap,

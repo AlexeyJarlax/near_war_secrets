@@ -113,7 +113,8 @@ class Encryption(private val context: Context) {
             Timber.e("=== Ошибка сохранения зашифрованного файла")
             return
         }
-        toast("Зашифрованный ${encryptedFile.name} сохранен")
+        toast(context.getString(R.string.encrypted_save))
+        toast(encryptedFile.name)
         Timber.d("=== Зашифрованный файл сохранен: ${encryptedFile.name}")
         Timber.d("=== Путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
         //если задать имя fileName = "my_secret_photo.jpg", то файл будет сохранен в следующем виде:
@@ -151,7 +152,7 @@ class Encryption(private val context: Context) {
         val decryptedBitmap = BitmapFactory.decodeByteArray(decryptedBytes, 0, decryptedBytes.size)
 
         Timber.d("=== Успешный конец декодирования. файл decryptedBitmap: ${decryptedBitmap}")
-        toast("Дешифрую ${file.name}")
+        toast(context.getString(R.string.decrypting))
 
         return decryptedBitmap
     }
@@ -185,7 +186,7 @@ class Encryption(private val context: Context) {
                         Timber.d("Превью сохранено")
                         deleteOriginalImage(imageUri)
                     } else {
-                        toast("Ошибка: Не удалось сохранить превью")
+                        toast(context.getString(R.string.save_error))
                     }
                 }
 
@@ -201,7 +202,7 @@ class Encryption(private val context: Context) {
                         Timber.d("Превью сохранено (дефолтное изображение)")
                         deleteOriginalImage(imageUri)
                     } else {
-                        toast("Ошибка: Не удалось сохранить превью (дефолтное изображение)")
+                        toast(context.getString(R.string.save_error))
                     }
                 }
             })
@@ -225,7 +226,7 @@ class Encryption(private val context: Context) {
             val fileNameWithoutExtension = fileName.substringBeforeLast(".")
             "${fileNameWithoutExtension}.p"
         } else {
-            "Пустая превьюшка"
+            context.getString(R.string.timber_img)
         }
         val file = File(context.applicationContext.filesDir, previewFileName)
         try {

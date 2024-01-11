@@ -104,19 +104,6 @@ class SearchActivity : AppCompatActivity() {
         finish()
     }
 
-//    fun masterAlias(): String? {
-//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//        val sharedPreferences: SharedPreferences =
-//            EncryptedSharedPreferences.create(
-//                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-//                masterAlias,
-//                applicationContext,
-//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//            )
-//        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-//    }
-
     private fun checkMasterSSecret(
         password: String,
         isPasswordExists: Boolean
@@ -461,6 +448,7 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val youtubeLink =
                 (itemView.context as SearchActivity).constructYoutubeLink(title, artist, duration)
             (itemView.context as SearchActivity).openYoutubeLink(youtubeLink)
+            onTrackClickButton.performClick()
         }
     }
 

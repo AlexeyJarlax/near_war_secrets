@@ -39,7 +39,6 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val KEY_USE_THE_ENCRYPTION_KLUCHIK = "useTheEncryptionKey"
     const val KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION = "deleteEKWhenClosingTheSession"
     const val KEY_PREVIEW_SIZE_SEEK_BAR = "previewSizeSeekBar"
-
     const val APP_LANGUAGE = "appLanguage"
 
     //  константы в рамках сессии

@@ -29,6 +29,14 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var buttonClearStorage: Button
     private lateinit var resetSettings: Button
     private lateinit var personalData: Button
+//    private enum class NamingOption {
+//        RUSSIAN_HEROIC,
+//        ENGLISH_HEROIC,
+//        CHINESE_HERO,
+//        SPANISH_HEROIC,
+//        SYSTEM
+//    }
+//    private var currentNamingOption: NamingOption = NamingOption.SYSTEM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,7 @@ class SettingsActivity : AppCompatActivity() {
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val aboutTheDeveloperButton = findViewById<Button>(R.id.about_the_app)
         val languageOptions = findViewById<Button>(R.id.language_options)
+//        val namingOptions = findViewById<Button>(R.id.naming_options)
         val back = findViewById<Button>(R.id.button_back_from_settings)
         val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
         val delEKWhenClosingTheSession: SwitchCompat =
@@ -103,6 +112,10 @@ class SettingsActivity : AppCompatActivity() {
         languageOptions.setOnClickListener {
             showLanguageSelectionDialog()
         }
+
+//        namingOptions.setOnClickListener {
+//            showNamingSelectionDialog()
+//        }
 
         // Использовать ключ шифрования
         useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
@@ -280,7 +293,7 @@ class SettingsActivity : AppCompatActivity() {
         val languageOptions = arrayOf("Русский", "English", "汉语")
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Выберите язык приложения")
+        builder.setTitle(getString(R.string.language_option))
 
         builder.setItems(languageOptions) { dialog, which ->
             // Обработка выбора языка
@@ -309,33 +322,36 @@ class SettingsActivity : AppCompatActivity() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
+//    private fun showNamingSelectionDialog() {
+//        val namingOptions = arrayOf("Русский героический", "English heroic", "中国英雄", "Heroico español", "System")
+//
+//        val builder = AlertDialog.Builder(this)
+//        builder.setTitle(getString(R.string.naming_option))
+//
+//        builder.setItems(namingOptions) { dialog, which ->
+//            // Установка текущего варианта именования на основе выбора пользователя
+//            currentNamingOption = when (which) {
+//                0 -> NamingOption.RUSSIAN_HEROIC
+//                1 -> NamingOption.ENGLISH_HEROIC
+//                2 -> NamingOption.CHINESE_HERO
+//                3 -> NamingOption.SPANISH_HEROIC
+//                4 -> NamingOption.SYSTEM
+//                else -> NamingOption.SYSTEM
+//            }
+//
+//            dialog.dismiss()
+//
+//            // Обновление языка приложения и использование выбранного варианта именования для генерации файлов
+//            updateAppLanguage()
+//        }
+//        builder.show()
+//    }
+
     private fun updateAppLanguage() {
         val intent = Intent(this, MainPageActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }
-
-//    private fun setAppLanguage(languageCode: String) {
-//        val locale = Locale(languageCode)
-//        Locale.setDefault(locale)
-//        val config = Configuration(resources.configuration)
-//        config.setLocale(locale)
-//
-//        // Сохранение выбранного языка в настройках приложения (если необходимо)
-//        val preferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-//        preferences.edit().putString(AppPreferencesKeys.APP_LANGUAGE, languageCode).apply()
-//        // Обновление ресурсов приложения
-//
-//        // Перезапуск активити, чтобы применить изменения
-//        val newContext = createConfigurationContext(config)
-//        startActivity(
-//            Intent(
-//                this,
-//                MainPageActivity::class.java
-//            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//        )
-//        finish()
-//    }
 
 }

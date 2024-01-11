@@ -93,6 +93,43 @@ You can share the image with another user and they will be able to view it on th
 
     <string name="key_byte_count_message">Recommended to add (bytes):</string>
     <string name="encryption_key_set">Encryption key set</string>
-    <string name="encryption_mode_set_no_encryption">Encryption mode set: no encryption</string>
+    <string name="encryption_mode_set_no_encryption">Save mode set: no encryption</string>
     <string name="encryption_key_not_set">Encryption key not set</string>
+    <string name="create_encryption_key">Create encryption key:</string>
+    <string name="generate">Generate</string>
+    <string name="helper_text_prefix">Recommended to add: %1$d bytes</string>
+    <string name="no_key">No key</string>
+    <string name="constant_key">Constant key</string>
+    <string name="variable_key">Variable key</string>
+    <string name="old_key_button_text">A previously entered encryption key has been detected in storage. PRESS if you want to keep the old key</string>
+    <string name="developers_page">Developers page</string>
+    <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
+    <string name="wait">Please wait...</string>
+    <string name="password">Password:</string>
+    <string name="invalid_character">Invalid character</string>
+    <string name="repit_password">Enter the password again</string>
+    <string name="wrong_password">Password doesnt match, please reenter</string>
+    <string name="save_password">Password saved</string>
+    <string name="to_change_password">To change the password, enter the old and new passwords</string>
+    <string name="del_password">Password successfully deleted</string>
+    <string name="try_left">Attempts left: </string>
+    <string name="last_warning">! After the last attempt, settings will be reset, and the storage will be cleared!</string>
+    <string name="new_password">New password</string>
+    <string name="old_password">Old password</string>
+    <string name="access_obtained">Access obtained</string>
+    <string name="enception_error">Error: Unable to complete encryption</string>
+    <string name="enception_no">Saved without encryption</string>
+    <string name="save_error">Save error</string>
+    <string name="camera_error">Error accessing the camera</string>
+    <string name="download">Downloading...</string>
+    <string name="deception_error">Decryption error</string>
+    <string name="error_key">Possibly the key has been changed</string>
+    <string name="share_the_img">Share the image</string>
+    <string name="encrepted_img">Encrypted image</string>
+    <string name="decripted_img">Decrypted image</string>
+    <string name="timber_img">Thumbnail</string>
+    <string name="chuse_img">Choose a file to send</string>
+    <string name="error_del">Error deleting the file</string>
+    <string name="encrypted_save">Encrypted file saved:</string>
+    <string name="decrypting">Decrypting...</string>
 </resources>

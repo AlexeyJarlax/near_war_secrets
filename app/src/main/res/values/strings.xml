@@ -138,4 +138,25 @@
     <string name="del_password">Пароль успешно удален</string>
     <string name="try_left">"Попыток осталось: "</string>
     <string name="last_warning">! После последней попытки произойдет сброс настроек и очистка хранилища !</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="access_obtained">Доступ получен</string>
+    <string name="enception_error">Ошибка: Не удалось завершить шифрование</string>
+    <string name="enception_no">Сохранено без шифрования</string>
+    <string name="save_error">Ошибка сохранения</string>
+    <string name="camera_error">Ошибка доступа к камере</string>
+    <string name="download">Загрузка...</string>
+    <string name="deception_error">Ошибка дешифрования</string>
+    <string name="error_key">возможно ключ был изменён</string>
+    <string name="share_the_img">Поделиться изображением</string>
+    <string name="encrepted_img">Зашифрованное изображение</string>
+    <string name="decripted_img">Дешифрованное изображение</string>
+    <string name="timber_img">Миниатюра</string>
+    <string name="chuse_img">Выберите файл для отправки</string>
+    <string name="error_del">Ошибка при удалении файла</string>
+    <string name="encrypted_save">Сохранён зашифрованный файл:</string>
+    <string name="decrypting">Дешифрую...</string>
+    <string name="naming_options">Именя дла файлов</string>
+    <string name="language_option">Выберите язык приложения</string>
+    <string name="naming_option">Выберите стиль наименования файлов</string>
 </resources>
