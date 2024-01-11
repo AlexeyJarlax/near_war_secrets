@@ -25,7 +25,7 @@ class AboutActivity : AppCompatActivity() {
         val shareButton = findViewById<Button>(R.id.button_settings_share)
         val helpButton = findViewById<Button>(R.id.button_settings_write_to_supp)
         val userAgreementButton = findViewById<Button>(R.id.button_settings_user_agreement)
-
+        val developersPage = findViewById<Button>(R.id.developers_page)
         if (themeManager.isNightModeEnabled(this)) {// применяем тему в старте: ночная
             if (themeManager.isUserSwitchEnabled(this)) { // горы
                 videoView.alpha = 0.0f
@@ -86,6 +86,14 @@ class AboutActivity : AppCompatActivity() {
         // КНОПКА политики конфиденциальности
         userAgreementButton.setOnClickListener {
             val url = getString(R.string.user_agreement_url)
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        }
+
+        // КНОПКА страницы разрабочика
+        developersPage.setOnClickListener {
+            val url = getString(R.string.developers_page_url)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
             startActivity(intent)

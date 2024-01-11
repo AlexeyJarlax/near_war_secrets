@@ -36,7 +36,7 @@
 
             <Button
                 android:id="@+id/button_settings_share"
-                style="@style/SettingsButtonsAndText"
+                style="@style/SettingsButtonsAndText3"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/share_the_app"
@@ -45,7 +45,7 @@
 
             <Button
                 android:id="@+id/button_settings_write_to_supp"
-                style="@style/SettingsButtonsAndText"
+                style="@style/SettingsButtonsAndText3"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/write_to_support"
@@ -54,12 +54,26 @@
 
             <Button
                 android:id="@+id/button_settings_user_agreement"
-                style="@style/SettingsButtonsAndText"
+                style="@style/SettingsButtonsAndText2"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/user_agreement"
-                app:icon="@android:drawable/ic_menu_edit"
+                app:icon="?android:attr/actionModeFindDrawable"
                 tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/developers_page"
+                style="@style/SettingsButtonsAndText2"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/developers_page"
+                app:icon="@android:drawable/ic_menu_my_calendar"
+                tools:ignore="VisualLintButtonSize" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp4"
+                android:background="@color/yp_text_gray_and_yp_black" />
 
             <TextView
                 android:id="@+id/preview_size_label1"

@@ -34,6 +34,7 @@ class SetPasswordActivity : AppCompatActivity() {
     private var isPasswordExist = true
     private var oldPasswordType = ""
     private var newPasswordText2 = ""
+    private lateinit var helperText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,7 @@ class SetPasswordActivity : AppCompatActivity() {
         newPasswordEditText2 = findViewById(R.id.newPasswordEditText2)
         oldPasswordEditText = findViewById(R.id.oldPasswordEditText)
         oldPasswordText = findViewById(R.id.oldPasswordEditTextText)
+        helperText = findViewById(R.id.edit_text_key_helper)
         startPreparation() // подготовка интерфейса
 
         // Установка InputFilter для проверки символов в реальном времени
@@ -101,6 +103,8 @@ class SetPasswordActivity : AppCompatActivity() {
                     AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
                 if (oldPassword == oldPasswordType) {
                     confirmButton()
+                } else {
+                    helperText.text = getString(R.string.wrong_password)
                 }
             } else {
                 confirmButton()
@@ -116,41 +120,16 @@ class SetPasswordActivity : AppCompatActivity() {
             oldPasswordText.visibility = View.INVISIBLE
             isPasswordExist = false
         } else {
-            toastIt("Обнаружен ранее сохраненный пароль")
-            toastIt("Для смены пароля введите старый и новый пароли")
+            toastIt(getString(R.string.to_change_password))
         }
     }
-
-//    private fun getMastersSecret(): String? {
-//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//        val encryptedSharedPreferences: SharedPreferences =
-//            EncryptedSharedPreferences.create(
-//                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-//                masterAlias,
-//                applicationContext,
-//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//            )
-//        return encryptedSharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-//    }
 
     private fun saveMasterSSecret(password: String) {
         AppPreferencesKeysMethods(context = this).saveMastersSecret(
             password,
             AppPreferencesKeys.KEY_SMALL_SECRET
         )
-//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-//            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-//            masterAlias,
-//            applicationContext,
-//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//        )
-//        encryptedSharedPreferences.edit {
-//            putString(AppPreferencesKeys.KEY_SMALL_SECRET, password).apply()
-        toastIt("Пароль сохранен")
-//        }
+        toastIt(getString(R.string.save_password))
         oldPasswordType = ""
         isPasswordExist = true
 
@@ -179,12 +158,10 @@ class SetPasswordActivity : AppCompatActivity() {
         ): CharSequence? {
             val input = source?.subSequence(start, end).toString()
             if (!regex.matches(input)) {
-                Toast.makeText(
-                    this@SetPasswordActivity,
-                    "Недопустимый символ",
-                    Toast.LENGTH_SHORT
-                ).show()
+                helperText.text = getString(R.string.invalid_character)
                 return ""
+            } else {
+                helperText.text = ""
             }
             return null
         }
@@ -205,18 +182,20 @@ class SetPasswordActivity : AppCompatActivity() {
         if (isValidInput(keyValue)) {
             if (keyValue.isNotBlank() && newPasswordText2.isBlank()) {
                 newPasswordEditText2.visibility = View.VISIBLE
-                toastIt("Введите пароль еще раз")
+                helperText.text = ""
+
             }
             if (keyValue == keyValue2) {
                 saveMasterSSecret(keyValue)
             } else {
-                toastIt("Пароль не совпадет, повторите ввод")
+                if (keyValue2.isNotBlank()) {
+                    helperText.text = getString(R.string.wrong_password)
+                }
             }
 
         } else {
             // Обработка случая, когда ввод не является валидным
-            Toast.makeText(this@SetPasswordActivity, "Недопустимый символ", Toast.LENGTH_SHORT)
-                .show()
+            helperText.text = getString(R.string.invalid_character)
             // Очистить поле ввода или выполнить другие необходимые действия
             newPasswordEditText.setText("")
         }

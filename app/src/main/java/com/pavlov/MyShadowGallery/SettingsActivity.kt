@@ -290,6 +290,9 @@ class SettingsActivity : AppCompatActivity() {
                 2 -> setAppLanguage("zh")
             }
             dialog.dismiss()
+
+            // Обновление языка приложения
+            updateAppLanguage()
         }
 
         builder.show()
@@ -298,23 +301,41 @@ class SettingsActivity : AppCompatActivity() {
     private fun setAppLanguage(languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
-        val config = Configuration(resources.configuration)
-        config.setLocale(locale)
 
-        // Сохранение выбранного языка в настройках приложения (если необходимо)
-        val preferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        preferences.edit().putString(AppPreferencesKeys.APP_LANGUAGE, languageCode).apply()
-        // Обновление ресурсов приложения
+        val configuration = Configuration()
+        configuration.setLocale(locale)
 
-        // Перезапуск активити, чтобы применить изменения
-        val newContext = createConfigurationContext(config)
-        startActivity(
-            Intent(
-                this,
-                MainPageActivity::class.java
-            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        val resources = resources
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun updateAppLanguage() {
+        val intent = Intent(this, MainPageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
         finish()
     }
+
+//    private fun setAppLanguage(languageCode: String) {
+//        val locale = Locale(languageCode)
+//        Locale.setDefault(locale)
+//        val config = Configuration(resources.configuration)
+//        config.setLocale(locale)
+//
+//        // Сохранение выбранного языка в настройках приложения (если необходимо)
+//        val preferences = getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+//        preferences.edit().putString(AppPreferencesKeys.APP_LANGUAGE, languageCode).apply()
+//        // Обновление ресурсов приложения
+//
+//        // Перезапуск активити, чтобы применить изменения
+//        val newContext = createConfigurationContext(config)
+//        startActivity(
+//            Intent(
+//                this,
+//                MainPageActivity::class.java
+//            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//        )
+//        finish()
+//    }
 
 }

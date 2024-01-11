@@ -17,7 +17,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Создать ключ шифрования:"
+            android:text="@string/create_encryption_key"
+            android:layout_marginTop="@dimen/dp24"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -34,7 +35,7 @@
                 android:gravity="center"
                 android:layout_weight="2"
                 android:hint="хххххххххххххххх"
-                android:inputType="text" />
+                android:inputType="textVisiblePassword" />
 
             <Button
                 android:id="@+id/button_generate"
@@ -43,7 +44,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="0.1"
                 android:padding="@dimen/z"
-                android:text="Сгенерировать"
+                android:text="@string/generate"
                 android:textSize="@dimen/text_size_sp14" />
 
         </LinearLayout>
@@ -71,9 +72,10 @@
             <Button
                 android:id="@+id/button_cancel"
                 style="@style/ErrorButtons"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/dp60"
-                android:text="Без ключа" />
+                android:backgroundTint="@color/kototeka_thumb_color"
+                android:text="@string/no_key" />
 
             <View
                 android:layout_width="match_parent"
@@ -83,9 +85,10 @@
             <Button
                 android:id="@+id/constant_key"
                 style="@style/ErrorButtons"
-                android:layout_width="wrap_content"
+                android:backgroundTint="@color/yp_blue"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/dp60"
-                android:text="Постоянный ключ" />
+                android:text="@string/constant_key"/>
 
             <View
                 android:layout_width="match_parent"
@@ -95,9 +98,10 @@
             <Button
                 android:id="@+id/variable_key"
                 style="@style/ErrorButtons"
-                android:layout_width="wrap_content"
+                android:backgroundTint="@color/yp_blue"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/dp60"
-                android:text="Переменный ключ" />
+                android:text="@string/variable_key" />
 
             <View
                 android:layout_width="match_parent"
@@ -107,12 +111,11 @@
             <Button
                 android:id="@+id/button_old_key"
                 style="@style/ErrorButtons"
+                android:layout_height="@dimen/dp78"
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
-                android:layout_weight="0.1"
                 android:padding="@dimen/z"
-                android:backgroundTint="@color/kototeka_thumb_color"
-                android:text="В хранилище обнаружен ранее введённый ключ шифрования. НАЖМИТЕ, если хотите оставить старый ключ"
+                android:backgroundTint="@color/yp_blue"
+                android:text="@string/old_key_button_text"
                 android:textSize="@dimen/text_size_sp16"
                 android:visibility="gone"
                 tools:visibility="visible" />

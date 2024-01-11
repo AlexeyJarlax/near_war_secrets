@@ -1,53 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyShadowGallery</string>
-    <string name="app_name_in_main_page">My Shadow Gallery</string>
-    <string name="disguise_btn">Disguise</string>
-    <string name="button_item_loader">Load</string>
-    <string name="button_settings">Settings</string>
-    <string name="dark_mod">Dark mod</string>
-    <string name="share_the_app">Share the app</string>
-    <string name="write_to_support">Write to support</string>
-    <string name="user_agreement">Privacy Policy</string>
-    <string name="search">Search</string>
-    <string name="button_back">back</string>
-    <string name="share_app_text">My Shadow Gallery is an image encryption application:: https://play.google.com/store/apps/details?id=%1$s</string>
-    <string name="share_app_title">share app</string>
-    <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">Message to the developer of this app</string>
-    <string name="support_email_text">Message</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
-    <string name="heading_search_history_list_view">Search string query history</string>
-    <string name="todo">this app is not suitable for the disabled</string>
-    <string name="there_wil_be_media_library">there will be a media library in this window</string>
-    <string name="cam_bat_on">hide the cam</string>
-    <string name="cam_bat_off">start the cam</string>
-    <string name="cam_bat">cam</string>
-    <string name="snapshot">snapshot</string>
-    <string name="galery">galery</string>
-    <string name="mountin_switch">Visual style - cats \ mountains</string>
-    <string name="storage_log">Storage log</string>
-    <string name="sample">one two three</string>
-    <string name="clearing_the_storage">clearing the storage</string>
-    <string name="error_text_web">Communication problems \n
-        The download failed. \n
-        Check your internet connection</string>
-    <string name="nothing_was_found">Nothing was found</string>
-    <string name="refresh">Refresh</string>
-    <string name="any_mistake">there will be an error message,\nthe icon will change depending on\nthe nature of the error</string>
-    <string name="you_were_looking_for">You were looking for</string>
-    <string name="clear_the_history">Clear the history</string>
-    <string name="error400">error 400 (Bad Request)</string>
-    <string name="error500">error 500 (Internal Server Error)</string>
-    <string name="error503">error 503 (Service Unavailable)</string>
-    <string name="error0">(unspecified error)</string>
-    <string name="error404">error 404 (Not Found)</string>
-    <string name="error403">error 403 (Forbidden)</string>
-    <string name="error401">error 401 (Unauthorized)</string>
-    <string name="added">Added: </string>
-    <string name="preview_scaling_factor">preview scaling factor</string>
-    <string name="reset_settings">Reset settings</string>
-    <string name="personal_data">Personal data</string>
-    <string name="disguise_it_as_a_music_player">Disguise it as a music player</string>
-    <string name="language">Язык / language / 应用语言</string>
+        <string name="app_name">MSG</string>
+        <string name="app_name_in_main_page">我的影子画廊</string>
+        <string name="disguise_btn">伪装</string>
+        <string name="search">搜索</string>
+        <string name="button_back">返回</string>
+        <string name="button_item_loader">添加</string>
+        <string name="storage_log">存储日志</string>
+        <string name="button_settings">设置</string>
+        <string name="dark_mod">暗黑主题</string>
+        <string name="share_the_app">分享应用</string>
+        <string name="write_to_support">联系支持</string>
+        <string name="user_agreement">用户协议</string>
+        <string name="share_app_text">我的影子画廊 - 图像加密应用: https://play.google.com/store/apps/details?id=%1$s</string>
+        <string name="share_app_title">分享应用</string>
+        <string name="support_email">mailto:a9633238@gmail.com</string>
+        <string name="support_email_subject">给该应用开发者的消息</string>
+        <string name="support_email_text">消息文本</string>
+        <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+        <string name="heading_search_history_list_view">搜索历史记录:</string>
+        <string name="todo">待办事项</string>
+        <string name="there_wil_be_media_library">在这个窗口将有媒体库</string>
+        <string name="cam_bat_on">隐藏\n摄像头</string>
+        <string name="cam_bat_off">启动\n摄像头</string>
+        <string name="cam_bat">摄像头</string>
+        <string name="snapshot">拍摄\n快照</string>
+        <string name="galery">上传\n文件</string>
+        <string name="mountin_switch">视觉样式:\n猫猫图 / 山脉</string>
+        <string name="sample">一二三</string>
+        <string name="key_info">输入的字符将成为设备上的唯一加密密钥。加密密钥可以包含任何字符，包括俄文字母、数字、特殊字符等。然而，为了提高安全性，建议使用长且复杂的密钥，由不同字符组成。
+在退出应用程序后，密钥将被保存，下次进入应用程序时不必重新输入。您可以在设置中更改选项，以在每次退出应用程序时清除密钥。
+如果您忘记了密钥或决定更改密钥，您可以想出一个新的并继续使用应用程序。但是，请注意，如果您不返回先前的密钥，旧图像将不再可供查看。密钥仅在创建图像时与图像关联。如果您更改了密钥并且某些图像变得无法访问，您可以使用应用程序的功能轻松删除不需要的图像。
+您可以与其他用户共享图像，他们可以通过任何可用的方式从您那里获得图像，并在其设备上使用相同的密钥打开图像。为此，他们需要在登录应用程序时输入相同的加密密钥，并可以将图像上传到隐藏的画廊并查看其内容。</string>
+        <string name="key_info_new">\n除了密码和伪装功能外，应用程序还具有三种安全模式:
+\n\n
+1. 无密钥。无密钥加密文件保存在设备上，对其他应用程序和画廊不可见，但是如果攻击者入侵设备，则可以提取和读取这些文件。获得从设备发送的文件后，攻击者可以读取其内容。
+\n\n
+2. 恒定加密密钥（建议的选项）。用户想出或生成加密密钥。密钥用于根据高级加密标准加密文件。文件以加密形式存储在设备上，即使获得了对设备内存的访问权（或者获得了从设备发送的文件），攻击者也无法在没有加密密钥的情况下读取内容。密钥以受保护的形式存储在应用程序中：哈希函数 + salt。
+\n\n
+3. 变动加密密钥。密钥不存储在应用程序中，而是在每次登录时请求。只有在应用程序打开时，它才存在于应用程序中。这是最高级别的安全性，但是如果您忘记了旧密钥，或者决定更改密钥，以前使用旧密钥保存的文件将不再可供查看。
+\n\n
+在设置菜单中，您随时可以更改安全选项，更改密码，更改伪装设置。</string>
+        <string name="about_app">关于应用</string>
+        <string name="about_app_long1">专为那些有秘密的人设计的应用</string>
+        <string name="about_app_long2">该应用程序拍摄并以编码形式存储照片。这些图像对于画廊和其他应用程序是不可见的。
+        进入应用程序受密码和伪装功能的保护，伪装成音乐应用程序。使用加密保存的图像，即使从手机中提取文件，也无法读取，除非有密钥。安全概念：所有数据仅存储在用户设备上，不使用服务器架构存储用户图像、预览、密钥和密码。尽管如此，用户仍可以共享图像，无论是以加密的形式还是以解密的形式。接收来自其他用户</string>
+    <string name="about_app_long3">数据存储特点：</string>
+    <string name="about_app_long4">- 预览图存储在应用程序的内部目录中，扩展名为 .p，不进行加密。预览图的像素缩放范围从 1x1 px 到 100x100 px，可在设置中选择。
+\n\n
+- 图像原始文件存储在应用程序的内部目录中。如果使用加密，文件将以 .kk 扩展名保存。如果用户选择不使用加密选项，文件将以 .o 扩展名保存。当用户分享解密后的图像时，会创建一个带有 .peekaboo 扩展名的临时文件。以这种方式，用户可以通过任何适用于设备的方式发送文件。一旦用户关闭查看该图像的窗口，解密实例将从设备中删除。换句话说，加密的图像仅以加密形式存储。用户可以通过“设置”菜单更改加密使用设置。
+\n\n
+- 加密密钥和密码以受保护的形式存储：哈希函数 + salt。出于安全考虑，不支持密钥和密码的恢复。如果忘记了应用程序登录密码，最好的解决方案是卸载应用程序并重新安装。如果丢失加密密钥，您可以在不重新安装应用程序的情况下创建新密钥，但以前使用旧密钥保存的图像将无法查看。用户可以通过“设置”菜单清除图像存储、更改密钥或密码。</string>
+    <string name="about_app_long5">加密系统运作特点</string>
+    <string name="about_app_long6">该应用程序具有三种加密模式：\n\n
+1. 无加密。无需输入加密密钥即可保存文件 – 文件以对其他应用程序和图库不可见的格式保存在设备上，但是如果攻击者夺取了设备，他们可以提取并读取这些文件。获得从设备发送的文件后，攻击者可以读取其内容。\n\n
+2. 恒定加密密钥（建议的选项）。用户想出或生成加密密钥。密钥用于根据高级加密标准加密文件。文件以加密形式存储在设备上，即使获得了对设备内存的访问权（或者获得了从设备发送的加密文件），攻击者也无法在没有加密密钥的情况下读取内容。密钥以受保护的形式存储在应用程序中：哈希函数 + salt。\n\n
+3. 变动加密密钥。密钥不存储在应用程序中，而是在每次登录时请求。只有在应用程序打开时，它才存在于应用程序中。这是最高级别的安全性，但是如果您忘记了旧密钥，或者决定更改密钥，以前使用旧密钥保存的文件将不再可供查看。在“设置”菜单中，您随时可以更改安全选项。</string>
+    <string name="clearing_the_storage">清除存储</string>
+    <string name="key_input_clear">关闭会话时清除密钥\n（登录时将要求输入密钥）</string>
+    <string name="preview_off">使用加密密钥</string>
+    <string name="error_text_web">网络连接问题\n
+        \n加载失败。请检查\n
+        与互联网的连接</string>
+    <string name="nothing_was_found">未找到任何内容</string>
+    <string name="refresh">刷新</string>
+    <string name="any_mistake">这里将显示错误消息，\n图标将根据错误性质而改变</string>
+    <string name="you_were_looking_for">你正在寻找</string>
+    <string name="clear_the_history">清除历史记录</string>
+    <string name="error400">400 - 请求错误</string>
+    <string name="error401">401 - 未经授权的请求</string>
+    <string name="error403">403 - 禁止请求</string>
+    <string name="error404">404 - 未找到</string>
+    <string name="error500">500 - 服务器内部错误</string>
+    <string name="error503">503 - 服务暂时不可用</string>
+    <string name="error0">未知错误</string>
+    <string name="added">已添加：</string>
+    <string name="preview_scaling_factor">预览缩放系数(px)：</string>
+    <string name="reset_settings">清除所有数据：重置设置、密钥、密码，清除存储</string>
+    <string name="personal_data">个人资料</string>
+    <string name="disguise_it_as_a_music_player">伪装成音乐播放器</string>
+    <string name="language">应用语言 / язык / language </string>
+    <string name="goAhead">继续!</string>
+    <string name="input">确认输入</string>
+    <string name="noinput">放弃输入</string>
+    <string name="step00">我的影子画廊\n\n设置安全性，三个简单步骤\n🔐️ 🕶️ 🔏</string>
+    <string name="step01_01">\n🔐️\n步骤 1\n使用密码登录应用程序？\n</string>
+    <string name="step01_02">\n🔐️\n步骤 1\n密码\n\n检测到先前保存的应用程序登录密码，是否更改密码？</string>
+    <string name="step01_03">🗑️ 删除密码</string>
+    <string name="step02_00">\n🕶️\n步骤 2\n\n启用音乐播放器伪装？</string>
+    <string name="step02_01">\n要退出伪装模式，请在歌曲搜索框中输入密码</string>
+    <string name="step02_02">\n要退出伪装模式，请在歌曲搜索框中输入数字 000</string>
+    <string name="step02_03">我会记住的！</string>
+    <string name="step03_00">\n🔏\n步骤 3\n使用加密密钥？</string>
+    <string name="step03_01">图像加密🔏\n允许应用程序生成唯一的加密密钥，或者创建自己的密钥。密钥用于根据高级加密标准对文件进行加密。图像和密钥存储在设备上，以安全的加密形式保存。</string>
+    <string name="storage">存储</string>
+
+    <string name="key_byte_count_message">Recommended to add: %1$d bytes</string>
+    <string name="encryption_key_set">Encryption key set</string>
+    <string name="encryption_mode_set_no_encryption">Encryption mode set: no encryption</string>
+    <string name="encryption_key_not_set">Encryption key not set</string>
 </resources>

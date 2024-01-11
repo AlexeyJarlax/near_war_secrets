@@ -87,6 +87,10 @@
         <item name="iconSize">@dimen/dp36</item>
     </style>
 
+    <style name="SettingsButtonsAndText3" parent="SettingsButtonsAndText">
+        <item name="iconSize">@dimen/dp28</item>
+    </style>
+
     <!-- Стиль для кнопки возврата назад во вложенных менюхах-->
     <style name="GoBackButtons" parent="Widget.MaterialComponents.Button">
         <item name="buttonStyle">@style/GoBackButtons</item>
@@ -219,4 +223,5 @@
         </style>
 
     <dimen name="text_size_sp20">20sp</dimen>
+    <dimen name="dp28">28dp</dimen>
 </resources>

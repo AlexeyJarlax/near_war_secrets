@@ -7,6 +7,8 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
@@ -47,6 +49,19 @@ class KeyInputActivity : AppCompatActivity() {
             buttonOldKey.visibility = View.VISIBLE
         }
 
+        keyInputEditText.filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
+            val input = SpannableStringBuilder()
+            for (i in start until end) {
+                val c = source[i]
+                if (c.toString().matches(Regex("[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+"))) {
+                    input.append(c)
+                } else {
+                    helperText.text = getString(R.string.invalid_character)
+                }
+            }
+            input
+        })
+
         keyInputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Не используется
@@ -61,15 +76,10 @@ class KeyInputActivity : AppCompatActivity() {
 
                     val message = when {
                         remainingBytes > 0 -> {
-//                            confirmButton.isEnabled =
-//                                false // Заблокировать кнопку, если байтов меньше 16
-                            "рекомендуется добавить: $remainingBytes байт"
+                            getString(R.string.key_byte_count_message) + " $remainingBytes"
                         }
 
                         remainingBytes < 0 -> {
-//                            confirmButton.isEnabled =
-//                                false // Заблокировать кнопку, если байтов больше 16
-//                            "излишние: ${-remainingBytes} байт"
                             ""
                         }
 
@@ -86,8 +96,6 @@ class KeyInputActivity : AppCompatActivity() {
                     helperText.setTextColor(if (isValid) Color.GREEN else Color.RED)
                 } else {
                     confirmable = false
-//                    helperText.text = ""
-//                    confirmButton.isEnabled = true // Разблокировать кнопку при пустом вводе
                 }
             }
 
@@ -116,7 +124,7 @@ class KeyInputActivity : AppCompatActivity() {
             val editor = sharedPreferences.edit()
             editor.putBoolean(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION, false)
             editor.apply()
-            Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.encryption_key_set, Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
@@ -129,7 +137,7 @@ class KeyInputActivity : AppCompatActivity() {
             editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
             editor.remove(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
             editor.apply()
-            Toast.makeText(this, "Задан режим сохранения: без шифрования", Toast.LENGTH_SHORT)
+            Toast.makeText(this, R.string.encryption_mode_set_no_encryption, Toast.LENGTH_SHORT)
                 .show()
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
@@ -150,11 +158,11 @@ class KeyInputActivity : AppCompatActivity() {
             editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, true)
             editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
             editor.apply()
-            Toast.makeText(this, "Ключ шифрования задан", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.encryption_key_set, Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         } else {
-            Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.encryption_key_not_set, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -163,7 +171,7 @@ class KeyInputActivity : AppCompatActivity() {
         editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
         editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
         editor.apply()
-        Toast.makeText(this, "Ключ шифрования не задан", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, R.string.encryption_key_not_set, Toast.LENGTH_SHORT).show()
         setResult(RESULT_CANCELED)
     }
 
@@ -185,7 +193,6 @@ class KeyInputActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         userEscape()
-//        finish()
         val displayIntent = Intent(this, MainPageActivity::class.java)
         startActivity(displayIntent)
     }

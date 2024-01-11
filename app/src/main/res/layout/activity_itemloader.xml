@@ -133,7 +133,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp60"
             android:alpha="0.4"
-            android:text="ожидайте..."
+            android:text="@string/wait"
             android:visibility="invisible"
             tools:visibility="visible" />
 

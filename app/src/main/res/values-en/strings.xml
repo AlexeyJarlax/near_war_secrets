@@ -1,53 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyShadowGallery</string>
+    <string name="app_name">MSG</string>
     <string name="app_name_in_main_page">My Shadow Gallery</string>
     <string name="disguise_btn">Disguise</string>
-    <string name="button_item_loader">Load</string>
-    <string name="button_settings">Settings</string>
-    <string name="dark_mod">Dark mod</string>
-    <string name="share_the_app">Share the app</string>
-    <string name="write_to_support">Write to support</string>
-    <string name="user_agreement">Privacy Policy</string>
     <string name="search">Search</string>
-    <string name="button_back">back</string>
-    <string name="share_app_text">My Shadow Gallery is an image encryption application:: https://play.google.com/store/apps/details?id=%1$s</string>
-    <string name="share_app_title">share app</string>
+    <string name="button_back">Back</string>
+    <string name="button_item_loader">Add</string>
+    <string name="storage_log">Storage Log</string>
+    <string name="button_settings">Settings</string>
+    <string name="dark_mod">Dark Mode</string>
+    <string name="share_the_app">Share the App</string>
+    <string name="write_to_support">Write to Support</string>
+    <string name="user_agreement">Privacy Policy</string>
+    <string name="share_app_text">My Shadow Gallery - an app for encrypting images: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_app_title">Share the App</string>
     <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">Message to the developer of this app</string>
-    <string name="support_email_text">Message</string>
+    <string name="support_email_subject">Message to the Developer of this App</string>
+    <string name="support_email_text">message text</string>
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
-    <string name="heading_search_history_list_view">Search string query history</string>
-    <string name="todo">this app is not suitable for the disabled</string>
-    <string name="there_wil_be_media_library">there will be a media library in this window</string>
-    <string name="cam_bat_on">hide the cam</string>
-    <string name="cam_bat_off">start the cam</string>
-    <string name="cam_bat">cam</string>
-    <string name="snapshot">snapshot</string>
-    <string name="galery">galery</string>
-    <string name="mountin_switch">Visual style - cats \ mountains</string>
-    <string name="storage_log">Storage log</string>
-    <string name="sample">one two three</string>
-    <string name="clearing_the_storage">clearing the storage</string>
-    <string name="error_text_web">Communication problems \n
-        The download failed. \n
-        Check your internet connection</string>
-    <string name="nothing_was_found">Nothing was found</string>
+    <string name="heading_search_history_list_view">Search History:</string>
+    <string name="todo">To-Do</string>
+    <string name="there_wil_be_media_library">The media library will be displayed in this window</string>
+    <string name="cam_bat_on">Hide\nCamera</string>
+    <string name="cam_bat_off">Launch\nCamera</string>
+    <string name="cam_bat">Camera</string>
+    <string name="snapshot">Take\nSnapshot</string>
+    <string name="galery">Upload\nFile</string>
+    <string name="mountin_switch">Visual Style:\nCat-oteka / Mountains</string>
+    <string name="sample">One, two, three</string>
+    <string name="key_info">The entered characters will become a unique encryption key on the device. The encryption key can consist of any characters, including Russian letters, numbers, special characters, etc. However, to increase the level of security, it is recommended to use long and complex keys consisting of various characters.
+After exiting the application, the key will be saved, and it is not necessary to enter it the next time you log in to the application. In the settings, you can change the option to clear the key every time you exit the application.
+If you forgot the key or decided to change it, you can come up with a new one and continue using the app. However, the old images will no longer be viewable unless you revert to the previous key. The key is bound to the image only when it is created. If you have changed the key and some images have become unavailable, you can easily delete unnecessary images using the functionality of the application.
+You can share the image with another user and they will be able to view it on their device by receiving it from you in any way they can and opening it using the same key. To do this, he will need to enter the same encryption key when logging into the application, and he will be able to upload the image to a hidden gallery and view its contents.</string>
+  <string name="key_info_new">\nIn addition to the password and camouflage features, the application has three security modes:
+\n\n 1. KEYLESS. Saving files without an encryption key - files are stored on the device in a format inaccessible to other applications and the gallery. However, a malicious actor can extract and read them if they gain control of the device. If a file is sent from the device, its content can be read.
+\n\n 2. CONSTANT ENCRYPTION KEY (optimal option). The user creates or generates an encryption key. The key is used to encrypt the file according to the Advanced Encryption Standard. The file is stored on the device in an encrypted form, and even if access to the device\'s memory is obtained (or if a file sent from the device is received), a malicious actor cannot read the content without the encryption key. The key is stored in the application in a protected form: hash function + salt.
+\n\n 3. VARIABLE ENCRYPTION KEY. The key is not stored in the application but is requested each time during login. It exists in the application as long as the application is open. The highest level of security, but if you forget the old key or decide to change it, previously saved files with a different key will no longer be accessible for viewing.
+\n\n In the Settings menu, you can always change security options, change the password, and adjust camouflage settings.</string>
+    <string name="about_app">About the App</string>
+    <string name="about_app_long1">An application for those who have secrets...</string>
+    <string name="about_app_long2">The application takes and stores photos in encoded form. The images are not available for the gallery and other applications. The entrance to the application is protected by a password and masking functionality for the music application. Images saved using encryption are not possible read it without a key even if you extract the file from your phone. Security concept: all data is stored only on the users device, server architecture storage of user images, previews, keys, passwords is not used. However, he himself The user can share images both encrypted and decrypted. Receive images from other users and decrypt them, using a similar encryption key.</string>
+    <string name="about_app_long3">Data storage features:</string>
+    <string name="about_app_long4">- Previews are stored in the internal application directory with the extension .p and are not encrypted. The preview scale in pixels can be selected in the Settings from 1x1 px to 100x100 px.
+\n\n
+- Original images are stored in the internal application directory. When encryption is used, the file is saved with the .kk extension. If the user chooses not to use encryption, the file is saved with the .o extension. When a user shares a decrypted image, a temporary file with the .peekaboo extension is created. In this form, the file can be sent by any means available to the device. Once the user closes the viewing window of this image, the decrypted instance is deleted from the device. In other words, encrypted images are only stored in an encrypted form. Users can change encryption usage settings through the Settings menu.
+\n\n
+- The encryption key and password are stored in a protected form: hash function + salt. For security reasons, there is no option to recover the key and password. If you forget the password to enter the application, the best solution is to uninstall the application and reinstall it. In case of losing the encryption key, you can create another key without reinstalling the application, but images saved with the old key will be inaccessible for viewing. You can clear the image storage, change the key, or password through the Settings menu.</string>
+    <string name="about_app_long5">Encryption System Operation Features</string>
+    <string name="about_app_long6">The application has three encryption modes:\n\n
+1. NO ENCRYPTION. Saving files without entering an encryption key - files are stored on the device in a format inaccessible to other applications and the gallery. However, a malicious actor can extract and read them if they gain control of the device. If a file is sent from the device, its content can be read.\n\n
+2. CONSTANT ENCRYPTION KEY (optimal option). The user creates or generates an encryption key. The key is used to encrypt the file according to the Advanced Encryption Standard. The file is stored on the device in an encrypted form, and even if access to the device\'s memory is obtained (or if a file sent from the device is received in an encrypted form), a malicious actor cannot read the content without the encryption key. The key is stored in the application in a protected form: hash function + salt.\n\n
+3. VARIABLE ENCRYPTION KEY. The key is not stored in the application but is requested each time during login. It exists in the application as long as the application is open. The highest level of security, but if you forget the old key or decide to change it, previously saved files with a different key will not be accessible for viewing. In the Settings menu, you can always change security options.</string>
+
+    <string name="clearing_the_storage">Clear Storage</string>
+    <string name="key_input_clear">Clear the key when closing the session \n(the key will be requested during login)</string>
+    <string name="preview_off">Use Encryption Key</string>
+    <string name="error_text_web">Connection Issues \n
+        \n Upload failed. Check your\n
+        internet connection</string>
+    <string name="nothing_was_found">Nothing Found</string>
     <string name="refresh">Refresh</string>
-    <string name="any_mistake">there will be an error message,\nthe icon will change depending on\nthe nature of the error</string>
+    <string name="any_mistake">An error message will be displayed here,\nthe icon will change depending on\nthe nature of the error</string>
     <string name="you_were_looking_for">You were looking for</string>
-    <string name="clear_the_history">Clear the history</string>
-    <string name="error400">error 400 (Bad Request)</string>
-    <string name="error500">error 500 (Internal Server Error)</string>
-    <string name="error503">error 503 (Service Unavailable)</string>
-    <string name="error0">(unspecified error)</string>
-    <string name="error404">error 404 (Not Found)</string>
-    <string name="error403">error 403 (Forbidden)</string>
-    <string name="error401">error 401 (Unauthorized)</string>
+    <string name="clear_the_history">Clear History</string>
+    <string name="error400">400 - Request error</string>
+    <string name="error401">401 - Unauthorized request</string>
+    <string name="error403">403 - Forbidden request</string>
+    <string name="error404">404 - Not found</string>
+    <string name="error500">500 - Internal server error</string>
+    <string name="error503">503 - Service temporarily unavailable</string>
+    <string name="error0">Undefined error</string>
     <string name="added">Added: </string>
-    <string name="preview_scaling_factor">preview scaling factor</string>
-    <string name="reset_settings">Очистить все данные: сбросить настройки, ключь, пароль, очистить хранилище</string>
-    <string name="personal_data">Personal data</string>
-    <string name="disguise_it_as_a_music_player">Disguise it as a music player</string>
-    <string name="language">Язык / language / 应用语言</string>
+    <string name="preview_scaling_factor">Preview Scaling Factor(px):</string>
+    <string name="reset_settings">Clear all data: reset settings, key, password, clear storage</string>
+    <string name="personal_data">Personal Data</string>
+    <string name="disguise_it_as_a_music_player">Disguise as a Music Player</string>
+    <string name="language"> language / язык / 应用语言</string>
+    <string name="goAhead">Go Ahead!</string>
+    <string name="input">Confirm Input</string>
+    <string name="noinput">Input Rejected</string>
+    <string name="step00">My Shadow Gallery.  Let\'s set up security, three simple steps 🔐️ 🕶️ 🔏</string>
+    <string name="step01_01">\n🔐️\nStep 1\nUse a password to enter the app?\n</string>
+    <string name="step01_02">\n🔐️\nStep 1\nPassword\n\nA previously saved password for entering the app is detected, do you want to change the password?</string>
+    <string name="step01_03">🗑️ Remove the password</string>
+    <string name="step02_00">\n🕶️\nStep 2\n\nEnable camouflage\nas a music app?</string>
+    <string name="step02_01">\nEnter the password in the song search field to exit camouflage mode</string>
+    <string name="step02_02">\nEnter the NUMBER 000 in the song search field to exit camouflage mode</string>
+    <string name="step02_03">I\'ll try to remember this!</string>
+    <string name="step03_00">\n🔏\nStep 3\nUse an encryption key?</string>
+    <string name="step03_01">Image Encryption🔏\nAllow the application to generate a unique encryption key or create your own. The key is used for encryption with Advanced Encryption Standard protection level. Images and the key are stored on the device in a secure encrypted form</string>
+    <string name="storage">Storage</string>
+
+    <string name="key_byte_count_message">Recommended to add (bytes):</string>
+    <string name="encryption_key_set">Encryption key set</string>
+    <string name="encryption_mode_set_no_encryption">Encryption mode set: no encryption</string>
+    <string name="encryption_key_not_set">Encryption key not set</string>
 </resources>

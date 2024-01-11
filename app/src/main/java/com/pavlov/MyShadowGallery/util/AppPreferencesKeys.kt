@@ -85,6 +85,17 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
         return sharedPreferences.getString(key, "упс...ах") ?: "упс...ах"
     }
 
+    //образцы для извлечений ключей
+//    AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_BIG_SECRET)
+//    AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+//
+//    AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+//    AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_SMALL_SECRET)
+//    AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+//
+//    AppPreferencesKeysMethods(context = this).getCounter()
+//    AppPreferencesKeysMethods(context = this).saveCounter(counter)
+
     fun getMastersSecret(key: String): String? {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val encryptedSharedPreferences: SharedPreferences =

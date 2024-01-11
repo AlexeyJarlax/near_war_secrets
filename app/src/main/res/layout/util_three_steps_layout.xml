@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dp4"
         android:backgroundTint="@color/kototeka_thumb_color"
-        android:text="В хранилище обнаружен ранее введённый ключ шифрования. НАЖМИТЕ, если хотите оставить старый ключ"
+        android:text="@string/old_key_button_text"
         android:textSize="@dimen/text_size_sp19"
         android:visibility="gone"
         tools:visibility="visible" />
