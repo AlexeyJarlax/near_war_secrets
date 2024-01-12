@@ -66,11 +66,11 @@ class SettingsActivity : AppCompatActivity() {
         resetSettingsAndClearStorage()
         // Загрузка сохраненных значений
         useTheEncryptionKey.isChecked =
-            AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK)
+            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K)
         delEKWhenClosingTheSession.isChecked =
-            AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
+            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
         mimicrySwitch.isChecked =
-            AppPreferencesKeysMethods(context = this).loadSwitchValue(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
+            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
         // Загрузка ебаного SeekBar с его конченными значениями
         val previewSizeSeekBar: SeekBar = findViewById(R.id.preview_size)
         val imagePreviewForSeekbar1: ImageView = findViewById(R.id.image_preview_for_seekbar_1)
@@ -121,8 +121,8 @@ class SettingsActivity : AppCompatActivity() {
 
         // Использовать ключ шифрования
         useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
-            AppPreferencesKeysMethods(context = this).saveSwitchValue(
-                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK,
+            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
+                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K,
                 isChecked
             )
         }
@@ -208,7 +208,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Обработка события для Удалить ключ при закрытии сессии
         delEKWhenClosingTheSession.setOnCheckedChangeListener { _, isChecked ->
-            AppPreferencesKeysMethods(context = this).saveSwitchValue(
+            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
                 AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
                 isChecked
             )
@@ -216,7 +216,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Обработка события для Маскировки
         mimicrySwitch.setOnCheckedChangeListener { _, isChecked ->
-            AppPreferencesKeysMethods(context = this).saveSwitchValue(
+            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
                 AppPreferencesKeys.KEY_EXIST_OF_MIMICRY,
                 isChecked
             )

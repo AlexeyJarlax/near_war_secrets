@@ -82,8 +82,8 @@ class ItemLoaderActivity : AppCompatActivity() {
     val permission2: String = Manifest.permission.WRITE_EXTERNAL_STORAGE
     val permission3: String = Manifest.permission.CAMERA
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    val permission4: String = Manifest.permission.MANAGE_EXTERNAL_STORAGE
+//    @RequiresApi(Build.VERSION_CODES.R)
+//    val permission4: String = Manifest.permission.MANAGE_EXTERNAL_STORAGE
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val permission5: String = Manifest.permission.READ_MEDIA_IMAGES
@@ -122,7 +122,8 @@ class ItemLoaderActivity : AppCompatActivity() {
 
     private fun requestPermissions() {
         val permissions: Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            arrayOf(permission1, permission2, permission3, permission4, permission5)
+//            arrayOf(permission1, permission2, permission3, permission4, permission5)
+            arrayOf(permission1, permission2, permission3, permission5)
         } else {
             arrayOf(permission1, permission2, permission3)
         }
@@ -238,7 +239,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                     showLoadingIndicator()
                     val folder = applicationContext.filesDir
                     var existOrNot: Boolean = sharedPreferences.getBoolean(
-                        AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                        AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
                         false
                     )
                     fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
@@ -378,7 +379,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.dismiss()
                                     imageDialogAcceptance = true
                                     if (sharedPreferences.getBoolean(
-                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
                                             false
                                         )
                                     ) {
@@ -511,7 +512,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 
         val folder = applicationContext.filesDir
         var existOrNot: Boolean = sharedPreferences.getBoolean(
-            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
             false
         )
         val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
@@ -525,7 +526,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
                 false
             )
         ) {

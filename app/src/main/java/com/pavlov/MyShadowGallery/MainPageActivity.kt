@@ -12,6 +12,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
@@ -88,12 +89,12 @@ class MainPageActivity : AppCompatActivity() {
     }
 
     private fun locker() {
-        val passKey =
-            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
-        val isExistsOfEncryptionKey =
-            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
-        val mimikKey =
-            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
+        val passKey = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD)
+//            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
+        val EncryptionKey = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K)
+//            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
+        val mimikKey = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
+//            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
 
         var keySimbl = findViewById<Button>(R.id.button_login)
 
@@ -107,7 +108,7 @@ class MainPageActivity : AppCompatActivity() {
         } else {
             ""
         }
-        simblEncryption = if (isExistsOfEncryptionKey) {
+        simblEncryption = if (EncryptionKey) {
             "🔏"
         } else {
             ""

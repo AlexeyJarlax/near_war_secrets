@@ -14,7 +14,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
 
     // ключи и файлы
     const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
-    const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
+//    const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
     const val KEY_HISTORY_LIST = "key_for_history_list"
     const val KEY_SMALL_SECRET = "my_secret"  // короткий секретик
     const val KEY_BIG_SECRET = "my_big_secret"  // длинный секретик
@@ -23,7 +23,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // ключи к статусу трех шагов
     const val KEY_EXIST_OF_PASSWORD = "parolchik"
     const val KEY_EXIST_OF_MIMICRY = "mimicry"
-    const val KEY_EXIST_OF_ENCRYPTION_KLUCHIK = "exists_of_encryption_kluchik"
+    const val KEY_EXIST_OF_ENCRYPTION_K = "exists_of_encryption_kluchik"
 
     // числовые константы
     const val ALBUM_ROUNDED_CORNERS = 8
@@ -36,7 +36,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // переключатели состояний SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
     const val KEY_USER_SWITCH = "userMode"
-    const val KEY_USE_THE_ENCRYPTION_KLUCHIK = "useTheEncryptionKey"
+    const val KEY_USE_THE_ENCRYPTION_K = "useTheEncryptionKey"
     const val KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION = "deleteEKWhenClosingTheSession"
     const val KEY_PREVIEW_SIZE_SEEK_BAR = "previewSizeSeekBar"
     const val PREF_LANGUAGE_KEY = "selected_language"
@@ -51,13 +51,13 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
     private fun getSharedPreferences() =
         context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun saveSwitchValue(key: String, isChecked: Boolean) {
+    fun saveBooleanToSharedPreferences(key: String, isChecked: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, isChecked)
         editor.apply()
     }
 
-    fun loadSwitchValue(key: String): Boolean {
+    fun getBooleanFromSharedPreferences(key: String): Boolean {
         return sharedPreferences.getBoolean(
             key,
             false
@@ -98,7 +98,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
 //    AppPreferencesKeysMethods(context = this).getCounter()
 //    AppPreferencesKeysMethods(context = this).saveCounter(counter)
 
-    fun getMastersSecret(key: String): String? {
+    fun getMastersSecret(key: String): String {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val encryptedSharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
@@ -108,7 +108,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
-        return encryptedSharedPreferences.getString(key, "")
+        return encryptedSharedPreferences.getString(key, "") ?: ""
     }
 
     fun saveMastersSecret(secret: String, key: String) {

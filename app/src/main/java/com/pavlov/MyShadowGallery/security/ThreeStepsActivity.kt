@@ -11,8 +11,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
@@ -160,15 +158,15 @@ class ThreeStepsActivity : AppCompatActivity() {
         }
         noButton.setOnClickListener {
             val editor = sharedPreferences.edit()
-            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
-            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
+            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K, false)
             editor.apply()
 
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
         if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
                 false
             )){
             oldKeyButton.visibility = View.VISIBLE

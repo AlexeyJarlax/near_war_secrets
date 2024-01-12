@@ -15,8 +15,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
@@ -42,7 +40,7 @@ class KeyInputActivity : AppCompatActivity() {
         val buttonOldKey = findViewById<Button>(R.id.button_old_key)
 
         if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
                 false
             )
         ) {
@@ -133,9 +131,10 @@ class KeyInputActivity : AppCompatActivity() {
             AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
 
             val editor = sharedPreferences.edit()
-            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
-            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, false)
-            editor.remove(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
+            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K, false)
+//            editor.remove(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+            AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
             editor.apply()
             Toast.makeText(this, R.string.encryption_mode_set_no_encryption, Toast.LENGTH_SHORT)
                 .show()
@@ -155,8 +154,8 @@ class KeyInputActivity : AppCompatActivity() {
         if (keyValue.isNotEmpty()) {
             AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_BIG_SECRET)
             val editor = sharedPreferences.edit()
-            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, true)
-            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
+            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, true)
+            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K, true)
             editor.apply()
             Toast.makeText(this, R.string.encryption_key_set, Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(this, MainPageActivity::class.java)
@@ -168,8 +167,8 @@ class KeyInputActivity : AppCompatActivity() {
 
     fun userEscape() { // пользователь сбегает и не вводит ключ
         val editor = sharedPreferences.edit()
-        editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK, false)
-        editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_KLUCHIK, true)
+        editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
+        editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K, true)
         editor.apply()
         Toast.makeText(this, R.string.encryption_key_not_set, Toast.LENGTH_SHORT).show()
         setResult(RESULT_CANCELED)
