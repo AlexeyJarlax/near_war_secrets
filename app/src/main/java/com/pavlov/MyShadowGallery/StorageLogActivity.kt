@@ -31,13 +31,7 @@ class StorageLogActivity : AppCompatActivity() {
     }
 
     private fun displayFileLog() {
-        val introMessage =
-            "Журнал файлов, хранящихся на устройстве.\n" +
-                    "Превью сохраняется с расширением p.\n" +
-                    "Шифрованные файлы сохраняются с расширением .kk\n" +
-                    "Сохранённые без шифрования - с расширением .o\n" +
-                    "Расшифрованный файл, которым делится пользователь, существует в системе не продолжительное время с расширением .peekaboo\n\n" +
-                    "----------------\n\n"
+        val introMessage = getString(R.string.storage_log_activity)
 
         logTextView.text = introMessage
 
@@ -53,11 +47,11 @@ class StorageLogActivity : AppCompatActivity() {
             val formattedDate = dateFormat.format(Date(lastModified))
 
             val fileType = when {
-                fileName.endsWith(".p", true) -> "Превью"
-                fileName.endsWith(".kk", true) -> "Шифрованный файл"
-                fileName.endsWith(".o", true) -> "Без шифрования"
-                fileName.endsWith(".peekaboo", true) -> "Расшифрованный файл"
-                else -> "Неизвестный тип"
+                fileName.endsWith(".p", true) -> getString(R.string.preview)
+                fileName.endsWith(".kk", true) -> getString(R.string.encrypted_file)
+                fileName.endsWith(".o", true) -> getString(R.string.whithout_enception)
+                fileName.endsWith(".peekaboo", true) -> getString(R.string.decripted_file)
+                else -> getString(R.string.unnown_tipe)
             }
 
             val fileSizeInMegabytes = fileSizeInBytes.toDouble() / (1024 * 1024)

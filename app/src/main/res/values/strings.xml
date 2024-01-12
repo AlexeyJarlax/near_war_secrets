@@ -156,7 +156,18 @@
     <string name="error_del">Ошибка при удалении файла</string>
     <string name="encrypted_save">Сохранён зашифрованный файл:</string>
     <string name="decrypting">Дешифрую...</string>
+
     <string name="naming_options">Именя дла файлов</string>
     <string name="language_option">Выберите язык приложения</string>
     <string name="naming_option">Выберите стиль наименования файлов</string>
+    <string name="storage_log_activity">Журнал файлов, хранящихся на устройстве.\n
+                    Превью сохраняется с расширением p.\nШифрованные файлы сохраняются с расширением .kk\n
+                    Сохранённые без шифрования - с расширением .o\n
+                    Расшифрованный файл, которым делится пользователь, существует в системе не продолжительное время с расширением .peekaboo\n\n
+                    ----------------\n\n</string>
+    <string name="preview">Превью</string>
+    <string name="encrypted_file">Шифрованный файл</string>
+    <string name="whithout_enception">Без шифрования</string>
+    <string name="decripted_file">Расшифрованный файл</string>
+    <string name="unnown_tipe">Неизвестный тип</string>
 </resources>
