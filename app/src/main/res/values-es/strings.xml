@@ -26,7 +26,7 @@
     <string name="cam_bat">Cámara</string>
     <string name="snapshot">fotografiar</string>
     <string name="galery">Subir\nArchivo</string>
-    <string name="mountin_switch">Estilo Visual:\nCat-oteka / Montañas</string>
+    <string name="mountin_switch">Estilo Visual:\n gato / Montañas</string>
     <string name="sample">Uno, dos, tres</string>
     <string name="key_info">Los caracteres ingresados se convertirán en una clave de encriptación única en el dispositivo. La clave de encriptación puede consistir en cualquier carácter, incluyendo letras rusas, números, caracteres especiales, etc. Sin embargo, para aumentar el nivel de seguridad, se recomienda usar claves largas y complejas que consistan en varios caracteres.
 Después de salir de la aplicación, la clave se guardará y no es necesario volver a ingresarla la próxima vez que inicie sesión en la aplicación. En la configuración, puede cambiar la opción para borrar la clave cada vez que sale de la aplicación.
@@ -34,7 +34,7 @@ Si olvida la clave o decide cambiarla, puede inventar una nueva y seguir utiliza
 Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al recibirla de usted de cualquier manera posible y abrirla usando la misma clave. Para hacer esto, deberá ingresar la misma clave de encriptación al iniciar sesión en la aplicación, y podrá cargar la imagen en una galería oculta y ver su contenido.</string>
     <string name="key_info_new">\nAdemás de las funciones de contraseña y camuflaje, la aplicación tiene tres modos de seguridad:
 \n\n 1. SIN CLAVE. Guardar archivos sin una clave de encriptación: los archivos se almacenan en el dispositivo en un formato inaccesible para otras aplicaciones y la galería. Sin embargo, un actor malicioso puede extraerlos y leerlos si obtiene el control del dispositivo. Si se envía un archivo desde el dispositivo, su contenido se puede leer.
-\n\n 2. CLAVE DE ENCRIPTACIÓN CONSTANTE (opción óptima). El usuario crea o genera una clave de encriptación. La clave se utiliza para encriptar el archivo según el Estándar de Encriptación Avanzada. El archivo se almacena en el dispositivo en forma encriptada, e incluso si se obtiene acceso a la memoria del dispositivo (o si se recibe un archivo desde el dispositivo), un actor malicioso no puede leer el contenido sin la clave de encriptación. La clave se almacena en la aplicación en una forma protegida: función hash + sal.
+\n\n 2. 2. CLAVE DE CIFRADO PERMANENTE (opción óptima). El usuario inventa o genera una clave de cifrado. La clave se utiliza para cifrar el archivo según el Estándar de Cifrado Avanzado. El archivo se almacena en el dispositivo en forma cifrada, e incluso si un atacante obtiene acceso a la memoria del dispositivo (o recibe el archivo enviado desde el dispositivo), no podrá leer el contenido sin la clave de cifrado. La clave se almacena en el dispositivo de forma segura.
 \n\n 3. CLAVE DE ENCRIPTACIÓN VARIABLE. La clave no se almacena en la aplicación, sino que se solicita cada vez durante el inicio de sesión. Existe en la aplicación mientras la aplicación está abierta. El nivel más alto de seguridad, pero si olvida la clave anterior o decide cambiarla, los archivos guardados anteriormente con una clave diferente ya no serán accesibles para su visualización.
 \n\n En el menú de Configuración, siempre puede cambiar las opciones de seguridad, cambiar la contraseña y ajustar la configuración de camuflaje.</string>
     <string name="about_app">Acerca de la aplicación</string>
@@ -45,7 +45,7 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
 \n\n
 - Las imágenes originales se almacenan en el directorio interno de la aplicación. Cuando se utiliza la encriptación, el archivo se guarda con la extensión .kk. Si el usuario elige no utilizar la encriptación, el archivo se guarda con la extensión .o. Cuando un usuario comparte una imagen desencriptada, se crea un archivo temporal con la extensión .peekaboo. En esta forma, el archivo se puede enviar por cualquier medio disponible para el dispositivo. Una vez que el usuario cierra la ventana de visualización de esta imagen, la instancia desencriptada se elimina del dispositivo. En otras palabras, las imágenes encriptadas solo se almacenan en forma encriptada. Los usuarios pueden cambiar la configuración del uso de la encriptación a través del menú Configuración.
 \n\n
-- La clave de encriptación y la contraseña se almacenan en una forma protegida: función hash + sal. Por razones de seguridad, no hay opción para recuperar la clave y la contraseña. Si olvida la contraseña para ingresar a la aplicación, la mejor solución es desinstalar la aplicación y reinstalarla. En caso de perder la clave de encriptación, puede crear otra clave sin reinstalar la aplicación, pero las imágenes guardadas con la antigua clave no serán accesibles para su visualización. Puede borrar el almacenamiento de imágenes, cambiar la clave o la contraseña a través del menú Configuración.</string>
+- La clave de cifrado y la contraseña se almacenan en el dispositivo de forma segura. Por razones de seguridad, no se proporciona la posibilidad de recuperar la clave y la contraseña. Si olvidas la contraseña para acceder a la aplicación, la mejor solución es desinstalar la aplicación y volver a instalarla. En caso de pérdida de la clave de cifrado, puedes crear otra clave sin reinstalar la aplicación, pero las imágenes guardadas con la clave antigua no serán accesibles. Puedes limpiar el almacenamiento de imágenes, cambiar la clave o la contraseña a través del menú de Configuración.</string>
     <string name="about_app_long5">Características de operación del sistema de encriptación</string>
     <string name="about_app_long6">La aplicación tiene tres modos de encriptación:\n\n
 1. SIN ENCRIPTACIÓN. Guardar archivos sin ingresar una clave de encriptación: los archivos se almacenan en el dispositivo en un formato inaccesible para otras aplicaciones y la galería. Sin embargo, un actor malicioso puede extraerlos y leerlos si obtiene el control del dispositivo. Si se envía un archivo desde el dispositivo, su contenido se puede leer.\n\n
@@ -130,7 +130,7 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="encrypted_save">Archivo encriptado guardado:</string>
     <string name="decrypting">Desencriptando...</string>
 
-    <string name="naming_options">Nombres de Archivos</string>
+    <string name="naming_options">Generador de nombres</string>
     <string name="language_option">Seleccionar el idioma de la aplicación</string>
     <string name="naming_option">Seleccionar el estilo de nomenclatura de archivos</string>
     <string name="storage_log_activity">Registro de archivos almacenados en el dispositivo.\n Las vistas previas se guardan con la extensión .p.\n Los archivos encriptados se guardan con la extensión .kk\n Los archivos sin encriptar se guardan con la extensión .o\n\n El archivo desencriptado compartido por el usuario existe en el sistema por un tiempo corto con la extensión .peekaboo\n\n ----------------\n\n</string>
@@ -140,4 +140,5 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="decripted_file">Archivo desencriptado</string>
     <string name="unnown_tipe">Tipo Desconocido</string>
     <string name="done">Terminado</string>
+    <string name="security_settings">Configuración de seguridad</string>
 </resources>

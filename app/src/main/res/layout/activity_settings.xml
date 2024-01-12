@@ -44,11 +44,11 @@
 
             <Button
                 android:id="@+id/language_options"
-                style="@style/SettingsButtonsAndText2"
+                style="@style/SettingsButtonsAndText3"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/language"
-                app:icon="@android:drawable/ic_menu_sort_alphabetically" />
+                app:icon="@android:drawable/ic_menu_mapmode" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_dark_mode"
@@ -70,34 +70,34 @@
                 android:rotation="0"
                 android:text="@string/mountin_switch" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/disguise"
-                style="@style/SettingsButtonsAndText"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:gravity="center_vertical"
-                android:paddingEnd="@dimen/dp8"
-                android:text="@string/disguise_it_as_a_music_player"
-                tools:ignore="VisualLintButtonSize" />
+<!--            <androidx.appcompat.widget.SwitchCompat-->
+<!--                android:id="@+id/disguise"-->
+<!--                style="@style/SettingsButtonsAndText"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:checked="false"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:paddingEnd="@dimen/dp8"-->
+<!--                android:text="@string/disguise_it_as_a_music_player"-->
+<!--                tools:ignore="VisualLintButtonSize" />-->
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/use_the_encryption_key"
-                style="@style/SettingsButtonsAndText"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:gravity="center_vertical"
-                android:paddingEnd="@dimen/dp8"
-                android:text="@string/preview_off"
-                tools:ignore="VisualLintButtonSize" />
+<!--            <androidx.appcompat.widget.SwitchCompat-->
+<!--                android:id="@+id/use_the_encryption_key"-->
+<!--                style="@style/SettingsButtonsAndText"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:checked="false"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:paddingEnd="@dimen/dp8"-->
+<!--                android:text="@string/preview_off"-->
+<!--                tools:ignore="VisualLintButtonSize" />-->
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/delete_the_encryption_key_when_closing_the_session"
-                style="@style/SettingsButtonsAndText"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingEnd="@dimen/dp8"
-                android:text="@string/key_input_clear"
-                tools:ignore="VisualLintButtonSize" />
+<!--            <androidx.appcompat.widget.SwitchCompat-->
+<!--                android:id="@+id/delete_the_encryption_key_when_closing_the_session"-->
+<!--                style="@style/SettingsButtonsAndText"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:paddingEnd="@dimen/dp8"-->
+<!--                android:text="@string/key_input_clear"-->
+<!--                tools:ignore="VisualLintButtonSize" />-->
 
             <TextView
                 android:id="@+id/preview_size_label"
@@ -160,6 +160,15 @@
                 android:gravity="center_vertical"
                 android:text="@string/naming_options"
                 app:icon="@android:drawable/ic_menu_sort_alphabetically" />
+
+            <Button
+                android:id="@+id/security_settings"
+                style="@style/SettingsButtonsAndText3"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/security_settings"
+                app:icon="@android:drawable/ic_lock_idle_lock"
+                tools:ignore="VisualLintButtonSize" />
 
             <Button
                 android:id="@+id/clearing_the_storage"

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import com.pavlov.MyShadowGallery.security.KeyInputActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
@@ -18,8 +19,8 @@ import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class MainPageActivity : AppCompatActivity() {
 
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var threeStepsActivity: ThreeStepsActivity
+//    private lateinit var sharedPreferences: SharedPreferences
+//    private lateinit var threeStepsActivity: ThreeStepsActivity
     private var simblPass = "🏳️"
     private var simblMimic = "🏳️"
     private var simblEncryption = "🏳️"
@@ -28,10 +29,14 @@ class MainPageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_page)
-        sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
-//        ThemeManager.applyTheme(this) // Применяю ночную тему
+        val pref1 = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
+        val pref2 = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET).isBlank()
+        if (pref1 && pref2) {
+            val displayIntent = Intent(this, KeyInputActivity::class.java)
+            startActivity(displayIntent)
+        }
+
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val buttonLogin = findViewById<Button>(R.id.button_login)
@@ -40,7 +45,7 @@ class MainPageActivity : AppCompatActivity() {
         val buttonMedialib = findViewById<Button>(R.id.button_item_loader)
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
-        threeStepsActivity = ThreeStepsActivity()
+//        threeStepsActivity = ThreeStepsActivity()
 
 
         buttonLogin.setOnClickListener {
@@ -56,7 +61,6 @@ class MainPageActivity : AppCompatActivity() {
             val displayIntent = Intent(this, ItemLoaderActivity::class.java)
             // Добавляем флаг, чтобы ItemLoaderActivity запускалась в усеченной версии
             displayIntent.putExtra("hideConstraintLayout", true)
-            // Запускаем ItemLoaderActivity
             startActivity(displayIntent)
         }
 

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
+import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -53,24 +54,26 @@ class SettingsActivity : AppCompatActivity() {
         val languageOptions = findViewById<Button>(R.id.language_options)
         val namingOptions = findViewById<Button>(R.id.naming_options)
         val back = findViewById<Button>(R.id.button_back_from_settings)
-        val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
-        val delEKWhenClosingTheSession: SwitchCompat =
-            findViewById(R.id.delete_the_encryption_key_when_closing_the_session)
+//        val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
+//        val delEKWhenClosingTheSession: SwitchCompat =
+//            findViewById(R.id.delete_the_encryption_key_when_closing_the_session)
         val switchDarkMode: SwitchCompat = findViewById(R.id.switch_dark_mode)
         val switchCompat: SwitchCompat = findViewById(R.id.button_tumbler)
-        val mimicrySwitch: SwitchCompat = findViewById(R.id.disguise)
+//        val mimicrySwitch: SwitchCompat = findViewById(R.id.disguise)
+
+        val securitySettings = findViewById<Button>(R.id.security_settings)
         buttonClearStorage = findViewById<Button>(R.id.clearing_the_storage) // удал всех файлов
         clearStorage()
         resetSettings = findViewById<Button>(R.id.reset_settings) // сброс настроек
         personalData = findViewById<Button>(R.id.personal_data) // персональный данные
         resetSettingsAndClearStorage()
         // Загрузка сохраненных значений
-        useTheEncryptionKey.isChecked =
-            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K)
-        delEKWhenClosingTheSession.isChecked =
-            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
-        mimicrySwitch.isChecked =
-            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
+//        useTheEncryptionKey.isChecked =
+//            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K)
+//        delEKWhenClosingTheSession.isChecked =
+//            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
+//        mimicrySwitch.isChecked =
+//            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
         // Загрузка ебаного SeekBar с его конченными значениями
         val previewSizeSeekBar: SeekBar = findViewById(R.id.preview_size)
         val imagePreviewForSeekbar1: ImageView = findViewById(R.id.image_preview_for_seekbar_1)
@@ -120,12 +123,12 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // Использовать ключ шифрования
-        useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
-            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
-                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K,
-                isChecked
-            )
-        }
+//        useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
+//            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
+//                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K,
+//                isChecked
+//            )
+//        }
 
         previewSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -206,21 +209,25 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
-        // Обработка события для Удалить ключ при закрытии сессии
-        delEKWhenClosingTheSession.setOnCheckedChangeListener { _, isChecked ->
-            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
-                AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
-                isChecked
-            )
+        securitySettings.setOnClickListener {
+            val intent = Intent(this, ThreeStepsActivity::class.java)
+            this.startActivity(intent)
         }
+        // Обработка события для Удалить ключ при закрытии сессии
+//        delEKWhenClosingTheSession.setOnCheckedChangeListener { _, isChecked ->
+//            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
+//                AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
+//                isChecked
+//            )
+//        }
 
         // Обработка события для Маскировки
-        mimicrySwitch.setOnCheckedChangeListener { _, isChecked ->
-            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
-                AppPreferencesKeys.KEY_EXIST_OF_MIMICRY,
-                isChecked
-            )
-        }
+//        mimicrySwitch.setOnCheckedChangeListener { _, isChecked ->
+//            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
+//                AppPreferencesKeys.KEY_EXIST_OF_MIMICRY,
+//                isChecked
+//            )
+//        }
 
     } // конец onCreate
 
@@ -365,10 +372,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun updateAppLanguage() {
-        val intent = Intent(this, MainPageActivity::class.java)
+        val intent = Intent(this, SettingsActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-        finish()
+//        finish()
     }
 
 }

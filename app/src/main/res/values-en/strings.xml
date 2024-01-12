@@ -26,7 +26,7 @@
     <string name="cam_bat">Camera</string>
     <string name="snapshot">Take\nSnapshot</string>
     <string name="galery">Upload\nFile</string>
-    <string name="mountin_switch">Visual Style:\nCat-oteka / Mountains</string>
+    <string name="mountin_switch">Visual Style:\nCat / Mountains</string>
     <string name="sample">One, two, three</string>
     <string name="key_info">The entered characters will become a unique encryption key on the device. The encryption key can consist of any characters, including Russian letters, numbers, special characters, etc. However, to increase the level of security, it is recommended to use long and complex keys consisting of various characters.
 After exiting the application, the key will be saved, and it is not necessary to enter it the next time you log in to the application. In the settings, you can change the option to clear the key every time you exit the application.
@@ -34,7 +34,7 @@ If you forgot the key or decided to change it, you can come up with a new one an
 You can share the image with another user and they will be able to view it on their device by receiving it from you in any way they can and opening it using the same key. To do this, he will need to enter the same encryption key when logging into the application, and he will be able to upload the image to a hidden gallery and view its contents.</string>
   <string name="key_info_new">\nIn addition to the password and camouflage features, the application has three security modes:
 \n\n 1. KEYLESS. Saving files without an encryption key - files are stored on the device in a format inaccessible to other applications and the gallery. However, a malicious actor can extract and read them if they gain control of the device. If a file is sent from the device, its content can be read.
-\n\n 2. CONSTANT ENCRYPTION KEY (optimal option). The user creates or generates an encryption key. The key is used to encrypt the file according to the Advanced Encryption Standard. The file is stored on the device in an encrypted form, and even if access to the device\'s memory is obtained (or if a file sent from the device is received), a malicious actor cannot read the content without the encryption key. The key is stored in the application in a protected form: hash function + salt.
+\n\n 2. PERMANENT ENCRYPTION KEY (optimal option). The user invents or generates an encryption key. The key is used to encrypt the file according to the Advanced Encryption Standard. The file is stored on the device in encrypted form, and even if an attacker gains access to the devices memory (or receives the file sent from the device), they wont be able to read the contents without the encryption key. The key is stored on the device in a secure form.
 \n\n 3. VARIABLE ENCRYPTION KEY. The key is not stored in the application but is requested each time during login. It exists in the application as long as the application is open. The highest level of security, but if you forget the old key or decide to change it, previously saved files with a different key will no longer be accessible for viewing.
 \n\n In the Settings menu, you can always change security options, change the password, and adjust camouflage settings.</string>
     <string name="about_app">About the App</string>
@@ -45,7 +45,7 @@ You can share the image with another user and they will be able to view it on th
 \n\n
 - Original images are stored in the internal application directory. When encryption is used, the file is saved with the .kk extension. If the user chooses not to use encryption, the file is saved with the .o extension. When a user shares a decrypted image, a temporary file with the .peekaboo extension is created. In this form, the file can be sent by any means available to the device. Once the user closes the viewing window of this image, the decrypted instance is deleted from the device. In other words, encrypted images are only stored in an encrypted form. Users can change encryption usage settings through the Settings menu.
 \n\n
-- The encryption key and password are stored in a protected form: hash function + salt. For security reasons, there is no option to recover the key and password. If you forget the password to enter the application, the best solution is to uninstall the application and reinstall it. In case of losing the encryption key, you can create another key without reinstalling the application, but images saved with the old key will be inaccessible for viewing. You can clear the image storage, change the key, or password through the Settings menu.</string>
+- The encryption key and password are stored on the device in a secure form. For security reasons, there is no provision for recovering the key and password. If you forget the password to access the application, the best solution is to uninstall the app and reinstall it. In the case of losing the encryption key, you can create another key without reinstalling the application, but images saved with the old key will be inaccessible. You can clear the image storage, change the key, or password through the Settings menu.</string>
     <string name="about_app_long5">Encryption System Operation Features</string>
     <string name="about_app_long6">The application has three encryption modes:\n\n
 1. NO ENCRYPTION. Saving files without entering an encryption key - files are stored on the device in a format inaccessible to other applications and the gallery. However, a malicious actor can extract and read them if they gain control of the device. If a file is sent from the device, its content can be read.\n\n
@@ -133,7 +133,7 @@ You can share the image with another user and they will be able to view it on th
     <string name="encrypted_save">Encrypted file saved:</string>
     <string name="decrypting">Decrypting...</string>
 
-    <string name="naming_options">File Names</string>
+    <string name="naming_options">File Name Generator</string>
     <string name="language_option">Select the application language</string>
     <string name="naming_option">Select the file naming style</string>
     <string name="storage_log_activity">Log of files stored on the device.\n
@@ -147,4 +147,5 @@ You can share the image with another user and they will be able to view it on th
     <string name="decripted_file">Decrypted File</string>
     <string name="unnown_tipe">Unknown Type</string>
     <string name="done">done</string>
+    <string name="security_settings">Security Settings</string>
 </resources>

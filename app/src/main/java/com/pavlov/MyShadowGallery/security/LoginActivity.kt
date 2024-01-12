@@ -88,9 +88,10 @@ class LoginActivity : AppCompatActivity() {
                 }
                 goToZeroActivity() // ИДЕМ В ТРИ ШАГА К ЗАЩИТЕ
             } else {
-                if (sharedPreferences.getBoolean(   // МИМИКРИРУЮЩИЙ ЗАПУСК ?????
-                        AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false
-                    )
+                if ( AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)// МИМИКРИРУЮЩИЙ ЗАПУСК ?????
+//                    sharedPreferences.getBoolean(
+//                        AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false
+//                    )
                 ) {
                     mimicry = true
                     entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
