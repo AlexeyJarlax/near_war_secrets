@@ -75,7 +75,7 @@ You can share the image with another user and they will be able to view it on th
     <string name="reset_settings">Clear all data: reset settings, key, password, clear storage</string>
     <string name="personal_data">Personal Data</string>
     <string name="disguise_it_as_a_music_player">Disguise as a Music Player</string>
-    <string name="language"> language / язык / 应用语言</string>
+    <string name="language">language/Язык/应用语言/idioma</string>
     <string name="goAhead">Go Ahead!</string>
     <string name="input">Confirm Input</string>
     <string name="noinput">Input Rejected</string>
@@ -132,4 +132,19 @@ You can share the image with another user and they will be able to view it on th
     <string name="error_del">Error deleting the file</string>
     <string name="encrypted_save">Encrypted file saved:</string>
     <string name="decrypting">Decrypting...</string>
+
+    <string name="naming_options">File Names</string>
+    <string name="language_option">Select the application language</string>
+    <string name="naming_option">Select the file naming style</string>
+    <string name="storage_log_activity">Log of files stored on the device.\n
+                Previews are saved with the extension p.\nEncrypted files are saved with the extension .kk\n
+                Unencrypted files are saved with the extension .o\n
+                The decrypted file shared by the user exists in the system for a short time with the extension .peekaboo\n\n
+                ----------------\n\n</string>
+    <string name="preview">Preview</string>
+    <string name="encrypted_file">Encrypted File</string>
+    <string name="whithout_enception">Without Encryption</string>
+    <string name="decripted_file">Decrypted File</string>
+    <string name="unnown_tipe">Unknown Type</string>
+    <string name="done">done</string>
 </resources>

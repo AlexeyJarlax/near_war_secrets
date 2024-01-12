@@ -259,7 +259,7 @@ class SettingsActivity : AppCompatActivity() {
                     file.delete()
                 }
             }
-            Toast.makeText(context, "Хранилище очищено!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.done), Toast.LENGTH_SHORT).show()
         }
 
         fun doResetSettingsAndClearStorage(context: Context) {
@@ -271,7 +271,7 @@ class SettingsActivity : AppCompatActivity() {
                 )
             nonEncryptedSharedPreferences.edit().clear().apply()
 
-        // Удаление шифрованного хранилища
+            // Удаление шифрованного хранилища
             val encryptedSharedPreferences: SharedPreferences =
                 context.getSharedPreferences(
                     AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
@@ -286,66 +286,71 @@ class SettingsActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             context.startActivity(intent)
         }
+
+        fun setAppLanguage(context: Context, languageCode: String) {
+            val locale = Locale(languageCode)
+            Locale.setDefault(locale)
+
+            val configuration = Configuration()
+            configuration.setLocale(locale)
+
+            val resources = context.resources
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
+
     }
 
 
     private fun showLanguageSelectionDialog() {
-        val languageOptions = arrayOf("Русский", "English", "汉语")
-
+        val languageOptions = arrayOf("Русский", "English", "汉语", "Español")
+        val languageCodes = arrayOf("ru", "en", "zh", "es")
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.language_option))
 
         builder.setItems(languageOptions) { dialog, which ->
             // Обработка выбора языка
             when (which) {
-                0 -> setAppLanguage("ru")
-                1 -> setAppLanguage("en")
-                2 -> setAppLanguage("zh")
+                0 -> setAppLanguage(this, "ru")
+                1 -> setAppLanguage(this, "en")
+                2 -> setAppLanguage(this, "zh")
+                3 -> setAppLanguage(this, "es")
             }
+            val selectedLanguageCode = languageCodes[which]
+            setAppLanguage(this, selectedLanguageCode)
             dialog.dismiss()
 
+            // Сохранение
+            AppPreferencesKeysMethods(context = this).saveStringFromSharedPreferences(AppPreferencesKeys.PREF_LANGUAGE_KEY, selectedLanguageCode)
             // Обновление языка приложения
             updateAppLanguage()
         }
-
         builder.show()
     }
 
-    private fun setAppLanguage(languageCode: String) {
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
+    private fun showNamingSelectionDialog() {
+        val namingOptions = arrayOf("Русский героический", "English heroic", "中国英雄", "Heroico español", "System")
 
-        val configuration = Configuration()
-        configuration.setLocale(locale)
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.naming_option))
 
-        val resources = resources
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+        builder.setItems(namingOptions) { dialog, which ->
+            // Установка текущего варианта именования на основе выбора пользователя
+            currentNamingOption = when (which) {
+                0 -> NamingOption.RUSSIAN_HEROIC
+                1 -> NamingOption.ENGLISH_HEROIC
+                2 -> NamingOption.CHINESE_HERO
+                3 -> NamingOption.SPANISH_HEROIC
+                4 -> NamingOption.SYSTEM
+                else -> NamingOption.SYSTEM
+            }
+
+            dialog.dismiss()
+
+            // Обновление языка приложения и использование выбранного варианта именования для генерации файлов
+            updateAppLanguage()
+        }
+        builder.show()
     }
-
-//    private fun showNamingSelectionDialog() {
-//        val namingOptions = arrayOf("Русский героический", "English heroic", "中国英雄", "Heroico español", "System")
-//
-//        val builder = AlertDialog.Builder(this)
-//        builder.setTitle(getString(R.string.naming_option))
-//
-//        builder.setItems(namingOptions) { dialog, which ->
-//            // Установка текущего варианта именования на основе выбора пользователя
-//            currentNamingOption = when (which) {
-//                0 -> NamingOption.RUSSIAN_HEROIC
-//                1 -> NamingOption.ENGLISH_HEROIC
-//                2 -> NamingOption.CHINESE_HERO
-//                3 -> NamingOption.SPANISH_HEROIC
-//                4 -> NamingOption.SYSTEM
-//                else -> NamingOption.SYSTEM
-//            }
-//
-//            dialog.dismiss()
-//
-//            // Обновление языка приложения и использование выбранного варианта именования для генерации файлов
-//            updateAppLanguage()
-//        }
-//        builder.show()
-//    }
 
     private fun updateAppLanguage() {
         val intent = Intent(this, MainPageActivity::class.java)

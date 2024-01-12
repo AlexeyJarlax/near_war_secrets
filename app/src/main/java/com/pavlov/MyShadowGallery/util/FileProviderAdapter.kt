@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.pavlov.MyShadowGallery.MyShadowGallery
 import com.pavlov.MyShadowGallery.R
 import java.io.File
 import java.io.FileOutputStream
@@ -116,129 +117,49 @@ class FileProviderAdapter {
             }
         }
 
-        fun generateFileName(context: Application, boolean: Boolean, folder: File): String {
-            val language = try {
-                getLanguage(context)
-            } catch (e: IllegalArgumentException) {
-                // Если язык не поддерживается, используем русский
-                e.printStackTrace()
-                return generateFileNameForRussian(boolean, folder)
-            }
+        fun generateFileName(context: Context, isBoolean: Boolean, folder: File): String {
+            val adjectives = context.resources.getStringArray(R.array.name_util_adjectives)
+            val nouns = context.resources.getStringArray(R.array.name_util_nouns)
 
-            val adjectives = when (language) {
-                "ru" -> NameUtil.adjectives
-                "en" -> EnglishNameUtil.adjectives
-                "es" -> SpanishNameUtil.adjectives
-                "zh" -> ChineseNameUtil.adjectives
-                else -> {
-                    // Если язык не поддерживается, используем русский
-                    return generateFileNameForRussian(boolean, folder)
-                }
-            }
-
-            val nouns = when (language) {
-                "ru" -> NameUtil.nouns
-                "en" -> EnglishNameUtil.nouns
-                "es" -> SpanishNameUtil.nouns
-                "zh" -> ChineseNameUtil.nouns
-                else -> {
-                    // Если язык не поддерживается, используем русский
-                    return generateFileNameForRussian(boolean, folder)
-                }
+            if (adjectives.isEmpty() || nouns.isEmpty()) {
+                // Обработка случая, если хотя бы один из массивов пуст
+                Log.d("FileNameGeneration", "Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
+                return "FallbackFileName.unknown"
             }
 
             val randomName = "${adjectives.random()}_${nouns.random()}"
             var fileName = "${randomName}.unknown"
 
-            if (boolean) {
-                fileName = fileName.substringBeforeLast(".")
-                fileName = "${fileName}.k"
+            if (isBoolean) {
+                fileName = "${fileName.substringBeforeLast(".")}.k"
             } else {
-                fileName = fileName.substringBeforeLast(".")
-                fileName = "${fileName}.o"
+                fileName = "${fileName.substringBeforeLast(".")}.o"
             }
 
-            if (folder != null) {
-                if (!folder.exists()) {
-                    folder.mkdirs()
-                }
-
+            if (folder.exists() || folder.mkdirs()) {
                 var counter = 1
                 var file = File(folder, fileName)
+
+                // Выводим в консоль сгенерированные имена файлов перед использованием
+                Log.d("FileNameGeneration", "Generated FileName: $fileName")
 
                 // Проверяем существование файла с таким именем и добавляем суффикс, если нужно
                 while (file.exists()) {
                     fileName = "${randomName}_$counter"
-
-                    if (boolean) {
+                    if (isBoolean) {
                         fileName = "${fileName}.k"
                     } else {
                         fileName = "${fileName}.o"
                     }
-
                     file = File(folder, fileName)
                     counter++
+
+                    // Выводим в консоль новое имя файла в случае конфликта
+                    Log.d("FileNameGeneration", "Conflict! New FileName: $fileName")
                 }
-            } else {
-                // toast(context, "Ошибка: Не удалось получить папку для сохранения файла")
             }
 
             return fileName
-        }
-
-        private fun generateFileNameForRussian(boolean: Boolean, folder: File?): String {
-            // Используем русские слова, если язык не поддерживается
-            val adjectives = NameUtil.adjectives
-            val nouns = NameUtil.nouns
-
-            val randomName = "${adjectives.random()}_${nouns.random()}"
-            var fileName = "${randomName}.unknown"
-
-            if (boolean) {
-                fileName = fileName.substringBeforeLast(".")
-                fileName = "${fileName}.k"
-            } else {
-                fileName = fileName.substringBeforeLast(".")
-                fileName = "${fileName}.o"
-            }
-
-            if (folder != null) {
-                if (!folder.exists()) {
-                    folder.mkdirs()
-                }
-
-                var counter = 1
-                var file = File(folder, fileName)
-
-                // Проверяем существование файла с таким именем и добавляем суффикс, если нужно
-                while (file.exists()) {
-                    fileName = "${randomName}_$counter"
-
-                    if (boolean) {
-                        fileName = "${fileName}.k"
-                    } else {
-                        fileName = "${fileName}.o"
-                    }
-
-                    file = File(folder, fileName)
-                    counter++
-                }
-            } else {
-                // toast(context, "Ошибка: Не удалось получить папку для сохранения файла")
-            }
-
-            return fileName
-        }
-
-        fun getLanguage(context: Context): String {
-            val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                context.resources.configuration.locales[0]
-            } else {
-                @Suppress("DEPRECATION")
-                context.resources.configuration.locale
-            }
-
-            return currentLocale.language
         }
 
         private fun showToast(context: Context, text: String) {

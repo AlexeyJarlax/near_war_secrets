@@ -39,7 +39,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val KEY_USE_THE_ENCRYPTION_KLUCHIK = "useTheEncryptionKey"
     const val KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION = "deleteEKWhenClosingTheSession"
     const val KEY_PREVIEW_SIZE_SEEK_BAR = "previewSizeSeekBar"
-    const val APP_LANGUAGE = "appLanguage"
+    const val PREF_LANGUAGE_KEY = "selected_language"
 
     //  константы в рамках сессии
     var KEY_MIMICRY_THIS_SESSION_SWITCH = false
@@ -49,7 +49,6 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
 
     private val sharedPreferences = getSharedPreferences()
 
-    //    var internalContext = context
     private fun getSharedPreferences() =
         context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -80,8 +79,14 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
         ) // Значение по умолчанию, если ключ не найден
     }
 
-    fun loadStringFromSharedPreferences(key: String): String {
+    fun getStringFromSharedPreferences(key: String): String {
         return sharedPreferences.getString(key, "упс...ах") ?: "упс...ах"
+    }
+
+    fun saveStringFromSharedPreferences(key: String, value: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(key, value)
+        editor.apply()
     }
 
     //образцы для извлечений ключей

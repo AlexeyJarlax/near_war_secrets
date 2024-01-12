@@ -15,9 +15,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.SearchActivity
@@ -45,7 +42,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         delPassword = intent.getBooleanExtra("delPassword", false) // ФЛАГ С intent
-
         loadingIndicator = findViewById(R.id.loading_indicator)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
@@ -56,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
         oldPasswordText = findViewById(R.id.oldPasswordEditTextText)
         tryCounter = findViewById(R.id.try_counter)
         alarmCounter = findViewById(R.id.counter_alarm)
+        updateAppLanguage()
         firstStart() // первый пуск приложения?
 //        mimicryCheck() // Проверка на маскировку
 //        parolchikCheck() // подготовка интерфейса
@@ -65,6 +62,13 @@ class LoginActivity : AppCompatActivity() {
         tryCounter.text = counter.toString()
         tryCounter.visibility = View.INVISIBLE
     }  // конец онкриейт
+
+    private fun updateAppLanguage() {// Извлечение сохраненного языка
+        val selectedLanguage = AppPreferencesKeysMethods(context = this).getStringFromSharedPreferences(AppPreferencesKeys.PREF_LANGUAGE_KEY)
+        if (selectedLanguage.isNotEmpty()) {
+            SettingsActivity.setAppLanguage(this, selectedLanguage)
+        }
+    }
 
     private fun firstStart() {  // ПЕРВЫЙ ЗАПУСК ?????
         if (!delPassword) {

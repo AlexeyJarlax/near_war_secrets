@@ -69,7 +69,7 @@ class Encryption(private val context: Context) {
     fun encryptImage(imageUri: Uri, fileName: String) {
 //    val encryptionKey = getDecryptionKey()
         val encryptionKey =
-            AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+            AppPreferencesKeysMethods(context).getStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
         Timber.d("=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
         // Получаем путь к файлу, который нужно зашифровать
         val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
@@ -135,7 +135,7 @@ class Encryption(private val context: Context) {
 
     fun decryptImage(file: File): Bitmap {
         val decryptionKey =
-            AppPreferencesKeysMethods(context).loadStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
+            AppPreferencesKeysMethods(context).getStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
         Timber.d("=== Начало декодирования. файл file: ${file.name}")
 
         val encryptedBytes = file.readBytes()

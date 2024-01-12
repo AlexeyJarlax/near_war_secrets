@@ -97,7 +97,7 @@
     <string name="reset_settings">Очистить все данные: сбросить настройки, ключь, пароль, очистить хранилище </string>
     <string name="personal_data">Персональные данные</string>
     <string name="disguise_it_as_a_music_player">Замаскировать под музыкальный плеер</string>
-    <string name="language">Язык / language / 应用语言</string>
+    <string name="language">Язык/language/应用语言/idioma</string>
     <string name="goAhead">Вперед!</string>
     <string name="input">Подтвердить ввод</string>
     <string name="noinput">Отказ от ввода</string>
@@ -170,4 +170,5 @@
     <string name="whithout_enception">Без шифрования</string>
     <string name="decripted_file">Расшифрованный файл</string>
     <string name="unnown_tipe">Неизвестный тип</string>
+    <string name="done">Выполнено</string>
 </resources>
