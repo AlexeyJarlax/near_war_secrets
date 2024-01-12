@@ -40,19 +40,17 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION = "deleteEKWhenClosingTheSession"
     const val KEY_PREVIEW_SIZE_SEEK_BAR = "previewSizeSeekBar"
     const val PREF_LANGUAGE_KEY = "selected_language"
+    const val FILE_NAME_KEY = "file_naming"
 
     //  константы в рамках сессии
     var KEY_MIMICRY_THIS_SESSION_SWITCH = false
 }
 
 internal class AppPreferencesKeysMethods(private val context: Context) {
-
     private val sharedPreferences = getSharedPreferences()
-
     private fun getSharedPreferences() =
         context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
-    // Обработка методов сохранения и загрузки значений
     fun saveSwitchValue(key: String, isChecked: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, isChecked)
@@ -66,13 +64,13 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
         ) // Значение по умолчанию, если ключ не найден
     }
 
-    fun savePreviewSizeValue(key: String, value: Int) {
+    fun saveIntToSharedPreferences(key: String, value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
         editor.apply()
     }
 
-    fun loadPreviewSizeValue(key: String): Int {
+    fun getIntFromSharedPreferences(key: String): Int {
         return sharedPreferences.getInt(
             key,
             0
@@ -83,7 +81,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
         return sharedPreferences.getString(key, "упс...ах") ?: "упс...ах"
     }
 
-    fun saveStringFromSharedPreferences(key: String, value: String) {
+    fun saveStringToSharedPreferences(key: String, value: String) {
         val editor = sharedPreferences.edit()
         editor.putString(key, value)
         editor.apply()

@@ -48,6 +48,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.pavlov.MyShadowGallery.util.Encryption
+import com.pavlov.MyShadowGallery.util.NamingStyleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -240,7 +241,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                         AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
                         false
                     )
-                    fileName = FileProviderAdapter.generateFileName(application, existOrNot, folder)
+                    fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
 
@@ -513,8 +514,7 @@ class ItemLoaderActivity : AppCompatActivity() {
             AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_KLUCHIK,
             false
         )
-        val fileName =
-            FileProviderAdapter.generateFileName(application, existOrNot, folder)
+        val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
 
         val outputFile = File(folder, fileName)
 

@@ -29,14 +29,16 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var buttonClearStorage: Button
     private lateinit var resetSettings: Button
     private lateinit var personalData: Button
-//    private enum class NamingOption {
+
+//    enum class NamingOption {
 //        RUSSIAN_HEROIC,
 //        ENGLISH_HEROIC,
 //        CHINESE_HERO,
 //        SPANISH_HEROIC,
 //        SYSTEM
 //    }
-//    private var currentNamingOption: NamingOption = NamingOption.SYSTEM
+
+//    var currentNamingOption: NamingOption = NamingOption.SYSTEM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val aboutTheDeveloperButton = findViewById<Button>(R.id.about_the_app)
         val languageOptions = findViewById<Button>(R.id.language_options)
-//        val namingOptions = findViewById<Button>(R.id.naming_options)
+        val namingOptions = findViewById<Button>(R.id.naming_options)
         val back = findViewById<Button>(R.id.button_back_from_settings)
         val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
         val delEKWhenClosingTheSession: SwitchCompat =
@@ -81,7 +83,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         val previewSizeSeekBarProgress =
             AppPreferencesKeysMethods(context = this)
-                .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+                .getIntFromSharedPreferences(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
                 ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
         previewSizeSeekBar.post {
             previewSizeSeekBar.progress = previewSizeSeekBarProgress
@@ -113,9 +115,9 @@ class SettingsActivity : AppCompatActivity() {
             showLanguageSelectionDialog()
         }
 
-//        namingOptions.setOnClickListener {
-//            showNamingSelectionDialog()
-//        }
+        namingOptions.setOnClickListener {
+            showNamingSelectionDialog()
+        }
 
         // Использовать ключ шифрования
         useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
@@ -150,7 +152,7 @@ class SettingsActivity : AppCompatActivity() {
                 seekBar?.let {
                     val size = it.progress + 1
                     sizeLabel.text = "$previewScalingFactorLabel ${size}x${size}"
-                    AppPreferencesKeysMethods(context = savedContext).savePreviewSizeValue(
+                    AppPreferencesKeysMethods(context = savedContext).saveIntToSharedPreferences(
                         AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR,
                         size
                     )
@@ -320,7 +322,10 @@ class SettingsActivity : AppCompatActivity() {
             dialog.dismiss()
 
             // Сохранение
-            AppPreferencesKeysMethods(context = this).saveStringFromSharedPreferences(AppPreferencesKeys.PREF_LANGUAGE_KEY, selectedLanguageCode)
+            AppPreferencesKeysMethods(context = this).saveStringToSharedPreferences(
+                AppPreferencesKeys.PREF_LANGUAGE_KEY,
+                selectedLanguageCode
+            )
             // Обновление языка приложения
             updateAppLanguage()
         }
@@ -328,26 +333,33 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showNamingSelectionDialog() {
-        val namingOptions = arrayOf("Русский героический", "English heroic", "中国英雄", "Heroico español", "System")
+        val namingOptions = arrayOf(
+            "Русский героический",
+            "English heroic",
+            "中国英雄",
+            "Heroico español",
+            "System"
+        )
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.naming_option))
 
         builder.setItems(namingOptions) { dialog, which ->
             // Установка текущего варианта именования на основе выбора пользователя
-            currentNamingOption = when (which) {
-                0 -> NamingOption.RUSSIAN_HEROIC
-                1 -> NamingOption.ENGLISH_HEROIC
-                2 -> NamingOption.CHINESE_HERO
-                3 -> NamingOption.SPANISH_HEROIC
-                4 -> NamingOption.SYSTEM
-                else -> NamingOption.SYSTEM
+
+            var namingOption = when (which) {
+                0, 1, 2, 3, 4 -> which
+                else -> 4
             }
 
-            dialog.dismiss()
+            // Сохранение выбранного стиля имени в SharedPreferences
+            val preferences = AppPreferencesKeysMethods(context = this)
+            preferences.saveIntToSharedPreferences(
+                AppPreferencesKeys.FILE_NAME_KEY,
+                namingOption
+            )
 
-            // Обновление языка приложения и использование выбранного варианта именования для генерации файлов
-            updateAppLanguage()
+            dialog.dismiss()
         }
         builder.show()
     }

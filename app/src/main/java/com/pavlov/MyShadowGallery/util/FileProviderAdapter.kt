@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.pavlov.MyShadowGallery.MyShadowGallery
 import com.pavlov.MyShadowGallery.R
+import com.pavlov.MyShadowGallery.SettingsActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -117,50 +118,61 @@ class FileProviderAdapter {
             }
         }
 
-        fun generateFileName(context: Context, isBoolean: Boolean, folder: File): String {
-            val adjectives = context.resources.getStringArray(R.array.name_util_adjectives)
-            val nouns = context.resources.getStringArray(R.array.name_util_nouns)
-
-            if (adjectives.isEmpty() || nouns.isEmpty()) {
-                // Обработка случая, если хотя бы один из массивов пуст
-                Log.d("FileNameGeneration", "Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
-                return "FallbackFileName.unknown"
-            }
-
-            val randomName = "${adjectives.random()}_${nouns.random()}"
-            var fileName = "${randomName}.unknown"
-
-            if (isBoolean) {
-                fileName = "${fileName.substringBeforeLast(".")}.k"
-            } else {
-                fileName = "${fileName.substringBeforeLast(".")}.o"
-            }
-
-            if (folder.exists() || folder.mkdirs()) {
-                var counter = 1
-                var file = File(folder, fileName)
-
-                // Выводим в консоль сгенерированные имена файлов перед использованием
-                Log.d("FileNameGeneration", "Generated FileName: $fileName")
-
-                // Проверяем существование файла с таким именем и добавляем суффикс, если нужно
-                while (file.exists()) {
-                    fileName = "${randomName}_$counter"
-                    if (isBoolean) {
-                        fileName = "${fileName}.k"
-                    } else {
-                        fileName = "${fileName}.o"
-                    }
-                    file = File(folder, fileName)
-                    counter++
-
-                    // Выводим в консоль новое имя файла в случае конфликта
-                    Log.d("FileNameGeneration", "Conflict! New FileName: $fileName")
-                }
-            }
-
-            return fileName
-        }
+//        fun generateFileName(context: Context, isBoolean: Boolean, folder: File): String {
+//            val adjectives = context.resources.getStringArray(R.array.name_util_adjectives)
+//            val nouns = context.resources.getStringArray(R.array.name_util_nouns)
+//
+//            if (adjectives.isEmpty() || nouns.isEmpty()) {
+//                Log.d("FileNameGeneration", "Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
+//                return "FallbackFileName.unknown"
+//            }
+//
+//            val randomName = "${adjectives.random()}_${nouns.random()}"
+//            var fileName = "${randomName}.unknown"
+//
+//            if (isBoolean) {
+//                fileName = "${fileName.substringBeforeLast(".")}.k"
+//            } else {
+//                fileName = "${fileName.substringBeforeLast(".")}.o"
+//            }
+//
+//            if (folder.exists() || folder.mkdirs()) {
+//                var counter = 1
+//                var file = File(folder, fileName)
+//
+//                Log.d("FileNameGeneration", "Generated FileName: $fileName")
+//
+//                while (file.exists()) {
+//                    fileName = "${randomName}_$counter"
+//                    if (isBoolean) {
+//                        fileName = "${fileName}.k"
+//                    } else {
+//                        fileName = "${fileName}.o"
+//                    }
+//                    file = File(folder, fileName)
+//                    counter++
+//
+//                    Log.d("FileNameGeneration", "Conflict! New FileName: $fileName")
+//                }
+//            }
+//
+//            if (context is SettingsActivity) {
+//                return applyNamingOption(fileName, context.currentNamingOption)
+//            } else {
+//                // Обработка случая, если context не является экземпляром SettingsActivity
+//                return fileName
+//            }
+//        }
+//
+//        private fun applyNamingOption(fileName: String, namingOption: SettingsActivity.NamingOption): String {
+//            return when (namingOption) {
+//                SettingsActivity.NamingOption.RUSSIAN_HEROIC -> "Русский героический_$fileName"
+//                SettingsActivity.NamingOption.ENGLISH_HEROIC -> "English heroic_$fileName"
+//                SettingsActivity.NamingOption.CHINESE_HERO -> "中国英雄_$fileName"
+//                SettingsActivity.NamingOption.SPANISH_HEROIC -> "Heroico español_$fileName"
+//                SettingsActivity.NamingOption.SYSTEM -> fileName
+//            }
+//        }
 
         private fun showToast(context: Context, text: String) {
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()

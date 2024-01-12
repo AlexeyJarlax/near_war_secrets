@@ -153,13 +153,13 @@
                     tools:src="@drawable/t100" />
             </LinearLayout>
 
-<!--            <Button-->
-<!--                android:id="@+id/naming_options"-->
-<!--                style="@style/SettingsButtonsAndText2"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:text="@string/naming_options"-->
-<!--                app:icon="@android:drawable/ic_menu_sort_alphabetically" />-->
+            <Button
+                android:id="@+id/naming_options"
+                style="@style/SettingsButtonsAndText2"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/naming_options"
+                app:icon="@android:drawable/ic_menu_sort_alphabetically" />
 
             <Button
                 android:id="@+id/clearing_the_storage"

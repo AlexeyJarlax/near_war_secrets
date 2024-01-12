@@ -1,5 +1,90 @@
 package com.pavlov.MyShadowGallery.util
 
+import android.content.Context
+import android.util.Log
+import com.pavlov.MyShadowGallery.SettingsActivity
+import java.io.File
+
+class NamingStyleManager(private val context: Context) {
+
+    private val adjectives: List<String>
+    private val nouns: List<String>
+
+    init {
+        val namingStyle = AppPreferencesKeysMethods(context).getIntFromSharedPreferences(AppPreferencesKeys.FILE_NAME_KEY)
+
+        when (namingStyle) {
+            0 -> {
+                adjectives = NameUtil.adjectives
+                nouns = NameUtil.nouns
+            }
+            1 -> {
+                adjectives = EnglishNameUtil.adjectives
+                nouns = EnglishNameUtil.nouns
+            }
+            2 -> {
+                adjectives = ChineseNameUtil.adjectives
+                nouns = ChineseNameUtil.nouns
+            }
+            3 -> {
+                adjectives = SpanishNameUtil.adjectives
+                nouns = SpanishNameUtil.nouns
+            }
+            4 -> {
+                adjectives = AllegedlySistemNameUtil.adjectives
+                nouns = AllegedlySistemNameUtil.nouns
+            }
+            else -> {
+                adjectives = emptyList()
+                nouns = emptyList()
+            }
+        }
+    }
+//fun generateFileName(context: Context, isBoolean: Boolean, folder: File): String {
+fun generateFileName(isBoolean: Boolean, folder: File): String {
+    if (adjectives.isEmpty() || nouns.isEmpty()) {
+        Log.d("FileNameGeneration", "Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
+        return "FallbackFileName.unknown"
+    }
+
+    val randomName = "${adjectives.random()}_${nouns.random()}"
+    var fileName = "${randomName}.unknown"
+
+    if (isBoolean) {
+        fileName = "${fileName.substringBeforeLast(".")}.k"
+    } else {
+        fileName = "${fileName.substringBeforeLast(".")}.o"
+    }
+
+    if (folder.exists() || folder.mkdirs()) {
+        var counter = 1
+        var file = File(folder, fileName)
+
+        Log.d("FileNameGeneration", "Generated FileName: $fileName")
+
+        while (file.exists()) {
+            fileName = "${randomName}_$counter"
+            if (isBoolean) {
+                fileName = "${fileName}.k"
+            } else {
+                fileName = "${fileName}.o"
+            }
+            file = File(folder, fileName)
+            counter++
+
+            Log.d("FileNameGeneration", "Conflict! New FileName: $fileName")
+        }
+    }
+
+    return applyNamingOption(fileName)
+}
+
+    private fun applyNamingOption(fileName: String): String {
+        // Дополнительные преобразования в соответствии с текущим стилем
+        return fileName
+    }
+}
+
 object NameUtil {
     val adjectives = listOf(
         "Могучий", "Неудержимый", "Бесстрашный", "Героический", "Безупречный", "Непоколебимый",

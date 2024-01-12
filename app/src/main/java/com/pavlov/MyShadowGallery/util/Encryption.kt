@@ -159,7 +159,7 @@ class Encryption(private val context: Context) {
 
     fun createThumbnail(context: Context, imageUri: Uri) {
         var scaledNumber = AppPreferencesKeysMethods(context)
-            .loadPreviewSizeValue(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
+            .getIntFromSharedPreferences(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
             ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
         if (scaledNumber <= 0) {
             scaledNumber = 1
