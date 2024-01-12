@@ -97,20 +97,13 @@ class SearchActivity : AppCompatActivity() {
         killTheHistory()
     }
 
-
-    fun goToMainActivity() {
-        val displayIntent = Intent(this, MainPageActivity::class.java)
-        startActivity(displayIntent)
-        finish()
-    }
-
     private fun checkMasterSSecret(
         password: String,
         isPasswordExists: Boolean
     ) { //проверка на режим пароль, маскировка
-        if (isPasswordExists) {
-            val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
-            if (password == savedPassword) {
+        val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+        if (savedPassword.isNullOrBlank()) {
+            if (password == AppPreferencesKeys.DEFAULT_MIMIC_PASS) {
                 goToMainActivity()
             } else {
                 // ошибка парольки, запускаем поиск песен
@@ -120,7 +113,6 @@ class SearchActivity : AppCompatActivity() {
                 toastIt("${getString(R.string.search)} $password")
             }
         } else {
-            val savedPassword = AppPreferencesKeys.DEFAULT_MIMIC_PASS
             if (password == savedPassword) {
                 goToMainActivity()
             } else {
@@ -130,7 +122,14 @@ class SearchActivity : AppCompatActivity() {
                 preparingForSearch(password)
                 toastIt("${getString(R.string.search)} $password")
             }
+
         }
+    }
+
+    private fun goToMainActivity() {
+        val displayIntent = Intent(this, MainPageActivity::class.java)
+        startActivity(displayIntent)
+        finish()
     }
 
     private fun setupOneLineViews() {

@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.pavlov.MyShadowGallery"
         resConfigs("ru", "en", "zh", "es")
-        minSdk = 29
+        minSdk = 28
         targetSdk = 34
         versionCode = 3
         versionName = "1.3"
