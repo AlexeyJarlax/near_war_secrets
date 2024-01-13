@@ -51,7 +51,7 @@ class KeyInputActivity : AppCompatActivity() {
             val input = SpannableStringBuilder()
             for (i in start until end) {
                 val c = source[i]
-                if (c.toString().matches(Regex("[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+"))) {
+                if (c.toString().matches(Regex(AppPreferencesKeys.REGEX))) {
                     input.append(c)
                 } else {
                     helperText.text = getString(R.string.invalid_character)

@@ -25,13 +25,15 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val KEY_EXIST_OF_MIMICRY = "mimicry"
     const val KEY_EXIST_OF_ENCRYPTION_K = "exists_of_encryption_kluchik"
 
-    // числовые константы
+    // константы
     const val ALBUM_ROUNDED_CORNERS = 8
     const val SERVER_PROCESSING_MILLISECONDS: Long = 1500
     const val LOAD_PROCESSING_MILLISECONDS: Long = 800
     const val HISTORY_TRACK_LIST_SIZE = 8
     const val DEFAULT_PREVIEW_SIZE = 30
     const val DEFAULT_MIMIC_PASS: String = "000"
+//    const val REGEX = "[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+"
+    const val REGEX = "[a-zA-Z0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/]+"
 
     // переключатели состояний SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
@@ -90,13 +92,15 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
     //образцы для извлечений ключей
 //    AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_BIG_SECRET)
 //    AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
-//
+//    AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+
 //    AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
 //    AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_SMALL_SECRET)
 //    AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
-//
+
 //    AppPreferencesKeysMethods(context = this).getCounter()
 //    AppPreferencesKeysMethods(context = this).saveCounter(counter)
+//    AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K)
 
     fun getMastersSecret(key: String): String {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)

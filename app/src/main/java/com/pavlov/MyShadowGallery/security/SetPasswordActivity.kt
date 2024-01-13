@@ -146,7 +146,7 @@ class SetPasswordActivity : AppCompatActivity() {
 
     inner class PasswordInputFilter : InputFilter {
         private val regex =
-            Regex("[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+")
+            Regex(AppPreferencesKeys.REGEX)
 
         override fun filter(
             source: CharSequence?,
@@ -171,7 +171,7 @@ class SetPasswordActivity : AppCompatActivity() {
     fun isValidInput(input: String): Boolean {
         // Регулярное выражение для проверки на допустимые символы
         val regex =
-            Regex("[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+")
+            Regex(AppPreferencesKeys.REGEX)
         return regex.matches(input)
     }
 
