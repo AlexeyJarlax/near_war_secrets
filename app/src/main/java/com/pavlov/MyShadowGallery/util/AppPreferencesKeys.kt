@@ -35,6 +35,7 @@ internal object AppPreferencesKeys { // Internal - доступно только
 //    const val REGEX = "[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+"
     const val REGEX = "[a-zA-Z0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/]+"
 
+
     // переключатели состояний SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
     const val KEY_USER_SWITCH = "userMode"
@@ -44,8 +45,9 @@ internal object AppPreferencesKeys { // Internal - доступно только
     const val PREF_LANGUAGE_KEY = "selected_language"
     const val FILE_NAME_KEY = "file_naming"
 
-    //  константы в рамках сессии
+    //  в рамках сессии
     var KEY_MIMICRY_THIS_SESSION_SWITCH = false
+    var EXCLAMATION: Boolean = false
 }
 
 internal class AppPreferencesKeysMethods(private val context: Context) {

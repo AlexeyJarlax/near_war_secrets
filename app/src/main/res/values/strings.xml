@@ -172,4 +172,12 @@
     <string name="unnown_tipe">Неизвестный тип</string>
     <string name="done">Выполнено</string>
     <string name="security_settings">Настройки безопасности</string>
+    <string name="sensitive_info">\"Чувствительная информация и персональные данные могут быть полностью удалены нажатием кнопки ОЧИСТИТЬ ВСЕ ДАННЫЕ, расположенной выше\"</string>
+    <string name="send_to_app">Файл направлен в приложение. Войдите в приложение для обработки.</string>
+    <string name="saving_option">Файл получен из другого приложения.</string>
+    <string name="saving_option1">Сохранить файл "как есть"</string>
+    <string name="saving_option2">Зашифровать и сохранить файл</string>
+    <string name="saving_option3">Попытаться расшифровать файл моим ключем</string>
+    <string name="saving_option4">Попытаться расшифровать файл чужим ключем</string>
+    <string name="saving_option5">Удалить файл</string>
 </resources>

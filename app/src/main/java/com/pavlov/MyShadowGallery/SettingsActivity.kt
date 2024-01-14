@@ -101,9 +101,7 @@ class SettingsActivity : AppCompatActivity() {
         var clickCount = 0
         personalData.setOnClickListener {
             when (clickCount % 2) {
-                0 -> personalData.text =
-                    "Чувствительная информация и персональные данные могут быть полностью удалены нажатием кнопки ОЧИСТИТЬ ВСЕ ДАННЫЕ, расположенной выше"
-
+                0 -> personalData.text = getString(R.string.sensitive_info)
                 1 -> personalData.text = getString(R.string.personal_data)
             }
             clickCount++

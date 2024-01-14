@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -46,8 +47,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Handler
 import android.os.Looper
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.pavlov.MyShadowGallery.util.Encryption
+//import com.pavlov.MyShadowGallery.util.ExclamationMarkImageView
+//import com.pavlov.MyShadowGallery.util.ExclamationMarkItemDecoration
 import com.pavlov.MyShadowGallery.util.NamingStyleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -66,7 +70,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     private var outputGalleryFile: File? = null
     private lateinit var frameLayout2: FrameLayout
     private lateinit var loadingIndicator2: ProgressBar
-    private lateinit var frameLayout3: FrameLayout
+    private lateinit var constraintLayout3: ConstraintLayout
     private var isItFrontCamera = false
     private var imageDialogAcceptance = false
     private lateinit var buttonForCover2: Button
@@ -106,7 +110,11 @@ class ItemLoaderActivity : AppCompatActivity() {
         frameLayout2 = findViewById(R.id.frameLayout2)
         loadingIndicator2 = findViewById(R.id.loading_indicator2)
         buttonForCover2 = findViewById(R.id.button_for_cover2)
-        frameLayout3 = findViewById(R.id.frameLayout3)
+        constraintLayout3 = findViewById(R.id.constraintLayout3)
+        constraintLayout3.setOnClickListener {
+            constraintLayout3.visibility = View.GONE
+        }
+        constraintLayout3.performClick()
         buttonCapture = findViewById<Button>(R.id.button_capture)
         buttonGallery = findViewById<Button>(R.id.button_gallery)
         buttonGallery.setOnClickListener {
@@ -163,6 +171,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.list_view_photos)
         recyclerView.layoutManager = GridLayoutManager(this, 3)
         recyclerView.adapter = photoListAdapter
+//        recyclerView.addItemDecoration(ExclamationMarkItemDecoration())
 
         imageDialog = Dialog(
             this, android.R.style.Theme_Black_NoTitleBar_Fullscreen
@@ -199,9 +208,9 @@ class ItemLoaderActivity : AppCompatActivity() {
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val viewFinder = findViewById<PreviewView>(R.id.view_finder)
-            val imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build()
+            val imageCapture =
+                ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                    .build()
             var currentCameraSelector = cameraSelector
 
             try {
@@ -239,15 +248,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                     showLoadingIndicator()
                     val folder = applicationContext.filesDir
                     var existOrNot: Boolean = sharedPreferences.getBoolean(
-                        AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
-                        false
+                        AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
                     )
                     fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
 
-                    imageCapture.takePicture(
-                        outputOptions,
+                    imageCapture.takePicture(outputOptions,
                         ContextCompat.getMainExecutor(this),
                         object : ImageCapture.OnImageSavedCallback {
                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -261,17 +268,23 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 // Проверка наличия imageViewDialog и outputFile
                                 if (imageViewDialog != null && outputFile.exists()) {
                                     // Загрузка изображения в PhotoView с использованием Glide
-                                    Glide.with(this@ItemLoaderActivity)
-                                        .load(outputFile)
+                                    Glide.with(this@ItemLoaderActivity).load(outputFile)
                                         .into(imageViewDialog)
                                 }
-                                val buttonsForImageDialog =
-                                    imageDialog?.findViewById<ConstraintLayout>(R.id.buttons_for_image_dialog)
+
+                                val lastModified = outputFile.lastModified()
+                                val dateFormat =
+                                    SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+                                val formattedDate = dateFormat.format(Date(lastModified))
+
                                 val btnShare =
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
                                 val imageDialogFileName =
                                     imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
                                 imageDialogFileName?.text = "${fileName}"
+                                val imageDialogFileDate =
+                                    imageDialog?.findViewById<TextView>(R.id.imageDialogFileDate)
+                                imageDialogFileDate?.text = "${formattedDate}"
                                 val imageDialogAcceptanceButton =
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_acceptance_button)
                                 val btnTernLeft =
@@ -290,9 +303,13 @@ class ItemLoaderActivity : AppCompatActivity() {
 
                                 imageDialog?.show()
                                 imageDialogFileName?.visibility = View.VISIBLE
-                                buttonsForImageDialog?.visibility = View.VISIBLE
+                                imageDialogFileDate?.visibility = View.VISIBLE
                                 btnShare?.visibility = View.INVISIBLE
+                                btnFAQ?.visibility = View.INVISIBLE
                                 imageDialogAcceptanceButton?.visibility = View.VISIBLE
+                                btnTernLeft?.visibility = View.VISIBLE
+                                btnTernRight?.visibility = View.VISIBLE
+                                btnDelete?.visibility = View.VISIBLE
 
                                 fun rotatingMethod() { // диалог с вращением
                                     if (buttonForCover3 != null) {
@@ -305,13 +322,11 @@ class ItemLoaderActivity : AppCompatActivity() {
 
                                         val rotBitmap = if (isItFrontCamera) {
                                             FileProviderAdapter.rotateImageByKorutin(
-                                                outputFile,
-                                                rotationAngle
+                                                outputFile, rotationAngle
                                             )
                                         } else {
                                             FileProviderAdapter.rotateImageByKorutin(
-                                                outputFile,
-                                                rotationAngle
+                                                outputFile, rotationAngle
                                             )
                                         }
                                         if (imageViewDialog != null) {
@@ -326,8 +341,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                 if (loadingIndicator3 != null) {
                                                     loadingIndicator3.visibility = View.GONE
                                                 }
-                                            },
-                                            AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS
+                                            }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS
                                         ) // завершение индикатора
                                     }
                                 }
@@ -368,8 +382,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     showToast(getString(R.string.wait))
                                     imageDialogAcceptance = false
                                     FileProviderAdapter.deleteFile(
-                                        outputFile.name,
-                                        this@ItemLoaderActivity
+                                        outputFile.name, this@ItemLoaderActivity
                                     )
                                     imageDialog?.dismiss()
                                     hideLoadingIndicator(isItFrontCamera) // завершение индикатора
@@ -379,8 +392,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.dismiss()
                                     imageDialogAcceptance = true
                                     if (sharedPreferences.getBoolean(
-                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
-                                            false
+                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
                                         )
                                     ) {
 
@@ -409,25 +421,20 @@ class ItemLoaderActivity : AppCompatActivity() {
 
                                             val rotatedBitmap =
                                                 FileProviderAdapter.rotateImageByKorutin(
-                                                    outputFile,
-                                                    rotationDegrees
+                                                    outputFile, rotationDegrees
                                                 )
 
                                             val imageFile =
                                                 FileProviderAdapter.bitmapToFileByKorutin(
-                                                    rotatedBitmap,
-                                                    application,
-                                                    outputFile.name
+                                                    rotatedBitmap, application, outputFile.name
                                                 )
 
                                             // Явное освобождение ресурсов
                                             FileProviderAdapter.recycleBitmap(rotatedBitmap)
 
-                                            val fileUri =
-                                                FileProviderAdapter.getUriForFile(
-                                                    application,
-                                                    imageFile
-                                                )
+                                            val fileUri = FileProviderAdapter.getUriForFile(
+                                                application, imageFile
+                                            )
                                             encryption.createThumbnail(application, fileUri)
 
                                             try {
@@ -454,13 +461,11 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             MainScope().launch { // КАРУТИН
                                                 val rotBitmap =
                                                     FileProviderAdapter.rotateImageByKorutin(
-                                                        outputFile,
-                                                        rotationAngle
+                                                        outputFile, rotationAngle
                                                     )
 
                                                 FileProviderAdapter.deleteFile(
-                                                    outputFile.name,
-                                                    this@ItemLoaderActivity
+                                                    outputFile.name, this@ItemLoaderActivity
                                                 )
                                                 outputFile =
                                                     FileProviderAdapter.bitmapToFileByKorutin(
@@ -498,8 +503,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
 
-    private
-    val PICK_IMAGE_REQUEST = 1
+    private val PICK_IMAGE_REQUEST = 1
 
     private fun openImagePicker() {
         val imagePickerIntent = Intent(Intent.ACTION_PICK)
@@ -512,8 +516,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 
         val folder = applicationContext.filesDir
         var existOrNot: Boolean = sharedPreferences.getBoolean(
-            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
-            false
+            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
         )
         val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
 
@@ -526,8 +529,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
-                false
+                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
             )
         ) {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
@@ -540,9 +542,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
+        requestCode: Int, resultCode: Int, data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -589,6 +589,8 @@ open class PhotoListAdapter(
         val imageView: ImageView = itemView.findViewById(R.id.image_view_photo)
         val textViewName: TextView = itemView.findViewById(R.id.text_view_name_preview)
         val dataSecTextView: TextView = itemView.findViewById(R.id.data_sec_text_view_preview)
+        val linearUnit: LinearLayout = itemView.findViewById(R.id.linear_unit)
+//        val alarm: TextView = itemView.findViewById(R.id.alarm)
     }
 
     private var imageDialog: Dialog? = null
@@ -602,49 +604,54 @@ open class PhotoListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val imageView = holder.imageView
         val textViewName = holder.textViewName
+        val imageView = holder.imageView
         val dataSecTextView = holder.dataSecTextView
+        val linearUnit1 = holder.linearUnit
+
         val fileName = encryption.getPhotoList()[position]
 
-        Glide.with(context).load(File(context.applicationContext.filesDir, fileName))
-            .fitCenter()
+        Glide.with(context).load(File(context.applicationContext.filesDir, fileName)).fitCenter()
             .placeholder(android.R.drawable.ic_lock_idle_lock).transform(RoundedCorners(8))
             .into(imageView)
 
         val thumbnailName = fileName
-        dataSecTextView.text =
-            dateFormat.format(
-                File(
-                    context.applicationContext.filesDir,
-                    thumbnailName
-                ).lastModified()
-            )
+        dataSecTextView.text = dateFormat.format(
+            File(
+                context.applicationContext.filesDir, thumbnailName
+            ).lastModified()
+        )
         textViewName.text = thumbnailName
+
+        if (fileName.endsWith(".share")) {
+//            imageView.setBackgroundColor(Color.argb(1, 222, 222, 222)) // устанавливаем альфа = 1 (полная видимость)
+        } else {
+            linearUnit1.setBackgroundColor(Color.argb(0, 111, 111, 111)) // устанавливаем альфа = 0 (полная прозрачность)
+        }
 
         holder.itemView.setOnClickListener {
             val encryptedFileName = fileName
             var encryptedFile = File(context.applicationContext.filesDir, encryptedFileName)
-            val decryptedFile =
-                File(
-                    context.applicationContext.filesDir,
-                    encryptedFileName.replace(".p", ".kk")
-                )
+            val decryptedFile = File(
+                context.applicationContext.filesDir, encryptedFileName.replace(".p", ".kk")
+            )
 
             imageDialog = Dialog(context)
             imageDialog?.setContentView(R.layout.util_dialog_image_view)
 
-            val imageViewDialog =
-                imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
+            val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
 
-            val buttonsForImageDialog =
-                imageDialog?.findViewById<ConstraintLayout>(R.id.buttons_for_image_dialog)
+//            val buttonsForImageDialog =
+//                imageDialog?.findViewById<ConstraintLayout>(R.id.constraintLayout3)
 
             val buttonForCover3 = imageDialog?.findViewById<Button>(R.id.button_for_cover3)
 
-            val imageDialogFileName =
-                imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
-            imageDialogFileName?.text = "${encryptedFileName}"
+            val imageDialogFileName = imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
+            imageDialogFileName?.text = "${dataSecTextView.text}"
+
+            val imageDialogFileDate =
+                imageDialog?.findViewById<TextView>(R.id.imageDialogFileDate)
+            imageDialogFileDate?.text = "${dataSecTextView}"
 
             val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
             val imageDialogAcceptanceButton =
@@ -662,17 +669,18 @@ open class PhotoListAdapter(
             imageDialogAcceptanceButton?.visibility = View.GONE
             btnTernLeft?.visibility = View.INVISIBLE
             btnTernRight?.visibility = View.INVISIBLE
+            imageDialogFileDate?.visibility = View.VISIBLE
+            btnFAQ?.visibility = View.VISIBLE
+            btnDelete?.visibility = View.VISIBLE
 
             btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
                 context.showToast(context.getString(R.string.wait))
                 delPeekaboo(encryptedFileName)
                 FileProviderAdapter.deleteFile(
-                    encryptedFile.name,
-                    context.applicationContext
+                    encryptedFile.name, context.applicationContext
                 )
                 FileProviderAdapter.deleteFile(
-                    decryptedFile.name,
-                    context.applicationContext
+                    decryptedFile.name, context.applicationContext
                 )
                 (context as Activity).finish()
                 val intent = Intent(context, ItemLoaderActivity::class.java)
@@ -681,27 +689,34 @@ open class PhotoListAdapter(
 
             }
 
+            if (encryptedFileName.endsWith(".share", true)) {
+                val glideRequest =
+                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
+                        .fitCenter()
+                        .placeholder(android.R.drawable.ic_lock_idle_lock)
+                        .transform(RoundedCorners(8))
+
+                glideRequest.into(imageViewDialog)
+                holder.itemView.setOnClickListener {
+                    // Дополнительная логика для обработки клика на фотографии .share
+                    // Вызываем метод, который показывает диалоговое окно с вариантами ответа
+                    showShareImageDialog(encryptedFile)
+                }
+            }
+
             if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
-                    ".jpg",
-                    true
-                ) ||
-                encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
-                    ".png",
-                    true
-                ) ||
-                encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(
-                    ".bmp",
-                    true
-                ) ||
-                encryptedFileName.endsWith(".webp", true) || encryptedFileName.endsWith(
-                    ".unknown",
-                    true
+                    ".jpg", true
+                ) || encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
+                    ".png", true
+                ) || encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(
+                    ".bmp", true
+                ) || encryptedFileName.endsWith(".webp", true) || encryptedFileName.endsWith(
+                    ".unknown", true
                 )
             ) {
 
                 val glideRequest =
-                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
-                        .centerCrop()
+                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter().centerCrop()
                         .transform(RoundedCorners(8))
                 glideRequest.into(imageViewDialog)
 
@@ -719,7 +734,7 @@ open class PhotoListAdapter(
                 imageDialog?.show()
 
                 imageDialogFileName?.visibility = View.VISIBLE
-                buttonsForImageDialog?.visibility = View.VISIBLE
+//                buttonsForImageDialog?.visibility = View.VISIBLE
                 imageViewDialog.setOnClickListener {
                     imageDialog?.dismiss()
                 }
@@ -755,7 +770,7 @@ open class PhotoListAdapter(
 
                     imageDialog?.show()
                     imageDialogFileName?.visibility = View.VISIBLE
-                    buttonsForImageDialog?.visibility = View.VISIBLE
+//                    buttonsForImageDialog?.visibility = View.VISIBLE
                     Timber.d("=== Вывод дешифрованного изображения через Dialog")
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
@@ -774,7 +789,9 @@ open class PhotoListAdapter(
     }
 
     private fun delPeekaboo(encryptedFileName: String) {// явное удаление битмапы и peekaboo
-        recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
+        if (::rotatedBitmap.isInitialized) {
+            recycleBitmap(rotatedBitmap) // явное удаление rotatedBitmap
+        }
         val fileNameWithExtension = "${encryptedFileName}eekaboo"
         FileProviderAdapter.deleteFile(fileNameWithExtension, context)
     }
@@ -787,7 +804,11 @@ open class PhotoListAdapter(
         shareIntent.type = "image/*"
 
         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
-        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_the_img)))
+        context.startActivity(
+            Intent.createChooser(
+                shareIntent, context.getString(R.string.share_the_img)
+            )
+        )
 
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
@@ -806,7 +827,11 @@ open class PhotoListAdapter(
         val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
 
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_the_img)))
+        context.startActivity(
+            Intent.createChooser(
+                shareIntent, context.getString(R.string.share_the_img)
+            )
+        )
 
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
@@ -822,8 +847,11 @@ open class PhotoListAdapter(
         buttonForCover3: Button,
 //        loadingIndicator3: ProgressBar
     ) {
-        val options =
-            arrayOf(context.getString(R.string.encrepted_img), context.getString(R.string.decripted_img), context.getString(R.string.timber_img))
+        val options = arrayOf(
+            context.getString(R.string.encrepted_img),
+            context.getString(R.string.decripted_img),
+            context.getString(R.string.timber_img)
+        )
         val fileNameWithExtension = "${encryptedFileName}eekaboo"
         val builder = AlertDialog.Builder(context)
         builder.setTitle(context.getString(R.string.chuse_img))
@@ -843,14 +871,10 @@ open class PhotoListAdapter(
                     GlobalScope.launch(Dispatchers.Main) {
                         context.showToast(context.getString(R.string.wait))
                         context.showToast(fileNameWithExtension)
-                        val decryptedFile =
-                            FileProviderAdapter.bitmapToFileByKorutin(
-                                decryptedBitmap,
-                                context,
-                                fileNameWithExtension
-                            )
-                        val decryptedUri =
-                            FileProviderAdapter.getUriForFile(context, decryptedFile)
+                        val decryptedFile = FileProviderAdapter.bitmapToFileByKorutin(
+                            decryptedBitmap, context, fileNameWithExtension
+                        )
+                        val decryptedUri = FileProviderAdapter.getUriForFile(context, decryptedFile)
                         shareDecryptedImage(
                             decryptedUri,
                             encryptedFileName,
@@ -870,6 +894,45 @@ open class PhotoListAdapter(
                     )
                 }
 
+            }
+        }
+
+        builder.show()
+    }
+
+    private fun showShareImageDialog(encryptedFile: File) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.saving_option))
+
+        val options = arrayOf(
+            context.getString(R.string.saving_option1),
+            context.getString(R.string.saving_option2),
+            context.getString(R.string.saving_option3),
+            context.getString(R.string.saving_option4),
+            context.getString(R.string.saving_option5)
+        )
+
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> {
+
+                }
+
+                1 -> {
+
+                }
+
+                2 -> {
+
+                }
+
+                3 -> {
+
+                }
+
+                4 -> {
+
+                }
             }
         }
 

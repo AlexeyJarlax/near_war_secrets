@@ -25,13 +25,9 @@ import javax.crypto.spec.SecretKeySpec
 
 class Encryption(private val context: Context) {
     val itemLoaderActivity = context as ItemLoaderActivity
-
-    //    val galleryActivity = context as GalleryActivity
     private val photoList = ArrayList<String>()
-//    private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
-
         fun initialize() {
             Timber.plant(Timber.DebugTree()) // для логирования багов
         }

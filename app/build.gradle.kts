@@ -19,8 +19,8 @@ android {
         resConfigs("ru", "en", "zh", "es")
         minSdk = 28
         targetSdk = 34
-        versionCode = 6
-        versionName = "1.6"
+        versionCode = 7
+        versionName = "1.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,12 +41,6 @@ android {
         jvmTarget = "1.8"
 
     }
-//    kotlin {
-//
-//        ksp {
-//            useAggregating = true
-//        }
-//    }
 }
 
 dependencies {
@@ -72,5 +66,5 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1") // для логирования серверных ошибок
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2") // Корутины многопоточности
     implementation("androidx.security:security-crypto:1.1.0-alpha06")  // хэширование
-//    implementation ("androidx.security:security-crypto:1.0.0-alpha02")
+
 }

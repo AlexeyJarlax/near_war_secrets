@@ -19,8 +19,7 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.CAMERA" />
-<!--    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
@@ -36,6 +35,17 @@
         android:theme="@style/Theme.MyApp"
         tools:targetApi="tiramisu">
 
+        <activity
+            android:name=".ShareActivity"
+            android:exported="true">
+            <!-- фильтр для обработки переданных изображений -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -49,23 +59,22 @@
         <activity
             android:name=".security.ThreeStepsActivity"
             android:exported="false" />
-
         <activity
             android:name=".security.SetPasswordActivity"
             android:exported="true"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.MyApp" />
-
         <activity
             android:name=".security.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AboutActivity"
             android:exported="false"
@@ -96,7 +105,6 @@
             android:name=".MainPageActivity"
             android:exported="true"
             android:screenOrientation="fullSensor" />
-
     </application>
 
 </manifest>
