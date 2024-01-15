@@ -1,8 +1,6 @@
 package com.pavlov.MyShadowGallery
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +8,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import com.pavlov.MyShadowGallery.file.StorageLogActivity
 import com.pavlov.MyShadowGallery.security.KeyInputActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys

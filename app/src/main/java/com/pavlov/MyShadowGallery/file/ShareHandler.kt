@@ -1,13 +1,15 @@
-package com.pavlov.MyShadowGallery.util
+package com.pavlov.MyShadowGallery.file
 
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import com.pavlov.MyShadowGallery.R
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import java.io.File
 import java.io.FileOutputStream
 
-class FileHandler(private val context: Context) {
+class ShareHandler(private val context: Context) {
 
     fun handleSharedImage(uri: Uri) {
         showToast(context.getString(R.string.download))

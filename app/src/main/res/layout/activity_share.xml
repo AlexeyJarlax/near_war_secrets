@@ -7,20 +7,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top"
-    tools:context=".ShareActivity">
+    tools:context=".file.ShareActivity">
 
-        <ImageView
-            android:id="@+id/background_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:alpha="0.4"
-            android:contentDescription="TODO"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="centerCrop" />
+<!--        <ImageView-->
+<!--            android:id="@+id/background_image"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="top"-->
+<!--            android:alpha="0.4"-->
+<!--            android:contentDescription="TODO"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:scaleType="centerCrop" />-->
 
     <TextView
         android:id="@+id/preview"
@@ -32,17 +32,17 @@
         android:textSize="@dimen/text_size_sp19"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <VideoView
-        android:id="@+id/videoView0"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_horizontal"
-        android:alpha="0.0"
-        android:fitsSystemWindows="true"
-        android:scaleType="fitCenter"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <VideoView-->
+<!--        android:id="@+id/videoView0"-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_height="300dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:alpha="0.0"-->
+<!--        android:fitsSystemWindows="true"-->
+<!--        android:scaleType="fitCenter"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

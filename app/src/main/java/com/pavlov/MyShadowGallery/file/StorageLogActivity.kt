@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.file
 
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import com.pavlov.MyShadowGallery.R
 import java.util.Date
 import java.util.Locale
 

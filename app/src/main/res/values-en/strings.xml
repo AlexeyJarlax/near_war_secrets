@@ -136,11 +136,7 @@ You can share the image with another user and they will be able to view it on th
     <string name="naming_options">File Name Generator</string>
     <string name="language_option">Select the application language</string>
     <string name="naming_option">Select the file naming style</string>
-    <string name="storage_log_activity">Log of files stored on the device.\n
-                Previews are saved with the extension p.\nEncrypted files are saved with the extension .kk\n
-                Unencrypted files are saved with the extension .o\n
-                The decrypted file shared by the user exists in the system for a short time with the extension .peekaboo\n\n
-                ----------------\n\n</string>
+
     <string name="preview">Preview</string>
     <string name="encrypted_file">Encrypted File</string>
     <string name="whithout_enception">Without Encryption</string>
@@ -148,4 +144,5 @@ You can share the image with another user and they will be able to view it on th
     <string name="unnown_tipe">Unknown Type</string>
     <string name="done">done</string>
     <string name="security_settings">Security Settings</string>
+    <string name="feature_in_development">a feature in development</string>
 </resources>

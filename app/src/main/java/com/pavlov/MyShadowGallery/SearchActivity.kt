@@ -25,6 +25,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,8 +35,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
@@ -49,7 +48,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class SearchActivity : AppCompatActivity() {
@@ -78,7 +76,6 @@ class SearchActivity : AppCompatActivity() {
     var firstPass = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.plant(Timber.DebugTree())
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         // Extracting flag from Intent
@@ -178,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
                         trackName, artistName, trackTimeMillis, artworkUrl100
                     )
                     toastIt("${getString(R.string.added)} ${trackName}")
-                    Timber.d("historyAdapter.saveTrack:${trackName}${artistName}")
+                    Log.d("=== SearchActivity", "=== historyAdapter.saveTrack:${trackName}${artistName}")
                 }
             })
         trackRecyclerView.layoutManager = layoutManager
@@ -300,7 +297,7 @@ class SearchActivity : AppCompatActivity() {
     private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
         lastQuery = query        // Сохраняем последний запрос и колбэк
         lastCallback = callback
-        Timber.d("Запускаем метод performSearch с параметрами Query: $query и Callback")
+        Log.d("=== SearchActivity", "=== Запускаем метод performSearch с параметрами Query: $query и Callback")
         iTunesSearchAPI.search(query).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(
                 call: Call<TrackResponse>, response: Response<TrackResponse>
@@ -310,7 +307,7 @@ class SearchActivity : AppCompatActivity() {
                     val trackData = if (trackResponse?.results?.isNotEmpty() == true) {
                         // Преобразуем результаты в список объектов TrackData
                         trackResponse.results.map { track ->
-                            Timber.d("Метод performSearch => response.isSuccessful! track.trackName:${track.trackName}")
+                            Log.d("=== SearchActivity", "=== Метод performSearch => response.isSuccessful! track.trackName:${track.trackName}")
                             TrackData(
                                 track.trackName,
                                 track.artistName,
@@ -319,12 +316,12 @@ class SearchActivity : AppCompatActivity() {
                             )
                         }
                     } else {
-                        Timber.d("Метод performSearch => response.isSuccessful! => emptyList() таких песен нет")
+                        Log.d("=== SearchActivity", "=== Метод performSearch => response.isSuccessful! => emptyList() таких песен нет")
                         solvingAbsentProblem() // вызываем заглушку о пустом листе запроса
                         emptyList()
                     }
                     callback(trackData)         // Вызываем колбэк с полученными данными
-                    Timber.d("Метод performSearch => response.isSuccessful! => callback(trackData): $trackData")
+                    Log.d("=== SearchActivity", "=== Метод performSearch => response.isSuccessful! => callback(trackData): $trackData")
                 } else {
                     val error = when (response.code()) {
                         400 -> "${getString(R.string.error400)}"
@@ -335,7 +332,7 @@ class SearchActivity : AppCompatActivity() {
                         503 -> "${getString(R.string.error503)}"
                         else -> "${getString(R.string.error0)}"
                     }
-                    Timber.d(error)
+                    Log.d("=== SearchActivity", error)
                     toastIt(error)
                     onFailure(
                         call, Throwable(error)

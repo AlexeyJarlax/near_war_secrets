@@ -36,7 +36,7 @@
         tools:targetApi="tiramisu">
 
         <activity
-            android:name=".ShareActivity"
+            android:name=".file.ShareActivity"
             android:exported="true">
             <!-- фильтр для обработки переданных изображений -->
             <intent-filter>
@@ -84,7 +84,7 @@
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".StorageLogActivity"
+            android:name=".file.StorageLogActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity

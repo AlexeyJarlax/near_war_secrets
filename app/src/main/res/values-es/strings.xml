@@ -133,7 +133,7 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="naming_options">Generador de nombres</string>
     <string name="language_option">Seleccionar el idioma de la aplicación</string>
     <string name="naming_option">Seleccionar el estilo de nomenclatura de archivos</string>
-    <string name="storage_log_activity">Registro de archivos almacenados en el dispositivo.\n Las vistas previas se guardan con la extensión .p.\n Los archivos encriptados se guardan con la extensión .kk\n Los archivos sin encriptar se guardan con la extensión .o\n\n El archivo desencriptado compartido por el usuario existe en el sistema por un tiempo corto con la extensión .peekaboo\n\n ----------------\n\n</string>
+
     <string name="preview">Vista previa</string>
     <string name="encrypted_file">Archivo encriptado</string>
     <string name="whithout_enception">Sin Encriptación</string>
@@ -141,4 +141,5 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="unnown_tipe">Tipo Desconocido</string>
     <string name="done">Terminado</string>
     <string name="security_settings">Configuración de seguridad</string>
+    <string name="feature_in_development">a feature in development</string>
 </resources>

@@ -140,11 +140,7 @@
     <string name="naming_options">文件名生成器</string>
     <string name="language_option">选择应用语言</string>
     <string name="naming_option">选择文件命名风格</string>
-    <string name="storage_log_activity">设备上存储的文件日志。\n
-                预览保存为扩展名 p。\n加密文件保存为扩展名 .kk\n
-                未加密文件保存为扩展名 .o\n
-                用户共享的解密文件在系统中存在一段时间，扩展名为 .peekaboo\n\n
-                ----------------\n\n</string>
+
     <string name="preview">预览</string>
     <string name="encrypted_file">加密文件</string>
     <string name="whithout_enception">无加密</string>
@@ -152,4 +148,5 @@
     <string name="unnown_tipe">未知类型</string>
     <string name="done">完成了</string>
     <string name="security_settings">安全设置</string>
+    <string name="feature_in_development">a feature in development</string>
 </resources>

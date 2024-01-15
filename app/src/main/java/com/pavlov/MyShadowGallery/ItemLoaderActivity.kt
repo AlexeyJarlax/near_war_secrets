@@ -39,20 +39,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.github.chrisbanes.photoview.PhotoView
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.FileProviderAdapter
-import timber.log.Timber
+import com.pavlov.MyShadowGallery.file.FileProviderAdapter
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.pavlov.MyShadowGallery.util.Encryption
-//import com.pavlov.MyShadowGallery.util.ExclamationMarkImageView
-//import com.pavlov.MyShadowGallery.util.ExclamationMarkItemDecoration
-import com.pavlov.MyShadowGallery.util.NamingStyleManager
+import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -96,7 +94,6 @@ class ItemLoaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_itemloader)
         requestPermissions()
-        Timber.plant(Timber.DebugTree()) // для логирования багов
         encryption = Encryption(this)
         val savedFiles = encryption.getPreviouslySavedFiles()
         for (fileUri in savedFiles) {
@@ -626,7 +623,14 @@ open class PhotoListAdapter(
         if (fileName.endsWith(".share")) {
 //            imageView.setBackgroundColor(Color.argb(1, 222, 222, 222)) // устанавливаем альфа = 1 (полная видимость)
         } else {
-            linearUnit1.setBackgroundColor(Color.argb(0, 111, 111, 111)) // устанавливаем альфа = 0 (полная прозрачность)
+            linearUnit1.setBackgroundColor(
+                Color.argb(
+                    0,
+                    111,
+                    111,
+                    111
+                )
+            ) // устанавливаем альфа = 0 (полная прозрачность)
         }
 
         holder.itemView.setOnClickListener {
@@ -641,17 +645,14 @@ open class PhotoListAdapter(
 
             val imageViewDialog = imageDialog?.findViewById(R.id.image_view_dialog) as PhotoView
 
-//            val buttonsForImageDialog =
-//                imageDialog?.findViewById<ConstraintLayout>(R.id.constraintLayout3)
-
             val buttonForCover3 = imageDialog?.findViewById<Button>(R.id.button_for_cover3)
 
             val imageDialogFileName = imageDialog?.findViewById<TextView>(R.id.imageDialogFileName)
-            imageDialogFileName?.text = "${dataSecTextView.text}"
+            imageDialogFileName?.text = "${textViewName.text}"
 
             val imageDialogFileDate =
                 imageDialog?.findViewById<TextView>(R.id.imageDialogFileDate)
-            imageDialogFileDate?.text = "${dataSecTextView}"
+            imageDialogFileDate?.text = "${dataSecTextView.text}"
 
             val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
             val imageDialogAcceptanceButton =
@@ -697,9 +698,8 @@ open class PhotoListAdapter(
                         .transform(RoundedCorners(8))
 
                 glideRequest.into(imageViewDialog)
+
                 holder.itemView.setOnClickListener {
-                    // Дополнительная логика для обработки клика на фотографии .share
-                    // Вызываем метод, который показывает диалоговое окно с вариантами ответа
                     showShareImageDialog(encryptedFile)
                 }
             }
@@ -715,29 +715,34 @@ open class PhotoListAdapter(
                 )
             ) {
 
-                val glideRequest =
-                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter().centerCrop()
-                        .transform(RoundedCorners(8))
-                glideRequest.into(imageViewDialog)
+                fun performSaveLikeItIs() {
+                    val glideRequest =
+                        Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
+                            .centerCrop()
+                            .transform(RoundedCorners(8))
+                    glideRequest.into(imageViewDialog)
 
-                btnShare?.setOnClickListener {
-                    if (buttonForCover3 != null) {
-                        buttonForCover3.visibility = View.VISIBLE
+                    btnShare?.setOnClickListener {
+                        if (buttonForCover3 != null) {
+                            buttonForCover3.visibility = View.VISIBLE
+                        }
+
+                        shareAnyOthertedImage(
+                            Uri.fromFile(encryptedFile),
+                            "",
+                            buttonForCover3!!,
+                        )
                     }
+                    imageDialog?.show()
 
-                    shareAnyOthertedImage(
-                        Uri.fromFile(encryptedFile),
-                        "",
-                        buttonForCover3!!,
-                    )
+                    imageDialogFileName?.visibility = View.VISIBLE
+                    imageViewDialog.setOnClickListener {
+                        imageDialog?.dismiss()
+                    }
                 }
-                imageDialog?.show()
 
-                imageDialogFileName?.visibility = View.VISIBLE
-//                buttonsForImageDialog?.visibility = View.VISIBLE
-                imageViewDialog.setOnClickListener {
-                    imageDialog?.dismiss()
-                }
+                performSaveLikeItIs()
+
             } else if (encryptedFileName.endsWith(".p", true)) {
                 try {
                     rotatedBitmap = encryption.decryptImage(decryptedFile)
@@ -771,7 +776,10 @@ open class PhotoListAdapter(
                     imageDialog?.show()
                     imageDialogFileName?.visibility = View.VISIBLE
 //                    buttonsForImageDialog?.visibility = View.VISIBLE
-                    Timber.d("=== Вывод дешифрованного изображения через Dialog")
+                    Log.d(
+                        "=== PhotoListAdapter",
+                        "=== Вывод дешифрованного изображения через Dialog"
+                    )
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
                         delPeekaboo(encryptedFileName)
@@ -781,9 +789,9 @@ open class PhotoListAdapter(
                     context.showToast(context.getString(R.string.deception_error))
                     context.showToast(context.getString(R.string.error_key))
                 }
-            } else {
-                // Отобразить сообщение об ошибке
-                context.showToast(context.getString(R.string.deception_error))
+//            } else {
+//                // Отобразить сообщение об ошибке
+//                context.showToast(context.getString(R.string.deception_error))
             }
         }
     }
@@ -914,29 +922,118 @@ open class PhotoListAdapter(
 
         builder.setItems(options) { _, which ->
             when (which) {
-                0 -> {
-
+                0 -> { // сохраняем без шифрования
+                    createFileFrom(encryptedFile, ".o")
+                    deleteFile(encryptedFile)
+                    closeContext()
                 }
 
-                1 -> {
-
+                1 -> { // сохраняем c шифрованием
+                    val outputFile = createFileFrom(encryptedFile, ".k")
+                    val uri = Uri.fromFile(outputFile)
+                    encryption.createThumbnail(context.applicationContext, uri)
+                    try {
+                        if (outputFile != null) {
+                            encryption.encryptImage(uri, outputFile.name)
+                        }
+                    } catch (e: Exception) {
+                        context.showToast(context.getString(R.string.enception_error))
+                    }
+                    deleteFile(encryptedFile)
+                    closeContext()
                 }
 
-                2 -> {
+                2 -> {  // сохраняем для расшифровки моим ключом
+//                    val isDecryptable = encryption.isDecryptable(encryptedFile)
+                    if (encryption.isDecryptable(encryptedFile)) {
+                        val outputFile = createFileFrom(encryptedFile, ".k")
+                       if(outputFile != null) {
+                           rotatedBitmap = encryption.decryptImage(outputFile)
+                           val tempFile = File(context.applicationContext.filesDir, "${outputFile.nameWithoutExtension}.k")
+                           val uri = Uri.fromFile(tempFile)
+                           encryption.createThumbnail(context.applicationContext, uri)
+                       }
 
+//                        deleteFile(encryptedFile)
+//                        deleteFile(tempFile)
+//                        recycleBitmap(rotatedBitmap)
+//                        closeContext()
+                    } else {
+                        context.showToast(context.getString(R.string.enception_error))
+                    }
                 }
 
                 3 -> {
-
+                    context.showToast(context.getString(R.string.feature_in_development))
+//                    notifyDataSetChanged()
                 }
 
-                4 -> {
-
+                4 -> { // удаляем
+                    deleteFile(encryptedFile)
+                    closeContext()
                 }
             }
         }
 
         builder.show()
+    }
+
+    private fun createFileFrom(encryptedFile: File, expansion: String): File? {
+        Log.d("=== PhotoListAdapter", "=== Option 0 selected")
+        context.showToast(context.getString(R.string.download))
+        val folder = context.applicationContext.filesDir
+        Log.d("=== PhotoListAdapter", "=== Files directory: ${folder.absolutePath}")
+        val fileName = removeFileExtension(encryptedFile.name)
+        Log.d("=== PhotoListAdapter", "=== Generated file name: $fileName")
+        val outputFile = File(folder, "$fileName$expansion")
+        Log.d(
+            "=== PhotoListAdapter",
+            "=== Output file path: ${outputFile.absolutePath}"
+        )
+        val uri = Uri.fromFile(encryptedFile)
+        context.contentResolver.openInputStream(uri)?.use { input ->
+            FileOutputStream(outputFile).use { output ->
+                input.copyTo(output)
+            }
+        }
+        if (outputFile.exists()) {
+            Log.d("=== PhotoListAdapter", "=== Output file exists")
+            val updatedUri = outputFile.toUri()
+            Log.d("=== PhotoListAdapter", "=== Updated URI: $updatedUri")
+            encryption.addPhotoToList(0, updatedUri)
+            context.showToast(context.getString(R.string.done))
+            return outputFile
+        } else {
+            Log.e("=== PhotoListAdapter", "=== Output file does not exist")
+            context.showToast(context.getString(R.string.save_error))
+            return null
+        }
+
+    }
+
+    private fun deleteFile(encryptedFile: File) {
+        context.showToast(context.getString(R.string.wait))
+        delPeekaboo(encryptedFile.name)
+        FileProviderAdapter.deleteFile(
+            encryptedFile.name, context.applicationContext
+        )
+    }
+
+    fun closeContext() {
+        (context as Activity).finish()
+        val intent = Intent(context, ItemLoaderActivity::class.java)
+        context.startActivity(intent)
+        imageDialog?.dismiss()
+    }
+
+
+    private fun removeFileExtension(fileName: String): String {
+        val lastDotIndex = fileName.lastIndexOf(".")
+        return if (lastDotIndex == -1) {
+            fileName
+        } else {
+            fileName.substring(0, lastDotIndex)
+        }
     }
 
     private fun recycleBitmap(bitmap: Bitmap?) {

@@ -1,8 +1,9 @@
-package com.pavlov.MyShadowGallery.util
+package com.pavlov.MyShadowGallery.file
 
 import android.content.Context
 import android.util.Log
-import com.pavlov.MyShadowGallery.SettingsActivity
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import java.io.File
 
 class NamingStyleManager(private val context: Context) {
@@ -11,7 +12,9 @@ class NamingStyleManager(private val context: Context) {
     private val nouns: List<String>
 
     init {
-        val namingStyle = AppPreferencesKeysMethods(context).getIntFromSharedPreferences(AppPreferencesKeys.FILE_NAME_KEY)
+        val namingStyle = AppPreferencesKeysMethods(context).getIntFromSharedPreferences(
+            AppPreferencesKeys.FILE_NAME_KEY
+        )
 
         when (namingStyle) {
             0 -> {

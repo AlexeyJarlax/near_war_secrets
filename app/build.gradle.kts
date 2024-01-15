@@ -50,12 +50,9 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.github.bumptech.glide:glide:4.14.2")
-//    annotationProcessor("com.github.bumptech.glide:compiler:4.14.2")
     implementation("androidx.camera:camera-camera2:1.3.0")
     implementation("androidx.camera:camera-lifecycle:1.3.0")
     implementation("androidx.camera:camera-view:1.4.0-alpha02")
-//    kapt("com.github.bumptech.glide:compiler:4.14.2")
-//    ksp("com.github.bumptech.glide:compiler:4.14.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -63,7 +60,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    implementation("com.jakewharton.timber:timber:4.7.1") // для логирования серверных ошибок
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2") // Корутины многопоточности
     implementation("androidx.security:security-crypto:1.1.0-alpha06")  // хэширование
 
