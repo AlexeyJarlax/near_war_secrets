@@ -72,6 +72,7 @@ class ItemLoaderActivity : AppCompatActivity() {
     private var isItFrontCamera = false
     private var imageDialogAcceptance = false
     private lateinit var buttonForCover2: Button
+
     private lateinit var buttonCapture: Button
     private lateinit var buttonGallery: Button
     private lateinit var buttonCameraSet: ConstraintLayout
@@ -107,6 +108,12 @@ class ItemLoaderActivity : AppCompatActivity() {
         frameLayout2 = findViewById(R.id.frameLayout2)
         loadingIndicator2 = findViewById(R.id.loading_indicator2)
         buttonForCover2 = findViewById(R.id.button_for_cover2)
+        buttonForCover2.setOnClickListener {
+            Handler(Looper.getMainLooper()).postDelayed({
+                buttonForCover2.visibility = View.GONE
+                loadingIndicator2.visibility = View.GONE
+            }, 2000)
+        }
         constraintLayout3 = findViewById(R.id.constraintLayout3)
         constraintLayout3.setOnClickListener {
             constraintLayout3.visibility = View.GONE
@@ -292,6 +299,8 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
                                 val btnDelete =
                                     imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
+                                val miniButtonForCover =
+                                    imageDialog?.findViewById<Button>(R.id.mini_button_for_cover)
                                 val buttonForCover3 =
                                     imageDialog?.findViewById<Button>(R.id.button_for_cover3)
                                 buttonForCover3?.text = getString(R.string.wait)
@@ -307,6 +316,8 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 btnTernLeft?.visibility = View.VISIBLE
                                 btnTernRight?.visibility = View.VISIBLE
                                 btnDelete?.visibility = View.VISIBLE
+
+
 
                                 fun rotatingMethod() { // диалог с вращением
                                     if (buttonForCover3 != null) {
@@ -340,6 +351,12 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                 }
                                             }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS
                                         ) // завершение индикатора
+                                    }
+                                }
+                                if (miniButtonForCover != null) {
+                                    miniButtonForCover.setOnClickListener {
+                                        imageDialog?.dismiss()
+                                        buttonForCover2.performClick()
                                     }
                                 }
 
@@ -383,6 +400,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     )
                                     imageDialog?.dismiss()
                                     hideLoadingIndicator(isItFrontCamera) // завершение индикатора
+                                    buttonForCover2.performClick()
                                 }
 
                                 imageDialogAcceptanceButton?.setOnClickListener {  // сохраняем пикчу и выходим из imageDialog
@@ -478,6 +496,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             }
                                         }
                                     }
+                                    buttonForCover2.performClick()
                                 }
 
                             }
@@ -655,8 +674,10 @@ open class PhotoListAdapter(
             imageDialogFileDate?.text = "${dataSecTextView.text}"
 
             val btnShare = imageDialog?.findViewById<Button>(R.id.image_dialog_btn_share)
+
             val imageDialogAcceptanceButton =
                 imageDialog?.findViewById<Button>(R.id.image_dialog_acceptance_button)
+
             val btnTernLeft = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_left)
 
             val btnFAQ = imageDialog?.findViewById<Button>(R.id.image_dialog_faq)
@@ -666,6 +687,13 @@ open class PhotoListAdapter(
             val btnTernRight = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
             val btnDelete = imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
 
+            val miniButtonForCover =
+                imageDialog?.findViewById<Button>(R.id.mini_button_for_cover)
+
+            val buttonForCover2 = imageDialog?.findViewById<Button>(R.id.button_for_cover2)
+
+            val loadingIndicator2 = imageDialog?.findViewById<ProgressBar>(R.id.loading_indicator2)
+
             btnShare?.visibility = View.VISIBLE
             imageDialogAcceptanceButton?.visibility = View.GONE
             btnTernLeft?.visibility = View.INVISIBLE
@@ -673,6 +701,28 @@ open class PhotoListAdapter(
             imageDialogFileDate?.visibility = View.VISIBLE
             btnFAQ?.visibility = View.VISIBLE
             btnDelete?.visibility = View.VISIBLE
+
+            if (buttonForCover2 != null) {
+                buttonForCover2.setOnClickListener {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (buttonForCover2 != null) {
+                            buttonForCover2.visibility = View.GONE
+                        }
+                        if (loadingIndicator2 != null) {
+                            loadingIndicator2.visibility = View.GONE
+                        }
+                    }, 2000)
+                }
+            }
+
+            if (miniButtonForCover != null) {
+                miniButtonForCover.setOnClickListener {
+                    imageDialog?.dismiss()
+                    buttonForCover2?.performClick()
+                }
+            }
+
+
 
             btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
                 context.showToast(context.getString(R.string.wait))
@@ -687,6 +737,7 @@ open class PhotoListAdapter(
                 val intent = Intent(context, ItemLoaderActivity::class.java)
                 context.startActivity(intent)
                 imageDialog?.dismiss()
+                buttonForCover2?.performClick()
 
             }
 
@@ -738,6 +789,7 @@ open class PhotoListAdapter(
                     imageDialogFileName?.visibility = View.VISIBLE
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
+                        buttonForCover2?.performClick()
                     }
                 }
 
@@ -783,6 +835,7 @@ open class PhotoListAdapter(
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
                         delPeekaboo(encryptedFileName)
+                        buttonForCover2?.performClick()
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
@@ -944,20 +997,17 @@ open class PhotoListAdapter(
                 }
 
                 2 -> {  // сохраняем для расшифровки моим ключом
-//                    val isDecryptable = encryption.isDecryptable(encryptedFile)
                     if (encryption.isDecryptable(encryptedFile)) {
-                        val outputFile = createFileFrom(encryptedFile, ".k")
-                       if(outputFile != null) {
-                           rotatedBitmap = encryption.decryptImage(outputFile)
-                           val tempFile = File(context.applicationContext.filesDir, "${outputFile.nameWithoutExtension}.k")
-                           val uri = Uri.fromFile(tempFile)
-                           encryption.createThumbnail(context.applicationContext, uri)
-                       }
+                        var outputFile = createFileFrom(encryptedFile, ".kk")
 
-//                        deleteFile(encryptedFile)
-//                        deleteFile(tempFile)
-//                        recycleBitmap(rotatedBitmap)
-//                        closeContext()
+                        if (outputFile != null) {
+                            rotatedBitmap = encryption.decryptImage(outputFile)
+                            encryption.createMiniFile(outputFile, ".p", 100)
+                        }
+                        deleteFile(encryptedFile)
+                        recycleBitmap(rotatedBitmap)
+                        notifyDataSetChanged()
+                        closeContext()
                     } else {
                         context.showToast(context.getString(R.string.enception_error))
                     }
@@ -1010,6 +1060,8 @@ open class PhotoListAdapter(
         }
 
     }
+
+
 
     private fun deleteFile(encryptedFile: File) {
         context.showToast(context.getString(R.string.wait))

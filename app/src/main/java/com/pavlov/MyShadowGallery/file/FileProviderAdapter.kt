@@ -8,6 +8,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.pavlov.MyShadowGallery.R
 import java.io.File
 import java.io.FileOutputStream
