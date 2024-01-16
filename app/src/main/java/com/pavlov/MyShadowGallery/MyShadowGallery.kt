@@ -57,7 +57,7 @@ class MyShadowGallery : Application() {
         // Очистка файлов с расширением .peekaboo, .unknown и .k
         val folder = applicationContext.filesDir
         val peekabooFiles = folder.listFiles { _, name ->
-            name.endsWith(".peekaboo") || name.endsWith(".unknown") || name.endsWith(".k")
+            name.endsWith(".peekaboo") || name.endsWith(".unknown") || name.endsWith(".k") || name.endsWith(".dat")
         }
 
         peekabooFiles?.forEach { file ->

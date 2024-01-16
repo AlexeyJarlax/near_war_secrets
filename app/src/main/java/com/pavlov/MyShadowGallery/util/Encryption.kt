@@ -429,14 +429,14 @@ class Encryption(private val context: Context) {
         }
     }
 
-    fun getPreviouslySavedFiles(): List<String> { // наполнение списка для RecyclerView
+    fun getPreviouslySavedFiles(): List<String> {
         val savedFiles = mutableListOf<String>()
         val directory = context.applicationContext.filesDir
         if (directory != null && directory.exists() && directory.isDirectory) {
             val files = directory.listFiles()
             if (files != null) {
                 val sortedFiles = files
-                    .filter { it.extension != "kk" && it.name != "profileInstalled" }
+                    .filter { it.extension != "kk" && it.extension != "dat" && it.name != "profileInstalled" }
                     .sortedBy { it.lastModified() } // Сортировка по времени создания в возрастающем порядке
                 savedFiles.addAll(sortedFiles.map { it.name })
             }
