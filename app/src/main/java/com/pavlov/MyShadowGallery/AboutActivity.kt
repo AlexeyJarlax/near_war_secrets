@@ -3,6 +3,7 @@ package com.pavlov.MyShadowGallery
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -27,11 +28,12 @@ class AboutActivity : AppCompatActivity() {
         val userAgreementButton = findViewById<Button>(R.id.button_settings_user_agreement)
         val developersPage = findViewById<Button>(R.id.developers_page)
         if (themeManager.isNightModeEnabled(this)) {// применяем тему в старте: ночная
-            if (themeManager.isUserSwitchEnabled(this)) { // горы
-                videoView.alpha = 0.0f
+            if (themeManager.isUserSwitchEnabled(this)) {
+                videoView.visibility = View.GONE
                 backMenuLayout.alpha = 1.0f
                 backgroundView.alpha = 1.0f
-            } else { // котики
+            } else {
+                videoView.visibility = View.VISIBLE
                 videoView.alpha = 0.5f
                 backMenuLayout.alpha = 1.0f
                 backgroundView.alpha = 0.0f
@@ -45,11 +47,11 @@ class AboutActivity : AppCompatActivity() {
             scrollView()
         } else {  // дневная
             if (themeManager.isUserSwitchEnabled(this)) { // горы
-                videoView.alpha = 0.0f
+                videoView.visibility = View.GONE
                 backMenuLayout.alpha = 1.0f
                 backgroundView.alpha = 0.5f
             } else { // котики
-                videoView.alpha = 0.0f
+                videoView.visibility = View.GONE
                 backMenuLayout.alpha = 1.0f
                 backgroundView.alpha = 0.5f
             }

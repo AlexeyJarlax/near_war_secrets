@@ -51,14 +51,14 @@ class MainPageActivity : AppCompatActivity() {
             goToThreeStepsActivity()
         }
 
-        buttonSearch.setOnClickListener {
+        buttonSearch.setOnClickListener {  // флаг на отображение кнопки назад
             val displayIntent = Intent(this, SearchActivity::class.java)
+            displayIntent.putExtra("showBackBtn", true)
             startActivity(displayIntent)
         }
 
-        buttonGallery.setOnClickListener { // ItemLoaderActivity в режиме Галереи
+        buttonGallery.setOnClickListener { // флаг ItemLoaderActivity в режиме Галереи
             val displayIntent = Intent(this, ItemLoaderActivity::class.java)
-            // Добавляем флаг, чтобы ItemLoaderActivity запускалась в усеченной версии
             displayIntent.putExtra("hideConstraintLayout", true)
             startActivity(displayIntent)
         }

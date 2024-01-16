@@ -74,12 +74,14 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var killTheHistory: Button
     var countPass = 0
     var firstPass = ""
+    var showBackBtn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         // Extracting flag from Intent
         val isPasswordExists = intent.getBooleanExtra("isPasswordExists", false)
+        showBackBtn = intent.getBooleanExtra("showBackBtn", false)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -98,7 +100,8 @@ class SearchActivity : AppCompatActivity() {
         password: String,
         isPasswordExists: Boolean
     ) { //проверка на режим пароль, маскировка
-        val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+        val savedPassword =
+            AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
             if (password == AppPreferencesKeys.DEFAULT_MIMIC_PASS) {
                 goToMainActivity()
@@ -130,9 +133,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupOneLineViews() {
-        backgroundView = findViewById<ImageView>(R.id.background_image)
+        backgroundView = findViewById(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         backButton = findViewById(R.id.button_back_from_search_activity)
+        backButton.visibility = if (showBackBtn) View.VISIBLE else View.GONE
         clearButton = findViewById(R.id.clearButton)
         searchIcon = findViewById(R.id.search_icon)
         queryInput = findViewById(R.id.search_edit_text)
@@ -175,7 +179,10 @@ class SearchActivity : AppCompatActivity() {
                         trackName, artistName, trackTimeMillis, artworkUrl100
                     )
                     toastIt("${getString(R.string.added)} ${trackName}")
-                    Log.d("=== SearchActivity", "=== historyAdapter.saveTrack:${trackName}${artistName}")
+                    Log.d(
+                        "=== SearchActivity",
+                        "=== historyAdapter.saveTrack:${trackName}${artistName}"
+                    )
                 }
             })
         trackRecyclerView.layoutManager = layoutManager
@@ -297,7 +304,10 @@ class SearchActivity : AppCompatActivity() {
     private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
         lastQuery = query        // Сохраняем последний запрос и колбэк
         lastCallback = callback
-        Log.d("=== SearchActivity", "=== Запускаем метод performSearch с параметрами Query: $query и Callback")
+        Log.d(
+            "=== SearchActivity",
+            "=== Запускаем метод performSearch с параметрами Query: $query и Callback"
+        )
         iTunesSearchAPI.search(query).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(
                 call: Call<TrackResponse>, response: Response<TrackResponse>
@@ -307,7 +317,10 @@ class SearchActivity : AppCompatActivity() {
                     val trackData = if (trackResponse?.results?.isNotEmpty() == true) {
                         // Преобразуем результаты в список объектов TrackData
                         trackResponse.results.map { track ->
-                            Log.d("=== SearchActivity", "=== Метод performSearch => response.isSuccessful! track.trackName:${track.trackName}")
+                            Log.d(
+                                "=== SearchActivity",
+                                "=== Метод performSearch => response.isSuccessful! track.trackName:${track.trackName}"
+                            )
                             TrackData(
                                 track.trackName,
                                 track.artistName,
@@ -316,12 +329,18 @@ class SearchActivity : AppCompatActivity() {
                             )
                         }
                     } else {
-                        Log.d("=== SearchActivity", "=== Метод performSearch => response.isSuccessful! => emptyList() таких песен нет")
+                        Log.d(
+                            "=== SearchActivity",
+                            "=== Метод performSearch => response.isSuccessful! => emptyList() таких песен нет"
+                        )
                         solvingAbsentProblem() // вызываем заглушку о пустом листе запроса
                         emptyList()
                     }
                     callback(trackData)         // Вызываем колбэк с полученными данными
-                    Log.d("=== SearchActivity", "=== Метод performSearch => response.isSuccessful! => callback(trackData): $trackData")
+                    Log.d(
+                        "=== SearchActivity",
+                        "=== Метод performSearch => response.isSuccessful! => callback(trackData): $trackData"
+                    )
                 } else {
                     val error = when (response.code()) {
                         400 -> "${getString(R.string.error400)}"

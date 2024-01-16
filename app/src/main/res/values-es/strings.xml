@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MSG</string>
+    <string name="mimicry_app_name">MoodSound Galaxy</string>
     <string name="app_name_in_main_page">Mi Galería de Sombras</string>
     <string name="disguise_btn">Disfraz</string>
     <string name="search">Buscar</string>

@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/background_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="top"
             android:alpha="0.4"
             android:contentDescription="TODO"
@@ -140,18 +140,17 @@
                 android:alpha="0.0"
                 android:fitsSystemWindows="true"
                 android:scaleType="fitCenter"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
-            <TextView
+            <View
                 android:id="@+id/preview_size_label7"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginTop="@dimen/dp16"
-                android:layout_marginBottom="@dimen/dp16"
+                android:layout_marginTop="@dimen/dp6"
+                android:layout_marginBottom="@dimen/dp6"
                 android:gravity="start|end|center_vertical"
-                android:text=""
                 android:textStyle="normal" />
 
         </LinearLayout>

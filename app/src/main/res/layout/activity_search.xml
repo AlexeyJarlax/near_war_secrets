@@ -21,22 +21,37 @@
         android:alpha="0.4"
         android:scaleType="centerCrop" />
 
+    <TextView
+        android:id="@+id/mimic_app_name"
+        style="@style/ErrorTextBig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:gravity="start"
+        android:padding="@dimen/dp20"
+        android:paddingBottom="@dimen/dp12"
+        android:text="@string/mimicry_app_name"
+        android:textSize="@dimen/text_size_sp26"
+        app:layout_constraintTop_toTopOf="@+id/background_image" />
+
     <Button
         android:id="@+id/button_back_from_search_activity"
-        style="@style/GoBackButtons"
+        style="@style/GoBackButtons2"
         android:background="@android:color/transparent"
         android:text="@string/button_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/mimic_app_name"
+        tools:visibility="visible"/>
 
     <include
         android:id="@+id/search_box_include"
         layout="@layout/util_search_layout"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp36"
-        android:layout_marginTop="@dimen/dp60"
-        app:layout_constraintTop_toTopOf="@id/button_back_from_search_activity"
-        tools:layout_editor_absoluteX="@dimen/z" />
+        android:layout_height="@dimen/dp44"
+        android:layout_marginTop="@dimen/dp6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_back_from_search_activity" />
 
     <TextView
         android:id="@+id/you_were_looking_for"
@@ -44,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="@dimen/dp44"
+        android:paddingTop="@dimen/dp36"
         android:paddingBottom="@dimen/dp12"
         android:text="@string/you_were_looking_for"
         android:textSize="@dimen/text_size_sp19"

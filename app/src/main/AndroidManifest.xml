@@ -31,7 +31,8 @@
 
         <activity
             android:name=".file.ShareActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="fullSensor">
             <!-- фильтр для обработки переданных изображений -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -52,7 +53,8 @@
 
         <activity
             android:name=".security.ThreeStepsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".security.SetPasswordActivity"
             android:exported="true"
@@ -60,7 +62,8 @@
             android:theme="@style/Theme.MyApp" />
         <activity
             android:name=".security.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
