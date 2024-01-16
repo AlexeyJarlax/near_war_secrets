@@ -141,5 +141,19 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="unnown_tipe">Tipo Desconocido</string>
     <string name="done">Terminado</string>
     <string name="security_settings">Configuración de seguridad</string>
-    <string name="feature_in_development">a feature in development</string>
+    <string name="sensitive_info">"La información sensible y los datos personales pueden eliminarse permanentemente presionando el botón BORRAR TODOS LOS DATOS ubicado arriba."</string>
+    <string name="send_to_app">El archivo ha sido enviado a la aplicación. Inicie sesión en la aplicación para procesarlo.</string>
+    <string name="saving_option">El archivo fue recibido de otra aplicación.</string>
+    <string name="saving_option1">Guardar el archivo "como está"</string>
+    <string name="saving_option2">Encriptar y guardar el archivo</string>
+    <string name="saving_option3">Intentar descifrar el archivo con mi clave</string>
+    <string name="saving_option4">Intentar descifrar el archivo con la clave de otra persona</string>
+    <string name="saving_option5">Eliminar el archivo</string>
+    <string name="feature_in_development">Función en desarrollo</string>
+    <string name="storage_log_activity">Registro de archivos almacenados en el dispositivo.\n
+                    Las vistas previas se guardan con la extensión .p.\nLos archivos encriptados se guardan con la extensión .kk.\n
+                    Los archivos guardados sin encriptar tienen la extensión .o.\n
+                    El archivo descifrado compartido por el usuario existe en el sistema por un corto período con la extensión .peekaboo.\n
+                    Un archivo compartido con la aplicación a través de la función "compartir" existe en el sistema con la extensión .share.\n\n
+                    ----------------\n\n</string>
 </resources>

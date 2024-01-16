@@ -144,5 +144,19 @@ You can share the image with another user and they will be able to view it on th
     <string name="unnown_tipe">Unknown Type</string>
     <string name="done">done</string>
     <string name="security_settings">Security Settings</string>
-    <string name="feature_in_development">a feature in development</string>
+    <string name="sensitive_info">"Sensitive information and personal data can be permanently deleted by pressing the CLEAR ALL DATA button located above."</string>
+    <string name="send_to_app">The file has been sent to the application. Log in to the application for processing.</string>
+    <string name="saving_option">The file was received from another application.</string>
+    <string name="saving_option1">Save the file "as is"</string>
+    <string name="saving_option2">Encrypt and save the file</string>
+    <string name="saving_option3">Attempt to decrypt the file with my key</string>
+    <string name="saving_option4">Attempt to decrypt the file with someone elses key</string>
+    <string name="saving_option5">Delete the file</string>
+    <string name="feature_in_development">Feature in development</string>
+    <string name="storage_log_activity">Log of files stored on the device.\n
+                    Previews are saved with the extension .p.\nEncrypted files are saved with the extension .kk.\n
+                    Non-encrypted saved files have the extension .o.\n
+                    The decrypted file shared by the user exists on the system for a short period with the extension .peekaboo.\n
+                    A file shared with the application through the "share" function exists on the system with the extension .share.\n\n
+                    ----------------\n\n</string>
 </resources>

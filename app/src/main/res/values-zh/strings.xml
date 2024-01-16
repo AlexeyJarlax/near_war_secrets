@@ -148,5 +148,19 @@
     <string name="unnown_tipe">未知类型</string>
     <string name="done">完成了</string>
     <string name="security_settings">安全设置</string>
-    <string name="feature_in_development">a feature in development</string>
+    <string name="sensitive_info">"敏感信息和个人数据可通过点击上方的清除所有数据按钮进行永久删除。"</string>
+    <string name="send_to_app">文件已发送至应用。请登录应用进行处理。</string>
+    <string name="saving_option">文件来自其他应用。</string>
+    <string name="saving_option1">保存文件“原样保存”</string>
+    <string name="saving_option2">加密并保存文件</string>
+    <string name="saving_option3">尝试使用我的密钥解密文件</string>
+    <string name="saving_option4">尝试使用他人的密钥解密文件</string>
+    <string name="saving_option5">删除文件</string>
+    <string name="feature_in_development">功能开发中</string>
+    <string name="storage_log_activity">设备上存储的文件日志。\n
+                    预览以 .p 扩展名保存。\n加密文件以 .kk 扩展名保存。\n
+                    未加密保存的文件以 .o 扩展名保存。\n
+                    用户共享的解密文件在系统中存在一段时间，扩展名为 .peekaboo。\n
+                    通过“共享”功能与应用程序共享的文件在系统中以 .share 扩展名存在。\n\n
+                    ----------------\n\n</string>
 </resources>
