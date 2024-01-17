@@ -45,6 +45,7 @@ class LoginActivity : AppCompatActivity() {
         loadingIndicator = findViewById(R.id.loading_indicator)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        ThemeManager.applyTheme(this)
         backgroundView = findViewById(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         setPasswordButton = findViewById(R.id.setPasswordButton)

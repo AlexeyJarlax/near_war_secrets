@@ -52,6 +52,11 @@
         </provider>
 
         <activity
+            android:name=".FAQActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"/>
+
+        <activity
             android:name=".security.ThreeStepsActivity"
             android:exported="false"
             android:screenOrientation="fullSensor"/>

@@ -21,16 +21,10 @@
         android:layout_marginBottom="0dp"
         android:scaleType="centerCrop" />
 
-    <LinearLayout
-        style="@style/FrontMenuLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp12"
             android:background="@android:color/transparent"
             android:orientation="vertical">
 
@@ -74,7 +68,7 @@
 
             <Button
                 android:id="@+id/button_item_loader"
-                style="@style/MainMenuButtons"
+                style="@style/MainMenuButtons2"
                 android:text="@string/button_item_loader"
                 app:icon="@android:drawable/ic_menu_add"
                 tools:ignore="VisualLintButtonSize" />
@@ -95,18 +89,26 @@
 
             <Button
                 android:id="@+id/button_search"
-                style="@style/MainMenuButtons"
+                style="@style/MainMenuButtons2"
                 android:text="@string/disguise_btn"
                 app:icon="@android:drawable/ic_menu_view"
                 tools:ignore="VisualLintButtonSize" />
-            <!--                android:visibility="gone"-->
+            <!--android:visibility="gone"-->
+
+            <Button
+                android:id="@+id/how_does_is_work"
+                style="@style/MainMenuButtons2"
+                android:text="@string/how_does_is_work"
+                app:icon="@android:drawable/ic_menu_help"
+                app:tint="@color/yp_black_and_yp_black"
+                tools:ignore="VisualLintButtonSize" />
+
             <Button
                 android:id="@+id/button_settings"
-                style="@style/MainMenuButtons"
+                style="@style/MainMenuButtons2"
                 android:text="@string/button_settings"
                 app:icon="@android:drawable/ic_menu_preferences"
                 tools:ignore="VisualLintButtonSize" />
 
         </LinearLayout>
-    </LinearLayout>
 </RelativeLayout>

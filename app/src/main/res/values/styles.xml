@@ -51,6 +51,10 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <style name="MainMenuButtons2" parent="MainMenuButtons">
+        <item name="iconSize">@dimen/dp30</item>
+    </style>
+
     <!-- Стиль кнопок и текста для вложенных менюшек-->
     <style name="SecondaryButtonsAndText" parent="Widget.MaterialComponents.Button">
         <item name="buttonStyle">@style/SecondaryButtonsAndText</item>
@@ -229,11 +233,12 @@
 
         <style name="KeyButtons" parent="SearchButtons">
 <!--            <item name="android:drawableStart">@android:drawable/ic_lock_idle_lock</item>-->
-            <item name="android:padding">@dimen/dp16</item>
+            <item name="android:padding">@dimen/dp8</item>
             <item name="android:layout_margin">8dp</item>
 
         </style>
 
     <dimen name="text_size_sp20">20sp</dimen>
     <dimen name="dp28">28dp</dimen>
+    <dimen name="dp30">30dp</dimen>
 </resources>

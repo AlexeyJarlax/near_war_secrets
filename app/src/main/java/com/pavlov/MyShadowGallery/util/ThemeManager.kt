@@ -7,11 +7,11 @@ import com.pavlov.MyShadowGallery.R
 
 object ThemeManager {
 
-
     fun applyTheme(context: Context) { //достаем ночную тему из памяти и применяем в активности вызова
-        val sharedPreferences =
-            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        val nightModeEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_NIGHT_MODE, false)
+//        val sharedPreferences =
+//            context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+//        val nightModeEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_NIGHT_MODE, false)
+        val nightModeEnabled = AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE)
         if (nightModeEnabled) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
@@ -20,10 +20,9 @@ object ThemeManager {
     }
 
     fun applyUserSwitch(context: Context): Int {
-        val sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        val userSwitchEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USER_SWITCH, false)
-
-        // Задаем значение по умолчанию
+//        val sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+//        val userSwitchEnabled = sharedPreferences.getBoolean(AppPreferencesKeys.KEY_USER_SWITCH, false)
+        val userSwitchEnabled = AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USER_SWITCH)
         var background: Int = R.drawable.cat_background2
 
         if (context is Activity) {

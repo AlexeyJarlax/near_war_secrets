@@ -307,7 +307,6 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
-
     private fun showLanguageSelectionDialog() {
         val languageOptions = arrayOf("Русский", "English", "汉语", "Español")
         val languageCodes = arrayOf("ru", "en", "zh", "es")
@@ -316,14 +315,8 @@ class SettingsActivity : AppCompatActivity() {
 
         builder.setItems(languageOptions) { dialog, which ->
             // Обработка выбора языка
-            when (which) {
-                0 -> setAppLanguage(this, "ru")
-                1 -> setAppLanguage(this, "en")
-                2 -> setAppLanguage(this, "zh")
-                3 -> setAppLanguage(this, "es")
-            }
             val selectedLanguageCode = languageCodes[which]
-            setAppLanguage(this, selectedLanguageCode)
+            setAppLanguage(applicationContext, selectedLanguageCode)
             dialog.dismiss()
 
             // Сохранение

@@ -2,6 +2,7 @@ package com.pavlov.MyShadowGallery
 
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -44,17 +45,12 @@ class MainPageActivity : AppCompatActivity() {
         val buttonMedialib = findViewById<Button>(R.id.button_item_loader)
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
-//        threeStepsActivity = ThreeStepsActivity()
+        val buttonHowDoesIsWork = findViewById<Button>(R.id.how_does_is_work)
+
 
 
         buttonLogin.setOnClickListener {
             goToThreeStepsActivity()
-        }
-
-        buttonSearch.setOnClickListener {  // флаг на отображение кнопки назад
-            val displayIntent = Intent(this, SearchActivity::class.java)
-            displayIntent.putExtra("showBackBtn", true)
-            startActivity(displayIntent)
         }
 
         buttonGallery.setOnClickListener { // флаг ItemLoaderActivity в режиме Галереи
@@ -70,6 +66,17 @@ class MainPageActivity : AppCompatActivity() {
 
         buttonStorageLog.setOnClickListener {
             val displayIntent = Intent(this, StorageLogActivity::class.java)
+            startActivity(displayIntent)
+        }
+
+        buttonHowDoesIsWork.setOnClickListener {
+            val displayIntent = Intent(this, FAQActivity::class.java)
+            startActivity(displayIntent)
+        }
+
+        buttonSearch.setOnClickListener {  // флаг на отображение кнопки назад
+            val displayIntent = Intent(this, SearchActivity::class.java)
+            displayIntent.putExtra("showBackBtn", true)
             startActivity(displayIntent)
         }
 
