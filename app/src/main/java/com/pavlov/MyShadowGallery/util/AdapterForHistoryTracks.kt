@@ -1,7 +1,6 @@
 package com.pavlov.MyShadowGallery.util
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -15,10 +14,8 @@ class AdapterForHistoryTracks(
     private val trackItemClickListener: OnTrackItemClickListener
 ) {
 
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences(AppPreferencesKeys.PREFS_HISTORY_NAME, Context.MODE_PRIVATE)
+    private val appPreferencesMethods = AppPreferencesKeysMethods(context)
 
-    // Создаем History экземпляр адаптера
     private val adapterForHistoryTracks: AdapterForAPITracks =
         AdapterForAPITracks(context, mutableListOf(), trackItemClickListener)
 
@@ -53,11 +50,11 @@ class AdapterForHistoryTracks(
 
     private fun saveTrackListToSharedPreferences(trackList: List<Track>) {
         val jsonString = Gson().toJson(trackList)
-        sharedPreferences.edit().putString(AppPreferencesKeys.KEY_HISTORY_LIST, jsonString).apply()
+        appPreferencesMethods.saveObjectToSharedPreferences(AppPreferencesKeys.KEY_HISTORY_LIST, jsonString)
     }
 
     private fun getTrackListFromSharedPreferences(): MutableList<Track> {
-        val jsonString = sharedPreferences.getString(AppPreferencesKeys.KEY_HISTORY_LIST, null)
+        val jsonString = appPreferencesMethods.getObjectFromSharedPreferences<String>(AppPreferencesKeys.KEY_HISTORY_LIST)
         val type = object : TypeToken<List<Track>>() {}.type
         return Gson().fromJson(jsonString, type) ?: mutableListOf()
     }
@@ -68,9 +65,7 @@ class AdapterForHistoryTracks(
     }
 
     fun killHistoryList() {
-        val editor = sharedPreferences.edit()
-        editor.remove(AppPreferencesKeys.KEY_HISTORY_LIST)
-        editor.apply()
+        appPreferencesMethods.delStringFromSharedPreferences(AppPreferencesKeys.KEY_HISTORY_LIST)
     }
 
     data class Track(

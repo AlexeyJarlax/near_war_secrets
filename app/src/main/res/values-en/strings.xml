@@ -160,4 +160,9 @@ You can share the image with another user and they will be able to view it on th
                     The decrypted file shared by the user exists on the system for a short period with the extension .peekaboo.\n
                     A file shared with the application through the "share" function exists on the system with the extension .share.\n\n
                     ----------------\n\n</string>
+    <string name="how_does_is_work">How does it work</string>
+    <string name="how_to_share_picture">How to share an image?</string>
+    <string name="how_to_accept_picture">How to receive an image?</string>
+    <string name="how_to_sett_secure">How to set up security?</string>
+    <string name="how_to_add_picture">How to add an image?</string>
 </resources>

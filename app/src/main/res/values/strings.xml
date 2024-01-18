@@ -180,7 +180,8 @@
     <string name="security_settings">Настройки безопасности</string>
     <string name="sensitive_info">\"Чувствительная информация и персональные данные могут быть полностью удалены нажатием кнопки ОЧИСТИТЬ ВСЕ ДАННЫЕ, расположенной выше\"</string>
     <string name="send_to_app">Файл направлен в приложение. Войдите в приложение для обработки.</string>
-    <string name="saving_option">Файл получен из другого приложения:\n\n</string>
+    <string name="saving_option">Файл получен из другого приложения:
+    </string>
     <string name="saving_option1">Сохранить файл "как есть"\n\n</string>
     <string name="saving_option2">Зашифровать и сохранить файл\n\n</string>
     <string name="saving_option3">Попытаться расшифровать файл моим ключом\n\n</string>
@@ -198,5 +199,5 @@
     <string name="how_to_accept_picture">Как получить изображение?</string>
     <string name="how_to_sett_secure">Как настроить безопасность?</string>
     <string name="how_to_add_picture">Как добавить изображение?</string>
-    <!--    <string name="start_with_serching_songs">Удалить файл</string>-->
+
 </resources>

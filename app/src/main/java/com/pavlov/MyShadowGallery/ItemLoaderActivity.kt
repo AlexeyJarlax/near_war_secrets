@@ -20,7 +20,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +50,9 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.pavlov.MyShadowGallery.util.Encryption
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
+import com.pavlov.MyShadowGallery.util.hideLoadingIndicator
+import com.pavlov.MyShadowGallery.util.showLoadingIndicator
+import com.pavlov.MyShadowGallery.util.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -81,9 +83,9 @@ class ItemLoaderActivity : AppCompatActivity() {
         const val REQUEST_PERMISSIONS = 1
     }
 
-    val permission1: String = Manifest.permission.READ_EXTERNAL_STORAGE
-    val permission2: String = Manifest.permission.WRITE_EXTERNAL_STORAGE
-    val permission3: String = Manifest.permission.CAMERA
+    private val permission1: String = Manifest.permission.READ_EXTERNAL_STORAGE
+    private val permission2: String = Manifest.permission.WRITE_EXTERNAL_STORAGE
+    private val permission3: String = Manifest.permission.CAMERA
 
 //    @RequiresApi(Build.VERSION_CODES.R)
 //    val permission4: String = Manifest.permission.MANAGE_EXTERNAL_STORAGE
@@ -101,7 +103,7 @@ class ItemLoaderActivity : AppCompatActivity() {
             val uri: Uri = Uri.parse(fileUri)
             encryption.addPhotoToList(0, uri)
         }
-        photoListAdapter = PhotoListAdapter(this, encryption)
+        photoListAdapter = PhotoListAdapter(this, this, encryption)
         sharedPreferences =
             getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -133,12 +135,13 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     private fun requestPermissions() {
-        val permissions: Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val permissions: Array<String> =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 //            arrayOf(permission1, permission2, permission3, permission4, permission5)
-            arrayOf(permission1, permission2, permission3, permission5)
-        } else {
-            arrayOf(permission1, permission2, permission3)
-        }
+                arrayOf(permission1, permission2, permission3, permission5)
+            } else {
+                arrayOf(permission1, permission2, permission3)
+            }
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS)
     }
 
@@ -311,13 +314,12 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 imageDialogFileName?.visibility = View.VISIBLE
                                 imageDialogFileDate?.visibility = View.VISIBLE
                                 btnShare?.visibility = View.INVISIBLE
-                                btnFAQ?.visibility = View.INVISIBLE
+                                btnFAQ?.visibility = View.VISIBLE
                                 imageDialogAcceptanceButton?.visibility = View.VISIBLE
                                 btnTernLeft?.visibility = View.VISIBLE
                                 btnTernRight?.visibility = View.VISIBLE
                                 btnDelete?.visibility = View.VISIBLE
-
-
+                                loadingIndicator3?.visibility = View.INVISIBLE ?: View.GONE
 
                                 fun rotatingMethod() { // диалог с вращением
                                     if (buttonForCover3 != null) {
@@ -353,12 +355,22 @@ class ItemLoaderActivity : AppCompatActivity() {
                                         ) // завершение индикатора
                                     }
                                 }
-                                if (miniButtonForCover != null) {
-                                    miniButtonForCover.setOnClickListener {
-                                        imageDialog?.dismiss()
-                                        buttonForCover2.performClick()
-                                    }
+                                miniButtonForCover?.setOnClickListener {
+                                    btnDelete?.performClick()
                                 }
+
+                                loadingIndicator3?.setOnClickListener {
+                                    btnDelete?.performClick()
+                                }
+
+                                imageViewDialog?.setOnClickListener {
+                                    //                                        imageDialog?.dismiss()
+                                    //                                        buttonForCover2.performClick()
+                                    btnDelete?.performClick()
+                                }
+
+
+
 
                                 btnTernLeft?.setOnClickListener { // диалог с вращением налево
                                     if (rotationAngle == 0) {
@@ -389,7 +401,9 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 }
 
                                 btnFAQ?.setOnClickListener {
-                                    // тут будет справка по меню
+                                    val faqIntent =
+                                        Intent(this@ItemLoaderActivity, FAQActivity::class.java)
+                                    startActivity(faqIntent)
                                 }
 
                                 btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
@@ -574,31 +588,33 @@ class ItemLoaderActivity : AppCompatActivity() {
     }
 
     // Метод для отображения индикатора загрузки
-    fun showLoadingIndicator() {
-//        frameLayout2.setEnabled(false)
-        buttonForCover2.visibility = View.VISIBLE
-        loadingIndicator2.visibility = View.VISIBLE
-    }
+//    fun showLoadingIndicator() {
+////        frameLayout2.setEnabled(false)
+//        buttonForCover2.visibility = View.VISIBLE
+//        loadingIndicator2.visibility = View.VISIBLE
+//    }
+//
+//    // Метод для скрытия индикатора загрузки
+//    fun hideLoadingIndicator(cornerLeft: Boolean) {
+////        showToast("Ожидайте завершение процесса...")
+//        val multiplier = if (cornerLeft) 3 else 1
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            buttonForCover2.visibility = View.INVISIBLE
+//            loadingIndicator2.visibility = View.INVISIBLE
+//        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS * multiplier)
+//    }
 
-    // Метод для скрытия индикатора загрузки
-    fun hideLoadingIndicator(cornerLeft: Boolean) {
-//        showToast("Ожидайте завершение процесса...")
-        val multiplier = if (cornerLeft) 3 else 1
-        Handler(Looper.getMainLooper()).postDelayed({
-            buttonForCover2.visibility = View.INVISIBLE
-            loadingIndicator2.visibility = View.INVISIBLE
-        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS * multiplier)
-    }
-
-    fun Activity.showToast(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-    }
+//    fun Activity.showToast(text: String) {
+//        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+//    }
 }
 
 //==================================================================================================
 
 open class PhotoListAdapter(
-    private val context: Context, private val encryption: Encryption
+    private val activity: Activity,
+    private val context: Context,
+    private val encryption: Encryption
 ) : RecyclerView.Adapter<PhotoListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -653,6 +669,7 @@ open class PhotoListAdapter(
         }
 
         holder.itemView.setOnClickListener {
+            activity.showLoadingIndicator()
             val encryptedFileName = fileName
             var encryptedFile = File(context.applicationContext.filesDir, encryptedFileName)
             val decryptedFile = File(
@@ -682,7 +699,8 @@ open class PhotoListAdapter(
 
             val btnFAQ = imageDialog?.findViewById<Button>(R.id.image_dialog_faq)
             btnFAQ?.setOnClickListener {
-                // тут будет справка по меню
+                val displayIntent = Intent(context, FAQActivity::class.java)
+                activity.startActivity(displayIntent)
             }
             val btnTernRight = imageDialog?.findViewById<Button>(R.id.image_dialog_tern_right)
             val btnDelete = imageDialog?.findViewById<Button>(R.id.image_dialog_del_pct)
@@ -725,7 +743,7 @@ open class PhotoListAdapter(
 
 
             btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
-                context.showToast(context.getString(R.string.wait))
+                activity.showToast(context.getString(R.string.wait))
                 delPeekaboo(encryptedFileName)
                 FileProviderAdapter.deleteFile(
                     encryptedFile.name, context.applicationContext
@@ -784,9 +802,17 @@ open class PhotoListAdapter(
                             buttonForCover3!!,
                         )
                     }
-                    imageDialog?.show()
 
+
+                    imageDialog?.show()
                     imageDialogFileName?.visibility = View.VISIBLE
+                    imageDialogFileDate?.visibility = View.VISIBLE
+
+                    miniButtonForCover?.setOnClickListener {
+                        imageDialog?.dismiss()
+                        buttonForCover2?.performClick()
+                    }
+
                     imageViewDialog.setOnClickListener {
                         imageDialog?.dismiss()
                         buttonForCover2?.performClick()
@@ -821,8 +847,12 @@ open class PhotoListAdapter(
                     buttonForCover3?.setOnClickListener {
                         Handler(Looper.getMainLooper()).postDelayed({
                             buttonForCover3.visibility = View.GONE
-
                         }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
+                    }
+
+                    miniButtonForCover?.setOnClickListener {
+                        imageDialog?.dismiss()
+                        buttonForCover2?.performClick()
                     }
 
                     imageDialog?.show()
@@ -832,20 +862,21 @@ open class PhotoListAdapter(
                         "=== PhotoListAdapter",
                         "=== Вывод дешифрованного изображения через Dialog"
                     )
-                    imageViewDialog.setOnClickListener {
+                    imageViewDialog.setOnClickListener { // клик пор полю для выхода
                         imageDialog?.dismiss()
                         delPeekaboo(encryptedFileName)
                         buttonForCover2?.performClick()
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
-                    context.showToast(context.getString(R.string.deception_error))
-                    context.showToast(context.getString(R.string.error_key))
+                    activity.showToast(context.getString(R.string.deception_error))
+                    activity.showToast(context.getString(R.string.error_key))
                 }
 //            } else {
 //                // Отобразить сообщение об ошибке
 //                context.showToast(context.getString(R.string.deception_error))
             }
+            activity.hideLoadingIndicator(true)
         }
     }
 
@@ -930,8 +961,8 @@ open class PhotoListAdapter(
 
                 1 -> {
                     GlobalScope.launch(Dispatchers.Main) {
-                        context.showToast(context.getString(R.string.wait))
-                        context.showToast(fileNameWithExtension)
+                        activity.showToast(context.getString(R.string.wait))
+                        activity.showToast(fileNameWithExtension)
                         val decryptedFile = FileProviderAdapter.bitmapToFileByKorutin(
                             decryptedBitmap, context, fileNameWithExtension
                         )
@@ -969,7 +1000,7 @@ open class PhotoListAdapter(
             context.getString(R.string.saving_option1),
             context.getString(R.string.saving_option2),
             context.getString(R.string.saving_option3),
-            context.getString(R.string.saving_option4),
+//            context.getString(R.string.saving_option4),
             context.getString(R.string.saving_option5)
         )
 
@@ -990,7 +1021,7 @@ open class PhotoListAdapter(
                             encryption.encryptImage(uri, outputFile.name)
                         }
                     } catch (e: Exception) {
-                        context.showToast(context.getString(R.string.enception_error))
+                        activity.showToast(context.getString(R.string.enception_error))
                     }
                     deleteFile(encryptedFile)
                     closeContext()
@@ -1009,16 +1040,16 @@ open class PhotoListAdapter(
                         notifyDataSetChanged()
                         closeContext()
                     } else {
-                        context.showToast(context.getString(R.string.enception_error))
+                        activity.showToast(context.getString(R.string.enception_error))
                     }
                 }
 
-                3 -> {
-                    context.showToast(context.getString(R.string.feature_in_development))
+//                3 -> {
+//                    context.showToast(context.getString(R.string.feature_in_development))
 //                    notifyDataSetChanged()
-                }
+//                }
 
-                4 -> { // удаляем
+                3 -> { // удаляем
                     deleteFile(encryptedFile)
                     closeContext()
                 }
@@ -1030,7 +1061,7 @@ open class PhotoListAdapter(
 
     private fun createFileFrom(encryptedFile: File, expansion: String): File? {
         Log.d("=== PhotoListAdapter", "=== Option 0 selected")
-        context.showToast(context.getString(R.string.download))
+        activity.showToast(context.getString(R.string.download))
         val folder = context.applicationContext.filesDir
         Log.d("=== PhotoListAdapter", "=== Files directory: ${folder.absolutePath}")
         val fileName = removeFileExtension(encryptedFile.name)
@@ -1051,20 +1082,19 @@ open class PhotoListAdapter(
             val updatedUri = outputFile.toUri()
             Log.d("=== PhotoListAdapter", "=== Updated URI: $updatedUri")
             encryption.addPhotoToList(0, updatedUri)
-            context.showToast(context.getString(R.string.done))
+            activity.showToast(context.getString(R.string.done))
             return outputFile
         } else {
             Log.e("=== PhotoListAdapter", "=== Output file does not exist")
-            context.showToast(context.getString(R.string.save_error))
+            activity.showToast(context.getString(R.string.save_error))
             return null
         }
 
     }
 
 
-
     private fun deleteFile(encryptedFile: File) {
-        context.showToast(context.getString(R.string.wait))
+        activity.showToast(context.getString(R.string.wait))
         delPeekaboo(encryptedFile.name)
         FileProviderAdapter.deleteFile(
             encryptedFile.name, context.applicationContext
@@ -1101,9 +1131,9 @@ open class PhotoListAdapter(
     }
 
 
-    private fun Context.showToast(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-    }
+//    private fun Context.showToast(text: String) {
+//        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+//    }
 
 }
 

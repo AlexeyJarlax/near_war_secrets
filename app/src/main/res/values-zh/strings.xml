@@ -164,4 +164,9 @@
                     用户共享的解密文件在系统中存在一段时间，扩展名为 .peekaboo。\n
                     通过“共享”功能与应用程序共享的文件在系统中以 .share 扩展名存在。\n\n
                     ----------------\n\n</string>
+    <string name="how_does_is_work">它是如何工作的</string>
+    <string name="how_to_share_picture">如何分享图像？</string>
+    <string name="how_to_accept_picture">如何接收图像？</string>
+    <string name="how_to_sett_secure">如何设置安全性？</string>
+    <string name="how_to_add_picture">如何添加图像？</string>
 </resources>

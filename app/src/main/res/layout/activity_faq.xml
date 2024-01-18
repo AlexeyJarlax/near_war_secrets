@@ -7,7 +7,7 @@
     tools:context=".FAQActivity">
 
     <Button
-        android:id="@+id/button_back_from_abouttheapp"
+        android:id="@+id/button_back_from_faq"
         style="@style/GoBackButtons"
         android:background="@android:color/transparent"
         android:text="@string/button_back"
@@ -15,26 +15,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <VideoView
-        android:id="@+id/videoView0"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:alpha="0.0"
+        android:id="@+id/video_view_faq"
+        android:layout_width="288dp"
+        android:layout_height="510dp"
         android:fitsSystemWindows="true"
-        android:scaleType="fitCenter"
         android:visibility="gone"
+        android:scaleType="centerInside"
+        android:layout_marginTop="@dimen/dp6"
+        android:layout_marginBottom="@dimen/dp6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_back_from_abouttheapp" />
+        app:layout_constraintTop_toBottomOf="@id/button_back_from_faq" />
 
     <View
         android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp4"
-        android:layout_marginBottom="@dimen/dp12"
         android:layout_marginTop="@dimen/dp12"
-        android:background="@color/yp_text_gray_and_yp_black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/videoView0" />
+        app:layout_constraintTop_toBottomOf="@id/video_view_faq" />
 
     <Button
         android:id="@+id/button_how_to_add_picture"
@@ -79,15 +79,14 @@
         app:layout_constraintTop_toBottomOf="@id/button_how_to_accept_picture"
         tools:ignore="VisualLintButtonSize" />
 
-    <View
-        android:id="@+id/view2"
-        style="@style/SettingsButtonsAndText"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp4"
-        android:layout_gravity="start"
-        android:gravity="start|end|center_vertical"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/about_the_app"
+        style="@style/SettingsButtonsAndText3"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/about_app"
+        app:icon="@android:drawable/ic_input_get"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_how_to_sett_secure" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

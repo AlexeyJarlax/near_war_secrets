@@ -19,11 +19,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
+import com.pavlov.MyShadowGallery.security.LoginActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
 import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
 import com.pavlov.MyShadowGallery.util.ThemeManager
 import java.util.Locale
+import kotlin.system.exitProcess
 
 class SettingsActivity : AppCompatActivity() {
     //    @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -363,10 +365,17 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun updateAppLanguage() {
-        val intent = Intent(this, SettingsActivity::class.java)
+        val intent = Intent(this, LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+        finish()
+
+        // Перезапуск приложения
+//        val restartIntent = Intent(this, SettingsActivity::class.java)
+//        restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+//        startActivity(restartIntent)
 //        finish()
+//        exitProcess(0) // Завершение текущего процесса приложения
     }
 
 }
