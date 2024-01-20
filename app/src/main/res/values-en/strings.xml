@@ -165,4 +165,5 @@ You can share the image with another user and they will be able to view it on th
     <string name="how_to_accept_picture">How to receive an image?</string>
     <string name="how_to_sett_secure">How to set up security?</string>
     <string name="how_to_add_picture">How to add an image?</string>
+    <string name="file_from_web">accepted file</string>
 </resources>

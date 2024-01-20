@@ -162,4 +162,5 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="how_to_accept_picture">¿Cómo recibir una imagen?</string>
     <string name="how_to_sett_secure">¿Cómo configurar la seguridad?</string>
     <string name="how_to_add_picture">¿Cómo añadir una imagen?</string>
+    <string name="file_from_web">accepted file</string>
 </resources>

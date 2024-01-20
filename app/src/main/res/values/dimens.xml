@@ -23,4 +23,6 @@
     <dimen name="dp20">20dp</dimen>
     <dimen name="text_size_sp32">32sp</dimen>
     <dimen name="text_size_sp26">26sp</dimen>
+    <dimen name="dp26">26dp</dimen>
+    <dimen name="dp14">14dp</dimen>
 </resources>

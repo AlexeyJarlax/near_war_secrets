@@ -92,8 +92,9 @@
                 style="@style/MainMenuButtons2"
                 android:text="@string/disguise_btn"
                 app:icon="@android:drawable/ic_menu_view"
+                android:visibility="gone"
                 tools:ignore="VisualLintButtonSize" />
-            <!--android:visibility="gone"-->
+
 
             <Button
                 android:id="@+id/how_does_is_work"

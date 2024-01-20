@@ -21,7 +21,7 @@ class FAQActivity : AppCompatActivity() {
         setContentView(R.layout.activity_faq)
         videoView = findViewById(R.id.video_view_faq)
 //        val backMenuLayout = findViewById<LinearLayout>(R.id.act_abouttheapp_layout)
-        val back = findViewById<Button>(R.id.button_back_from_faq)
+        val buttonBack = findViewById<Button>(R.id.button_back_from_faq)
         val buttonAddPicture = findViewById<Button>(R.id.button_how_to_add_picture)
         val buttonSharePicture = findViewById<Button>(R.id.button_settings_share)
         val buttonAcceptPicture = findViewById<Button>(R.id.button_how_to_accept_picture)
@@ -29,7 +29,7 @@ class FAQActivity : AppCompatActivity() {
         val aboutTheDeveloperButton = findViewById<Button>(R.id.about_the_app)
 
 
-            back.setOnClickListener { // КНОПКА НАЗАД
+        buttonBack.setOnClickListener { // КНОПКА НАЗАД
                 finish()
             }
 

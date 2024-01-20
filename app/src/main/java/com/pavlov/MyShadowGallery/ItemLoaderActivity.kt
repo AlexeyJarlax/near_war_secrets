@@ -586,27 +586,6 @@ class ItemLoaderActivity : AppCompatActivity() {
             }
         }
     }
-
-    // Метод для отображения индикатора загрузки
-//    fun showLoadingIndicator() {
-////        frameLayout2.setEnabled(false)
-//        buttonForCover2.visibility = View.VISIBLE
-//        loadingIndicator2.visibility = View.VISIBLE
-//    }
-//
-//    // Метод для скрытия индикатора загрузки
-//    fun hideLoadingIndicator(cornerLeft: Boolean) {
-////        showToast("Ожидайте завершение процесса...")
-//        val multiplier = if (cornerLeft) 3 else 1
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            buttonForCover2.visibility = View.INVISIBLE
-//            loadingIndicator2.visibility = View.INVISIBLE
-//        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS * multiplier)
-//    }
-
-//    fun Activity.showToast(text: String) {
-//        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-//    }
 }
 
 //==================================================================================================
@@ -740,7 +719,38 @@ open class PhotoListAdapter(
                 }
             }
 
+            fun performShowLikeItIs() {
+                val glideRequest =
+                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
+                        .centerCrop()
+                        .transform(RoundedCorners(8))
+                glideRequest.into(imageViewDialog)
 
+                btnShare?.setOnClickListener {
+                    if (buttonForCover3 != null) {
+                        buttonForCover3.visibility = View.VISIBLE
+                    }
+
+                    shareAnyOthertedImage(
+                        Uri.fromFile(encryptedFile),
+                        "",
+                        buttonForCover3!!,
+                    )
+                }
+                imageDialog?.show()
+                imageDialogFileName?.visibility = View.VISIBLE
+                imageDialogFileDate?.visibility = View.VISIBLE
+
+                miniButtonForCover?.setOnClickListener {
+                    imageDialog?.dismiss()
+                    buttonForCover2?.performClick()
+                }
+
+                imageViewDialog.setOnClickListener {
+                    imageDialog?.dismiss()
+                    buttonForCover2?.performClick()
+                }
+            }
 
             btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
                 activity.showToast(context.getString(R.string.wait))
@@ -756,23 +766,9 @@ open class PhotoListAdapter(
                 context.startActivity(intent)
                 imageDialog?.dismiss()
                 buttonForCover2?.performClick()
-
             }
 
-            if (encryptedFileName.endsWith(".share", true)) {
-                val glideRequest =
-                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
-                        .fitCenter()
-                        .placeholder(android.R.drawable.ic_lock_idle_lock)
-                        .transform(RoundedCorners(8))
-
-                glideRequest.into(imageViewDialog)
-
-                holder.itemView.setOnClickListener {
-                    showShareImageDialog(encryptedFile)
-                }
-            }
-
+            // обработка клика по фотокарточке
             if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
                     ".jpg", true
                 ) || encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
@@ -783,43 +779,23 @@ open class PhotoListAdapter(
                     ".unknown", true
                 )
             ) {
+                performShowLikeItIs()
 
-                fun performSaveLikeItIs() {
-                    val glideRequest =
-                        Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
-                            .centerCrop()
-                            .transform(RoundedCorners(8))
-                    glideRequest.into(imageViewDialog)
+            } else if (encryptedFileName.endsWith(".share", true)) {
+                performShowLikeItIs()
+                showShareImageDialog(encryptedFile)
 
-                    btnShare?.setOnClickListener {
-                        if (buttonForCover3 != null) {
-                            buttonForCover3.visibility = View.VISIBLE
-                        }
-
-                        shareAnyOthertedImage(
-                            Uri.fromFile(encryptedFile),
-                            "",
-                            buttonForCover3!!,
-                        )
-                    }
-
-
-                    imageDialog?.show()
-                    imageDialogFileName?.visibility = View.VISIBLE
-                    imageDialogFileDate?.visibility = View.VISIBLE
-
-                    miniButtonForCover?.setOnClickListener {
-                        imageDialog?.dismiss()
-                        buttonForCover2?.performClick()
-                    }
-
-                    imageViewDialog.setOnClickListener {
-                        imageDialog?.dismiss()
-                        buttonForCover2?.performClick()
-                    }
-                }
-
-                performSaveLikeItIs()
+//                val glideRequest =
+//                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
+//                        .fitCenter()
+//                        .placeholder(android.R.drawable.ic_lock_idle_lock)
+//                        .transform(RoundedCorners(8))
+//
+//                glideRequest.into(imageViewDialog)
+//
+//                holder.itemView.setOnClickListener {
+//                    showShareImageDialog(encryptedFile)
+//                }
 
             } else if (encryptedFileName.endsWith(".p", true)) {
                 try {
@@ -872,9 +848,6 @@ open class PhotoListAdapter(
                     activity.showToast(context.getString(R.string.deception_error))
                     activity.showToast(context.getString(R.string.error_key))
                 }
-//            } else {
-//                // Отобразить сообщение об ошибке
-//                context.showToast(context.getString(R.string.deception_error))
             }
             activity.hideLoadingIndicator(true)
         }
@@ -915,7 +888,7 @@ open class PhotoListAdapter(
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "image/*"
 
-        // Используйте метод из ImageUtils для получения безопасного URI файла
+        // метод из ImageUtils для получения безопасного URI файла
         val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
 
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)

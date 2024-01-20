@@ -169,4 +169,5 @@
     <string name="how_to_accept_picture">如何接收图像？</string>
     <string name="how_to_sett_secure">如何设置安全性？</string>
     <string name="how_to_add_picture">如何添加图像？</string>
+    <string name="file_from_web">accepted file</string>
 </resources>

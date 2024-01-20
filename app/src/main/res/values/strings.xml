@@ -199,5 +199,6 @@
     <string name="how_to_accept_picture">Как получить изображение?</string>
     <string name="how_to_sett_secure">Как настроить безопасность?</string>
     <string name="how_to_add_picture">Как добавить изображение?</string>
+    <string name="file_from_web">Принятый файл</string>
 
 </resources>
