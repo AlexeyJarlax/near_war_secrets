@@ -58,8 +58,8 @@ class Encryption(private val context: Context) {
         Log.d("=== Encryption", "=== canSaveFilesFromGallery: ${Boolean}")
     }
 
-    fun encryptImage(imageUri: Uri, fileName: String) {
-        val encryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
+    fun encryptImage(imageUri: Uri, fileName: String, encryptionKey: String) {
+//        val encryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
         Log.d("=== Encryption", "=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
         // Получаем путь к файлу, который нужно зашифровать
         val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
@@ -123,8 +123,8 @@ class Encryption(private val context: Context) {
         }
     }
 
-    fun decryptImage(file: File): Bitmap {
-        val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
+    fun decryptImage(file: File, decryptionKey: String): Bitmap {
+//        val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
         Log.e("=== Encryption", "=== Начало декодирования. файл file: ${file.name}")
 
         val encryptedBytes = file.readBytes()
@@ -146,9 +146,9 @@ class Encryption(private val context: Context) {
         return decryptedBitmap
     }
 
-    fun isDecryptable(file: File): Boolean {
+    fun isDecryptable(file: File, decryptionKey: String): Boolean {
         return try {
-            val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
+//            val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
             Log.e("=== Encryption", "=== Начало декодирования. файл file: ${file.name}")
             val encryptedBytes = file.readBytes()
             val messageDigest = MessageDigest.getInstance("SHA-256")
@@ -183,7 +183,7 @@ class Encryption(private val context: Context) {
 
         // Остальной код остается прежним с небольшими изменениями
         var scaledNumber = APKM(context)
-            .getIntFromSharedPreferences(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
+            .getIntFromSP(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
             ?: APK.DEFAULT_PREVIEW_SIZE
         if (scaledNumber <= 0) {
             scaledNumber = 1
@@ -250,8 +250,18 @@ class Encryption(private val context: Context) {
 
         val fileExtension = fileName.substringAfterLast(".")
         val previewFileName = if (fileExtension.isNotEmpty()) {
+            val defaultKey: Int = APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+
             val fileNameWithoutExtension = fileName.substringBeforeLast(".")
-            "${fileNameWithoutExtension}.p"
+
+            // when для определения расширения в зависимости от defaultKey
+            val extension = when (defaultKey) {
+                1 -> "p1"
+                2 -> "p2"
+                3 -> "p3"
+                else -> "p" // Значение по умолчанию, если defaultKey не соответствует ожидаемым значениям
+            }
+            "$fileNameWithoutExtension.$extension"
         } else {
             context.getString(R.string.timber_img)
         }

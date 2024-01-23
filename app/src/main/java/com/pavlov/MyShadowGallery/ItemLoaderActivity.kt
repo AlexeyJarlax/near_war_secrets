@@ -48,8 +48,10 @@ import android.os.Looper
 import android.util.Log
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.TypedArrayUtils.getString
 import com.pavlov.MyShadowGallery.util.Encryption
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
+import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.hideLoadingIndicator
 import com.pavlov.MyShadowGallery.util.showLoadingIndicator
 import com.pavlov.MyShadowGallery.util.showToast
@@ -254,9 +256,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                 buttonCapture.setOnClickListener {
                     showLoadingIndicator()
                     val folder = applicationContext.filesDir
-                    var existOrNot: Boolean = sharedPreferences.getBoolean(
-                        APK.KEY_EXIST_OF_ENCRYPTION_K, false
-                    )
+                    var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
                     fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
@@ -364,13 +364,8 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 }
 
                                 imageViewDialog?.setOnClickListener {
-                                    //                                        imageDialog?.dismiss()
-                                    //                                        buttonForCover2.performClick()
                                     btnDelete?.performClick()
                                 }
-
-
-
 
                                 btnTernLeft?.setOnClickListener { // диалог с вращением налево
                                     if (rotationAngle == 0) {
@@ -420,9 +415,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 imageDialogAcceptanceButton?.setOnClickListener {  // сохраняем пикчу и выходим из imageDialog
                                     imageDialog?.dismiss()
                                     imageDialogAcceptance = true
-                                    if (sharedPreferences.getBoolean(
-                                            APK.KEY_EXIST_OF_ENCRYPTION_K, false
-                                        )
+                                    if (APKM(context = this@ItemLoaderActivity).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
                                     ) {
 
                                         MainScope().launch {  // в фоновом потоке, Корутина
@@ -467,7 +460,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             encryption.createThumbnail(application, fileUri)
 
                                             try {
-                                                encryption.encryptImage(fileUri, fileName)
+                                                encryption.encryptImage(fileUri, fileName, APKM(context = this@ItemLoaderActivity).getDefauldKey())
 
                                                 // Удаление временного файла
                                                 val fileToDelete =
@@ -511,6 +504,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                         }
                                     }
                                     buttonForCover2.performClick()
+
                                 }
 
                             }
@@ -545,9 +539,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         showToast(getString(R.string.download))
 
         val folder = applicationContext.filesDir
-        var existOrNot: Boolean = sharedPreferences.getBoolean(
-            APK.KEY_EXIST_OF_ENCRYPTION_K, false
-        )
+        var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
         val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
 
         val outputFile = File(folder, fileName)
@@ -558,12 +550,9 @@ class ItemLoaderActivity : AppCompatActivity() {
             }
         }
 
-        if (sharedPreferences.getBoolean(
-                APK.KEY_EXIST_OF_ENCRYPTION_K, false
-            )
-        ) {
+        if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)) {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
-            encryption.encryptImage(outputFile.toUri(), fileName)
+            encryption.encryptImage(outputFile.toUri(), fileName, APKM(context = this@ItemLoaderActivity).getDefauldKey())
         } else {
             showToast(getString(R.string.enception_no))
             encryption.addPhotoToList(0, outputFile.toUri())
@@ -651,9 +640,16 @@ open class PhotoListAdapter(
             activity.showLoadingIndicator()
             val encryptedFileName = fileName
             var encryptedFile = File(context.applicationContext.filesDir, encryptedFileName)
+//            val decryptedFile = File(
+//                context.applicationContext.filesDir, encryptedFileName.replace(".p", ".kk")
+//            )
             val decryptedFile = File(
-                context.applicationContext.filesDir, encryptedFileName.replace(".p", ".kk")
-            )
+                context.applicationContext.filesDir, when {
+                    encryptedFileName.endsWith(".p1") -> encryptedFileName.replace(".p1", ".kk")
+                    encryptedFileName.endsWith(".p2") -> encryptedFileName.replace(".p2", ".kk")
+                    encryptedFileName.endsWith(".p3") -> encryptedFileName.replace(".p3", ".kk")
+                    else -> encryptedFileName  // Если файл не имеет ожидаемого расширения
+                })
 
             imageDialog = Dialog(context)
             imageDialog?.setContentView(R.layout.util_dialog_image_view)
@@ -719,7 +715,7 @@ open class PhotoListAdapter(
                 }
             }
 
-            fun performShowLikeItIs() {
+            fun performShowLikeItIs() { // метод на отображение нешифрованных
                 val glideRequest =
                     Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
                         .centerCrop()
@@ -752,54 +748,9 @@ open class PhotoListAdapter(
                 }
             }
 
-            btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
-                activity.showToast(context.getString(R.string.wait))
-                delPeekaboo(encryptedFileName)
-                FileProviderAdapter.deleteFile(
-                    encryptedFile.name, context.applicationContext
-                )
-                FileProviderAdapter.deleteFile(
-                    decryptedFile.name, context.applicationContext
-                )
-                (context as Activity).finish()
-                val intent = Intent(context, ItemLoaderActivity::class.java)
-                context.startActivity(intent)
-                imageDialog?.dismiss()
-                buttonForCover2?.performClick()
-            }
-
-            // обработка клика по фотокарточке
-            if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
-                    ".jpg", true
-                ) || encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
-                    ".png", true
-                ) || encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(
-                    ".bmp", true
-                ) || encryptedFileName.endsWith(".webp", true) || encryptedFileName.endsWith(
-                    ".unknown", true
-                )
-            ) {
-                performShowLikeItIs()
-
-            } else if (encryptedFileName.endsWith(".share", true)) {
-                performShowLikeItIs()
-                showShareImageDialog(encryptedFile)
-
-//                val glideRequest =
-//                    Glide.with(context).load(Uri.fromFile(encryptedFile)).fitCenter()
-//                        .fitCenter()
-//                        .placeholder(android.R.drawable.ic_lock_idle_lock)
-//                        .transform(RoundedCorners(8))
-//
-//                glideRequest.into(imageViewDialog)
-//
-//                holder.itemView.setOnClickListener {
-//                    showShareImageDialog(encryptedFile)
-//                }
-
-            } else if (encryptedFileName.endsWith(".p", true)) {
+            fun performShowDecryptedOne(number: Int) { // метод на отображение шифрованных, number - номер ключа
                 try {
-                    rotatedBitmap = encryption.decryptImage(decryptedFile)
+                    rotatedBitmap = encryption.decryptImage(decryptedFile, APKM(context).getKeyByNumber(number))
 
                     val glideRequest = Glide.with(context).load(rotatedBitmap).fitCenter()
                         .transform(RoundedCorners(8))
@@ -849,6 +800,47 @@ open class PhotoListAdapter(
                     activity.showToast(context.getString(R.string.error_key))
                 }
             }
+
+            btnDelete?.setOnClickListener { // удаляем пикчу и выходим из imageDialog
+                activity.showToast(context.getString(R.string.wait))
+                delPeekaboo(encryptedFileName)
+                FileProviderAdapter.deleteFile(
+                    encryptedFile.name, context.applicationContext
+                )
+                FileProviderAdapter.deleteFile(
+                    decryptedFile.name, context.applicationContext
+                )
+                (context as Activity).finish()
+                val intent = Intent(context, ItemLoaderActivity::class.java)
+                context.startActivity(intent)
+                imageDialog?.dismiss()
+                buttonForCover2?.performClick()
+            }
+
+            // обработка клика по фотокарточке
+            if (encryptedFileName.endsWith(".o", true) || encryptedFileName.endsWith(
+                    ".jpg", true
+                ) || encryptedFileName.endsWith(".jpeg", true) || encryptedFileName.endsWith(
+                    ".png", true
+                ) || encryptedFileName.endsWith(".gif", true) || encryptedFileName.endsWith(
+                    ".bmp", true
+                ) || encryptedFileName.endsWith(".webp", true) || encryptedFileName.endsWith(
+                    ".unknown", true
+                )
+            ) {
+                performShowLikeItIs()
+
+            } else if (encryptedFileName.endsWith(".share", true)) {
+                performShowLikeItIs()
+                showShareImageDialog(encryptedFile)
+
+            } else if (encryptedFileName.endsWith(".p1", true)) {
+                performShowDecryptedOne(1)
+            } else if (encryptedFileName.endsWith(".p2", true)) {
+                performShowDecryptedOne(2)
+            } else if (encryptedFileName.endsWith(".p3", true)) {
+                performShowDecryptedOne(3)
+            }
             activity.hideLoadingIndicator(true)
         }
     }
@@ -861,46 +853,57 @@ open class PhotoListAdapter(
         FileProviderAdapter.deleteFile(fileNameWithExtension, context)
     }
 
-    private fun shareDecryptedImage(
-        imageUri: Uri, encryptedFileName: String, buttonForCover3: Button,
-//        loadingIndicator3: ProgressBar
+    private fun shareIncryptedImage(
+        imageUri: Uri, fileNameWithExtension: String, buttonForCover3: Button,
     ) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "image/*"
+        val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
+        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
+        val appId = "com.pavlov.MyShadowGallery"
+        val appLinkText = context.resources.getString(R.string.share_app_text2, appId)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, appLinkText)
+        context.startActivity(
+            Intent.createChooser(
+                shareIntent, context.getString(R.string.share_the_img)
+            )
+        )
+        Handler(Looper.getMainLooper()).postDelayed({
+            buttonForCover3.visibility = View.GONE
+        }, APK.LOAD_PROCESSING_MILLISECONDS)
+    }
 
+    private fun shareDecryptedImage(
+        imageUri: Uri, encryptedFileName: String, buttonForCover3: Button,
+    ) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "image/*"
         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
         context.startActivity(
             Intent.createChooser(
                 shareIntent, context.getString(R.string.share_the_img)
             )
         )
-
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
-//            loadingIndicator3.visibility = View.GONE
         }, APK.LOAD_PROCESSING_MILLISECONDS)
     }
 
     private fun shareAnyOthertedImage(
         imageUri: Uri, fileNameWithExtension: String, buttonForCover3: Button,
-//        loadingIndicator3: ProgressBar
     ) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "image/*"
-
         // метод из ImageUtils для получения безопасного URI файла
         val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
-
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
         context.startActivity(
             Intent.createChooser(
                 shareIntent, context.getString(R.string.share_the_img)
             )
         )
-
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
-//            loadingIndicator3.visibility = View.GONE
         }, APK.LOAD_PROCESSING_MILLISECONDS)
     }
 
@@ -924,7 +927,7 @@ open class PhotoListAdapter(
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> {
-                    shareAnyOthertedImage(
+                    shareIncryptedImage(
                         Uri.fromFile(decryptedFile),
                         "",
                         buttonForCover3,
@@ -991,7 +994,7 @@ open class PhotoListAdapter(
                     encryption.createThumbnail(context.applicationContext, uri)
                     try {
                         if (outputFile != null) {
-                            encryption.encryptImage(uri, outputFile.name)
+                            encryption.encryptImage(uri, outputFile.name, APKM(context).getDefauldKey())
                         }
                     } catch (e: Exception) {
                         activity.showToast(context.getString(R.string.enception_error))
@@ -1001,11 +1004,11 @@ open class PhotoListAdapter(
                 }
 
                 2 -> {  // сохраняем для расшифровки моим ключом
-                    if (encryption.isDecryptable(encryptedFile)) {
+                    if (encryption.isDecryptable(encryptedFile, APKM(context).getDefauldKey())) {
                         var outputFile = createFileFrom(encryptedFile, ".kk")
 
                         if (outputFile != null) {
-                            rotatedBitmap = encryption.decryptImage(outputFile)
+                            rotatedBitmap = encryption.decryptImage(outputFile, APKM(context).getDefauldKey())
                             encryption.createMiniFile(outputFile, ".p", 100)
                         }
                         deleteFile(encryptedFile)

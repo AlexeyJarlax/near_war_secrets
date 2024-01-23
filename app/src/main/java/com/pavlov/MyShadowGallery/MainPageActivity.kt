@@ -97,7 +97,7 @@ class MainPageActivity : AppCompatActivity() {
     private fun locker() {
         val passKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_PASSWORD)
 //            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
-        val EncryptionKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_ENCRYPTION_K)
+        val EncryptionKey = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
 //            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
         val mimikKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY)
 //            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)

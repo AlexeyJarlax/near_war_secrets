@@ -74,7 +74,7 @@ class MyShadowGallery : Application() {
             APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME2)
             APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET3)
             APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME3)
-            APKM(context = applicationContext).delMastersSecret(APK.DEFAULT_KEY)
+            APKM(context = applicationContext).delFromSP(APK.DEFAULT_KEY)
             APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
             APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
             }

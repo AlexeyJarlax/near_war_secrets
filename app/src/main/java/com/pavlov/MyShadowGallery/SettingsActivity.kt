@@ -87,7 +87,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         val previewSizeSeekBarProgress =
             APKM(context = this)
-                .getIntFromSharedPreferences(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
+                .getIntFromSP(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
                 ?: APK.DEFAULT_PREVIEW_SIZE
         previewSizeSeekBar.post {
             previewSizeSeekBar.progress = previewSizeSeekBarProgress
@@ -154,7 +154,7 @@ class SettingsActivity : AppCompatActivity() {
                 seekBar?.let {
                     val size = it.progress + 1
                     sizeLabel.text = "$previewScalingFactorLabel ${size}x${size}"
-                    APKM(context = savedContext).saveIntToSharedPreferences(
+                    APKM(context = savedContext).saveIntToSP(
                         APK.KEY_PREVIEW_SIZE_SEEK_BAR,
                         size
                     )
@@ -353,7 +353,7 @@ class SettingsActivity : AppCompatActivity() {
 
             // Сохранение выбранного стиля имени в SharedPreferences
             val preferences = APKM(context = this)
-            preferences.saveIntToSharedPreferences(
+            preferences.saveIntToSP(
                 APK.FILE_NAME_KEY,
                 namingOption
             )

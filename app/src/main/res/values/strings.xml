@@ -13,6 +13,7 @@
     <string name="write_to_support">Написать в поддержку</string>
     <string name="user_agreement">Политика конфиденциальности</string>
     <string name="share_app_text">My Shadow Gallery - cкрытая галерея для хранения закодированных изображений с ограниченным доступом: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_app_text2">Файл зашифрован в My Shadow Gallery. Для просмотра запросите ключ у того, кто отправил вам это сообщение и используйте дешифратор https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_title">Поделиться приложением</string>
     <string name="support_email">mailto:a9633238@gmail.com</string>
     <string name="support_email_subject">Сообщение разработчику этого приложения</string>

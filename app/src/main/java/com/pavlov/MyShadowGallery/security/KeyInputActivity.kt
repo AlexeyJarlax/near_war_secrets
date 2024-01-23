@@ -225,6 +225,7 @@ class KeyInputActivity : AppCompatActivity() {
             }
         }
 
+// основные кнопки управления ********************************************************************
         generateButton.setOnClickListener {
             val keyEditText = findViewById<EditText>(R.id.edit_text_key)
             val generatedKey = generateRandomKey(16) // Генерация 16-битного случайного ключа
@@ -247,7 +248,7 @@ class KeyInputActivity : AppCompatActivity() {
 
         doNotUseKey.setOnClickListener { // не использовать ключ шифрования
             APKM(context = this).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
-            APKM(context = this).delMastersSecret(APK.DEFAULT_KEY)
+            APKM(context = this).delFromSP(APK.DEFAULT_KEY)
             Toast.makeText(this, R.string.encryption_key_not_set, Toast.LENGTH_SHORT).show()
             exit()
         }
@@ -258,7 +259,9 @@ class KeyInputActivity : AppCompatActivity() {
             oldKey1Del.visibility = View.VISIBLE
             oldKey1Text.text = APKM(context = this).getMastersSecret(APK.KEY_BIG_SECRET_NAME1)
             oldKey1Text.setOnClickListener {
-                APKM(context = this).saveCounter(APK.DEFAULT_KEY, 1)
+                APKM(context = this).saveIntToSP(APK.DEFAULT_KEY, 1)
+                APKM(context = this).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
+                APKM(context = this).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
                 exit()
             }
             oldKey1Del.setOnClickListener {
@@ -276,7 +279,9 @@ class KeyInputActivity : AppCompatActivity() {
             oldKey2Del.visibility = View.VISIBLE
             oldKey2Text.text = APKM(context = this).getMastersSecret(APK.KEY_BIG_SECRET_NAME2)
             oldKey2Text.setOnClickListener {
-                APKM(context = this).saveCounter(APK.DEFAULT_KEY, 2)
+                APKM(context = this).saveIntToSP(APK.DEFAULT_KEY, 2)
+                APKM(context = this).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
+                APKM(context = this).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
                 exit()
             }
             oldKey2Del.setOnClickListener {
@@ -294,7 +299,9 @@ class KeyInputActivity : AppCompatActivity() {
             oldKey3Del.visibility = View.VISIBLE
             oldKey3Text.text = APKM(context = this).getMastersSecret(APK.KEY_BIG_SECRET_NAME3)
             oldKey3Text.setOnClickListener {
-                APKM(context = this).saveCounter(APK.DEFAULT_KEY, 3)
+                APKM(context = this).saveIntToSP(APK.DEFAULT_KEY, 3)
+                APKM(context = this).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
+                APKM(context = this).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
                 exit()
             }
             oldKey3Del.setOnClickListener {
@@ -389,15 +396,15 @@ class KeyInputActivity : AppCompatActivity() {
             if (secret1.isNullOrBlank()) {
                 APKM(context = this).saveMastersSecret(nameKeyValue, APK.KEY_BIG_SECRET_NAME1)
                 APKM(context = this).saveMastersSecret(keyValue, APK.KEY_BIG_SECRET1)
-                APKM(context = this).saveIntToSharedPreferences(APK.DEFAULT_KEY, 1)
+                APKM(context = this).saveIntToSP(APK.DEFAULT_KEY, 1)
             } else if (secret2.isNullOrBlank()) {
                 APKM(context = this).saveMastersSecret(nameKeyValue, APK.KEY_BIG_SECRET_NAME2)
                 APKM(context = this).saveMastersSecret(keyValue, APK.KEY_BIG_SECRET2)
-                APKM(context = this).saveIntToSharedPreferences(APK.DEFAULT_KEY, 2)
+                APKM(context = this).saveIntToSP(APK.DEFAULT_KEY, 2)
             } else if (secret3.isNullOrBlank()) {
                 APKM(context = this).saveMastersSecret(nameKeyValue, APK.KEY_BIG_SECRET_NAME3)
                 APKM(context = this).saveMastersSecret(keyValue, APK.KEY_BIG_SECRET3)
-                APKM(context = this).saveIntToSharedPreferences(APK.DEFAULT_KEY, 3)
+                APKM(context = this).saveIntToSP(APK.DEFAULT_KEY, 3)
             } else {
                 Toast.makeText(this, R.string.no_available_keys, Toast.LENGTH_LONG).show()
                 Toast.makeText(this, R.string.delit_one_keys, Toast.LENGTH_LONG).show()

@@ -14,9 +14,16 @@ internal object APK { // AppPreferencesKey Internal - доступно толь�
     const val PREFS_HISTORY_NAME = "SearchHistory" // история песен
     const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs" // защищенное хранилище
 
-    // ключи и файлы
+    // SharedPreferences
     const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
     const val KEY_HISTORY_LIST = "key_for_history_list"
+    const val DEFAULT_KEY = "default_key"
+    const val KEY_EXIST_OF_PASSWORD = "parolchik"
+    const val KEY_EXIST_OF_MIMICRY = "mimicry"
+    const val KEY_EXIST_OF_ENCRYPTION_K = "exists_of_encryption_kluchik" // исключаем из кода
+    const val KEY_USE_THE_ENCRYPTION_K = "useTheEncryptionKey"
+
+    // ENCRYPTED SharedPreferences
     const val KEY_SMALL_SECRET = "my_secret"  // короткий секретик
     const val KEY_BIG_SECRET = "my_big_secret"  // длинный секретик
     const val KEY_BIG_SECRET_NAME1 = "my_big_secret_name_1"  // 1
@@ -26,15 +33,6 @@ internal object APK { // AppPreferencesKey Internal - доступно толь�
     const val KEY_BIG_SECRET_NAME3 = "my_big_secret_name_3"  // 3
     const val KEY_BIG_SECRET3 = "my_big_secret3"  // 3
     const val KEY_COUNT_TRY = "how_many_try_to_pass=30df"  // счетчик
-
-    //    const val KEY_COUNT_BIG_SECRETS = "how_many_enc_key_in_sistem"  // количество ключей
-    const val DEFAULT_KEY = "default_key"
-
-    // ключи к статусу трех шагов
-    const val KEY_EXIST_OF_PASSWORD = "parolchik"
-    const val KEY_EXIST_OF_MIMICRY = "mimicry"
-    const val KEY_EXIST_OF_ENCRYPTION_K = "exists_of_encryption_kluchik" // исключаем из кода
-    const val KEY_USE_THE_ENCRYPTION_K = "useTheEncryptionKey"
 
     // константы
     const val ALBUM_ROUNDED_CORNERS = 8
@@ -83,15 +81,21 @@ internal class APKM(private val context: Context) {
     } // AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE)
 
     // ---------------------------------------------------------------------------- Int гетеры и сетеры
-    fun saveIntToSharedPreferences(key: String, value: Int) {
+    fun saveIntToSP(key: String, value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(key, value)
         editor.apply()
-    } // AppPreferencesKeysMethods(context = savedContext).saveIntToSharedPreferences(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, size)
+    } // APKM(context = savedContext).saveIntToSP(APK.DEFAULT_KEY, size)
 
-    fun getIntFromSharedPreferences(key: String): Int {
+    fun getIntFromSP(key: String): Int {
         return sharedPreferences.getInt(key, 0)
-    } //AppPreferencesKeysMethods(context).getIntFromSharedPreferences(AppPreferencesKeys.FILE_NAME_KEY)
+    } //APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+
+    fun delFromSP(key: String) {
+        val editor = sharedPreferences.edit()
+        editor.remove(key)
+        editor.apply()
+    }//APKM(context).delFromSP(APK.DEFAULT_KEY)
 
     // ------------------------------------------------------------------------- String гетеры и сетеры
     fun getStringFromSharedPreferences(key: String): String {
@@ -228,6 +232,31 @@ internal class APKM(private val context: Context) {
         }
 
         return newKeyName
+    }
+
+    fun getDefauldKey(): String {
+        val defaultKey: Int = APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+        if (defaultKey == 1) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET1)
+        } else if (defaultKey == 2) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET2)
+        } else if (defaultKey == 3) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET3)
+        } else {
+            return ""
+        }
+    }
+
+    fun getKeyByNumber(int: Int): String {
+        if (int == 1) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET1)
+        } else if (int == 2) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET2)
+        } else if (int == 3) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET3)
+        } else {
+            return ""
+        }
     }
 }
 
