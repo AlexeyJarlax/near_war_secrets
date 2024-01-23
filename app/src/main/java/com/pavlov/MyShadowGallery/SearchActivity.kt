@@ -38,8 +38,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -83,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
         val isPasswordExists = intent.getBooleanExtra("isPasswordExists", false)
         showBackBtn = intent.getBooleanExtra("showBackBtn", false)
         sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
 
         setupOneLineViews()
         clearButton()
@@ -101,9 +101,9 @@ class SearchActivity : AppCompatActivity() {
         isPasswordExists: Boolean
     ) { //проверка на режим пароль, маскировка
         val savedPassword =
-            AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+            APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
-            if (password == AppPreferencesKeys.DEFAULT_MIMIC_PASS) {
+            if (password == APK.DEFAULT_MIMIC_PASS) {
                 goToMainActivity()
             } else {
                 // ошибка парольки, запускаем поиск песен
@@ -296,7 +296,7 @@ class SearchActivity : AppCompatActivity() {
                 adapterForAPITracks.setRecyclerView(trackRecyclerView)
                 trackRecyclerView.visibility = View.VISIBLE
             }
-        }, AppPreferencesKeys.SERVER_PROCESSING_MILLISECONDS)
+        }, APK.SERVER_PROCESSING_MILLISECONDS)
     }
 
     private var lastQuery: String? = null
@@ -477,7 +477,7 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private fun loadImage(imageUrl: String, imageView: ImageView) {
         Glide.with(imageView).load(imageUrl).placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(AppPreferencesKeys.ALBUM_ROUNDED_CORNERS))
+            .transform(RoundedCorners(APK.ALBUM_ROUNDED_CORNERS))
             .error(R.drawable.ic_error_internet)
             .into(imageView)
     }

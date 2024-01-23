@@ -2,41 +2,34 @@ package com.pavlov.MyShadowGallery
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.file.StorageLogActivity
 import com.pavlov.MyShadowGallery.security.KeyInputActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class MainPageActivity : AppCompatActivity() {
 
-//    private lateinit var sharedPreferences: SharedPreferences
-//    private lateinit var threeStepsActivity: ThreeStepsActivity
     private var simblPass = "🏳️"
     private var simblMimic = "🏳️"
     private var simblEncryption = "🏳️"
     private var text = "🏳️"
+    private var pref1 = false
+    private var pref2 = false
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_page)
-
-        val pref1 = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
-        val pref2 = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET).isBlank()
-        if (pref1 && pref2) {
-            val displayIntent = Intent(this, KeyInputActivity::class.java)
-            startActivity(displayIntent)
-        }
-
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
         val buttonLogin = findViewById<Button>(R.id.button_login)
@@ -46,8 +39,6 @@ class MainPageActivity : AppCompatActivity() {
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
         val buttonHowDoesIsWork = findViewById<Button>(R.id.how_does_is_work)
-
-
 
         buttonLogin.setOnClickListener {
             goToThreeStepsActivity()
@@ -84,7 +75,12 @@ class MainPageActivity : AppCompatActivity() {
             val displayIntent = Intent(this, SettingsActivity::class.java)
             startActivity(displayIntent)
         }
-        locker()
+        // Запуск методов locker() и prestart() в отдельном потоке с задержкой
+        handler.postDelayed({
+            locker()
+            prestart()
+        }, 300) // Задержка в миллисекундах (в данном случае, 500 миллисекунд или 0.5 секунды)
+
     } // конец OnCreate
 
     fun goToThreeStepsActivity() {
@@ -99,11 +95,11 @@ class MainPageActivity : AppCompatActivity() {
     }
 
     private fun locker() {
-        val passKey = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD)
+        val passKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_PASSWORD)
 //            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
-        val EncryptionKey = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K)
+        val EncryptionKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_ENCRYPTION_K)
 //            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
-        val mimikKey = AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
+        val mimikKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY)
 //            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
 
         var keySimbl = findViewById<Button>(R.id.button_login)
@@ -139,6 +135,16 @@ class MainPageActivity : AppCompatActivity() {
         } else if (text.length < 8) {
             keySimbl.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
+        }
+    }
+
+    private fun prestart() {
+        pref1 = APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION)
+        pref2 = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_ENCRYPTION_K)
+        if (pref1 && !pref2) {
+            val displayIntent = Intent(this, KeyInputActivity::class.java)
+            startActivity(displayIntent)
+            finish()
         }
     }
 }

@@ -119,7 +119,7 @@ class FileProviderAdapter {
         private fun showToast(context: Context, text: String) {
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
-    }
+    } // конец companion object
 
 
 }

@@ -14,7 +14,7 @@ class AdapterForHistoryTracks(
     private val trackItemClickListener: OnTrackItemClickListener
 ) {
 
-    private val appPreferencesMethods = AppPreferencesKeysMethods(context)
+    private val appPreferencesMethods = APKM(context)
 
     private val adapterForHistoryTracks: AdapterForAPITracks =
         AdapterForAPITracks(context, mutableListOf(), trackItemClickListener)
@@ -33,8 +33,8 @@ class AdapterForHistoryTracks(
         val trackList = getTrackListFromSharedPreferences()
         trackList.removeAll { it.trackName == trackName && it.artistName == artistName }
         trackList.add(0, Track(trackName, artistName, trackTimeMillis, artworkUrl100))
-        if (trackList.size > AppPreferencesKeys.HISTORY_TRACK_LIST_SIZE) {
-            trackList.subList(AppPreferencesKeys.HISTORY_TRACK_LIST_SIZE, trackList.size).clear()
+        if (trackList.size > APK.HISTORY_TRACK_LIST_SIZE) {
+            trackList.subList(APK.HISTORY_TRACK_LIST_SIZE, trackList.size).clear()
         }
 
         saveTrackListToSharedPreferences(trackList)
@@ -50,11 +50,11 @@ class AdapterForHistoryTracks(
 
     private fun saveTrackListToSharedPreferences(trackList: List<Track>) {
         val jsonString = Gson().toJson(trackList)
-        appPreferencesMethods.saveObjectToSharedPreferences(AppPreferencesKeys.KEY_HISTORY_LIST, jsonString)
+        appPreferencesMethods.saveObjectToSharedPreferences(APK.KEY_HISTORY_LIST, jsonString)
     }
 
     private fun getTrackListFromSharedPreferences(): MutableList<Track> {
-        val jsonString = appPreferencesMethods.getObjectFromSharedPreferences<String>(AppPreferencesKeys.KEY_HISTORY_LIST)
+        val jsonString = appPreferencesMethods.getObjectFromSharedPreferences<String>(APK.KEY_HISTORY_LIST)
         val type = object : TypeToken<List<Track>>() {}.type
         return Gson().fromJson(jsonString, type) ?: mutableListOf()
     }
@@ -65,7 +65,7 @@ class AdapterForHistoryTracks(
     }
 
     fun killHistoryList() {
-        appPreferencesMethods.delStringFromSharedPreferences(AppPreferencesKeys.KEY_HISTORY_LIST)
+        appPreferencesMethods.delStringFromSharedPreferences(APK.KEY_HISTORY_LIST)
     }
 
     data class Track(

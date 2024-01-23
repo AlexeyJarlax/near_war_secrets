@@ -37,7 +37,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.github.chrisbanes.photoview.PhotoView
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.file.FileProviderAdapter
 import java.io.File
 import java.io.FileOutputStream
@@ -105,7 +105,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
         photoListAdapter = PhotoListAdapter(this, this, encryption)
         sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
 
         frameLayout2 = findViewById(R.id.frameLayout2)
         loadingIndicator2 = findViewById(R.id.loading_indicator2)
@@ -255,7 +255,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                     showLoadingIndicator()
                     val folder = applicationContext.filesDir
                     var existOrNot: Boolean = sharedPreferences.getBoolean(
-                        AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
+                        APK.KEY_EXIST_OF_ENCRYPTION_K, false
                     )
                     fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
@@ -351,7 +351,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                 if (loadingIndicator3 != null) {
                                                     loadingIndicator3.visibility = View.GONE
                                                 }
-                                            }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS
+                                            }, APK.LOAD_PROCESSING_MILLISECONDS
                                         ) // завершение индикатора
                                     }
                                 }
@@ -421,7 +421,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.dismiss()
                                     imageDialogAcceptance = true
                                     if (sharedPreferences.getBoolean(
-                                            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
+                                            APK.KEY_EXIST_OF_ENCRYPTION_K, false
                                         )
                                     ) {
 
@@ -546,7 +546,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 
         val folder = applicationContext.filesDir
         var existOrNot: Boolean = sharedPreferences.getBoolean(
-            AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
+            APK.KEY_EXIST_OF_ENCRYPTION_K, false
         )
         val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
 
@@ -559,7 +559,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false
+                APK.KEY_EXIST_OF_ENCRYPTION_K, false
             )
         ) {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
@@ -823,7 +823,7 @@ open class PhotoListAdapter(
                     buttonForCover3?.setOnClickListener {
                         Handler(Looper.getMainLooper()).postDelayed({
                             buttonForCover3.visibility = View.GONE
-                        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
+                        }, APK.LOAD_PROCESSING_MILLISECONDS)
                     }
 
                     miniButtonForCover?.setOnClickListener {
@@ -878,7 +878,7 @@ open class PhotoListAdapter(
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
 //            loadingIndicator3.visibility = View.GONE
-        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
+        }, APK.LOAD_PROCESSING_MILLISECONDS)
     }
 
     private fun shareAnyOthertedImage(
@@ -901,7 +901,7 @@ open class PhotoListAdapter(
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
 //            loadingIndicator3.visibility = View.GONE
-        }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS)
+        }, APK.LOAD_PROCESSING_MILLISECONDS)
     }
 
     private fun showShareOptionsDialog(

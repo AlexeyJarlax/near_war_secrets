@@ -8,7 +8,7 @@ import com.pavlov.MyShadowGallery.R
 object ThemeManager {
 
     fun applyTheme(context: Context) { //достаем ночную тему из памяти и применяем в активности вызова
-        val nightModeEnabled = AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE)
+        val nightModeEnabled = APKM(context).getBooleanFromSPK(APK.KEY_NIGHT_MODE)
         if (nightModeEnabled) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
@@ -17,7 +17,7 @@ object ThemeManager {
     }
 
     fun applyUserSwitch(context: Context): Int {
-        val userSwitchEnabled = AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USER_SWITCH)
+        val userSwitchEnabled = APKM(context).getBooleanFromSPK(APK.KEY_USER_SWITCH)
         var background: Int = R.drawable.cat_background2
 
         if (context is Activity) {
@@ -31,18 +31,18 @@ object ThemeManager {
     }
 
     fun isNightModeEnabled(context: Context): Boolean {
-        return AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE)
+        return APKM(context).getBooleanFromSPK(APK.KEY_NIGHT_MODE)
     }
 
     fun setNightModeEnabled(context: Context, isChecked: Boolean) {
-        AppPreferencesKeysMethods(context).saveBooleanToSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE, isChecked)
+        APKM(context).saveBooleanToSPK(APK.KEY_NIGHT_MODE, isChecked)
     }
 
     fun saveUserSwitch(context: Context, isChecked: Boolean) {
-        AppPreferencesKeysMethods(context).saveBooleanToSharedPreferences(AppPreferencesKeys.KEY_USER_SWITCH, isChecked)
+        APKM(context).saveBooleanToSPK(APK.KEY_USER_SWITCH, isChecked)
     }
 
     fun isUserSwitchEnabled(context: Context): Boolean {
-        return AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USER_SWITCH)
+        return APKM(context).getBooleanFromSPK(APK.KEY_USER_SWITCH)
     }
 }

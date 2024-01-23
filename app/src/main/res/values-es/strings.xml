@@ -96,7 +96,7 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="create_encryption_key">Crear clave de encriptación:</string>
     <string name="generate">Generar</string>
     <string name="helper_text_prefix">Recomendado agregar: %1$d bytes</string>
-    <string name="no_key">Sin clave</string>
+    <string name="do_not_add_key">Sin clave</string>
     <string name="constant_key">Clave constante</string>
     <string name="variable_key">Clave variable</string>
     <string name="old_key_button_text">Se ha detectado una clave de encriptación anteriormente ingresada en el almacenamiento. PRESIONE si desea mantener la antigua clave</string>

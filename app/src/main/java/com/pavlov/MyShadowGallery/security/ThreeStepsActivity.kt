@@ -10,11 +10,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 
 class ThreeStepsActivity : AppCompatActivity() {
 
@@ -33,7 +34,7 @@ class ThreeStepsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three_steps)
         sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
         errorIcon = findViewById(R.id.error_icon)
         errorTextWeb = findViewById(R.id.error_text_web)
         inputButton = findViewById(R.id.retry_button)
@@ -78,7 +79,7 @@ class ThreeStepsActivity : AppCompatActivity() {
         noButton.setOnClickListener {
             step2()
         }
-        val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+        val savedPassword = APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
             errorTextWeb.text = resources.getString(R.string.step01_01)
             inputButton.visibility = View.GONE
@@ -111,10 +112,10 @@ class ThreeStepsActivity : AppCompatActivity() {
         transitionDrawable.startTransition(4000)
         val editor = sharedPreferences.edit()
         yesButton.setOnClickListener {
-            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, true)
+            editor.putBoolean(APK.KEY_EXIST_OF_MIMICRY, true)
             editor.apply()
             if (sharedPreferences.getBoolean(
-                    AppPreferencesKeys.KEY_EXIST_OF_PASSWORD,
+                    APK.KEY_EXIST_OF_PASSWORD,
                     false
                 )) {
                 errorTextWeb.text = resources.getString(R.string.step02_01)
@@ -131,7 +132,7 @@ class ThreeStepsActivity : AppCompatActivity() {
 
         }
         noButton.setOnClickListener {
-            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
+            editor.putBoolean(APK.KEY_EXIST_OF_MIMICRY, false)
             editor.apply()
             step3()
         }
@@ -139,56 +140,25 @@ class ThreeStepsActivity : AppCompatActivity() {
 
     private fun step3() { // КЛЮЧ ШИФРОВАНИЯ
         errorTextWeb.text = resources.getString(R.string.step03_01)
-//        val pixels = (60 * resources.displayMetrics.density).toInt()
-//        val params = LinearLayout.LayoutParams(pixels, ViewGroup.LayoutParams.WRAP_CONTENT)
-//        inputButton.layoutParams = params
         inputButton.text = "?"
-//        yesButton.layoutParams = params
-//        yesButton.text = "✔️"
-//        noButton.layoutParams = params
-//        noButton.text = "❌"
         inputButton.visibility = View.GONE
         yesButton.visibility = View.VISIBLE
         noButton.visibility = View.VISIBLE
         errorIcon.visibility = View.GONE
 
         yesButton.setOnClickListener {
+            Toast.makeText(this, R.string.wait, Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)
         }
         noButton.setOnClickListener {
-            val editor = sharedPreferences.edit()
-            editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
-            editor.putBoolean(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K, false)
-            editor.apply()
-
+//            val editor = sharedPreferences.edit()
+//            editor.putBoolean(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
+//            editor.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
+//            editor.apply()
             val displayIntent = Intent(this, MainPageActivity::class.java)
             startActivity(displayIntent)
         }
-        if (sharedPreferences.getBoolean(
-                AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
-                false
-            )){
-            oldKeyButton.visibility = View.VISIBLE
-            oldKeyButton.setOnClickListener {
-                oldKeyButton.visibility = View.GONE
-                val displayIntent = Intent(this, MainPageActivity::class.java)
-                startActivity(displayIntent)
-            }
-        }
+
     }
-
-//    fun masterAlias(): String? {
-//        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//        val sharedPreferences: SharedPreferences =
-//            EncryptedSharedPreferences.create(
-//                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
-//                masterAlias,
-//                applicationContext,
-//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//            )
-//        return sharedPreferences.getString(AppPreferencesKeys.KEY_SMALL_SECRET, "")
-//    }
-
 }

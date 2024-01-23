@@ -2,7 +2,6 @@ package com.pavlov.MyShadowGallery.security
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -15,12 +14,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.pavlov.MyShadowGallery.R
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class SetPasswordActivity : AppCompatActivity() {
@@ -100,7 +96,7 @@ class SetPasswordActivity : AppCompatActivity() {
         setPasswordButton.setOnClickListener { // подтвердить пароль
             if (isPasswordExist) {
                 val oldPassword =
-                    AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+                    APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
                 if (oldPassword == oldPasswordType) {
                     confirmButton()
                 } else {
@@ -114,7 +110,7 @@ class SetPasswordActivity : AppCompatActivity() {
 
     private fun startPreparation() {  // извлекаем парольку
         val savedPassword =
-            AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+            APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
             oldPasswordEditText.visibility = View.INVISIBLE
             oldPasswordText.visibility = View.INVISIBLE
@@ -125,18 +121,18 @@ class SetPasswordActivity : AppCompatActivity() {
     }
 
     private fun saveMasterSSecret(password: String) {
-        AppPreferencesKeysMethods(context = this).saveMastersSecret(
+        APKM(context = this).saveMastersSecret(
             password,
-            AppPreferencesKeys.KEY_SMALL_SECRET
+            APK.KEY_SMALL_SECRET
         )
         toastIt(getString(R.string.save_password))
         oldPasswordType = ""
         isPasswordExist = true
 
         val sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, true)
+        editor.putBoolean(APK.KEY_EXIST_OF_PASSWORD, true)
         editor.apply()
         val intent = Intent(this, ThreeStepsActivity::class.java)
         intent.putExtra("isPasswordExists", true) // Set the flag based on your requirement
@@ -146,7 +142,7 @@ class SetPasswordActivity : AppCompatActivity() {
 
     inner class PasswordInputFilter : InputFilter {
         private val regex =
-            Regex(AppPreferencesKeys.REGEX)
+            Regex(APK.REGEX)
 
         override fun filter(
             source: CharSequence?,
@@ -171,7 +167,7 @@ class SetPasswordActivity : AppCompatActivity() {
     fun isValidInput(input: String): Boolean {
         // Регулярное выражение для проверки на допустимые символы
         val regex =
-            Regex(AppPreferencesKeys.REGEX)
+            Regex(APK.REGEX)
         return regex.matches(input)
     }
 

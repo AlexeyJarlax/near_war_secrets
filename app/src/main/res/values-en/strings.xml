@@ -99,7 +99,7 @@ You can share the image with another user and they will be able to view it on th
     <string name="create_encryption_key">Create encryption key:</string>
     <string name="generate">Generate</string>
     <string name="helper_text_prefix">Recommended to add: %1$d bytes</string>
-    <string name="no_key">No key</string>
+    <string name="do_not_add_key">No key</string>
     <string name="constant_key">Constant key</string>
     <string name="variable_key">Variable key</string>
     <string name="old_key_button_text">A previously entered encryption key has been detected in storage. PRESS if you want to keep the old key</string>

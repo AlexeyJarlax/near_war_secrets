@@ -19,8 +19,8 @@ import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.SearchActivity
 import com.pavlov.MyShadowGallery.SettingsActivity
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class LoginActivity : AppCompatActivity() {
@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
         delPassword = intent.getBooleanExtra("delPassword", false) // ФЛАГ С intent
         loadingIndicator = findViewById(R.id.loading_indicator)
         sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
         ThemeManager.applyTheme(this)
         backgroundView = findViewById(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
@@ -59,13 +59,18 @@ class LoginActivity : AppCompatActivity() {
 //        parolchikCheck() // подготовка интерфейса
         listener() // TextChangedListener
         setPasswordButton() // клик по кнопке
-        counter = AppPreferencesKeysMethods(context = this).getCounter()
+        counter = APKM(context = this).getCounter(APK.KEY_COUNT_TRY, 30)
         tryCounter.text = counter.toString()
         tryCounter.visibility = View.INVISIBLE
+        if (APKM(context = this).countBigSecrets()>0){
+            APKM(context = this).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
+        } else {
+            APKM(context = this).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
+        }
     }  // конец онкриейт
 
     private fun updateAppLanguage() {// Извлечение сохраненного языка
-        val selectedLanguage = AppPreferencesKeysMethods(context = this).getStringFromSharedPreferences(AppPreferencesKeys.PREF_LANGUAGE_KEY)
+        val selectedLanguage = APKM(context = this).getStringFromSharedPreferences(APK.PREF_LANGUAGE_KEY)
         if (selectedLanguage.isNotEmpty()) {
             SettingsActivity.setAppLanguage(this, selectedLanguage)
         }
@@ -74,31 +79,28 @@ class LoginActivity : AppCompatActivity() {
     private fun firstStart() {  // ПЕРВЫЙ ЗАПУСК ?????
         if (!delPassword) {
             if (sharedPreferences.getBoolean(
-                    AppPreferencesKeys.KEY_FIRST_RUN, true
+                    APK.KEY_FIRST_RUN, true
                 )
             ) { // Устанавливаем значения по умолчанию
                 SettingsActivity.doClearStorage(applicationContext) // защита от злоумышленника
                 with(sharedPreferences.edit()) {
                     putInt(
-                        AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR, 30
+                        APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30
                     )
                     putBoolean(
-                        AppPreferencesKeys.KEY_FIRST_RUN, false
+                        APK.KEY_FIRST_RUN, false
                     )
                     apply()
                 }
                 goToZeroActivity() // ИДЕМ В ТРИ ШАГА К ЗАЩИТЕ
             } else {
-                if ( AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)// МИМИКРИРУЮЩИЙ ЗАПУСК ?????
-//                    sharedPreferences.getBoolean(
-//                        AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false
-//                    )
+                if ( APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY)// МИМИКРИРУЮЩИЙ ЗАПУСК ?????
                 ) {
                     mimicry = true
                     entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
                 } else {
                     mimicry = false
-                    val savedPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+                    val savedPassword = APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
                     if (savedPassword.isNullOrBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
                         isPasswordExist = false
                         entranceMain()  // ИДЕМ В МЕЙН
@@ -139,10 +141,10 @@ class LoginActivity : AppCompatActivity() {
             counter = counter - 1
             if (isButtonEnabled) {
                 if (isPasswordExist) {
-                    val oldPassword = AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+                    val oldPassword = APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
                     if (oldPassword == oldPasswordEditText.text.toString().trim()) {
                         counter = 30
-                        AppPreferencesKeysMethods(context = this).saveCounter(counter)
+                        APKM(context = this).saveCounter(APK.KEY_COUNT_TRY, counter)
                         if (delPassword) {
                             doDelPassword()
                             toastIt(getString(R.string.del_password))
@@ -151,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
                             entranceMain()
                         }
                     } else {
-                        AppPreferencesKeysMethods(context = this).saveCounter(counter)
+                        APKM(context = this).saveCounter(APK.KEY_COUNT_TRY, counter)
                         toastIt(getString(R.string.wrong_password))
 
                         if (counter < 27) {
@@ -182,11 +184,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun doDelPassword() {
-        AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_SMALL_SECRET)
+        APKM(context = this).delMastersSecret(APK.KEY_SMALL_SECRET)
         val sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
+        editor.putBoolean(APK.KEY_EXIST_OF_PASSWORD, false)
         editor.apply()
     }
 

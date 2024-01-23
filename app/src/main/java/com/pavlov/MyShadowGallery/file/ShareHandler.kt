@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import com.pavlov.MyShadowGallery.R
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 import java.io.File
 import java.io.FileOutputStream
 
@@ -16,8 +16,8 @@ class ShareHandler(private val context: Context) {
 
         val folder = context.filesDir
         val fileName = NamingStyleManager(context).generateFileName(
-            AppPreferencesKeysMethods(context).getBooleanFromSharedPreferences(
-                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K
+            APKM(context).getBooleanFromSPK(
+                APK.KEY_USE_THE_ENCRYPTION_K
             ), folder
         )
         val fileNameWithoutExtension = removeFileExtension(fileName)

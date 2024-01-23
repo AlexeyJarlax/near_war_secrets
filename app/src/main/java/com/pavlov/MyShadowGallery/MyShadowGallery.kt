@@ -3,10 +3,10 @@ package com.pavlov.MyShadowGallery;
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
+import com.pavlov.MyShadowGallery.util.APK
 import android.os.Bundle
 import androidx.core.content.edit
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APKM
 
 class MyShadowGallery : Application() {
     private var cleanupDone = false
@@ -57,7 +57,7 @@ class MyShadowGallery : Application() {
         // Очистка файлов с расширением .peekaboo, .unknown и .k
         val folder = applicationContext.filesDir
         val peekabooFiles = folder.listFiles { _, name ->
-            name.endsWith(".peekaboo") || name.endsWith(".unknown") || name.endsWith(".k") || name.endsWith(".dat")
+            name.endsWith(".peekaboo") || name.endsWith(".unknown") || name.endsWith(".k") || name.endsWith(".dat")  || name.endsWith(".profileInstalled")
         }
 
         peekabooFiles?.forEach { file ->
@@ -65,27 +65,18 @@ class MyShadowGallery : Application() {
         }
 
         // Проверка и удаление ключа шифрования, если флаг установлен
-        val sharedPreferences =
-            getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
-        val shouldDeleteEk = sharedPreferences.getBoolean(
-            AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
-            false
-        )
+        val shouldDeleteEk = APKM(context = applicationContext).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION)
 
         if (shouldDeleteEk) {
-            sharedPreferences.edit {
-                AppPreferencesKeysMethods(context = applicationContext).delMastersSecret(
-                    AppPreferencesKeys.KEY_BIG_SECRET
-                )
-                AppPreferencesKeysMethods(context = applicationContext).saveBooleanToSharedPreferences(
-                    AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K,
-                    false
-                )
-                AppPreferencesKeysMethods(context = applicationContext).saveBooleanToSharedPreferences(
-                    AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K,
-                    true
-                )
+            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET1)
+            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME1)
+            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET2)
+            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME2)
+            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET3)
+            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME3)
+            APKM(context = applicationContext).delMastersSecret(APK.DEFAULT_KEY)
+            APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
+            APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
             }
         }
     }
-}

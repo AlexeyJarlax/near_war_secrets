@@ -23,7 +23,7 @@ fun Activity.hideLoadingIndicator(cornerLeft: Boolean) {
     Handler(Looper.getMainLooper()).postDelayed({
         buttonForCover2.visibility = View.INVISIBLE
         loadingIndicator2.visibility = View.INVISIBLE
-    }, AppPreferencesKeys.LOAD_PROCESSING_MILLISECONDS * multiplier)
+    }, APK.LOAD_PROCESSING_MILLISECONDS * multiplier)
 }
 
 fun Activity.showToast(text: String) {

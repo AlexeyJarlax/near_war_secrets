@@ -25,4 +25,5 @@
     <dimen name="text_size_sp26">26sp</dimen>
     <dimen name="dp26">26dp</dimen>
     <dimen name="dp14">14dp</dimen>
+    <dimen name="dp48">48dp</dimen>
 </resources>

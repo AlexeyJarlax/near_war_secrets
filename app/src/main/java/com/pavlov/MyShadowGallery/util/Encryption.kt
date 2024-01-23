@@ -1,6 +1,5 @@
 package com.pavlov.MyShadowGallery.util
 
-import android.app.RemoteInput.Builder
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -59,16 +58,8 @@ class Encryption(private val context: Context) {
         Log.d("=== Encryption", "=== canSaveFilesFromGallery: ${Boolean}")
     }
 
-//    private fun getDecryptionKey(): String {
-//        sharedPreferences = context.getSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK, Context.MODE_PRIVATE)
-//        return sharedPreferences.getString(AppPreferencesKeys.ENCRYPTION_KLUCHIK, "") ?: ""
-//    }
-
     fun encryptImage(imageUri: Uri, fileName: String) {
-//    val encryptionKey = getDecryptionKey()
-        val encryptionKey =
-//            AppPreferencesKeysMethods(context).getStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
-        AppPreferencesKeysMethods(context).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+        val encryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
         Log.d("=== Encryption", "=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
         // Получаем путь к файлу, который нужно зашифровать
         val inputStream = context.contentResolver.openInputStream(imageUri) ?: return
@@ -133,9 +124,7 @@ class Encryption(private val context: Context) {
     }
 
     fun decryptImage(file: File): Bitmap {
-        val decryptionKey =
-//            AppPreferencesKeysMethods(context).getStringFromSharedPreferences(AppPreferencesKeys.ENCRYPTION_KLUCHIK)
-        AppPreferencesKeysMethods(context).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+        val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
         Log.e("=== Encryption", "=== Начало декодирования. файл file: ${file.name}")
 
         val encryptedBytes = file.readBytes()
@@ -159,7 +148,7 @@ class Encryption(private val context: Context) {
 
     fun isDecryptable(file: File): Boolean {
         return try {
-            val decryptionKey = AppPreferencesKeysMethods(context).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+            val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
             Log.e("=== Encryption", "=== Начало декодирования. файл file: ${file.name}")
             val encryptedBytes = file.readBytes()
             val messageDigest = MessageDigest.getInstance("SHA-256")
@@ -193,9 +182,9 @@ class Encryption(private val context: Context) {
         }
 
         // Остальной код остается прежним с небольшими изменениями
-        var scaledNumber = AppPreferencesKeysMethods(context)
-            .getIntFromSharedPreferences(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
-            ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
+        var scaledNumber = APKM(context)
+            .getIntFromSharedPreferences(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
+            ?: APK.DEFAULT_PREVIEW_SIZE
         if (scaledNumber <= 0) {
             scaledNumber = 1
         }
@@ -280,62 +269,6 @@ class Encryption(private val context: Context) {
         return ""
     }
 
-//    fun createThumbnail(context: Context, imageUri: Uri) {
-//        var scaledNumber = AppPreferencesKeysMethods(context)
-//            .getIntFromSharedPreferences(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
-//            ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
-//        if (scaledNumber <= 0) {
-//            scaledNumber = 1
-//        }
-//        if (scaledNumber > 100) {
-//            scaledNumber = 100
-//        }
-//
-//        // Указываем RequestOptions, что мы ожидаем изображение
-//        val requestOptions = RequestOptions()
-//            .override(scaledNumber, scaledNumber)
-//            .diskCacheStrategy(DiskCacheStrategy.NONE) // Отключаем кэширование, чтобы избежать загрузки старого кэша
-//
-//        Glide.with(context)
-//            .asBitmap() // Указываем, что мы ожидаем изображение
-//            .load(imageUri)
-//            .apply(requestOptions)
-//            .signature(ObjectKey(System.currentTimeMillis()))
-//            .into(object : CustomTarget<Bitmap>() {
-//                override fun onResourceReady(
-//                    resource: Bitmap,
-//                    transition: Transition<in Bitmap>?
-//                ) {
-//                    val thumbnailName =
-//                        saveThumbnailWithRandomFileName(context, resource, imageUri)
-//                    if (thumbnailName.isNotEmpty()) {
-//                        photoList.add(0, thumbnailName)
-//                        itemLoaderActivity.notifyDSC()
-//                        Log.e("=== Encryption", "=== Превью сохранено")
-//                        deleteOriginalImage(imageUri)
-//                    } else {
-//                        toast(context.getString(R.string.save_error))
-//                    }
-//                }
-//
-//                override fun onLoadCleared(placeholder: Drawable?) {
-//                    // Для случая, когда изображение не загружено, например, если файл не является изображением
-//                    val defaultThumbnail = getDefaultThumbnail(context)
-//                    val defaultThumbnailName =
-//                        saveThumbnailWithRandomFileName(context, defaultThumbnail, imageUri)
-//
-//                    if (defaultThumbnailName.isNotEmpty()) {
-//                        photoList.add(0, defaultThumbnailName)
-//                        itemLoaderActivity.notifyDSC()
-//                        Log.e("=== Encryption", "=== Превью сохранено (дефолтное изображение)")
-//                        deleteOriginalImage(imageUri)
-//                    } else {
-//                        toast(context.getString(R.string.save_error))
-//                    }
-//                }
-//            })
-//    }
-
     fun getDefaultThumbnail(context: Context): Bitmap {
         // Здесь вы можете использовать свою иконку документа или другое дефолтное изображение
         val drawable = ContextCompat.getDrawable(context, R.drawable.ic_search)
@@ -394,33 +327,6 @@ class Encryption(private val context: Context) {
             fileName.substring(0, lastDotIndex)
         }
     }
-
-//    private fun saveThumbnailWithRandomFileName(
-//        context: Context,
-//        thumbnail: Bitmap,
-//        imageUri: Uri
-//    ): String {
-//        val fileName = File(imageUri.path).name
-//
-//        val fileExtension = fileName.substringAfterLast(".")
-//        val previewFileName = if (fileExtension.isNotEmpty()) {
-//            val fileNameWithoutExtension = fileName.substringBeforeLast(".")
-//            "${fileNameWithoutExtension}.p"
-//        } else {
-//            context.getString(R.string.timber_img)
-//        }
-//        val file = File(context.applicationContext.filesDir, previewFileName)
-//        try {
-//            val outputStream = FileOutputStream(file)
-//            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-//            outputStream.flush()
-//            outputStream.close()
-//            return previewFileName
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//        return ""
-//    }
 
     private fun deleteOriginalImage(imageUri: Uri) {
         val file = File(imageUri.path)

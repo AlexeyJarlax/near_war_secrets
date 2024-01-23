@@ -1,7 +1,6 @@
 package com.pavlov.MyShadowGallery.util
 
 
-
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
@@ -9,7 +8,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
 
-internal object AppPreferencesKeys { // Internal - доступно только в модуле
+internal object APK { // AppPreferencesKey Internal - доступно только в модуле
     // хранилища SharedPreferences
     const val PREFS_NAME = "MyPrefs" // открытое хранилище
     const val PREFS_HISTORY_NAME = "SearchHistory" // история песен
@@ -17,17 +16,25 @@ internal object AppPreferencesKeys { // Internal - доступно только
 
     // ключи и файлы
     const val KEY_FIRST_RUN = "first_app_run" // первый запуск ?
-
-    //    const val ENCRYPTION_KLUCHIK = "encription_kluchik" // ключ для стринги ключа
     const val KEY_HISTORY_LIST = "key_for_history_list"
     const val KEY_SMALL_SECRET = "my_secret"  // короткий секретик
     const val KEY_BIG_SECRET = "my_big_secret"  // длинный секретик
-    const val KEY_COUNT_TRY = "my_big_secret"  // счетчик
+    const val KEY_BIG_SECRET_NAME1 = "my_big_secret_name_1"  // 1
+    const val KEY_BIG_SECRET1 = "my_big_secret1"  // 1
+    const val KEY_BIG_SECRET_NAME2 = "my_big_secret_name_2"  // 2
+    const val KEY_BIG_SECRET2 = "my_big_secret2"  // 2
+    const val KEY_BIG_SECRET_NAME3 = "my_big_secret_name_3"  // 3
+    const val KEY_BIG_SECRET3 = "my_big_secret3"  // 3
+    const val KEY_COUNT_TRY = "how_many_try_to_pass=30df"  // счетчик
+
+    //    const val KEY_COUNT_BIG_SECRETS = "how_many_enc_key_in_sistem"  // количество ключей
+    const val DEFAULT_KEY = "default_key"
 
     // ключи к статусу трех шагов
     const val KEY_EXIST_OF_PASSWORD = "parolchik"
     const val KEY_EXIST_OF_MIMICRY = "mimicry"
-    const val KEY_EXIST_OF_ENCRYPTION_K = "exists_of_encryption_kluchik"
+    const val KEY_EXIST_OF_ENCRYPTION_K = "exists_of_encryption_kluchik" // исключаем из кода
+    const val KEY_USE_THE_ENCRYPTION_K = "useTheEncryptionKey"
 
     // константы
     const val ALBUM_ROUNDED_CORNERS = 8
@@ -44,8 +51,8 @@ internal object AppPreferencesKeys { // Internal - доступно только
     // переключатели состояний SharedPreferences
     const val KEY_NIGHT_MODE = "nightMode"
     const val KEY_USER_SWITCH = "userMode"
-    const val KEY_USE_THE_ENCRYPTION_K = "useTheEncryptionKey"
-    const val KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION = "deleteEKWhenClosingTheSession"
+
+    const val KEY_DELETE_AFTER_SESSION = "deleteEKWhenClosingTheSession"
     const val KEY_PREVIEW_SIZE_SEEK_BAR = "previewSizeSeekBar"
     const val PREF_LANGUAGE_KEY = "selected_language"
     const val FILE_NAME_KEY = "file_naming"
@@ -56,19 +63,19 @@ internal object AppPreferencesKeys { // Internal - доступно только
 }
 
 // ------------------------------------------------------------------------------------ гетеры и сетеры
-internal class AppPreferencesKeysMethods(private val context: Context) {
+internal class APKM(private val context: Context) {
     private val sharedPreferences = getSharedPreferences()
     private fun getSharedPreferences() =
-        context.getSharedPreferences(AppPreferencesKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
 
     // ------------------------------------------------------------------------ Boolean гетеры и сетеры
-    fun saveBooleanToSharedPreferences(key: String, isChecked: Boolean) {
+    fun saveBooleanToSPK(key: String, isChecked: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, isChecked)
         editor.apply()
     } // AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE, isChecked)
 
-    fun getBooleanFromSharedPreferences(key: String): Boolean {
+    fun getBooleanFromSPK(key: String): Boolean {
         return sharedPreferences.getBoolean(
             key,
             false
@@ -123,7 +130,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val encryptedSharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+                APK.MY_SECRETS_PREFS_NAME,
                 masterAlias,
                 context,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -135,7 +142,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
     fun saveMastersSecret(secret: String, key: String) {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            APK.MY_SECRETS_PREFS_NAME,
             masterAlias,
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -149,7 +156,7 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
     fun delMastersSecret(key: String) {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            APK.MY_SECRETS_PREFS_NAME,
             masterAlias,
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -162,33 +169,66 @@ internal class AppPreferencesKeysMethods(private val context: Context) {
     } //    AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
 
     // -------------------------------------------------------------- encrypted Int гетеры и сетеры
-    fun getCounter(): Int { // счетчик
+    fun getCounter(key: String, default: Int): Int { // счетчик
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            APK.MY_SECRETS_PREFS_NAME,
             masterAlias,
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-        return sharedPreferences.getInt(AppPreferencesKeys.KEY_COUNT_TRY, 30)
+        return sharedPreferences.getInt(key, default)
     } // AppPreferencesKeysMethods(context = this).getCounter()
 
-    fun saveCounter(counter: Int) {
+    fun saveCounter(key: String, counter: Int) {
         val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+            APK.MY_SECRETS_PREFS_NAME,
             masterAlias,
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
         sharedPreferences.edit {
-            putInt(AppPreferencesKeys.KEY_COUNT_TRY, counter).apply()
+            putInt(key, counter).apply()
 //            toastIt("счетчик изменён")
         }
     } //    AppPreferencesKeysMethods(context = this).saveCounter(counter)
 
+    fun countBigSecrets(): Int {
+        var count = 3
+        val secret1 = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET1)
+        val secret2 = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET2)
+        val secret3 = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET3)
+        if (secret1.isNullOrBlank()) {
+            count -= 1
+        }
+        if (secret2.isNullOrBlank()) {
+            count -= 1
+        }
+        if (secret3.isNullOrBlank()) {
+            count -= 1
+        }
+        return count
+    }
+
+    fun generateUniqueKeyName(): String {
+        val name1 = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME1)
+        val name2 = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME2)
+        val name3 = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME3)
+        val existingNames = setOf(name1, name2, name3)
+
+        var index = 1
+        var newKeyName = "key $index"
+
+        while (existingNames.contains(newKeyName)) {
+            index++
+            newKeyName = "key $index"
+        }
+
+        return newKeyName
+    }
 }
 
 

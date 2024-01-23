@@ -103,7 +103,7 @@
     <string name="create_encryption_key">创建加密密钥：</string>
     <string name="generate">生成</string>
     <string name="helper_text_prefix">建议添加：%1$d 字节</string>
-    <string name="no_key">无密钥</string>
+    <string name="do_not_add_key">无密钥</string>
     <string name="constant_key">常量密钥</string>
     <string name="variable_key">变量密钥</string>
     <string name="old_key_button_text">在存储中检测到先前输入的加密密钥。如果要保留旧密钥，请按下</string>

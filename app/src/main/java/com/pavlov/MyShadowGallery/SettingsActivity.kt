@@ -21,11 +21,10 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.security.LoginActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeys
-import com.pavlov.MyShadowGallery.util.AppPreferencesKeysMethods
+import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
 import java.util.Locale
-import kotlin.system.exitProcess
 
 class SettingsActivity : AppCompatActivity() {
     //    @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -87,9 +86,9 @@ class SettingsActivity : AppCompatActivity() {
             getString(R.string.preview_scaling_factor)
         }
         val previewSizeSeekBarProgress =
-            AppPreferencesKeysMethods(context = this)
-                .getIntFromSharedPreferences(AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR)
-                ?: AppPreferencesKeys.DEFAULT_PREVIEW_SIZE
+            APKM(context = this)
+                .getIntFromSharedPreferences(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
+                ?: APK.DEFAULT_PREVIEW_SIZE
         previewSizeSeekBar.post {
             previewSizeSeekBar.progress = previewSizeSeekBarProgress
             sizeLabel.text =
@@ -155,8 +154,8 @@ class SettingsActivity : AppCompatActivity() {
                 seekBar?.let {
                     val size = it.progress + 1
                     sizeLabel.text = "$previewScalingFactorLabel ${size}x${size}"
-                    AppPreferencesKeysMethods(context = savedContext).saveIntToSharedPreferences(
-                        AppPreferencesKeys.KEY_PREVIEW_SIZE_SEEK_BAR,
+                    APKM(context = savedContext).saveIntToSharedPreferences(
+                        APK.KEY_PREVIEW_SIZE_SEEK_BAR,
                         size
                     )
                 }
@@ -186,7 +185,7 @@ class SettingsActivity : AppCompatActivity() {
                     )
                 }
                 val resultIntent = Intent()
-                resultIntent.putExtra(AppPreferencesKeys.KEY_USER_SWITCH, isChecked)
+                resultIntent.putExtra(APK.KEY_USER_SWITCH, isChecked)
                 setResult(RESULT_OK, resultIntent)
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -201,7 +200,7 @@ class SettingsActivity : AppCompatActivity() {
                     )
                 }
                 val resultIntent = Intent()
-                resultIntent.putExtra(AppPreferencesKeys.KEY_USER_SWITCH, isChecked)
+                resultIntent.putExtra(APK.KEY_USER_SWITCH, isChecked)
                 setResult(RESULT_OK, resultIntent)
             }
             ThemeManager.saveUserSwitch(this, isChecked)
@@ -275,7 +274,7 @@ class SettingsActivity : AppCompatActivity() {
             // Удаление обычного (нешифрованного) хранилища
             val nonEncryptedSharedPreferences: SharedPreferences =
                 context.getSharedPreferences(
-                    AppPreferencesKeys.PREFS_NAME,
+                    APK.PREFS_NAME,
                     Context.MODE_PRIVATE
                 )
             nonEncryptedSharedPreferences.edit().clear().apply()
@@ -283,7 +282,7 @@ class SettingsActivity : AppCompatActivity() {
             // Удаление шифрованного хранилища
             val encryptedSharedPreferences: SharedPreferences =
                 context.getSharedPreferences(
-                    AppPreferencesKeys.MY_SECRETS_PREFS_NAME,
+                    APK.MY_SECRETS_PREFS_NAME,
                     Context.MODE_PRIVATE
                 )
             encryptedSharedPreferences.edit().clear().apply()
@@ -322,8 +321,8 @@ class SettingsActivity : AppCompatActivity() {
             dialog.dismiss()
 
             // Сохранение
-            AppPreferencesKeysMethods(context = this).saveStringToSharedPreferences(
-                AppPreferencesKeys.PREF_LANGUAGE_KEY,
+            APKM(context = this).saveStringToSharedPreferences(
+                APK.PREF_LANGUAGE_KEY,
                 selectedLanguageCode
             )
             // Обновление языка приложения
@@ -353,9 +352,9 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             // Сохранение выбранного стиля имени в SharedPreferences
-            val preferences = AppPreferencesKeysMethods(context = this)
+            val preferences = APKM(context = this)
             preferences.saveIntToSharedPreferences(
-                AppPreferencesKeys.FILE_NAME_KEY,
+                APK.FILE_NAME_KEY,
                 namingOption
             )
 
