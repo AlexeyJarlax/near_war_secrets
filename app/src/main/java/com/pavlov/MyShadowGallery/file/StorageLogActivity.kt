@@ -57,7 +57,7 @@ import java.util.Locale
                 }
 
                 val fileSizeInMegabytes = fileSizeInBytes.toDouble() / (1024 * 1024)
-                val formattedFileSize = String.format("%.3f", fileSizeInMegabytes)
+                val formattedFileSize = String.format("%.2f", fileSizeInMegabytes)
 
                 val logEntry =
                     "File Type: $fileType\n" +

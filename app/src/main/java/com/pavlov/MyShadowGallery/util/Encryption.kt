@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -59,6 +60,7 @@ class Encryption(private val context: Context) {
     }
 
     fun encryptImage(imageUri: Uri, fileName: String, encryptionKey: String) {
+        toast(context.getString(R.string.wait))
 //        val encryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
         Log.d("=== Encryption", "=== готовится к шифрованию, принимаем на вход fileName: ${fileName}")
         // Получаем путь к файлу, который нужно зашифровать

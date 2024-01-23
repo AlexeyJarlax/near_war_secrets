@@ -472,6 +472,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                 showToast(getString(R.string.enception_error))
                                             }
                                             hideLoadingIndicator(isItFrontCamera) // завершение индикатора
+
                                         } // завершение корутины
                                     } else {
                                         if (rotationAngle == 0) {
