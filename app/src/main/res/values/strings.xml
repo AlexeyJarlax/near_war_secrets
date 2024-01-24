@@ -146,17 +146,13 @@
     <string name="new_password">Новый пароль</string>
     <string name="old_password">Старый пароль</string>
     <string name="access_obtained">Доступ получен</string>
-
     <string name="enception_no">Сохранено без шифрования</string>
-
     <string name="download">Загрузка...</string>
-
     <string name="share_the_img">Поделиться изображением</string>
     <string name="encrepted_img">Зашифрованное изображение</string>
     <string name="decripted_img">Дешифрованное изображение</string>
     <string name="timber_img">Миниатюра</string>
     <string name="chuse_img">Выберите файл для отправки</string>
-
     <string name="encrypted_save">Сохранён зашифрованный файл:</string>
     <string name="decrypting">Дешифрую...</string>
 
@@ -214,7 +210,6 @@
     <string name="do_not_save_key_in_sistem3">(из приложения удалятся имеющиеся ключи шифрования, пользователю придется вводить ключ каждый раз при входе в приложение)</string>
     <string name="save_key_on_session">Использовать ключ на время сессии</string>
 
-
     <string name="error_text_web">Проблемы со связью \n
         \n Загрузка не удалась. Проверьте\n
         подключение к интернету</string>
@@ -239,4 +234,5 @@
     <string name="confirm_clear_storage_title">Нажмите число восемь для подтверждения</string>
     <string name="key_d">%d файла зашифрованы этим ключом</string>
     <string name="made_by_key">%d Зашифрован ключом</string>
+    <string name="app_version_text">"\nВерсия приложения: "</string>
 </resources>

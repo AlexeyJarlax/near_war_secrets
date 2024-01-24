@@ -19,8 +19,8 @@ android {
         resConfigs("ru", "en", "zh", "es")
         minSdk = 28
         targetSdk = 34
-        versionCode = 24
-        versionName = "2.4"
+        versionCode = 25
+        versionName = "2.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

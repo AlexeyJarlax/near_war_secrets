@@ -76,11 +76,23 @@
                 android:background="@color/yp_text_gray_and_yp_black" />
 
             <TextView
+                android:id="@+id/version"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/z"
+                android:padding="@dimen/dp8"
+                android:paddingEnd="@dimen/dp16"
+                android:text="dthcbz"
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/text_size_sp14" />
+
+            <TextView
                 android:id="@+id/preview_size_label1"
                 style="@style/SettingsButtonsAndText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp16"
+                android:layout_marginTop="@dimen/dp6"
                 android:text="@string/about_app_long1"
                 android:textAlignment="center"
                 android:textSize="@dimen/text_size_sp19" />

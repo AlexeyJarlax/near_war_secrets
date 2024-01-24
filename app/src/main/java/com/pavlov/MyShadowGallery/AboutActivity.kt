@@ -1,6 +1,8 @@
 package com.pavlov.MyShadowGallery
 
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -8,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -58,10 +61,16 @@ class AboutActivity : AppCompatActivity() {
             scrollView()
         }
 
+        // Получаем версию приложения из Gradle
+        val appName = getString(R.string.app_name_in_main_page) // Название приложения из Gradle
+        val appVersionText = getString(R.string.app_version_text) // "Версия приложения" из ресурсов строк
+        val appVersion = getAppVersion() // Номер версии из Gradle
+        val versionTextView: TextView = findViewById(R.id.version)
+        versionTextView.text = "$appName $appVersionText $appVersion"
+
         back.setOnClickListener { // КНОПКА НАЗАД
             finish()
         }
-
 
         // КНОПКА ПОДЕЛИТЬСЯ
         shareButton.setOnClickListener {
@@ -100,6 +109,16 @@ class AboutActivity : AppCompatActivity() {
             intent.data = Uri.parse(url)
             startActivity(intent)
         }
+    }//конец ОнКриейт
+
+    private fun getAppVersion(): String {
+        try {
+            val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
+            return pInfo.versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        return "N/A"
     }
 
     fun scrollView() {
