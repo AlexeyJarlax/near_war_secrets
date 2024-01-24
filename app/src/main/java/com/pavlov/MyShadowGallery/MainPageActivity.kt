@@ -1,22 +1,21 @@
 package com.pavlov.MyShadowGallery
 
-import android.R
 import android.content.Intent
 import android.content.res.ColorStateList
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.file.StorageLogActivity
 import com.pavlov.MyShadowGallery.security.KeyInputActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
-import com.pavlov.MyShadowGallery.util.ThemeManager
 
+import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class MainPageActivity : AppCompatActivity() {
 
@@ -40,24 +39,8 @@ class MainPageActivity : AppCompatActivity() {
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
         val buttonHowDoesIsWork = findViewById<Button>(R.id.how_does_is_work)
-        val buttonSecurity1 = findViewById<Button>(R.id.button_security1)
-        val buttonSecurity2 = findViewById<Button>(R.id.button_security2)
-        val buttonSecurity3 = findViewById<Button>(R.id.button_security3)
-
 
         buttonLogin.setOnClickListener {
-            goToThreeStepsActivity()
-        }
-
-        buttonSecurity1.setOnClickListener {
-            goToThreeStepsActivity()
-        }
-
-        buttonSecurity2.setOnClickListener {
-            goToThreeStepsActivity()
-        }
-
-        buttonSecurity3.setOnClickListener {
             goToThreeStepsActivity()
         }
 
