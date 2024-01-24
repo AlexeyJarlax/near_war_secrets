@@ -26,6 +26,9 @@ class MainPageActivity : AppCompatActivity() {
     private var pref1 = false
     private var pref2 = false
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var buttonSecurity1: Button
+    private lateinit var buttonSecurity2: Button
+    private lateinit var buttonSecurity3: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +42,29 @@ class MainPageActivity : AppCompatActivity() {
         val buttonStorageLog = findViewById<Button>(R.id.button_storage_log)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
         val buttonHowDoesIsWork = findViewById<Button>(R.id.how_does_is_work)
+        buttonSecurity1 = findViewById<Button>(R.id.button_security1)
+        buttonSecurity2 = findViewById<Button>(R.id.button_security2)
+        buttonSecurity3 = findViewById<Button>(R.id.button_security3)
 
         buttonLogin.setOnClickListener {
-            goToThreeStepsActivity()
+            val displayIntent = Intent(this, AboutActivity::class.java)
+            startActivity(displayIntent)
+        }
+
+        buttonSecurity1.setOnClickListener {
+            val displayIntent = Intent(this, ThreeStepsActivity::class.java)
+            displayIntent.putExtra("buttonSecurity1", true)
+            startActivity(displayIntent)
+        }
+        buttonSecurity2.setOnClickListener {
+            val displayIntent = Intent(this, ThreeStepsActivity::class.java)
+            displayIntent.putExtra("buttonSecurity2", true)
+            startActivity(displayIntent)
+        }
+        buttonSecurity3.setOnClickListener {
+            val displayIntent = Intent(this, ThreeStepsActivity::class.java)
+            displayIntent.putExtra("buttonSecurity3", true)
+            startActivity(displayIntent)
         }
 
         buttonGallery.setOnClickListener { // флаг ItemLoaderActivity в режиме Галереи
@@ -96,46 +119,71 @@ class MainPageActivity : AppCompatActivity() {
 
     private fun locker() {
         val passKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_PASSWORD)
-//            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_PASSWORD, false)
-        val EncryptionKey = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
-//            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_ENCRYPTION_K, false)
+        val encryptionKeyName: Boolean =
+            APKM(context = this).getIntFromSP(APK.DEFAULT_KEY) != 0
         val mimikKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY)
-//            sharedPreferences.getBoolean(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY, false)
 
-        var keySimbl = findViewById<Button>(R.id.button_login)
-
-        simblPass = if (passKey) {
-            "🔐"
+        if (passKey) {
+            simblPass = "🔐"
+            buttonSecurity1.text = simblPass
+            buttonSecurity1.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, com.google.android.material.R.color.mtrl_btn_transparent_bg_color))
         } else {
-            ""
-        }
-        simblMimic = if (mimikKey) {
-            "🕶️"
-        } else {
-            ""
-        }
-        simblEncryption = if (EncryptionKey) {
-            "🔏"
-        } else {
-            ""
-        }
-        text = "${simblPass}${simblMimic}${simblEncryption}"
-        keySimbl.text = text
-
-        if (text.length < 2) {
-            keySimbl.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
-            keySimbl.text = "🏳️"
-        } else if (text.length < 4) {
-            keySimbl.backgroundTintList =
+            simblPass = "🏳️"
+            buttonSecurity1.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
-        } else if (text.length < 6) {
-            keySimbl.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue_light))
-        } else if (text.length < 8) {
-            keySimbl.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
         }
+
+        if (mimikKey) {
+            simblMimic = "🕶️"
+            buttonSecurity2.text = simblMimic
+            buttonSecurity2.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, com.google.android.material.R.color.mtrl_btn_transparent_bg_color))
+        } else {
+            simblMimic = "🏳️"
+            buttonSecurity2.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
+        }
+
+        if (encryptionKeyName) {
+            simblEncryption = APKM(context = this).getDefauldKeyName()
+            buttonSecurity3.text = simblEncryption
+            buttonSecurity3.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, com.google.android.material.R.color.mtrl_btn_transparent_bg_color))
+        } else {
+            simblEncryption = "🏳️"
+            buttonSecurity3.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
+        }
+
+//        simblPass = if (passKey) {
+//            "🔐"
+//        } else {
+//            "🏳️"
+//        }
+//        simblMimic = if (mimikKey) {
+//            "🕶️"
+//        } else {
+//            "🏳️"
+//        }
+//        simblEncryption = if (encryptionKeyName) {
+//            APKM(context = this).getDefauldKeyName()
+//        } else {
+//            "🏳️"
+//        }
+//            keySimbl.backgroundTintList =
+//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
+//            keySimbl.text = "🏳️"
+//        } else if (text.length < 4) {
+//            keySimbl.backgroundTintList =
+//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
+//        } else if (text.length < 6) {
+//            keySimbl.backgroundTintList =
+//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue_light))
+//        } else if (text.length < 8) {
+//            keySimbl.backgroundTintList =
+//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
+//        }
     }
 
     private fun prestart() {

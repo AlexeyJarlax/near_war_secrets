@@ -28,7 +28,10 @@ class ThreeStepsActivity : AppCompatActivity() {
     private lateinit var yesButton: Button
     private lateinit var noButton: Button
     private lateinit var oldKeyButton: Button
-    private var isPasswordExists: Boolean = false // Add this variable
+    private var isPasswordExists: Boolean = false // // ФЛАГ
+    private var buttonSecurity1: Boolean = false // // ФЛАГ
+    private var buttonSecurity2: Boolean = false // // ФЛАГ
+    private var buttonSecurity3: Boolean = false // // ФЛАГ
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +45,24 @@ class ThreeStepsActivity : AppCompatActivity() {
         noButton = findViewById(R.id.no_button)
         oldKeyButton = findViewById(R.id.button_old_key)
 
-        isPasswordExists = intent.getBooleanExtra("isPasswordExists", false) // ФЛАГ С intent
+        isPasswordExists = intent.getBooleanExtra("isPasswordExists", false) // ФЛАГ
+        buttonSecurity1 = intent.getBooleanExtra("buttonSecurity1", false) // ФЛАГ
+        buttonSecurity2 = intent.getBooleanExtra("buttonSecurity2", false) // ФЛАГ
+        buttonSecurity3 = intent.getBooleanExtra("buttonSecurity3", false) // ФЛАГ
 
         // Call the appropriate method based on the flag
         if (isPasswordExists) {
             step2()
+        } else if (buttonSecurity1) {
+            step1()
+        } else if (buttonSecurity2) {
+            step2()
+        } else if (buttonSecurity3) {
+            step3()
         } else {
             stepZero()
         }
     }
-
     // три шага для входа в приложение
 
     fun stepZero() {
@@ -77,7 +88,12 @@ class ThreeStepsActivity : AppCompatActivity() {
             startActivity(intent)
         }
         noButton.setOnClickListener {
-            step2()
+            if(buttonSecurity1) {
+                goToMain()
+            } else {
+                step2()
+            }
+
         }
         val savedPassword = APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
         if (savedPassword.isNullOrBlank()) {
@@ -117,7 +133,8 @@ class ThreeStepsActivity : AppCompatActivity() {
             if (sharedPreferences.getBoolean(
                     APK.KEY_EXIST_OF_PASSWORD,
                     false
-                )) {
+                )
+            ) {
                 errorTextWeb.text = resources.getString(R.string.step02_01)
             } else {
                 errorTextWeb.text = resources.getString(R.string.step02_02)
@@ -127,14 +144,24 @@ class ThreeStepsActivity : AppCompatActivity() {
             yesButton.visibility = View.GONE
             noButton.visibility = View.GONE
             inputButton.setOnClickListener {
-                step3()
+                if(buttonSecurity2) {
+                    goToMain()
+                } else{
+                    step3()
+                }
+
             }
 
         }
         noButton.setOnClickListener {
             editor.putBoolean(APK.KEY_EXIST_OF_MIMICRY, false)
             editor.apply()
-            step3()
+            if(buttonSecurity2) {
+                goToMain()
+            } else {
+                step3()
+            }
+
         }
     }
 
@@ -152,13 +179,15 @@ class ThreeStepsActivity : AppCompatActivity() {
             startActivity(displayIntent)
         }
         noButton.setOnClickListener {
-//            val editor = sharedPreferences.edit()
-//            editor.putBoolean(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
-//            editor.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
-//            editor.apply()
-            val displayIntent = Intent(this, MainPageActivity::class.java)
-            startActivity(displayIntent)
+            APKM(context = this).delFromSP(APK.DEFAULT_KEY)
+            APKM(context = this).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
+            goToMain()
         }
 
+    }
+
+    fun goToMain() {
+        val displayIntent = Intent(this, MainPageActivity::class.java)
+        startActivity(displayIntent)
     }
 }

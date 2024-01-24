@@ -132,6 +132,15 @@
                 android:text="@string/about_app_long6"
                 android:textAlignment="center" />
 
+            <TextView
+                android:id="@+id/preview_size_label7"
+                style="@style/SettingsButtonsAndText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp16"
+                android:text="@string/how_does_the_key_works_details"
+                android:textAlignment="center" />
+
             <VideoView
                 android:id="@+id/videoView0"
                 android:layout_width="300dp"
@@ -141,17 +150,6 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="fitCenter"
                 android:visibility="gone" />
-
-            <View
-                android:id="@+id/preview_size_label7"
-                style="@style/SettingsButtonsAndText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginTop="@dimen/dp6"
-                android:layout_marginBottom="@dimen/dp6"
-                android:gravity="start|end|center_vertical"
-                android:textStyle="normal" />
 
         </LinearLayout>
 

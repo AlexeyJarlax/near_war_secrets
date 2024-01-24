@@ -30,7 +30,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/dp60"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -43,6 +43,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="@dimen/dp8"
+                android:layout_toStartOf="@+id/button_login"
                 android:gravity="center"
                 android:text="@string/app_name_in_main_page"
                 android:textColor="@color/yp_black_and_yp_white"
@@ -51,18 +52,15 @@
             <Button
                 android:id="@+id/button_login"
                 style="@style/LoginButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp36"
+                android:layout_width="@dimen/dp60"
+                android:layout_height="@dimen/dp60"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/dp4"
-                android:layout_marginTop="@dimen/dp4"
-                android:layout_marginEnd="@dimen/dp4"
-                android:layout_marginBottom="@dimen/dp4"
                 android:gravity="center"
-                android:maxLines="1"
-                android:text="" />
+                android:paddingStart="0dp"
+                android:text=""
+                app:icon="@android:drawable/ic_input_get" />
 
         </RelativeLayout>
 
@@ -108,56 +106,55 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
-
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/button_settings"
                 style="@style/MainMenuButtons2"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_toStartOf="@+id/button_security3"
+                android:layout_height="140dp"
+                android:layout_toStartOf="@+id/button_security2"
                 android:text="@string/button_settings"
                 app:icon="@android:drawable/ic_menu_preferences"
                 tools:ignore="VisualLintButtonSize" />
 
             <Button
-                android:id="@+id/button_security1"
+                android:id="@+id/button_security3"
                 style="@style/MainMenuButtons2"
-                android:layout_width="@dimen/dp60"
-                android:layout_height="@dimen/dp60"
+                android:layout_width="@dimen/dp70"
+                android:layout_height="@dimen/dp70"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="@dimen/z"
                 android:layout_toEndOf="@+id/button_settings"
-                android:text="🔏🔏🔏"
+                android:text="🏳️"
+                tools:ignore="VisualLintButtonSize" />
+
+            <Button
+                android:id="@+id/button_security1"
+                style="@style/MainMenuButtons2"
+                android:layout_width="@dimen/dp70"
+                android:layout_height="@dimen/dp70"
+                android:layout_below="@+id/button_security3"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="-1dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="@dimen/z"
+                android:text="🏳️"
                 tools:ignore="VisualLintButtonSize" />
 
             <Button
                 android:id="@+id/button_security2"
                 style="@style/MainMenuButtons2"
-                android:layout_width="@dimen/dp60"
-                android:layout_height="@dimen/dp60"
-                android:layout_below="@+id/button_security1"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/z"
-                android:layout_marginEnd="@dimen/z"
-                android:layout_marginBottom="@dimen/z"
-                android:text="🔐"
-                tools:ignore="VisualLintButtonSize" />
-
-            <Button
-                android:id="@+id/button_security3"
-                style="@style/MainMenuButtons2"
-                android:layout_width="@dimen/dp60"
-                android:layout_height="@dimen/dp60"
-                android:layout_below="@+id/button_security1"
+                android:layout_width="@dimen/dp70"
+                android:layout_height="@dimen/dp70"
+                android:layout_below="@+id/button_security3"
                 android:layout_marginStart="@dimen/z"
                 android:layout_marginTop="@dimen/z"
                 android:layout_marginEnd="@dimen/z"
                 android:layout_marginBottom="@dimen/z"
-                android:layout_toStartOf="@+id/button_security2"
-                android:text="🕶️"
+                android:layout_toStartOf="@+id/button_security1"
+                android:text="🏳️"
                 tools:ignore="VisualLintButtonSize" />
         </RelativeLayout>
     </LinearLayout>

@@ -71,14 +71,14 @@ internal class APKM(private val context: Context) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(key, isChecked)
         editor.apply()
-    } // AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE, isChecked)
+    } // APKM(context = this).saveBooleanToSPK(APK.KEY_NIGHT_MODE, false)
 
     fun getBooleanFromSPK(key: String): Boolean {
         return sharedPreferences.getBoolean(
             key,
             false
         )
-    } // AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_NIGHT_MODE)
+    } // APKM(context = this).getBooleanFromSPK(APK.KEY_NIGHT_MODE)
 
     // ---------------------------------------------------------------------------- Int гетеры и сетеры
     fun saveIntToSP(key: String, value: Int) {
@@ -242,6 +242,19 @@ internal class APKM(private val context: Context) {
             return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET2)
         } else if (defaultKey == 3) {
             return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET3)
+        } else {
+            return ""
+        }
+    }
+
+    fun getDefauldKeyName(): String {
+        val defaultKey: Int = APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+        if (defaultKey == 1) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME1)
+        } else if (defaultKey == 2) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME2)
+        } else if (defaultKey == 3) {
+            return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME3)
         } else {
             return ""
         }

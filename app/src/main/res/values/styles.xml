@@ -219,8 +219,10 @@
     <!-- Стиль кнопки логин в главном-->
     <style name="LoginButtons" parent="ErrorButtons">
         <item name="android:gravity">center</item>
-<!--        <item name="android:backgroundTint">@color/kototeka_thumb_color</item>-->
+        <item name="iconSize">@dimen/dp30</item>
         <item name="android:textSize">@dimen/text_size_sp19</item>
+        <item name="android:backgroundTint">@color/yp_white_and_yp_black</item>
+        <item name="iconTint">@color/yp_text_gray_and_yp_white</item>
     </style>
 
     <style name="ErrorTextBig" parent="TrackText">
