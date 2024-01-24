@@ -231,7 +231,12 @@
     <string name="decryption_error">Ошибка дешифрования</string>
     <string name="error_key">возможно ключ был изменён</string>
     <string name="error_del">Ошибка при удалении файла</string>
+
     <string name="choose_encryption_key">Выберите ключ</string>
     <string name="enter_encryption_key1">Ввести ключ вручную</string>
     <string name="enter_encryption_key2">Ввести ключ вручную (при успешном дешифровании файл будет перекодирован в ключ по умолчанию)</string>
+    <string name="clear_storage">Данные будут удалены безвозвратно</string>
+    <string name="confirm_clear_storage_title">Нажмите число восемь для подтверждения</string>
+    <string name="key_d">%d файла зашифрованы этим ключом</string>
+    <string name="made_by_key">%d Зашифрован ключом</string>
 </resources>

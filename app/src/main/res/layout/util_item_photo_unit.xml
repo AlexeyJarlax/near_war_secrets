@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/yp_white_and_yp_black"
-    android:gravity="center"
+    android:gravity="top"
     android:orientation="horizontal"
     android:padding="@dimen/dp4">
 
@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="top"
         android:orientation="vertical"
         android:background="@color/kototeka_thumb_color">
 <!--        android:background="transparent">-->

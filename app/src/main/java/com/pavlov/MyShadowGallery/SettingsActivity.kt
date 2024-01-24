@@ -1,5 +1,6 @@
 package com.pavlov.MyShadowGallery
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -24,6 +25,8 @@ import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
+import com.pavlov.MyShadowGallery.util.showManualKeyInputDialog
+import com.pavlov.MyShadowGallery.util.showYesNoDialog
 import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
@@ -231,16 +234,26 @@ class SettingsActivity : AppCompatActivity() {
     } // конец onCreate
 
     fun clearStorage() {
-        buttonClearStorage.setOnClickListener { // чистим хранилище
-            doClearStorage(applicationContext)
+        buttonClearStorage.setOnClickListener {
+            Toast.makeText(this, getString(R.string.clear_storage), Toast.LENGTH_SHORT).show()
+            val confirmationTitle = getString(R.string.confirm_clear_storage_title)
+            showYesNoDialog(confirmationTitle) {
+                // В этом блоке выполните действия по удалению данных из хранилища,
+                // такие как doClearStorage(applicationContext).
+                doClearStorage(applicationContext)
+            }
         }
     }
 
     fun resetSettingsAndClearStorage() { // Сброс настроек
         resetSettings.setOnClickListener { // сброс настроек
-            doClearStorage(applicationContext)
-            doResetSettingsAndClearStorage(applicationContext)
-            finishAffinity(applicationContext)
+            Toast.makeText(this, getString(R.string.clear_storage), Toast.LENGTH_SHORT).show()
+            val confirmationTitle = getString(R.string.confirm_clear_storage_title)
+            showYesNoDialog(confirmationTitle) {
+                doClearStorage(applicationContext)
+                doResetSettingsAndClearStorage(applicationContext)
+                finishAffinity(applicationContext)
+            }
         }
     }
 

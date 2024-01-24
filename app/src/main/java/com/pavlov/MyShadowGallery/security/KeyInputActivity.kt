@@ -19,6 +19,8 @@ import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
+import com.pavlov.MyShadowGallery.util.showYesNoDialog
+import java.io.File
 import kotlin.random.Random
 
 class KeyInputActivity : AppCompatActivity() {
@@ -203,7 +205,7 @@ class KeyInputActivity : AppCompatActivity() {
             !APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION)
 
         variableKey.isChecked = isSaveAfterSession
-        if(!isSaveAfterSession) {
+        if (!isSaveAfterSession) {
             variableKeyText.text = getString(R.string.do_not_save_key_in_sistem3)
             saveNewKey.text = "⏳"
             saveKeyText.text = getString(R.string.save_key_on_session)
@@ -253,7 +255,20 @@ class KeyInputActivity : AppCompatActivity() {
             exit()
         }
 
-//старые ключи ************************************************************************************
+        //старые ключи ************************************************************************************
+        fun countFilesWithExtension(folderPath: String, extension: String): Int {
+            val folder = File(folderPath)
+            if (folder.exists() && folder.isDirectory) {
+                val matchingFiles = folder.listFiles { file ->
+                    file.isFile && file.name.endsWith(".$extension", true)
+                }
+                return matchingFiles.size
+            }
+
+            // Если папка не существует или не является директорией, возвращаем 0
+            return 0
+        }
+
         if (APKM(context = this).getMastersSecret(APK.KEY_BIG_SECRET_NAME1).isNotBlank()) {
             oldKey1Text.visibility = View.VISIBLE
             oldKey1Del.visibility = View.VISIBLE
@@ -265,12 +280,17 @@ class KeyInputActivity : AppCompatActivity() {
                 exit()
             }
             oldKey1Del.setOnClickListener {
-                oldKey1Text.visibility = View.GONE
-                oldKey1Del.visibility = View.GONE
-                APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME1)
-                APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET1)
-                Toast.makeText(this, R.string.key_delited, Toast.LENGTH_SHORT).show()
-                clearList()
+                val count = countFilesWithExtension(applicationContext.filesDir.absolutePath, "p1")
+                Toast.makeText(this, getString(R.string.key_d, count), Toast.LENGTH_SHORT).show()
+                val confirmationTitle = getString(R.string.confirm_clear_storage_title)
+                showYesNoDialog(confirmationTitle) {
+                    oldKey1Text.visibility = View.GONE
+                    oldKey1Del.visibility = View.GONE
+                    APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME1)
+                    APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET1)
+                    Toast.makeText(this, R.string.key_delited, Toast.LENGTH_SHORT).show()
+                    clearList()
+                }
             }
         }
 
@@ -285,12 +305,17 @@ class KeyInputActivity : AppCompatActivity() {
                 exit()
             }
             oldKey2Del.setOnClickListener {
-                oldKey2Text.visibility = View.GONE
-                oldKey2Del.visibility = View.GONE
-                APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME2)
-                APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET2)
-                Toast.makeText(this, R.string.key_delited, Toast.LENGTH_SHORT).show()
-                clearList()
+                val count = countFilesWithExtension(applicationContext.filesDir.absolutePath, "p2")
+                Toast.makeText(this, getString(R.string.key_d, count), Toast.LENGTH_SHORT).show()
+                val confirmationTitle = getString(R.string.confirm_clear_storage_title)
+                showYesNoDialog(confirmationTitle) {
+                    oldKey2Text.visibility = View.GONE
+                    oldKey2Del.visibility = View.GONE
+                    APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME2)
+                    APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET2)
+                    Toast.makeText(this, R.string.key_delited, Toast.LENGTH_SHORT).show()
+                    clearList()
+                }
             }
         }
 
@@ -305,12 +330,17 @@ class KeyInputActivity : AppCompatActivity() {
                 exit()
             }
             oldKey3Del.setOnClickListener {
-                oldKey3Text.visibility = View.GONE
-                oldKey3Del.visibility = View.GONE
-                APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME3)
-                APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET3)
-                Toast.makeText(this, R.string.key_delited, Toast.LENGTH_SHORT).show()
-                clearList()
+                val count = countFilesWithExtension(applicationContext.filesDir.absolutePath, "p2")
+                Toast.makeText(this, getString(R.string.key_d, count), Toast.LENGTH_SHORT).show()
+                val confirmationTitle = getString(R.string.confirm_clear_storage_title)
+                showYesNoDialog(confirmationTitle) {
+                    oldKey3Text.visibility = View.GONE
+                    oldKey3Del.visibility = View.GONE
+                    APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME3)
+                    APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET3)
+                    Toast.makeText(this, R.string.key_delited, Toast.LENGTH_SHORT).show()
+                    clearList()
+                }
             }
         }
 
@@ -414,34 +444,33 @@ class KeyInputActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.encryption_key_set, Toast.LENGTH_SHORT).show()
             exit()
 
-    } else
-    {
-        Toast.makeText(this, R.string.encryption_key_not_set, Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, R.string.encryption_key_not_set, Toast.LENGTH_SHORT).show()
 //            exit()
-    }
-}
-
-private fun generateRandomKey(length: Int): String {
-    val chars =
-        ('a'..'f') + ('0'..'9') // Допустимые символы для ключа (шестнадцатеричные цифры a-f и цифры 0-9)
-    val random = Random.Default
-    val key = StringBuilder()
-
-    repeat(length) {
-        val randomChar = chars[random.nextInt(chars.size)]
-        key.append(randomChar)
+        }
     }
 
-    return key.toString()
-}
+    private fun generateRandomKey(length: Int): String {
+        val chars =
+            ('a'..'f') + ('0'..'9') // Допустимые символы для ключа (шестнадцатеричные цифры a-f и цифры 0-9)
+        val random = Random.Default
+        val key = StringBuilder()
 
-override fun onBackPressed() { // юзер сбегает
-    super.onBackPressed()
-    doNotUseKey.performClick()
-}
+        repeat(length) {
+            val randomChar = chars[random.nextInt(chars.size)]
+            key.append(randomChar)
+        }
 
-private fun exit() {
-    val displayIntent = Intent(this, MainPageActivity::class.java)
-    startActivity(displayIntent)
-}
+        return key.toString()
+    }
+
+    override fun onBackPressed() { // юзер сбегает
+        super.onBackPressed()
+        doNotUseKey.performClick()
+    }
+
+    private fun exit() {
+        val displayIntent = Intent(this, MainPageActivity::class.java)
+        startActivity(displayIntent)
+    }
 }

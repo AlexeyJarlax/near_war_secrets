@@ -64,6 +64,19 @@
             app:layout_constraintTop_toBottomOf="@+id/imageDialogFileName"
             tools:visibility="visible" />
 
+        <TextView
+            android:id="@+id/imageDialogKey"
+            style="@style/ErrorTextBig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dp12"
+            android:text="@string/sample"
+            android:textSize="@dimen/text_size_sp16"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/imageDialogFileDate"
+            tools:visibility="visible" />
+
         <ProgressBar
             android:id="@+id/loading_indicator3"
             style="?android:attr/progressBarStyle"
