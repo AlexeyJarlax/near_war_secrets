@@ -46,9 +46,10 @@ import java.util.*
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.TypedArrayUtils.getString
+import androidx.core.content.ContextCompat.getString
 import com.pavlov.MyShadowGallery.util.Encryption
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.APKM
@@ -256,7 +257,8 @@ class ItemLoaderActivity : AppCompatActivity() {
                 buttonCapture.setOnClickListener {
                     showLoadingIndicator()
                     val folder = applicationContext.filesDir
-                    var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
+                    var existOrNot =
+                        APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
                     fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
@@ -415,7 +417,9 @@ class ItemLoaderActivity : AppCompatActivity() {
                                 imageDialogAcceptanceButton?.setOnClickListener {  // сохраняем пикчу и выходим из imageDialog
                                     imageDialog?.dismiss()
                                     imageDialogAcceptance = true
-                                    if (APKM(context = this@ItemLoaderActivity).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
+                                    if (APKM(context = this@ItemLoaderActivity).getBooleanFromSPK(
+                                            APK.KEY_USE_THE_ENCRYPTION_K
+                                        )
                                     ) {
 
                                         MainScope().launch {  // в фоновом потоке, Корутина
@@ -460,7 +464,11 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             encryption.createThumbnail(application, fileUri)
 
                                             try {
-                                                encryption.encryptImage(fileUri, fileName, APKM(context = this@ItemLoaderActivity).getDefauldKey())
+                                                encryption.encryptImage(
+                                                    fileUri,
+                                                    fileName,
+                                                    APKM(context = this@ItemLoaderActivity).getDefauldKey()
+                                                )
 
                                                 // Удаление временного файла
                                                 val fileToDelete =
@@ -469,7 +477,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                     fileToDelete.delete()
                                                 }
                                             } catch (e: Exception) {
-                                                showToast(getString(R.string.enception_error))
+                                                showToast(getString(R.string.encryption_error))
                                             }
                                             hideLoadingIndicator(isItFrontCamera) // завершение индикатора
 
@@ -553,7 +561,11 @@ class ItemLoaderActivity : AppCompatActivity() {
 
         if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)) {
             encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
-            encryption.encryptImage(outputFile.toUri(), fileName, APKM(context = this@ItemLoaderActivity).getDefauldKey())
+            encryption.encryptImage(
+                outputFile.toUri(),
+                fileName,
+                APKM(context = this@ItemLoaderActivity).getDefauldKey()
+            )
         } else {
             showToast(getString(R.string.enception_no))
             encryption.addPhotoToList(0, outputFile.toUri())
@@ -650,7 +662,8 @@ open class PhotoListAdapter(
                     encryptedFileName.endsWith(".p2") -> encryptedFileName.replace(".p2", ".kk")
                     encryptedFileName.endsWith(".p3") -> encryptedFileName.replace(".p3", ".kk")
                     else -> encryptedFileName  // Если файл не имеет ожидаемого расширения
-                })
+                }
+            )
 
             imageDialog = Dialog(context)
             imageDialog?.setContentView(R.layout.util_dialog_image_view)
@@ -751,7 +764,8 @@ open class PhotoListAdapter(
 
             fun performShowDecryptedOne(number: Int) { // метод на отображение шифрованных, number - номер ключа
                 try {
-                    rotatedBitmap = encryption.decryptImage(decryptedFile, APKM(context).getKeyByNumber(number))
+                    rotatedBitmap =
+                        encryption.decryptImage(decryptedFile, APKM(context).getKeyByNumber(number))
 
                     val glideRequest = Glide.with(context).load(rotatedBitmap).fitCenter()
                         .transform(RoundedCorners(8))
@@ -797,7 +811,7 @@ open class PhotoListAdapter(
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
-                    activity.showToast(context.getString(R.string.deception_error))
+                    activity.showToast(context.getString(R.string.decryption_error))
                     activity.showToast(context.getString(R.string.error_key))
                 }
             }
@@ -977,7 +991,6 @@ open class PhotoListAdapter(
             context.getString(R.string.saving_option1),
             context.getString(R.string.saving_option2),
             context.getString(R.string.saving_option3),
-//            context.getString(R.string.saving_option4),
             context.getString(R.string.saving_option5)
         )
 
@@ -995,42 +1008,188 @@ open class PhotoListAdapter(
                     encryption.createThumbnail(context.applicationContext, uri)
                     try {
                         if (outputFile != null) {
-                            encryption.encryptImage(uri, outputFile.name, APKM(context).getDefauldKey())
+                            encryption.encryptImage(
+                                uri,
+                                outputFile.name,
+                                APKM(context).getDefauldKey()
+                            )
                         }
                     } catch (e: Exception) {
-                        activity.showToast(context.getString(R.string.enception_error))
+                        activity.showToast(context.getString(R.string.encryption_error))
                     }
                     deleteFile(encryptedFile)
                     closeContext()
                 }
 
                 2 -> {  // сохраняем для расшифровки моим ключом
-                    if (encryption.isDecryptable(encryptedFile, APKM(context).getDefauldKey())) {
-                        var outputFile = createFileFrom(encryptedFile, ".kk")
+//                    var outputFile = createFileFrom(encryptedFile, ".kk")
+                    showShareImageDialogINSIDE { selectedKey ->
+                        try {
+                            if (encryptedFile != null) {
+                                rotatedBitmap = encryption.decryptImage(
+                                    encryptedFile, selectedKey)
 
-                        if (outputFile != null) {
-                            rotatedBitmap = encryption.decryptImage(outputFile, APKM(context).getDefauldKey())
-                            encryption.createMiniFile(outputFile, ".p", 100)
+                                MainScope().launch {
+                                    activity.showLoadingIndicator()// в фоновом потоке, Корутина
+                                    activity.showToast(context.getString(R.string.wait))
+//                                    val rotationDegrees = 0
+//
+//                                    val rotatedBitmap =
+//                                        FileProviderAdapter.rotateImageByKorutin(
+//                                            outputFile, rotationDegrees
+//                                        )
+
+                                    val imageFile =
+                                        FileProviderAdapter.bitmapToFileByKorutin(
+                                            rotatedBitmap, context.applicationContext, encryptedFile.name
+                                        )
+
+                                    // Явное освобождение ресурсов
+                                    FileProviderAdapter.recycleBitmap(rotatedBitmap)
+
+                                    val fileUri = FileProviderAdapter.getUriForFile(
+                                        context.applicationContext, imageFile
+                                    )
+                                    encryption.createThumbnail(context.applicationContext, fileUri)
+                                    val newName = imageFile.nameWithoutExtension + ".k"
+//                                    var outputFile = createFileFrom(encryptedFile, ".kk")
+                                    try {
+                                        encryption.encryptImage(
+                                            fileUri,
+                                            newName,
+                                            APKM(context).getDefauldKey()
+                                        )
+
+                                        // Удаление временного файла
+                                        val fileToDelete =
+                                            File(context.applicationContext.filesDir, imageFile.name)
+                                        if (fileToDelete.exists()) {
+                                            fileToDelete.delete()
+                                        }
+                                    } catch (e: Exception) {
+                                        activity.showToast(context.getString(R.string.encryption_error))
+                                    }
+                                    activity.hideLoadingIndicator(true) // завершение индикатора
+                                    val intent = Intent(context, ItemLoaderActivity::class.java)
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                    context.startActivity(intent)
+                                } // завершение корутины
+//                                val veryOutputFile = createFileFrom(rotatedBitmap, ".k")
+//                                val uri = Uri.fromFile(veryOutputFile)
+//                                encryption.createThumbnail(context.applicationContext, uri)
+//                                try {
+//                                    if (rotatedBitmap != null) {
+//                                        encryption.encryptImage(
+//                                            uri,
+//                                            veryOutputFile.name,
+//                                            APKM(context).getDefauldKey()
+//                                        )
+//                                    }
+//                                } catch (e: Exception) {
+//                                    activity.showToast(context.getString(R.string.encryption_error))
+//                                }
+
+//                                encryption.createMiniFile(outputFile, ".p", 100)
+//                                deleteFile(encryptedFile)
+//                                recycleBitmap(rotatedBitmap)
+                                notifyDataSetChanged()
+                            }
+                        } catch (e: Exception) {
+                            activity.showToast(context.getString(R.string.decryption_error))
                         }
-                        deleteFile(encryptedFile)
-                        recycleBitmap(rotatedBitmap)
-                        notifyDataSetChanged()
                         closeContext()
-                    } else {
-                        activity.showToast(context.getString(R.string.enception_error))
                     }
-                }
 
-//                3 -> {
-//                    context.showToast(context.getString(R.string.feature_in_development))
-//                    notifyDataSetChanged()
-//                }
+
+//                    if (encryption.isDecryptable(encryptedFile, APKM(context).getDefauldKey())) {
+//                        var outputFile = createFileFrom(encryptedFile, ".kk")
+//
+//                        if (outputFile != null) {
+//                            rotatedBitmap = encryption.decryptImage(outputFile, APKM(context).getDefauldKey())
+//                            encryption.createMiniFile(outputFile, ".p", 100)
+//                        }
+//                        deleteFile(encryptedFile)
+//                        recycleBitmap(rotatedBitmap)
+//                        notifyDataSetChanged()
+//                        closeContext()
+//                    } else {
+//                        activity.showToast(context.getString(R.string.enception_error))
+//                    }
+                }
 
                 3 -> { // удаляем
                     deleteFile(encryptedFile)
                     closeContext()
                 }
             }
+        }
+
+        builder.show()
+    }
+
+    private fun showShareImageDialogINSIDE(onKeySelected: (String) -> Unit) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.choose_encryption_key))
+        val apkManager = APKM(context)
+        val name1 = apkManager.getMastersSecret(APK.KEY_BIG_SECRET_NAME1)
+        val name2 = apkManager.getMastersSecret(APK.KEY_BIG_SECRET_NAME2)
+        val name3 = apkManager.getMastersSecret(APK.KEY_BIG_SECRET_NAME3)
+        // Создаем список для хранения непустых и не-null значений
+        val keyList = mutableListOf<String>()
+        if (name1.isNotEmpty()) {
+            keyList.add(name1)
+        }
+        if (name2.isNotEmpty()) {
+            keyList.add(name2)
+        }
+        if (name3.isNotEmpty()) {
+            keyList.add(name3)
+        }
+        // Проверяем, есть ли хотя бы один предопределенный ключ
+        if (keyList.isNotEmpty()) {
+            // Добавляем вариант ввода вручную
+            keyList.add(context.getString(R.string.enter_encryption_key1))
+
+            val keys = keyList.toTypedArray()
+
+            builder.setItems(keys) { _, which ->
+                when (which) {
+                    keys.size - 1 -> {
+                        // Вариант ввода ключа вручную
+                        showManualKeyInputDialog { enteredKey ->
+                            onKeySelected(enteredKey)
+                        }
+                    }
+                    else -> {
+                        // Выбран один из предопределенных ключей
+                        val selectedKey = keys[which]
+                        onKeySelected(selectedKey)
+                    }
+                }
+            }
+            builder.show()
+        } else {
+            // Обработка ситуации, когда нет предопределенных ключей
+            showManualKeyInputDialog { enteredKey ->
+                onKeySelected(enteredKey)
+            }
+        }
+    }
+
+    private fun showManualKeyInputDialog(onKeyEntered: (String) -> Unit) {
+        val inputEditText = EditText(context)
+        val builder = AlertDialog.Builder(context)
+
+        builder.setTitle(context.getString(R.string.enter_encryption_key2))
+        builder.setView(inputEditText)
+
+        builder.setPositiveButton("✔️") { _, _ ->
+            val enteredKey = inputEditText.text.toString()
+            onKeyEntered(enteredKey)
+        }
+
+        builder.setNegativeButton("❌") { dialog, _ ->
+            dialog.cancel()
         }
 
         builder.show()

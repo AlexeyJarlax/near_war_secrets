@@ -82,28 +82,21 @@
         злоумышленник сможет извлечь и считать их, если завладеет устройством. Получив отправленный с устройства файл, он сможет считать содержимое.\n\n
 2. ПОСТОЯННЫЙ КЛЮЧ ШИФРОВАНИЯ (оптимальный вариант). Пользователь придумывает, либо генерирует ключ шифрования. Ключ используется для шифрования файла в соответствии
         с Advanced Encryption Standard. Файл хранится на устройстве в зашифрованном виде и, даже получив доступ к памяти устройства (или получив отправленный с
-        устройства зашифрованный файл), злоумышленник не сможет считать содержимое без ключа шифрования. Ключ хранится в приложении в защищенном хэш-функцией виде.\n\n
-3. ПЕРЕМЕННЫЙ КЛЮЧ ШИФРОВАНИЯ. Если пользователь выставит галочку \"Не сохранять ключ шифрования\", ключ не будет храниться в приложении, а запрашивается каждый раз
-        при входе. Он существует в приложении пока оно открыто. Самый высокий уровень безопасности, однако, если вы забыли старый ключ, или решили его изменить,
-        сохраненные ранее с другим ключом файлы не будут доступны для просмотра. В меню Настройки вы всегда можете изменить опции безопасности.</string>
+        устройства зашифрованный файл), злоумышленник не сможет считать содержимое без ключа шифрования. Ключ хранится в приложении в защищенном хэш-функцией виде.
+        Пользователь может создать и хранить в приложении до трех ключей\n\n
+3. ПЕРЕМЕННЫЙ КЛЮЧ ШИФРОВАНИЯ. Если пользователь выставит галочку \"Не сохранять ключ шифрования\", ключ не будет храниться в приложении, а будет запрашивается каждый раз
+        при входе. Ключ существует в приложении пока оно открыто. Самый высокий уровень безопасности, однако, если вы забыли старый ключ,
+        сохраненные ранее этим ключом файлы не будут доступны для просмотра. В меню Настройки вы всегда можете изменить опции безопасности.</string>
     <string name="clearing_the_storage">Очистить хранилище</string>
     <string name="key_input_clear">Удалять ключ при закрытии сессии \n(ключ будет запрашиваться при входе)</string>
     <string name="preview_off">Использовать ключ шифрования</string>
-    <string name="error_text_web">Проблемы со связью \n
-        \n Загрузка не удалась. Проверьте\n
-        подключение к интернету</string>
+
     <string name="nothing_was_found">Ничего не нашлось</string>
     <string name="refresh">Обновить</string>
     <string name="any_mistake">тут будет сообщение об ошибке,\nиконка поменяется в зависимости\nот характера ошибки</string>
     <string name="you_were_looking_for">Вы искали</string>
     <string name="clear_the_history">Очистить историю</string>
-    <string name="error400">400 - ошибка запроса</string>
-    <string name="error401">401 - неавторизованный запрос</string>
-    <string name="error403">403 - запрещенный запрос</string>
-    <string name="error404">404 - не найдено</string>
-    <string name="error500">500 - внутренняя ошибка сервера</string>
-    <string name="error503">503 - сервис временно недоступен</string>
-    <string name="error0">неустановленная ошибка</string>
+
     <string name="added">Добавлен: </string>
     <string name="preview_scaling_factor">Коэффициент скалирования превью(px):</string>
     <string name="reset_settings">Очистить все данные: сбросить настройки, ключь, пароль, очистить хранилище </string>
@@ -153,19 +146,17 @@
     <string name="new_password">Новый пароль</string>
     <string name="old_password">Старый пароль</string>
     <string name="access_obtained">Доступ получен</string>
-    <string name="enception_error">Ошибка: Не удалось завершить шифрование</string>
+
     <string name="enception_no">Сохранено без шифрования</string>
-    <string name="save_error">Ошибка сохранения</string>
-    <string name="camera_error">Ошибка доступа к камере</string>
+
     <string name="download">Загрузка...</string>
-    <string name="deception_error">Ошибка дешифрования</string>
-    <string name="error_key">возможно ключ был изменён</string>
+
     <string name="share_the_img">Поделиться изображением</string>
     <string name="encrepted_img">Зашифрованное изображение</string>
     <string name="decripted_img">Дешифрованное изображение</string>
     <string name="timber_img">Миниатюра</string>
     <string name="chuse_img">Выберите файл для отправки</string>
-    <string name="error_del">Ошибка при удалении файла</string>
+
     <string name="encrypted_save">Сохранён зашифрованный файл:</string>
     <string name="decrypting">Дешифрую...</string>
 
@@ -181,12 +172,10 @@
     <string name="security_settings">Настройки безопасности</string>
     <string name="sensitive_info">\"Чувствительная информация и персональные данные могут быть полностью удалены нажатием кнопки ОЧИСТИТЬ ВСЕ ДАННЫЕ, расположенной выше\"</string>
     <string name="send_to_app">Файл направлен в приложение. Войдите в приложение для обработки.</string>
-    <string name="saving_option">Файл получен из другого приложения:
-    </string>
+    <string name="saving_option">Файл получен из другого приложения:</string>
     <string name="saving_option1">Сохранить файл "как есть"\n\n</string>
     <string name="saving_option2">Зашифровать и сохранить файл\n\n</string>
-    <string name="saving_option3">Попытаться расшифровать файл моим ключом\n\n</string>
-    <string name="saving_option4">Попытаться расшифровать файл чужим ключом\n\n</string>
+    <string name="saving_option3">Попытаться расшифровать файл\n\n</string>
     <string name="saving_option5">Удалить файл</string>
     <string name="feature_in_development">функция в разработке</string>
     <string name="storage_log_activity">Журнал изображений в хранилище приложения.\n
@@ -225,4 +214,24 @@
     <string name="do_not_save_key_in_sistem3">(из приложения удалятся имеющиеся ключи шифрования, пользователю придется вводить ключ каждый раз при входе в приложение)</string>
     <string name="save_key_on_session">Использовать ключ на время сессии</string>
 
+
+    <string name="error_text_web">Проблемы со связью \n
+        \n Загрузка не удалась. Проверьте\n
+        подключение к интернету</string>
+    <string name="error400">400 - ошибка запроса</string>
+    <string name="error401">401 - неавторизованный запрос</string>
+    <string name="error403">403 - запрещенный запрос</string>
+    <string name="error404">404 - не найдено</string>
+    <string name="error500">500 - внутренняя ошибка сервера</string>
+    <string name="error503">503 - сервис временно недоступен</string>
+    <string name="error0">неустановленная ошибка</string>
+    <string name="encryption_error">Ошибка: Не удалось завершить шифрование</string>
+    <string name="save_error">Ошибка сохранения</string>
+    <string name="camera_error">Ошибка доступа к камере</string>
+    <string name="decryption_error">Ошибка дешифрования</string>
+    <string name="error_key">возможно ключ был изменён</string>
+    <string name="error_del">Ошибка при удалении файла</string>
+    <string name="choose_encryption_key">Выберите ключ</string>
+    <string name="enter_encryption_key1">Ввести ключ вручную</string>
+    <string name="enter_encryption_key2">Ввести ключ вручную (при успешном дешифровании файл будет перекодирован в ключ по умолчанию)</string>
 </resources>

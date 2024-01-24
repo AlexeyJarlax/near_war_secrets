@@ -115,12 +115,12 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="new_password">Nueva contraseña</string>
     <string name="old_password">Contraseña antigua</string>
     <string name="access_obtained">Acceso obtenido</string>
-    <string name="enception_error">Error: No se puede completar la encriptación</string>
+    <string name="encryption_error">Error: No se puede completar la encriptación</string>
     <string name="enception_no">Guardado sin encriptación</string>
     <string name="save_error">Error al guardar</string>
     <string name="camera_error">Error al acceder a la cámara</string>
     <string name="download">Descargando...</string>
-    <string name="deception_error">Error de desencriptación</string>
+    <string name="decryption_error">Error de desencriptación</string>
     <string name="error_key">Posiblemente la clave ha sido cambiada</string>
     <string name="share_the_img">Compartir la imagen</string>
     <string name="encrepted_img">Imagen encriptada</string>

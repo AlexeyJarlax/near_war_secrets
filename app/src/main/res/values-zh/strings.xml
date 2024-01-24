@@ -122,12 +122,12 @@
     <string name="new_password">新密码</string>
     <string name="old_password">旧密码</string>
     <string name="access_obtained">已获得访问权限</string>
-    <string name="enception_error">错误：无法完成加密</string>
+    <string name="encryption_error">错误：无法完成加密</string>
     <string name="enception_no">保存时未加密</string>
     <string name="save_error">保存错误</string>
     <string name="camera_error">访问摄像头错误</string>
     <string name="download">下载中</string>
-    <string name="deception_error">解密错误</string>
+    <string name="decryption_error">解密错误</string>
     <string name="error_key">可能密钥已更改</string>
     <string name="share_the_img">分享图片</string>
     <string name="encrepted_img">加密图片</string>

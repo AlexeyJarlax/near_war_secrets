@@ -1,12 +1,16 @@
 package com.pavlov.MyShadowGallery.util
 
 import android.app.Activity
+import android.content.Intent
 import android.view.View
 import android.widget.ProgressBar
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.pavlov.MyShadowGallery.R
+import com.pavlov.MyShadowGallery.security.LoginActivity
+import kotlinx.coroutines.withContext
 
 fun Activity.showLoadingIndicator() {
     val buttonForCover2 = findViewById<View>(R.id.button_for_cover2) // кнопка заглушка экрана
@@ -29,4 +33,5 @@ fun Activity.hideLoadingIndicator(cornerLeft: Boolean) {
 fun Activity.showToast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
+
 

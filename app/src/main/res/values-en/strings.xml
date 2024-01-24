@@ -118,12 +118,12 @@ You can share the image with another user and they will be able to view it on th
     <string name="new_password">New password</string>
     <string name="old_password">Old password</string>
     <string name="access_obtained">Access obtained</string>
-    <string name="enception_error">Error: Unable to complete encryption</string>
+    <string name="encryption_error">Error: Unable to complete encryption</string>
     <string name="enception_no">Saved without encryption</string>
     <string name="save_error">Save error</string>
     <string name="camera_error">Error accessing the camera</string>
     <string name="download">Downloading...</string>
-    <string name="deception_error">Decryption error</string>
+    <string name="decryption_error">Decryption error</string>
     <string name="error_key">Possibly the key has been changed</string>
     <string name="share_the_img">Share the image</string>
     <string name="encrepted_img">Encrypted image</string>

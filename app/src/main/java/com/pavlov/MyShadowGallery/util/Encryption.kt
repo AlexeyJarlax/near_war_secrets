@@ -19,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
 import com.pavlov.MyShadowGallery.ItemLoaderActivity
 import com.pavlov.MyShadowGallery.R
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -125,6 +126,46 @@ class Encryption(private val context: Context) {
         }
     }
 
+    fun encryptBitmap(bitmap: Bitmap, encryptionKey: String) {
+        toast(context.getString(R.string.wait))
+        Log.d("=== Encryption", "=== готовится к шифрованию")
+
+        // Преобразуем Bitmap в массив байт
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        val imageBytes = outputStream.toByteArray()
+
+        // Хеширование ключа
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val hashedKey = messageDigest.digest(encryptionKey.toByteArray())
+        val keySpec = SecretKeySpec(hashedKey, "AES")
+
+        // Шифрование
+        val cipher = Cipher.getInstance("AES")
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec)
+        val encryptedBytes = cipher.doFinal(imageBytes)
+
+        // Сохранение зашифрованного массива байт в файл
+        val encryptedFile = File(context.applicationContext.filesDir, "encrypted_image.png")
+        FileOutputStream(encryptedFile).use { fileOutputStream ->
+            fileOutputStream.write(encryptedBytes)
+        }
+
+        // Проверка сохранения файла
+        if (!encryptedFile.exists()) {
+            Log.e("=== Encryption", "=== Ошибка сохранения зашифрованного файла")
+            return
+        }
+
+        toast(context.getString(R.string.encrypted_save))
+        toast(encryptedFile.name)
+        Log.d("=== Encryption", "=== Зашифрованный файл сохранен: ${encryptedFile.name}")
+        Log.d("=== Encryption", "=== Путь к зашифрованному файлу: ${encryptedFile.absolutePath}")
+
+        // Не забываем закрыть потоки и освободить ресурсы, если это необходимо
+        outputStream.close()
+    }
+
     fun decryptImage(file: File, decryptionKey: String): Bitmap {
 //        val decryptionKey = APKM(context).getMastersSecret(APK.KEY_BIG_SECRET)
         Log.e("=== Encryption", "=== Начало декодирования. файл file: ${file.name}")
@@ -167,6 +208,8 @@ class Encryption(private val context: Context) {
             false
         }
     }
+
+
 
     fun createThumbnail(context: Context, input: Any) {
         var imageUri: Uri? = null
