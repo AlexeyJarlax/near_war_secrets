@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.showLoadingIndicator
+import com.pavlov.MyShadowGallery.util.stopSmallLoadingIndicator
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -21,6 +22,7 @@ class FileProviderAdapter {
     companion object {
 
         suspend fun bitmapToFileByKorutin(bitmap: Bitmap, context: Context, fileName: String): File {
+
             return withContext(Dispatchers.IO) {
                 try {
                     // Создаем новый файл в каталоге filesDir с указанным именем

@@ -59,7 +59,7 @@
         <activity
             android:name=".security.ThreeStepsActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".security.SetPasswordActivity"
             android:exported="true"
@@ -94,7 +94,7 @@
         <activity
             android:name=".ItemLoaderActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SettingsActivity"
             android:configChanges="locale|orientation|screenSize"
@@ -104,7 +104,7 @@
         <activity
             android:name=".MainPageActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
