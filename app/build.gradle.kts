@@ -14,13 +14,19 @@ android {
         viewBinding = true
     }
 
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     defaultConfig {
         applicationId = "com.pavlov.MyShadowGallery"
         resConfigs("ru", "en", "zh", "es")
         minSdk = 28
         targetSdk = 34
-        versionCode = 28
-        versionName = "2.8"
+        versionCode = 29
+        versionName = "2.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -62,5 +68,4 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2") // Корутины многопоточности
     implementation("androidx.security:security-crypto:1.1.0-alpha06")  // хэширование
-
 }

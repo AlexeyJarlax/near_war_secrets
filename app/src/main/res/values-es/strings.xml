@@ -1,166 +1,215 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MSG</string>
-    <string name="mimicry_app_name">MoodSound Galaxy</string>
-    <string name="app_name_in_main_page">Mi Galería de Sombras</string>
-    <string name="disguise_btn">Disfraz</string>
-    <string name="search">Buscar</string>
-    <string name="button_back">Atrás</string>
-    <string name="button_item_loader">Agregar</string>
-    <string name="storage_log">Registro de Almacenamiento</string>
-    <string name="button_settings">Configuración</string>
-    <string name="dark_mod">Modo Oscuro</string>
-    <string name="share_the_app">Compartir la App</string>
-    <string name="write_to_support">Escribir a Soporte</string>
-    <string name="user_agreement">Política de Privacidad</string>
-    <string name="share_app_text">Mi Galería de Sombras - una aplicación para encriptar imágenes: https://play.google.com/store/apps/details?id=%1$s</string>
-    <string name="share_app_title">Compartir la App</string>
-    <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">Mensaje al Desarrollador de esta App</string>
-    <string name="support_email_text">texto del mensaje</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
-    <string name="heading_search_history_list_view">Historial de Búsqueda:</string>
-    <string name="todo">Por hacer</string>
-    <string name="there_wil_be_media_library">La biblioteca multimedia se mostrará en esta ventana</string>
-    <string name="cam_bat_on">Ocultar\nCámara</string>
-    <string name="cam_bat_off">Iniciar\nCámara</string>
-    <string name="cam_bat">Cámara</string>
-    <string name="snapshot">fotografiar</string>
-    <string name="galery">Subir\nArchivo</string>
-    <string name="mountin_switch">Estilo Visual:\n gato / Montañas</string>
-    <string name="sample">Uno, dos, tres</string>
-    <string name="key_info">Los caracteres ingresados se convertirán en una clave de encriptación única en el dispositivo. La clave de encriptación puede consistir en cualquier carácter, incluyendo letras rusas, números, caracteres especiales, etc. Sin embargo, para aumentar el nivel de seguridad, se recomienda usar claves largas y complejas que consistan en varios caracteres.
-Después de salir de la aplicación, la clave se guardará y no es necesario volver a ingresarla la próxima vez que inicie sesión en la aplicación. En la configuración, puede cambiar la opción para borrar la clave cada vez que sale de la aplicación.
-Si olvida la clave o decide cambiarla, puede inventar una nueva y seguir utilizando la aplicación. Sin embargo, las imágenes antiguas ya no serán visibles a menos que vuelva a la clave anterior. La clave está vinculada a la imagen solo cuando se crea. Si ha cambiado la clave y algunas imágenes ya no están disponibles, puede eliminar fácilmente las imágenes innecesarias utilizando la funcionalidad de la aplicación.
-Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al recibirla de usted de cualquier manera posible y abrirla usando la misma clave. Para hacer esto, deberá ingresar la misma clave de encriptación al iniciar sesión en la aplicación, y podrá cargar la imagen en una galería oculta y ver su contenido.</string>
-    <string name="key_info_new">\nAdemás de las funciones de contraseña y camuflaje, la aplicación tiene tres modos de seguridad:
-\n\n 1. SIN CLAVE. Guardar archivos sin una clave de encriptación: los archivos se almacenan en el dispositivo en un formato inaccesible para otras aplicaciones y la galería. Sin embargo, un actor malicioso puede extraerlos y leerlos si obtiene el control del dispositivo. Si se envía un archivo desde el dispositivo, su contenido se puede leer.
-\n\n 2. 2. CLAVE DE CIFRADO PERMANENTE (opción óptima). El usuario inventa o genera una clave de cifrado. La clave se utiliza para cifrar el archivo según el Estándar de Cifrado Avanzado. El archivo se almacena en el dispositivo en forma cifrada, e incluso si un atacante obtiene acceso a la memoria del dispositivo (o recibe el archivo enviado desde el dispositivo), no podrá leer el contenido sin la clave de cifrado. La clave se almacena en el dispositivo de forma segura.
-\n\n 3. CLAVE DE ENCRIPTACIÓN VARIABLE. La clave no se almacena en la aplicación, sino que se solicita cada vez durante el inicio de sesión. Existe en la aplicación mientras la aplicación está abierta. El nivel más alto de seguridad, pero si olvida la clave anterior o decide cambiarla, los archivos guardados anteriormente con una clave diferente ya no serán accesibles para su visualización.
-\n\n En el menú de Configuración, siempre puede cambiar las opciones de seguridad, cambiar la contraseña y ajustar la configuración de camuflaje.</string>
-    <string name="about_app">Acerca de la aplicación</string>
-    <string name="about_app_long1">Una aplicación para aquellos que tienen secretos...</string>
-    <string name="about_app_long2">La aplicación toma y almacena fotos en forma codificada. Las imágenes no están disponibles para la galería y otras aplicaciones. El ingreso a la aplicación está protegido por una contraseña y una funcionalidad de camuflaje para la aplicación de música. Las imágenes guardadas mediante encriptación no se pueden leer sin una clave incluso si extrae el archivo de su teléfono. Concepto de seguridad: todos los datos se almacenan solo en el dispositivo del usuario, no se utiliza una arquitectura de almacenamiento de imágenes de usuario, vistas previas, claves, contraseñas en el servidor. Sin embargo, el propio usuario puede compartir imágenes tanto encriptadas como desencriptadas. Reciba imágenes de otros usuarios y descifrútelas, utilizando una clave de encriptación similar.</string>
-    <string name="about_app_long3">Características de almacenamiento de datos:</string>
-    <string name="about_app_long4">- Las vistas previas se almacenan en el directorio interno de la aplicación con la extensión .p y no están encriptadas. La escala de vista previa en píxeles se puede seleccionar en Configuración desde 1x1 px hasta 100x100 px.
+        <string name="app_name">MSG</string>
+        <string name="mimicry_app_name">MoodSound Galaxy</string>
+        <string name="app_name_in_main_page">Mi Galería de Sombras</string>
+        <string name="disguise_btn">Disfraz</string>
+        <string name="search">Buscar</string>
+        <string name="button_back">Atrás</string>
+        <string name="button_item_loader">Agregar</string>
+        <string name="storage_log">Registro de Almacenamiento</string>
+        <string name="button_settings">Configuración</string>
+        <string name="dark_mod">Tema Oscuro</string>
+        <string name="share_the_app">Compartir la aplicación</string>
+        <string name="write_to_support">Escribir a Soporte</string>
+        <string name="user_agreement">Política de Privacidad</string>
+        <string name="share_app_text">Mi Galería de Sombras: una galería oculta para almacenar imágenes codificadas con acceso limitado:
+        https://play.google.com/store/apps/details?id=%1$s</string>
+        <string name="share_app_text2">Archivo cifrado en Mi Galería de Sombras. Para verlo, solicita la clave a la persona que te envió este mensaje y usa el descifrador:
+        https://play.google.com/store/apps/details?id=%1$s</string>
+        <string name="share_app_title">Compartir la aplicación</string>
+        <string name="support_email">mailto:a9633238@gmail.com</string>
+        <string name="support_email_subject">Mensaje al desarrollador de esta aplicación</string>
+        <string name="support_email_text">texto del mensaje</string>
+        <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+        <string name="heading_search_history_list_view">Historial de Búsqueda:</string>
+        <string name="todo">Por hacer</string>
+        <string name="there_wil_be_media_library">En esta ventana habrá una biblioteca multimedia</string>
+        <string name="cam_bat_on">Ocultar\ncámara</string>
+        <string name="cam_bat_off">Iniciar\ncámara</string>
+        <string name="cam_bat">Cámara</string>
+        <string name="snapshot">Tomar\ninstantánea</string>
+        <string name="galery">Cargar\narchivo</string>
+        <string name="mountin_switch">Estilo visual:\nCatoteca / Montañas</string>
+        <string name="sample">Uno dos tres</string>
+        <string name="about_app">Acerca de la aplicación</string>
+        <string name="about_app_long1">Una aplicación para aquellos que tienen secretos...</string>
+        <string name="about_app_long2">La aplicación captura y almacena fotos de forma codificada. Las imágenes no son accesibles desde la galería ni otras aplicaciones.
+    El acceso a la aplicación está protegido por una contraseña y una funcionalidad de camuflaje como aplicación musical. Las imágenes guardadas con cifrado no pueden
+    leerse sin la clave, incluso si se extrae el archivo del teléfono. Concepto de seguridad: todos los datos se almacenan solo en el dispositivo del usuario, no se
+    aplica una arquitectura de servidor para almacenar imágenes de usuario, vistas previas, claves, contraseñas. Sin embargo, el usuario mismo puede compartir imágenes
+    tanto en formato cifrado como descifrado. Puede recibir imágenes de otros usuarios y descifrarlas utilizando una clave de cifrado similar.</string>
+        <string name="about_app_long3">Características del almacenamiento de datos:</string>
+        <string name="about_app_long4">- Las vistas previas se almacenan en el directorio interno de la aplicación con la extensión .p y no se cifran. Puede seleccionar la escala
+    de las vistas previas en píxeles de 1x1 px a 100x100 px en Configuración.
 \n\n
-- Las imágenes originales se almacenan en el directorio interno de la aplicación. Cuando se utiliza la encriptación, el archivo se guarda con la extensión .kk. Si el usuario elige no utilizar la encriptación, el archivo se guarda con la extensión .o. Cuando un usuario comparte una imagen desencriptada, se crea un archivo temporal con la extensión .peekaboo. En esta forma, el archivo se puede enviar por cualquier medio disponible para el dispositivo. Una vez que el usuario cierra la ventana de visualización de esta imagen, la instancia desencriptada se elimina del dispositivo. En otras palabras, las imágenes encriptadas solo se almacenan en forma encriptada. Los usuarios pueden cambiar la configuración del uso de la encriptación a través del menú Configuración.
+- Las imágenes originales se almacenan en el directorio interno de la aplicación. En caso de usar cifrado, el archivo se guarda con la extensión .kk. Si el usuario elige
+    no utilizar el cifrado, el archivo se guarda con la extensión .o. Cuando un usuario comparte una imagen descifrada, se crea un archivo temporal con la extensión
+    .peekaboo. En este formato, el archivo se puede enviar de cualquier manera accesible para el dispositivo. Tan pronto como el usuario cierra la ventana de visualización
+    de esa imagen, la instancia descifrada se elimina del dispositivo. Es decir, las imágenes cifradas se almacenan solo en forma cifrada. El usuario puede cambiar la
+    configuración de uso del cifrado a través del menú Configuración.
 \n\n
-- La clave de cifrado y la contraseña se almacenan en el dispositivo de forma segura. Por razones de seguridad, no se proporciona la posibilidad de recuperar la clave y la contraseña. Si olvidas la contraseña para acceder a la aplicación, la mejor solución es desinstalar la aplicación y volver a instalarla. En caso de pérdida de la clave de cifrado, puedes crear otra clave sin reinstalar la aplicación, pero las imágenes guardadas con la clave antigua no serán accesibles. Puedes limpiar el almacenamiento de imágenes, cambiar la clave o la contraseña a través del menú de Configuración.</string>
-    <string name="about_app_long5">Características de operación del sistema de encriptación</string>
-    <string name="about_app_long6">La aplicación tiene tres modos de encriptación:\n\n
-1. SIN ENCRIPTACIÓN. Guardar archivos sin ingresar una clave de encriptación: los archivos se almacenan en el dispositivo en un formato inaccesible para otras aplicaciones y la galería. Sin embargo, un actor malicioso puede extraerlos y leerlos si obtiene el control del dispositivo. Si se envía un archivo desde el dispositivo, su contenido se puede leer.\n\n
-2. CLAVE DE ENCRIPTACIÓN CONSTANTE (opción óptima). El usuario crea o genera una clave de encriptación. La clave se utiliza para encriptar el archivo según el Estándar de Encriptación Avanzada. El archivo se almacena en el dispositivo en forma encriptada, e incluso si se obtiene acceso a la memoria del dispositivo (o si se recibe un archivo desde el dispositivo en forma encriptada), un actor malicioso no puede leer el contenido sin la clave de encriptación. La clave se almacena en la aplicación en una forma protegida: función hash + sal.\n\n
-3. CLAVE DE ENCRIPTACIÓN VARIABLE. La clave no se almacena en la aplicación, sino que se solicita cada vez durante el inicio de sesión. Existe en la aplicación mientras la aplicación está abierta. El nivel más alto de seguridad, pero si olvida la clave anterior o decide cambiarla, los archivos guardados anteriormente con una clave diferente ya no serán accesibles para su visualización. En el menú de Configuración, siempre puede cambiar las opciones de seguridad.</string>
-    <string name="clearing_the_storage">Limpiar Almacenamiento</string>
-    <string name="key_input_clear">Limpiar la clave al cerrar la sesión\n(se solicitará la clave durante el inicio de sesión)</string>
-    <string name="preview_off">Usar Clave de Encriptación</string>
-    <string name="error_text_web">Problemas de conexión\n\nError al cargar. Verifique su\nconexión a internet</string>
-    <string name="nothing_was_found">Nada Encontrado</string>
-    <string name="refresh">Actualizar</string>
-    <string name="any_mistake">Un mensaje de error se mostrará aquí,\n el ícono cambiará según\n la naturaleza del error</string>
-    <string name="you_were_looking_for">Estabas buscando</string>
-    <string name="clear_the_history">Borrar Historial</string>
-    <string name="error400">400 - Error de solicitud</string>
-    <string name="error401">401 - Solicitud no autorizada</string>
-    <string name="error403">403 - Solicitud prohibida</string>
-    <string name="error404">404 - No encontrado</string>
-    <string name="error500">500 - Error interno del servidor</string>
-    <string name="error503">503 - Servicio temporalmente no disponible</string>
-    <string name="error0">Error no definido</string>
-    <string name="added">Añadido: </string>
-    <string name="preview_scaling_factor">Factor de Escalado de Vista Previa (px):</string>
-    <string name="reset_settings">Borrar todos los datos: restablecer configuraciones, clave, contraseña, limpiar almacenamiento</string>
-    <string name="personal_data">Datos Personales</string>
-    <string name="disguise_it_as_a_music_player">Disfrazarse como un Reproductor de Música</string>
-    <string name="language">Idioma/Язык/language/应用语言</string>
-    <string name="goAhead">¡Adelante!</string>
-    <string name="input">Confirmar Entrada</string>
-    <string name="noinput">Entrada Rechazada</string>
-    <string name="step00">Mi Galería de Sombras. Configuremos la seguridad, tres simples pasos 🔐️ 🕶️ 🔏</string>
-    <string name="step01_01">\n🔐️\nPaso 1\n¿Usar una contraseña para ingresar a la aplicación?\n</string>
-    <string name="step01_02">\n🔐️\nPaso 1\nContraseña\n\nSe detectó una contraseña guardada previamente para ingresar a la aplicación, ¿desea cambiar la contraseña?</string>
-    <string name="step01_03">🗑️ Eliminar la contraseña</string>
-    <string name="step02_00">\n🕶️\nPaso 2\n\n¿Activar el camuflaje\ncomo una aplicación de música?</string>
-    <string name="step02_01">\nIngrese la contraseña en el campo de búsqueda de canciones para salir del modo camuflaje</string>
-    <string name="step02_02">\nIngrese el NÚMERO 000 en el campo de búsqueda de canciones para salir del modo camuflaje</string>
-    <string name="step02_03">¡Intentaré recordar esto!</string>
-    <string name="step03_00">\n🔏\nPaso 3\n¿Usar una clave de encriptación?</string>
-    <string name="step03_01">Encriptación de Imagen🔏\nPermite que la aplicación genere una clave de encriptación única o crea la tuya propia. La clave se utiliza para la encriptación con el nivel de protección del Estándar de Encriptación Avanzada. Las imágenes y la clave se almacenan en el dispositivo de forma segura y encriptada</string>
-    <string name="storage">Almacenamiento</string>
+- La clave de cifrado y la contraseña se almacenan en el dispositivo de forma segura. Por motivos de seguridad, no se proporciona la opción de recuperar la clave y la
+    contraseña. Si olvidaste la contraseña para ingresar a la aplicación, la mejor solución sería desinstalar la aplicación e instalarla nuevamente. En caso de pérdida de
+    la clave de cifrado, puedes crear otra clave sin reinstalar la aplicación, pero las imágenes guardadas con la antigua clave no estarán disponibles para su visualización.
+    Puedes limpiar el almacenamiento de imágenes, cambiar la clave o la contraseña a través del menú Configuración.</string>
+        <string name="about_app_long5">Características del sistema de cifrado</string>
 
-    <string name="key_byte_count_message">Recomendado agregar (bytes):</string>
-    <string name="encryption_key_set">Clave de encriptación establecida</string>
-    <string name="encryption_mode_set_no_encryption">Modo de guardado establecido: sin encriptación</string>
-    <string name="encryption_key_not_set">Clave de encriptación no establecida</string>
-    <string name="create_encryption_key">Crear clave de encriptación:</string>
-    <string name="generate">Generar</string>
-    <string name="helper_text_prefix">Recomendado agregar: %1$d bytes</string>
-    <string name="do_not_add_key">Sin clave</string>
-    <string name="constant_key">Clave constante</string>
-    <string name="variable_key">Clave variable</string>
-    <string name="old_key_button_text">Se ha detectado una clave de encriptación anteriormente ingresada en el almacenamiento. PRESIONE si desea mantener la antigua clave</string>
-    <string name="developers_page">Página de Desarrolladores</string>
-    <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
-    <string name="wait">Por favor espere...</string>
-    <string name="password">Contraseña:</string>
-    <string name="invalid_character">Carácter no válido</string>
-    <string name="repit_password">Vuelva a ingresar la contraseña</string>
-    <string name="wrong_password">La contraseña no coincide, por favor ingrésela nuevamente</string>
-    <string name="save_password">Contraseña guardada</string>
-    <string name="to_change_password">Para cambiar la contraseña, ingrese la contraseña antigua y la nueva</string>
-    <string name="del_password">Contraseña eliminada con éxito</string>
-    <string name="try_left">Intentos restantes: </string>
-    <string name="last_warning">¡Después del último intento, se restablecerán las configuraciones y se limpiará el almacenamiento!</string>
-    <string name="new_password">Nueva contraseña</string>
-    <string name="old_password">Contraseña antigua</string>
-    <string name="access_obtained">Acceso obtenido</string>
-    <string name="encryption_error">Error: No se puede completar la encriptación</string>
-    <string name="encryption_no">Guardado sin encriptación</string>
-    <string name="save_error">Error al guardar</string>
-    <string name="camera_error">Error al acceder a la cámara</string>
-    <string name="download">Descargando...</string>
-    <string name="decryption_error">Error de desencriptación</string>
-    <string name="error_key">Posiblemente la clave ha sido cambiada</string>
-    <string name="share_the_img">Compartir la imagen</string>
-    <string name="encrepted_img">Imagen encriptada</string>
-    <string name="decripted_img">Imagen desencriptada</string>
-    <string name="timber_img">Miniatura</string>
-    <string name="chuse_img">Elegir un archivo para enviar</string>
-    <string name="error_del">Error al eliminar el archivo</string>
-    <string name="encrypted_save">Archivo encriptado guardado:</string>
-    <string name="decrypting">Desencriptando...</string>
+        <string name="about_app_long6">La aplicación cuenta con tres modos para el sistema de cifrado:\n\n
+1. SIN CIFRADO. Guarda archivos sin introducir una clave de cifrado: los archivos se almacenan en el dispositivo en un formato inaccesible para otras aplicaciones y la galería, pero
+        un atacante podrá extraerlos y leerlos si se apodera del dispositivo. Al recibir un archivo enviado desde el dispositivo, podrá leer su contenido.\n\n
+2. CLAVE DE CIFRADO PERMANENTE (opción óptima). El usuario inventa o genera una clave de cifrado. La clave se utiliza para cifrar el archivo según
+        el Estándar de Cifrado Avanzado. El archivo se almacena en el dispositivo de forma cifrada y, incluso si se accede a la memoria del dispositivo (o se recibe un archivo cifrado
+        del dispositivo), un atacante no podrá leer el contenido sin la clave de cifrado. La clave se almacena en la aplicación de forma segura mediante una función hash.
+        El usuario puede crear y almacenar hasta tres claves en la aplicación.\n\n
+3. CLAVE DE CIFRADO VARIABLE. Si el usuario marca la casilla "No guardar la clave de cifrado", la clave no se almacenará en la aplicación y se solicitará cada vez
+        que inicie sesión. La clave existe en la aplicación solo mientras esté abierta. Es el nivel más alto de seguridad, pero si olvida la clave antigua,
+        los archivos almacenados previamente con esa clave no estarán disponibles para ver. En el menú de Configuración, siempre puede cambiar las opciones de seguridad.</string>
+        <string name="clearing_the_storage">Limpiar almacenamiento</string>
+        <string name="key_input_clear">Eliminar la clave al cerrar sesión\n(la clave se solicitará al iniciar sesión)</string>
+        <string name="preview_off">Usar clave de cifrado</string>
+        <string name="nothing_was_found">No se encontró nada</string>
+        <string name="refresh">Actualizar</string>
+        <string name="any_mistake">Aquí aparecerá un mensaje de error,\n el icono cambiará según la naturaleza del error</string>
+        <string name="you_were_looking_for">Usted buscaba</string>
+        <string name="clear_the_history">Borrar historial</string>
+        <string name="added">Añadido: </string>
+        <string name="preview_scaling_factor">Factor de escalado de vista previa (px):</string>
+        <string name="reset_settings">Limpiar todos los datos: restablecer configuraciones, clave, contraseña, limpiar almacenamiento</string>
+        <string name="personal_data">Datos personales</string>
+        <string name="disguise_it_as_a_music_player">Disfrazar como reproductor de música</string>
+        <string name="language">Idioma/language/应用语言/idioma</string>
+        <string name="goAhead">¡Adelante!</string>
+        <string name="input">Confirmar entrada</string>
+        <string name="noinput">Rechazar entrada</string>
+        <string name="step00">MI GALERÍA OCULTA\n\nConfiguraremos la seguridad,\ntres simples pasos\n🔐️ 🕶️ 🔏</string>
+        <string name="step01_01">\n🔐️\nPaso 1\n¿Usar contraseña para iniciar la aplicación?\n</string>
+        <string name="step01_02">\n🔐️\nPaso 1\nContraseña\n\nSe ha detectado una contraseña almacenada anteriormente para iniciar la aplicación. ¿Cambiar la contraseña?</string>
+        <string name="step01_03">🗑️ Eliminar contraseña</string>
+        <string name="step02_00">\n🕶️\nPaso 2\n\n¿Activar el camuflaje\ncomo una aplicación de música?</string>
+        <string name="step02_01">\nPara salir del modo de camuflaje, ingrese la contraseña en el campo de búsqueda de canciones</string>
+        <string name="step02_02">\nPara salir del modo de camuflaje, ingrese el NÚMERO 000 en el campo de búsqueda de canciones</string>
+        <string name="step02_03">¡Intentaré recordarlo!</string>
+        <string name="step03_00">\n🔏\nPaso 3\n¿Usar clave de cifrado?</string>
+        <string name="step03_01">Cifrado de imágenes🔏\nPermitir que la aplicación genere una clave de cifrado única,
+o crear la propia. La clave se utiliza para cifrar con el nivel de protección del Estándar de Cifrado Avanzado. Las imágenes y la clave
+se almacenan en el dispositivo de forma segura y cifrada.</string>
+        <string name="storage">Almacenamiento</string>
+        <string name="key_byte_count_message">Se recomienda agregar (bytes):</string>
+        <string name="encryption_key_set">Clave de cifrado establecida</string>
+        <string name="encryption_mode_set_no_encryption">Modo de almacenamiento establecido: sin cifrado</string>
+        <string name="encryption_key_not_set">Clave de cifrado no establecida</string>
+        <string name="create_encryption_key">Crear clave de cifrado</string>
 
-    <string name="naming_options">Generador de nombres</string>
-    <string name="language_option">Seleccionar el idioma de la aplicación</string>
-    <string name="naming_option">Seleccionar el estilo de nomenclatura de archivos</string>
+        <string name="generate">Generar</string>
+        <string name="helper_text_prefix">Se recomienda agregar: %1$d bytes</string>
+        <string name="do_not_add_key">No usar clave de cifrado</string>
+        <string name="constant_key">Clave constante</string>
+        <string name="variable_key">Clave variable</string>
+        <string name="old_key_button_text">En el almacenamiento se han encontrado claves de cifrado guardadas anteriormente. Toque el nombre de la clave para seleccionarla como clave predeterminada.
+        Toque el botón "Eliminar" para quitar la clave</string>
 
-    <string name="preview">Vista previa</string>
-    <string name="encrypted_file">Archivo encriptado</string>
-    <string name="whithout_enception">Sin Encriptación</string>
-    <string name="decripted_file">Archivo desencriptado</string>
-    <string name="unnown_tipe">Tipo Desconocido</string>
-    <string name="done">Terminado</string>
-    <string name="security_settings">Configuración de seguridad</string>
-    <string name="sensitive_info">"La información sensible y los datos personales pueden eliminarse permanentemente presionando el botón BORRAR TODOS LOS DATOS ubicado arriba."</string>
-    <string name="send_to_app">El archivo ha sido enviado a la aplicación. Inicie sesión en la aplicación para procesarlo.</string>
-    <string name="saving_option">El archivo fue recibido de otra aplicación.</string>
-    <string name="saving_option1">Guardar el archivo "como está"</string>
-    <string name="saving_option2">Encriptar y guardar el archivo</string>
-    <string name="saving_option3">Intentar descifrar el archivo con mi clave</string>
-    <string name="saving_option4">Intentar descifrar el archivo con la clave de otra persona</string>
-    <string name="saving_option5">Eliminar el archivo</string>
-    <string name="feature_in_development">Función en desarrollo</string>
-    <string name="storage_log_activity">Registro de archivos almacenados en el dispositivo.\n
-                    Las vistas previas se guardan con la extensión .p.\nLos archivos encriptados se guardan con la extensión .kk.\n
-                    Los archivos guardados sin encriptar tienen la extensión .o.\n
-                    El archivo descifrado compartido por el usuario existe en el sistema por un corto período con la extensión .peekaboo.\n
-                    Un archivo compartido con la aplicación a través de la función "compartir" existe en el sistema con la extensión .share.\n\n
+        <string name="developers_page">Página de desarrolladores</string>
+        <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
+        <string name="wait">Espere...</string>
+        <string name="password">Contraseña:</string>
+        <string name="invalid_character">Carácter no válido</string>
+        <string name="repit_password">Ingrese la contraseña nuevamente</string>
+        <string name="wrong_password">La contraseña no coincide, vuelva a intentarlo</string>
+        <string name="save_password">Contraseña guardada</string>
+        <string name="to_change_password">Para cambiar la contraseña, ingrese la antigua y la nueva contraseñas</string>
+        <string name="del_password">Contraseña eliminada con éxito</string>
+        <string name="try_left">"Intentos restantes: "</string>
+        <string name="last_warning">¡Después del último intento, se restablecerán las configuraciones y se limpiará el almacenamiento!</string>
+        <string name="new_password">Nueva contraseña</string>
+        <string name="old_password">Antigua contraseña</string>
+        <string name="access_obtained">Acceso obtenido</string>
+        <string name="encryption_no">Guardado sin cifrado</string>
+        <string name="download">Descargando...</string>
+        <string name="share_the_img">Compartir imagen</string>
+        <string name="encrepted_img">Imagen cifrada</string>
+        <string name="decripted_img">Imagen descifrada</string>
+        <string name="timber_img">Miniatura</string>
+        <string name="chuse_img">Seleccione un archivo para enviar</string>
+        <string name="encrypted_save">Archivo cifrado guardado:</string>
+        <string name="decrypting">Descifrando...</string>
+        <string name="naming_options">Generador de nombres de archivos</string>
+        <string name="language_option">Seleccione el idioma de la aplicación</string>
+        <string name="naming_option">Seleccione el estilo de nombre de archivos</string>
+        <string name="preview">Vista previa</string>
+        <string name="encrypted_file">Archivo cifrado</string>
+        <string name="whithout_enception">Sin cifrado</string>
+        <string name="decripted_file">Archivo descifrado</string>
+        <string name="unnown_tipe">Tipo desconocido</string>
+        <string name="done">Hecho</string>
+        <string name="security_settings">Configuración de seguridad</string>
+        <string name="sensitive_info">"La información sensible y los datos personales pueden eliminarse por completo con el botón BORRAR TODOS LOS DATOS ubicado arriba"</string>
+        <string name="send_to_app">Archivo enviado a la aplicación. Inicie la aplicación para procesarlo.</string>
+        <string name="saving_option">Archivo recibido de otra aplicación:</string>
+        <string name="saving_option1">Guardar archivo "como está"\n\n</string>
+        <string name="saving_option2">Cifrar y guardar archivo\n\n</string>
+        <string name="saving_option3">Intentar descifrar archivo\n\n</string>
+        <string name="saving_option5">Eliminar archivo</string>
+        <string name="feature_in_development">Función en desarrollo</string>
+        <string name="storage_log_activity">Registro de imágenes en el almacenamiento de la aplicación.\n
+                    Las vistas previas se guardan con la extensión p.\nLos archivos cifrados se guardan con la extensión .kk\n
+                    Los guardados sin cifrar tienen la extensión .o\n
+                    El archivo que comparte el usuario tiene una vida corta en el sistema con la extensión .peekaboo\n
+                    El archivo compartido a través de la función "compartir" tiene la extensión .share\n\n
                     ----------------\n\n</string>
+
     <string name="how_does_is_work">¿Cómo funciona?</string>
-    <string name="how_to_share_picture">¿Cómo compartir una imagen?</string>
+    <string name="how_to_share_picture">¿Cómo enviar una imagen?</string>
     <string name="how_to_accept_picture">¿Cómo recibir una imagen?</string>
     <string name="how_to_sett_secure">¿Cómo configurar la seguridad?</string>
-    <string name="how_to_add_picture">¿Cómo añadir una imagen?</string>
-    <string name="file_from_web">accepted file</string>
-</resources>
+    <string name="how_to_add_picture">¿Cómo agregar una imagen?</string>
+    <string name="file_from_web">Archivo recibido</string>
+    <string name="save_key">Guardar nueva clave</string>
+    <string name="how_does_the_key_works">ℹ️ ¿Cómo funciona la clave de cifrado?</string>
+    <string name="do_not_save_key_in_sistem1">Guardar la clave de cifrado en el sistema</string>
+    <string name="do_not_save_key_in_sistem2">(en el sistema se pueden almacenar hasta tres claves de cifrado)</string>
+    <string name="key_name">Nombre de la clave</string>
+    <string name="what_key_sistem_to_choose">ℹ️ ¿Qué opción de cifrado elegir?</string>
+    <string name="how_does_the_key_works_details">ESTÁNDAR DE CIFRADO AVANZADO\n\nLa función de la aplicación implementa un algoritmo de cifrado para imágenes utilizando el "AES (Estándar de Cifrado Avanzado)".
+        Este algoritmo utiliza una clave simétrica y aplica el estándar "AES" para garantizar la seguridad de la imagen durante la transferencia o el almacenamiento. \n\n
+        Proceso general:\n- Creación y extracción de la clave maestra de la aplicación para usarla como base para crear la clave de cifrado;\n
+        - Aplicación de la función hash "SHA" a la clave maestra para obtener una clave de longitud fija;\nUso de la clave para inicializar el objeto de cifrado utilizando
+        el algoritmo "AES";\n- Proceso de cifrado de datos desde el flujo de origen utilizando "AES";\n- Los datos cifrados se escriben en el archivo de salida;
+        \n- Cierre de los flujos.\n\nLa función hash "SHA" (Algoritmo de Hash Seguro). Aquí hay algunas características clave:\n- Longitud del hash. "SHA" produce un valor
+        de hash de longitud fija (por motivos de seguridad, la longitud del valor de hash no se revela).\n- Resistencia a colisiones. "SHA" proporciona un alto nivel de resistencia
+        a colisiones. Las colisiones ocurren cuando dos mensajes de entrada diferentes generan valores de hash iguales. Para "SHA", las colisiones pueden ser teóricamente posibles,
+        pero su aparición requiere una gran cantidad de recursos computacionales.\n- La clave maestra de la aplicación se utiliza como base para crear la clave de cifrado.
+        Para llevar la clave maestra a una longitud fija, se aplica "SHA". Esto garantiza que, independientemente de la longitud de la clave maestra original, el resultado será
+        un hash de longitud fija que luego se puede usar como clave de cifrado.</string>
+    <string name="add_key">Agregar nueva clave</string>
+    <string name="no_available_keys">Se ha alcanzado el número máximo permitido de claves</string>
+    <string name="delit_one_keys">Elimine una de las claves antiguas</string>
+    <string name="key_delited">Clave eliminada</string>
+    <string name="do_not_save_key_in_sistem3">(se eliminarán las claves de cifrado existentes de la aplicación, el usuario deberá ingresar la clave cada vez que inicie la aplicación)</string>
+    <string name="save_key_on_session">Usar la clave durante la sesión</string>
+    <string name="choose_encryption_key">Seleccione la clave</string>
+    <string name="enter_encryption_key1">Ingresar la clave manualmente</string>
+    <string name="enter_encryption_key2">Ingresar la clave manualmente (si la descifrado es exitoso, el archivo se codificará con la clave predeterminada)</string>
+    <string name="clear_storage">Los datos se eliminarán de forma permanente</string>
+    <string name="confirm_clear_storage_title">Presione el número ocho para confirmar</string>
+    <string name="key_d">%d archivos cifrados con esta clave</string>
+    <string name="made_by_key">%d Cifrados con la clave</string>
+    <string name="app_version_text">"\nVersión de la aplicación: "</string>
+    <string name="no_key_found">No se ha establecido ninguna clave predeterminada</string>
+    <string name="background_process">Proceso en segundo plano...</string>
+    <string name="error_text_web">Problemas de conexión \n
+        \n La carga falló. Verifique\n
+        la conexión a Internet</string>
+    <string name="error400">400 - error de solicitud</string>
+    <string name="error401">401 - solicitud no autorizada</string>
+    <string name="error403">403 - solicitud prohibida</string>
+    <string name="error404">404 - no encontrado</string>
+    <string name="error500">500 - error interno del servidor</string>
+    <string name="error503">503 - servicio temporalmente no disponible</string>
+    <string name="error0">Error no especificado</string>
+    <string name="encryption_error">Error: no se pudo completar el cifrado</string>
+    <string name="save_error">Error al guardar</string>
+    <string name="camera_error">Error al acceder a la cámara</string>
+    <string name="decryption_error">Error de descifrado</string>
+    <string name="error_key">El error puede ser causado por un cambio en la clave</string>
+    <string name="error_del">Error al eliminar el archivo</string>
+    </resources>
