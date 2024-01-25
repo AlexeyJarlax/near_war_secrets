@@ -83,7 +83,7 @@
                 android:layout_margin="@dimen/z"
                 android:padding="@dimen/dp8"
                 android:paddingEnd="@dimen/dp16"
-                android:text="dthcbz"
+                android:text=""
                 android:textAlignment="textEnd"
                 android:textSize="@dimen/text_size_sp14" />
 

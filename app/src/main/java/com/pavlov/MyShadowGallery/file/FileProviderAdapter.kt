@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.pavlov.MyShadowGallery.R
+import com.pavlov.MyShadowGallery.util.showLoadingIndicator
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -70,6 +71,7 @@ class FileProviderAdapter {
 //        fun getUriFromBitmap()
 
         suspend fun <T> rotateImageByKorutin(input: T, degrees: Int): Bitmap = withContext(Dispatchers.Default) {
+
             val originalBitmap: Bitmap = when (input) {
                 is File -> BitmapFactory.decodeFile(input.absolutePath)
                 is Bitmap -> input

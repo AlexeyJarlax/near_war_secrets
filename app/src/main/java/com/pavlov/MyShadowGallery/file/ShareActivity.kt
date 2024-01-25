@@ -16,12 +16,12 @@ class ShareActivity : AppCompatActivity() {
 
         shareHandler = ShareHandler(this)
 
-        if (Intent.ACTION_SEND == intent.action && intent.type?.startsWith("image/") == true) {
-            // Получаем URI изображения
-            val imageUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+        if (Intent.ACTION_SEND == intent.action) {
+            // Получаем URI файла
+            val fileUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
             // Проверяем, что URI не является null
-            if (imageUri != null) {
-                shareHandler.handleSharedImage(imageUri)
+            if (fileUri != null) {
+                shareHandler.handleSharedFile(fileUri)
             }
         }
         this.finish()

@@ -116,7 +116,7 @@ Puede compartir la imagen con otro usuario y podrá verla en su dispositivo al r
     <string name="old_password">Contraseña antigua</string>
     <string name="access_obtained">Acceso obtenido</string>
     <string name="encryption_error">Error: No se puede completar la encriptación</string>
-    <string name="enception_no">Guardado sin encriptación</string>
+    <string name="encryption_no">Guardado sin encriptación</string>
     <string name="save_error">Error al guardar</string>
     <string name="camera_error">Error al acceder a la cámara</string>
     <string name="download">Descargando...</string>

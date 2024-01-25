@@ -146,7 +146,7 @@
     <string name="new_password">Новый пароль</string>
     <string name="old_password">Старый пароль</string>
     <string name="access_obtained">Доступ получен</string>
-    <string name="enception_no">Сохранено без шифрования</string>
+    <string name="encryption_no">Сохранено без шифрования</string>
     <string name="download">Загрузка...</string>
     <string name="share_the_img">Поделиться изображением</string>
     <string name="encrepted_img">Зашифрованное изображение</string>
@@ -235,4 +235,6 @@
     <string name="key_d">%d файла зашифрованы этим ключом</string>
     <string name="made_by_key">%d Зашифрован ключом</string>
     <string name="app_version_text">"\nВерсия приложения: "</string>
+    <string name="no_key_found">Ключ по умолчанию не задан</string>
+    <string name="background_process">фоновый\nпроцесс...</string>
 </resources>

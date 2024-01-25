@@ -8,10 +8,11 @@ import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 
 class ShareHandler(private val context: Context) {
 
-    fun handleSharedImage(uri: Uri) {
+    fun handleSharedFile(uri: Uri) {
         showToast(context.getString(R.string.download))
 
         val folder = context.filesDir
@@ -23,15 +24,10 @@ class ShareHandler(private val context: Context) {
         val fileNameWithoutExtension = removeFileExtension(fileName)
         val outputFile = File(folder, "$fileNameWithoutExtension.share")
 
-//        if (fileNameWithoutExtension.endsWith(".kk")) {
-//            showToast("kk")
-//            // Perform necessary actions for a file with ".kk" extension
-//        } else {
         context.contentResolver.openInputStream(uri)?.use { input ->
             FileOutputStream(outputFile).use { output ->
                 input.copyTo(output)
             }
-//            }
         }
 
         showToast(context.getString(R.string.done))

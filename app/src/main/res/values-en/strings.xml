@@ -119,7 +119,7 @@ You can share the image with another user and they will be able to view it on th
     <string name="old_password">Old password</string>
     <string name="access_obtained">Access obtained</string>
     <string name="encryption_error">Error: Unable to complete encryption</string>
-    <string name="enception_no">Saved without encryption</string>
+    <string name="encryption_no">Saved without encryption</string>
     <string name="save_error">Save error</string>
     <string name="camera_error">Error accessing the camera</string>
     <string name="download">Downloading...</string>
