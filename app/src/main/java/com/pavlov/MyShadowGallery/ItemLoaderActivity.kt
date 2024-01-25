@@ -51,7 +51,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getString
-import androidx.core.content.FileProvider
 import com.pavlov.MyShadowGallery.util.Encryption
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.APKM
@@ -890,51 +889,24 @@ open class PhotoListAdapter(
         FileProviderAdapter.deleteFile(fileNameWithExtension, context)
     }
 
-    // отправялем шифровку
-    private fun shareEncryptedImage(
-        imageUri: Uri, newName: String, buttonForCover3: Button,
+    private fun shareIncryptedImage( // шифровки
+        imageUri: Uri, fileNameWithExtension: String, buttonForCover3: Button,
     ) {
-        // Определение нового расширения файла (например, jpg)
-        val newFileExtension = "jpg"
-
-        // Создание временного файла с новым расширением в директории filesDir
-        val tempFile = createTempFile(newName, ".$newFileExtension", context.applicationContext.filesDir)
-
-        // Копирование данных из исходного файла во временный файл
-        context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
-            tempFile.outputStream().use { outputStream ->
-                inputStream.copyTo(outputStream)
-            }
-        }
-
-        // Создание нового Uri с новым именем файла
-        val newTempUri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.provider",
-            tempFile
-        )
-
-        // Создание Intent для отправки
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "image/*"
-        shareIntent.putExtra(Intent.EXTRA_STREAM, newTempUri)
-
-        // Добавление текста к Intent
+        val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
+        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
         val appId = "com.pavlov.MyShadowGallery"
         val appLinkText = context.resources.getString(R.string.share_app_text2, appId)
         shareIntent.putExtra(Intent.EXTRA_TEXT, appLinkText)
-
-        // Запуск Intent
         context.startActivity(
             Intent.createChooser(
                 shareIntent, context.getString(R.string.share_the_img)
             )
         )
-        // Отложенное скрытие кнопки
         Handler(Looper.getMainLooper()).postDelayed({
             buttonForCover3.visibility = View.GONE
-            deleteFile(tempFile)
-        }, APK.LOAD_PROCESSING_MILLISECONDS*4)
+        }, APK.LOAD_PROCESSING_MILLISECONDS)
     }
 
     private fun shareDecryptedImage(
@@ -960,7 +932,6 @@ open class PhotoListAdapter(
         shareIntent.type = "image/*"
         // метод из ImageUtils для получения безопасного URI файла
         val contentUri = FileProviderAdapter.getUriForFile(context, File(imageUri.path!!))
-//        val contentUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", File(imageUri.path!!))
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
         context.startActivity(
             Intent.createChooser(
@@ -992,10 +963,9 @@ open class PhotoListAdapter(
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> {
-                    val newName = encryptedFile.nameWithoutExtension
-                    shareEncryptedImage(
+                    shareIncryptedImage(
                         Uri.fromFile(decryptedFile),
-                        newName,
+                        "",
                         buttonForCover3,
 //                        loadingIndicator3
                     )
