@@ -1454,12 +1454,6 @@ open class PhotoListAdapter(
     override fun getItemCount(): Int {
         return encryption.getPhotoList().size
     }
-
-
-//    private fun Context.showToast(text: String) {
-//        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-//    }
-
 }
 
 
