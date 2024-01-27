@@ -79,7 +79,7 @@
 
         <Button
             android:id="@+id/flip"
-            style="@style/SymbolButtons"
+            style="@style/SymbolButtonsBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="↱↲"

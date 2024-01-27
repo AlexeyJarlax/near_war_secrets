@@ -211,10 +211,20 @@
     </style>
 
     <!-- Стиль кнопок с символами-->
-    <style name="SymbolButtons" parent="ErrorButtons">
+    <style name="SymbolButtonsWhite" parent="ErrorButtons">
         <item name="android:textSize">@dimen/text_size_sp22</item>
         <item name="android:textStyle">bold</item>
+        <item name="iconTint">@color/yp_black_and_yp_white</item>
+        <item name="android:backgroundTint">@color/yp_white_and_yp_black</item>
     </style>
+
+    <style name="SymbolButtonsBlack" parent="ErrorButtons">
+        <item name="android:textSize">@dimen/text_size_sp22</item>
+        <item name="android:textStyle">bold</item>
+        <item name="iconTint">@color/yp_white_and_yp_black</item>
+        <item name="android:backgroundTint">@color/yp_black_and_yp_white</item>
+    </style>
+
 
     <!-- Стиль кнопки логин в главном-->
     <style name="LoginButtons" parent="ErrorButtons">

@@ -1,11 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/util_dialog_image_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginStart="0dp"
-    android:layout_marginEnd="0dp">
+    android:layout_height="match_parent">
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/image_view_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
@@ -20,19 +30,6 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp">
-
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/image_view_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:padding="6dp"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/imageDialogFileName"
@@ -93,7 +90,7 @@
 
         <Button
             android:id="@+id/image_dialog_btn_share"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsWhite"
             android:layout_width="@dimen/dp44"
             android:layout_height="@dimen/dp44"
             android:layout_marginEnd="@dimen/dp4"
@@ -109,7 +106,7 @@
 
         <Button
             android:id="@+id/image_dialog_acceptance_button"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsWhite"
             android:layout_width="@dimen/dp44"
             android:layout_height="@dimen/dp44"
             android:layout_marginEnd="@dimen/dp4"
@@ -125,7 +122,7 @@
 
         <Button
             android:id="@+id/image_dialog_tern_left"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsBlack"
             android:layout_width="@dimen/dp44"
             android:layout_height="64dp"
             android:layout_marginEnd="@dimen/dp4"
@@ -140,7 +137,7 @@
 
         <Button
             android:id="@+id/image_dialog_faq"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsBlack"
             android:layout_width="@dimen/dp44"
             android:layout_height="80dp"
             android:layout_marginEnd="@dimen/dp4"
@@ -157,7 +154,7 @@
 
         <Button
             android:id="@+id/image_dialog_tern_right"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsBlack"
             android:layout_width="@dimen/dp44"
             android:layout_height="64dp"
             android:layout_marginEnd="@dimen/dp4"
@@ -173,7 +170,7 @@
 
         <Button
             android:id="@+id/image_dialog_del_pct"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsWhite"
             android:layout_width="@dimen/dp44"
             android:layout_height="@dimen/dp44"
             android:text="🗑️"
@@ -187,7 +184,7 @@
 
         <Button
             android:id="@+id/mini_button_for_cover"
-            style="@style/ErrorButtons"
+            style="@style/SymbolButtonsWhite"
             android:layout_width="@dimen/dp44"
             android:layout_height="@dimen/dp44"
             android:text="✖️"
@@ -209,4 +206,4 @@
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</RelativeLayout>
+</FrameLayout>

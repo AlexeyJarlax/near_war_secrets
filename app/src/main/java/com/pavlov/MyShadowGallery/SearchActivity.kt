@@ -37,6 +37,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.pavlov.MyShadowGallery.file.ArtistNaming
+import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
@@ -93,7 +95,16 @@ class SearchActivity : AppCompatActivity() {
         queryTextChangedListener()
         queryInputListener(isPasswordExists)
         fillTrackAdapter()
+//        showHistoryViewsAndFillTrackAdapter()
         killTheHistory()
+        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
+        queryInput.setText(randomArtistName)
+        checkMasterSSecret(randomArtistName, false)
+    } //конец онКриейт
+
+    override fun onStart() {
+        super.onStart()
+        toastIt(getString(R.string.you_can_like))
     }
 
     private fun checkMasterSSecret(
@@ -110,7 +121,7 @@ class SearchActivity : AppCompatActivity() {
                 utilErrorBox.visibility = View.INVISIBLE
                 clearTrackAdapter()
                 preparingForSearch(password)
-                toastIt("${getString(R.string.search)} $password")
+//                toastIt("${getString(R.string.search)} $password")
             }
         } else {
             if (password == savedPassword) {
@@ -120,10 +131,16 @@ class SearchActivity : AppCompatActivity() {
                 utilErrorBox.visibility = View.INVISIBLE
                 clearTrackAdapter()
                 preparingForSearch(password)
-                toastIt("${getString(R.string.search)} $password")
+//                toastIt("${getString(R.string.search)} $password")
             }
 
         }
+    }
+
+    private fun getRandomArtistName(): String {
+        val randomIndex = (0 until ArtistNaming.artistName.size).random()
+        return ArtistNaming.artistName[randomIndex]
+
     }
 
     private fun goToMainActivity() {

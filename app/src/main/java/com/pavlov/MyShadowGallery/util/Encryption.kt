@@ -452,7 +452,7 @@ class Encryption(private val context: Context) {
             val files = directory.listFiles()
             if (files != null) {
                 val sortedFiles = files
-                    .filter { it.extension != "kk" && it.extension != "dat" && it.name != "profileInstalled" }
+                    .filter { it.extension.isNotEmpty() && it.extension !in listOf("kk", "dat", "k") }
                     .sortedBy { it.lastModified() } // Сортировка по времени создания в возрастающем порядке
                 savedFiles.addAll(sortedFiles.map { it.name })
             }

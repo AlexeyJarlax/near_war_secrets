@@ -106,16 +106,16 @@ class KeyInputActivity : AppCompatActivity() {
         keyName.filters = arrayOf(
             InputFilter.LengthFilter(maxLength),
             InputFilter { source, start, end, dest, dstart, dend ->
-                val input = SpannableStringBuilder()
+                val input2 = SpannableStringBuilder()
                 for (i in start until end) {
                     val c = source[i]
                     if (c.toString().matches(Regex(APK.REGEX))) {
-                        input.append(c)
+                        input2.append(c)
                     } else {
                         variableKeyText.text = getString(R.string.invalid_character)
                     }
                 }
-                input
+                input2
             }
         )
 
@@ -138,9 +138,9 @@ class KeyInputActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val keyValue = s?.toString()?.trim()
-                if (keyValue?.isNotEmpty() == true) {
-                }
+//                val keyValue = s?.toString()?.trim()
+//                if (keyValue?.isNotEmpty() == true) {
+//                }
             }
 
             override fun afterTextChanged(s: Editable?) {}
