@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.APK
@@ -105,18 +106,18 @@ class KeyInputActivity : AppCompatActivity() {
         val maxLength = 16
         keyName.filters = arrayOf(
             InputFilter.LengthFilter(maxLength),
-            InputFilter { source, start, end, dest, dstart, dend ->
-                val input2 = SpannableStringBuilder()
-                for (i in start until end) {
-                    val c = source[i]
-                    if (c.toString().matches(Regex(APK.REGEX))) {
-                        input2.append(c)
-                    } else {
-                        variableKeyText.text = getString(R.string.invalid_character)
-                    }
-                }
-                input2
-            }
+//            InputFilter { source, start, end, dest, dstart, dend ->
+//                val input2 = SpannableStringBuilder()
+//                for (i in start until end) {
+//                    val c = source[i]
+//                    if (c.toString().matches(Regex(APK.REGEX))) {
+//                        input2.append(c)
+//                    } else {
+//                        variableKeyText.text = getString(R.string.invalid_character)
+//                    }
+//                }
+//                input2
+//            }
         )
 
         keyInputEditText.filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
@@ -132,20 +133,9 @@ class KeyInputActivity : AppCompatActivity() {
             input
         })
 
-        keyName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                val keyValue = s?.toString()?.trim()
-//                if (keyValue?.isNotEmpty() == true) {
-//                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
+        keyName.doOnTextChanged { text, start, before, count ->
+            // Ваш код обработки изменения текста
+        }
         keyInputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Не используется
