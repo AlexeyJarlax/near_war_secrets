@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var oldPasswordText: TextView
     private var isPasswordExist = true
     private var mimicry = false
-    var counter = 30
+    private var counter = 30
     private lateinit var tryCounter: TextView
     private lateinit var alarmCounter: TextView
 

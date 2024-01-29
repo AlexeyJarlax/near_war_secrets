@@ -27,7 +27,6 @@ import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
-
 class Encryption(private val context: Context) {
     val itemLoaderActivity = context as ItemLoaderActivity
     private val photoList = ArrayList<String>()
