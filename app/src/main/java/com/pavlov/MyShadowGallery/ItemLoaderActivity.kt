@@ -430,6 +430,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 //                                        smallLoadingIndicator {
                                         MainScope().launch {  // в фоновом потоке, Корутина
                                             startSmallLoadingIndicator()
+                                            buttonCapture.visibility = View.INVISIBLE
 //                                        showToast(getString(R.string.background_process))
 //                                            loadingIndicator4.visibility = View.VISIBLE
 //                                            loadingIndicator2.visibility = View.INVISIBLE
@@ -492,14 +493,12 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             } catch (e: Exception) {
                                                 showToast(getString(R.string.encryption_error))
 //                                            loadingIndicator4.visibility = View.INVISIBLE
-                                                stopSmallLoadingIndicator()
+//                                                stopSmallLoadingIndicator()
                                             } finally {
                                                 stopSmallLoadingIndicator()
-//                                            loadingIndicator4.visibility = View.INVISIBLE
-//                                            loadingIndicator2.visibility = View.INVISIBLE
-//                                            if (loadingIndicator3 != null) {
-//                                                loadingIndicator3.visibility = View.INVISIBLE
-//                                            }
+                                                if(buttonGallery.visibility != View.VISIBLE) {
+                                                    buttonCapture.visibility = View.VISIBLE
+                                                }
                                             }
 //                                        hideLoadingIndicator(isItFrontCamera) // завершение индикатора
                                         }// завершение корутины
