@@ -53,10 +53,16 @@ class AdapterForHistoryTracks(
         appPreferencesMethods.saveObjectToSharedPreferences(APK.KEY_HISTORY_LIST, jsonString)
     }
 
+//    private fun getTrackListFromSharedPreferences(): MutableList<Track> {
+//        val jsonString = appPreferencesMethods.getObjectFromSharedPreferences<String>(APK.KEY_HISTORY_LIST)
+//        val type = object : TypeToken<List<Track>>() {}.type
+//        return Gson().fromJson(jsonString, type) ?: mutableListOf()
+//    }
+
     private fun getTrackListFromSharedPreferences(): MutableList<Track> {
         val jsonString = appPreferencesMethods.getObjectFromSharedPreferences<String>(APK.KEY_HISTORY_LIST)
-        val type = object : TypeToken<List<Track>>() {}.type
-        return Gson().fromJson(jsonString, type) ?: mutableListOf()
+        val typeToken = object : TypeToken<List<Track>>() {}.type
+        return Gson().fromJson(jsonString, typeToken) ?: mutableListOf()
     }
 
     fun clearHistoryList() {

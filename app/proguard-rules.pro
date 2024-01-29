@@ -1,3 +1,5 @@
+-keepattributes Signature
+
 -keep class com.example.package.** { *; }
 -dontwarn org.bouncycastle.jsse.BCSSLParameters**
 -dontwarn org.bouncycastle.jsse.BCSSLSocket**

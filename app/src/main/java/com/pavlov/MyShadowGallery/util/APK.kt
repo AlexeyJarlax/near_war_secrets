@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
 
@@ -131,24 +132,30 @@ internal class APKM(private val context: Context) {
 
     // -------------------------------------------------------------- encrypted String гетеры и сетеры
     fun getMastersSecret(key: String): String {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKeyAlias = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
         val encryptedSharedPreferences: SharedPreferences =
             EncryptedSharedPreferences.create(
-                APK.MY_SECRETS_PREFS_NAME,
-                masterAlias,
                 context,
+                APK.MY_SECRETS_PREFS_NAME,
+                masterKeyAlias,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         return encryptedSharedPreferences.getString(key, "") ?: ""
-    } //    AppPreferencesKeysMethods(context = this).getMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
+    }
 
     fun saveMastersSecret(secret: String, key: String) {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKeyAlias = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
         val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            APK.MY_SECRETS_PREFS_NAME,
-            masterAlias,
             context,
+            APK.MY_SECRETS_PREFS_NAME,
+            masterKeyAlias,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
@@ -158,11 +165,14 @@ internal class APKM(private val context: Context) {
     } //    AppPreferencesKeysMethods(context = this).saveMastersSecret(keyValue, AppPreferencesKeys.KEY_BIG_SECRET)
 
     fun delMastersSecret(key: String) {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKeyAlias = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
         val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            APK.MY_SECRETS_PREFS_NAME,
-            masterAlias,
             context,
+            APK.MY_SECRETS_PREFS_NAME,
+            masterKeyAlias,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
@@ -173,12 +183,15 @@ internal class APKM(private val context: Context) {
     } //    AppPreferencesKeysMethods(context = this).delMastersSecret(AppPreferencesKeys.KEY_BIG_SECRET)
 
     // -------------------------------------------------------------- encrypted Int гетеры и сетеры
-    fun getCounter(key: String, default: Int): Int { // счетчик
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+    fun getCounter(key: String, default: Int): Int {
+        val masterKeyAlias = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
         val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            APK.MY_SECRETS_PREFS_NAME,
-            masterAlias,
             context,
+            APK.MY_SECRETS_PREFS_NAME,
+            masterKeyAlias,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
@@ -186,17 +199,19 @@ internal class APKM(private val context: Context) {
     } // AppPreferencesKeysMethods(context = this).getCounter()
 
     fun saveCounter(key: String, counter: Int) {
-        val masterAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKeyAlias = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
         val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-            APK.MY_SECRETS_PREFS_NAME,
-            masterAlias,
             context,
+            APK.MY_SECRETS_PREFS_NAME,
+            masterKeyAlias,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
         sharedPreferences.edit {
             putInt(key, counter).apply()
-//            toastIt("счетчик изменён")
         }
     } //    AppPreferencesKeysMethods(context = this).saveCounter(counter)
 
