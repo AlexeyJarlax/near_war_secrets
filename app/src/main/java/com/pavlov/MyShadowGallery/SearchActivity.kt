@@ -97,9 +97,9 @@ class SearchActivity : AppCompatActivity() {
         fillTrackAdapter()
 //        showHistoryViewsAndFillTrackAdapter()
         killTheHistory()
-//        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
-//        queryInput.setText(randomArtistName)
-//        checkMasterSSecret(randomArtistName, false)
+        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
+        queryInput.setText(randomArtistName)
+        checkMasterSSecret(randomArtistName, false)
     } //конец онКриейт
 
     override fun onStart() {

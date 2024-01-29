@@ -42,8 +42,7 @@ internal object APK { // AppPreferencesKey Internal - доступно толь�
     const val HISTORY_TRACK_LIST_SIZE = 8
     const val DEFAULT_PREVIEW_SIZE = 30
     const val DEFAULT_MIMIC_PASS: String = "000"
-
-    //    const val REGEX = "[a-zA-Zа-яА-ЯñÑáéíóúüÜ0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}]+"
+    
     const val REGEX = "[a-zA-Z0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/]+"
 
 
