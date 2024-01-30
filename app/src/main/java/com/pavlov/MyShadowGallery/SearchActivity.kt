@@ -1,21 +1,5 @@
 package com.pavlov.MyShadowGallery
 
-// Памятка о содержании файла:
-//SearchActivity - активити и вся обработка поискового запроса юзера.
-//UtilTrackViewHolder - холдер для RecyclerView, отображающий информацию о треках.
-//AdapterForAPITracks - адаптер для RecyclerView, отображающий информацию о треках.
-//iTunesApiService - интерфейс для iTunes Search API.
-//TrackResponse - класс данных, представляющий ответ от iTunes Search API.
-//ITunesTrack - класс данных для преобразования ответа iTunes Search API в список объектов TrackData.
-//TrackData - класс данных, представляющий список треков на устройстве.
-//OnTrackItemClickListener - интерфейс для обработки истории
-
-// Этапы поиска:
-//1. этап: считываем ввод в queryInput.setOnEditorActionListener и queryInput.addTextChangedListener ===> запуск 2 этапа
-//2. этап: передаем searchText в fun preparingForSearch для активации loadingIndicator и блокировки кнопок ===> запуск 3 этапа
-//3. этап: передаем searchText в fun performSearch => вызываем TrackResponse => заполняем TrackData  ===> вывод списка песен, соответствующих запросу
-//3.1 : performSearch => [возникла ошибка с вызовом TrackResponse] => Запускаем метод solvingConnectionProblem() ===> Запускаем повторно 2 этап
-
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -31,36 +15,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.pavlov.MyShadowGallery.file.ArtistNaming
-import com.pavlov.MyShadowGallery.file.NamingStyleManager
-import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
+import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.ThemeManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
+import android.view.animation.AnimationUtils
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var backgroundView: ImageView
     private var clickCounter = 0
     private lateinit var sharedPreferences: SharedPreferences
-    private val iTunesSearch = "https://itunes.apple.com"
-    private val retrofit =
-        Retrofit.Builder().baseUrl(iTunesSearch).addConverterFactory(GsonConverterFactory.create())
-            .build()
-    private val iTunesSearchAPI = retrofit.create(iTunesApiService::class.java)
     private var hasFocus = true
     private lateinit var queryInput: EditText
     private lateinit var clearButton: ImageButton
@@ -77,6 +56,8 @@ class SearchActivity : AppCompatActivity() {
     var countPass = 0
     var firstPass = ""
     var showBackBtn = false
+    private lateinit var rotatingImageView: ImageView
+    private var currentImage = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,23 +69,27 @@ class SearchActivity : AppCompatActivity() {
             getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
 
         setupOneLineViews()
-        clearButton()
         backToMain()
         callAdapterForHistoryTracks()
         setupRecyclerViewAndAdapter()
         queryTextChangedListener()
         queryInputListener(isPasswordExists)
+        clearButton()
         fillTrackAdapter()
 //        showHistoryViewsAndFillTrackAdapter()
         killTheHistory()
 //        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
 //        queryInput.setText(randomArtistName)
 //        checkMasterSSecret(randomArtistName, false)
+        fillTrackAdapterWithFakePlaylist()
+        rotatingImageView = findViewById(R.id.rotatingImageView)
+        rotatingImageView.setOnClickListener { changeImage() }
+        rotatingImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation))
     } //конец онКриейт
 
 //    override fun onStart() {
 //        super.onStart()
-//        toastIt(getString(R.string.you_can_like))
+//        toast(getString(R.string.you_can_like))
 //    }
 
     private fun checkMasterSSecret(
@@ -137,12 +122,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-//    private fun getRandomArtistName(): String {
-//        val randomIndex = (0 until ArtistNaming.artistName.size).random()
-//        return ArtistNaming.artistName[randomIndex]
-//
-//    }
-
     private fun goToMainActivity() {
         val displayIntent = Intent(this, MainPageActivity::class.java)
         startActivity(displayIntent)
@@ -163,6 +142,19 @@ class SearchActivity : AppCompatActivity() {
         utilErrorBox = findViewById<LinearLayout>(R.id.util_error_box)
         searchHistoryNotification = findViewById(R.id.you_were_looking_for)
         killTheHistory = findViewById(R.id.kill_the_history)
+    }
+
+    private fun getDefaultTrackList(): List<TrackData> {
+        val shuffledList = ArtistNaming.fakePlayListName.shuffled()
+        val randomTracks = shuffledList.take(8)
+        return randomTracks
+    }
+
+    private fun fillTrackAdapterWithFakePlaylist() {
+        val fakePlaylistTracks = getDefaultTrackList()
+        adapterForAPITracks.updateList(fakePlaylistTracks)
+        adapterForAPITracks.setRecyclerView(trackRecyclerView)
+        trackRecyclerView.visibility = View.VISIBLE
     }
 
     private fun callAdapterForHistoryTracks() {
@@ -195,7 +187,7 @@ class SearchActivity : AppCompatActivity() {
                     adapterForHistoryTracks.saveTrack(
                         trackName, artistName, trackTimeMillis, artworkUrl100
                     )
-                    toastIt("${getString(R.string.added)} ${trackName}")
+                    toast("${getString(R.string.added)} ${trackName}")
                     Log.d(
                         "=== SearchActivity",
                         "=== historyAdapter.saveTrack:${trackName}${artistName}"
@@ -251,7 +243,7 @@ class SearchActivity : AppCompatActivity() {
         backgroundView.visibility = View.INVISIBLE
         fillTrackAdapter()
         trackRecyclerView.visibility = View.VISIBLE
-        searchHistoryNotification.visibility = View.VISIBLE
+        searchHistoryNotification.text = getString(R.string.you_were_looking_for)
         killTheHistory.visibility = View.VISIBLE
     }
 
@@ -267,6 +259,7 @@ class SearchActivity : AppCompatActivity() {
         trackRecyclerView.visibility = View.INVISIBLE
         searchHistoryNotification.visibility = View.INVISIBLE
         killTheHistory.visibility = View.INVISIBLE
+
     }
 
     private fun clearTrackAdapter() {
@@ -304,11 +297,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun preparingForSearch(searchText: String) {
         loadingIndicator.visibility = View.VISIBLE
-        clearButton.isEnabled = false
+//        clearButton.isEnabled = false
         Handler(Looper.getMainLooper()).postDelayed({
             performSearch(searchText) { trackItems ->
                 loadingIndicator.visibility = View.INVISIBLE
-                clearButton.isEnabled = true
+//                clearButton.isEnabled = true
                 adapterForAPITracks.updateList(trackItems)
                 adapterForAPITracks.setRecyclerView(trackRecyclerView)
                 trackRecyclerView.visibility = View.VISIBLE
@@ -318,70 +311,16 @@ class SearchActivity : AppCompatActivity() {
 
     private var lastQuery: String? = null
     private var lastCallback: ((List<TrackData>) -> Unit)? = null
-    private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
-        lastQuery = query        // Сохраняем последний запрос и колбэк
-        lastCallback = callback
-        Log.d(
-            "=== SearchActivity",
-            "=== Запускаем метод performSearch с параметрами Query: $query и Callback"
-        )
-        iTunesSearchAPI.search(query).enqueue(object : Callback<TrackResponse> {
-            override fun onResponse(
-                call: Call<TrackResponse>, response: Response<TrackResponse>
-            ) {
-                if (response.code() == 200) {
-                    val trackResponse = response.body()
-                    val trackData = if (trackResponse?.results?.isNotEmpty() == true) {
-                        // Преобразуем результаты в список объектов TrackData
-                        trackResponse.results.map { track ->
-                            Log.d(
-                                "=== SearchActivity",
-                                "=== Метод performSearch => response.isSuccessful! track.trackName:${track.trackName}"
-                            )
-                            TrackData(
-                                track.trackName,
-                                track.artistName,
-                                track.trackTimeMillis,
-                                track.artworkUrl100
-                            )
-                        }
-                    } else {
-                        Log.d(
-                            "=== SearchActivity",
-                            "=== Метод performSearch => response.isSuccessful! => emptyList() таких песен нет"
-                        )
-                        solvingAbsentProblem() // вызываем заглушку о пустом листе запроса
-                        emptyList()
-                    }
-                    callback(trackData)         // Вызываем колбэк с полученными данными
-                    Log.d(
-                        "=== SearchActivity",
-                        "=== Метод performSearch => response.isSuccessful! => callback(trackData): $trackData"
-                    )
-                } else {
-                    val error = when (response.code()) {
-                        400 -> "${getString(R.string.error400)}"
-                        401 -> "${getString(R.string.error401)}"
-                        403 -> "${getString(R.string.error403)}"
-                        404 -> "${getString(R.string.error404)}"
-                        500 -> "${getString(R.string.error500)}"
-                        503 -> "${getString(R.string.error503)}"
-                        else -> "${getString(R.string.error0)}"
-                    }
-                    Log.d("=== SearchActivity", error)
-                    toastIt(error)
-                    onFailure(
-                        call, Throwable(error)
-                    )
-                }
-            }
 
-            override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                solvingConnectionProblem()
-                val trackData = emptyList<TrackData>()
-                callback(trackData)
-            }
-        })
+    private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
+        if (query.isEmpty()) {
+            // Пользователь не ввел запрос, поэтому отображаем предопределенный список
+            val defaultTrackList = getDefaultTrackList()
+            callback(defaultTrackList)
+        } else {
+            // Если пользователь ввел запрос, отображаем заглушку ошибки
+            solvingConnectionProblem()
+        }
     }
 
     private fun solvingAbsentProblem() {
@@ -403,7 +342,7 @@ class SearchActivity : AppCompatActivity() {
         val errorIcon = findViewById<ImageView>(R.id.error_icon)
         val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
         errorIcon.setImageResource(R.drawable.ic_error_internet)
-        errorTextWeb.text = resources.getString(R.string.error_text_web)
+        errorTextWeb.text = resources.getString(R.string.error500)
         val retryButton = findViewById<Button>(R.id.retry_button)
         retryButton.visibility = View.VISIBLE
         utilErrorBox.visibility = View.VISIBLE
@@ -414,18 +353,23 @@ class SearchActivity : AppCompatActivity() {
                     preparingForSearch(query)
                 }
             }
-            utilErrorBox.visibility = View.INVISIBLE
+            utilErrorBox.visibility = View.GONE
+            retryButton.visibility = View.GONE
+            clearButton()
         }
-    }
 
-    interface iTunesApiService {
-        @GET("search?entity=song")
-        fun search(@Query("term") text: String): Call<TrackResponse>
+//        utilErrorBox.setOnClickListener {
+//            retryButton.visibility = View.GONE
+//            utilErrorBox.visibility = View.GONE
+//        }
     }
 
     private fun clearButton() {
         clearButton.setOnClickListener {
             queryInput.text.clear()
+            queryInput.requestFocus()
+                    searchHistoryNotification.text = getString(R.string.you_were_looking_for)
+
         }
     }
 
@@ -447,8 +391,21 @@ class SearchActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun toastIt(message: String) {
+    private fun toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun changeImage() {
+
+        if (currentImage == 1) {
+            toast(getString(R.string.errorserch))
+            rotatingImageView.setImageResource(R.drawable.ic_error_internet)
+            currentImage = 2
+        } else {
+            toast(getString(R.string.error500))
+            rotatingImageView.setImageResource(R.drawable.ic_error_notfound)
+            currentImage = 1
+        }
     }
 }
 
@@ -495,7 +452,7 @@ class UtilTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private fun loadImage(imageUrl: String, imageView: ImageView) {
         Glide.with(imageView).load(imageUrl).placeholder(R.drawable.ic_placeholder)
             .transform(RoundedCorners(APK.ALBUM_ROUNDED_CORNERS))
-            .error(R.drawable.ic_error_internet)
+            .error(R.drawable.ic_placeholder)
             .into(imageView)
     }
 }
@@ -549,14 +506,6 @@ data class TrackData(
         return String.format("%02d:%02d", minutes, seconds)
     }
 }
-
-data class TrackResponse(val results: List<ITunesTrack>)
-data class ITunesTrack(
-    val trackName: String,
-    val artistName: String,
-    val trackTimeMillis: Long,
-    val artworkUrl100: String
-)
 
 interface OnTrackItemClickListener {
     fun onTrackItemClick(

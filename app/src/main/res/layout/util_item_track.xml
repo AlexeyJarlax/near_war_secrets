@@ -35,17 +35,24 @@ android:paddingStart="@dimen/dp12">
         tools:text="@string/sample"
         android:maxLines="2"/>
 
+    <TextView
+        android:id="@+id/artist_name_text_view"
+        style="@style/TrackTextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLength="30"
+        tools:text="@string/sample" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/artist_name_text_view"
+            android:id="@+id/track_duration_text_view"
             style="@style/TrackTextSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLength="30"
             tools:text="@string/sample" />
 
         <ImageView
@@ -57,13 +64,6 @@ android:paddingStart="@dimen/dp12">
             android:src="@drawable/ic_point"
             android:background="@android:color/transparent"
             tools:src="@drawable/ic_point" />
-
-        <TextView
-            android:id="@+id/track_duration_text_view"
-            style="@style/TrackTextSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/sample" />
     </LinearLayout>
 
 </LinearLayout>

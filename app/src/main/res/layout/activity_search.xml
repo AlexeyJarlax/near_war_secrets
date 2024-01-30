@@ -34,6 +34,19 @@
         android:textSize="@dimen/text_size_sp26"
         app:layout_constraintTop_toTopOf="@+id/background_image" />
 
+    <ImageView
+        android:id="@+id/rotatingImageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="@dimen/dp16"
+        android:layout_marginEnd="@dimen/dp16"
+        android:onClick="changeImage"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_error_notfound"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/button_back_from_search_activity"
         style="@style/GoBackButtons2"
@@ -59,11 +72,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="@dimen/dp36"
+        android:paddingTop="@dimen/dp26"
         android:paddingBottom="@dimen/dp12"
-        android:text="@string/you_were_looking_for"
+        android:text="@string/you_can_like"
         android:textSize="@dimen/text_size_sp19"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/search_box_include"
         tools:visibility="visible" />
 

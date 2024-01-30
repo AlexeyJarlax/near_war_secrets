@@ -213,4 +213,5 @@ se almacenan en el dispositivo de forma segura y cifrada.</string>
     <string name="error_key">El error puede ser causado por un cambio en la clave</string>
     <string name="error_del">Error al eliminar el archivo</string>
     <string name="you_can_like">A usted le podría gustar...</string>
+    <string name="errorserch">Song search is not available</string>
 </resources>

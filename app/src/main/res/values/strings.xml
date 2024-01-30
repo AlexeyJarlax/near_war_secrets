@@ -214,5 +214,6 @@ AES (Advanced Encryption Standard).
     <string name="decryption_error">Ошибка дешифрования</string>
     <string name="error_key">Возможно ключ был изменён</string>
     <string name="error_del">Ошибка при удалении файла</string>
+    <string name="errorserch">Поиск песен недоступен</string>
     <string name="you_can_like">Вам может понравится...</string>
 </resources>
