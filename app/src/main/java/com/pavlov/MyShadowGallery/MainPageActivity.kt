@@ -118,10 +118,10 @@ class MainPageActivity : AppCompatActivity() {
     }
 
     private fun locker() {
-        val passKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_PASSWORD)
+        val passKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_PASSWORD, false)
         val encryptionKeyName: Boolean =
             APKM(context = this).getIntFromSP(APK.DEFAULT_KEY) != 0
-        val mimikKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY)
+        val mimikKey = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY, false)
 
         if (passKey) {
             simblPass = "🔐"
@@ -187,8 +187,8 @@ class MainPageActivity : AppCompatActivity() {
     }
 
     private fun prestart() {
-        pref1 = APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION)
-        pref2 = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_ENCRYPTION_K)
+        pref1 = APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, true)
+        pref2 = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
         if (pref1 && !pref2) {
             val displayIntent = Intent(this, KeyInputActivity::class.java)
             startActivity(displayIntent)

@@ -43,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         delPassword = intent.getBooleanExtra("delPassword", false) // ФЛАГ С intent
         loadingIndicator = findViewById(R.id.loading_indicator)
-        sharedPreferences =
-            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
+//        sharedPreferences =
+//            getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
         ThemeManager.applyTheme(this)
         backgroundView = findViewById(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
@@ -78,30 +78,20 @@ class LoginActivity : AppCompatActivity() {
 
     private fun firstStart() {  // ПЕРВЫЙ ЗАПУСК ?????
         if (!delPassword) {
-            if (sharedPreferences.getBoolean(
-                    APK.KEY_FIRST_RUN, true
-                )
-            ) { // Устанавливаем значения по умолчанию
+            if (APKM(context = this).getBooleanFromSPK(APK.KEY_FIRST_RUN, true)) { // Устанавливаем значения по умолчанию
                 SettingsActivity.doClearStorage(applicationContext) // защита от злоумышленника
-                with(sharedPreferences.edit()) {
-                    putInt(
-                        APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30
-                    )
-                    putBoolean(
-                        APK.KEY_FIRST_RUN, false
-                    )
-                    apply()
-                }
+                APKM(context = this).saveIntToSP(APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
+                    APKM(context = this).saveBooleanToSPK(APK.KEY_FIRST_RUN, false)
                 goToZeroActivity() // ИДЕМ В ТРИ ШАГА К ЗАЩИТЕ
             } else {
-                if ( APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY)// МИМИКРИРУЮЩИЙ ЗАПУСК ?????
+                if ( APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY, false)// МИМИКРИРУЮЩИЙ ЗАПУСК ?????
                 ) {
                     mimicry = true
                     entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
                 } else {
                     mimicry = false
                     val savedPassword = APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
-                    if (savedPassword.isNullOrBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
+                    if (savedPassword.isBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
                         isPasswordExist = false
                         entranceMain()  // ИДЕМ В МЕЙН
                     } else {

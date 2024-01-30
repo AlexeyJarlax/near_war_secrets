@@ -264,7 +264,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                     showLoadingIndicator()
                     val folder = applicationContext.filesDir
                     var existOrNot =
-                        APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
+                        APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
                     fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
                     outputFile = File(folder, fileName)
                     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
@@ -424,7 +424,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                     imageDialog?.dismiss()
                                     imageDialogAcceptance = true
                                     if (APKM(context = this@ItemLoaderActivity).getBooleanFromSPK(
-                                            APK.KEY_USE_THE_ENCRYPTION_K
+                                            APK.KEY_USE_THE_ENCRYPTION_K, false
                                         )
                                     ) {
 //                                        smallLoadingIndicator {
@@ -580,7 +580,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 //    showToast(getString(R.string.download))
 //
 //    val folder = applicationContext.filesDir
-//    var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
+//    var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
 //    val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
 //
 //    val outputFile = File(folder, fileName)
@@ -591,7 +591,7 @@ class ItemLoaderActivity : AppCompatActivity() {
 //        }
 //    }
 //
-//    if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)) {
+//    if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)) {
 //        encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
 //        encryption.encryptImage(
 //            outputFile.toUri(),
@@ -609,7 +609,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         showToast(getString(R.string.download))
 
         val folder = applicationContext.filesDir
-        var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)
+        var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
         val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
 
         var outputFile = File(folder, fileName)
@@ -635,7 +635,7 @@ class ItemLoaderActivity : AppCompatActivity() {
         notifyDSC()
 
         photoListAdapter.showShareImageDialog(this, outputFile)
-//        if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K)) {
+//        if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)) {
 //            encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
 //            encryption.encryptImage(
 //                outputFile.toUri(),

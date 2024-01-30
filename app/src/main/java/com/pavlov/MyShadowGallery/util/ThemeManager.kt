@@ -8,7 +8,7 @@ import com.pavlov.MyShadowGallery.R
 object ThemeManager {
 
     fun applyTheme(context: Context) { //достаем ночную тему из памяти и применяем в активности вызова
-        val nightModeEnabled = APKM(context).getBooleanFromSPK(APK.KEY_NIGHT_MODE)
+        val nightModeEnabled = APKM(context).getBooleanFromSPK(APK.KEY_NIGHT_MODE, false)
         if (nightModeEnabled) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
@@ -17,7 +17,7 @@ object ThemeManager {
     }
 
     fun applyUserSwitch(context: Context): Int {
-        val userSwitchEnabled = APKM(context).getBooleanFromSPK(APK.KEY_USER_SWITCH)
+        val userSwitchEnabled = APKM(context).getBooleanFromSPK(APK.KEY_USER_SWITCH, false)
         var background: Int = R.drawable.cat_background2
 
         if (context is Activity) {
@@ -31,7 +31,7 @@ object ThemeManager {
     }
 
     fun isNightModeEnabled(context: Context): Boolean {
-        return APKM(context).getBooleanFromSPK(APK.KEY_NIGHT_MODE)
+        return APKM(context).getBooleanFromSPK(APK.KEY_NIGHT_MODE, false)
     }
 
     fun setNightModeEnabled(context: Context, isChecked: Boolean) {
@@ -43,6 +43,6 @@ object ThemeManager {
     }
 
     fun isUserSwitchEnabled(context: Context): Boolean {
-        return APKM(context).getBooleanFromSPK(APK.KEY_USER_SWITCH)
+        return APKM(context).getBooleanFromSPK(APK.KEY_USER_SWITCH, false)
     }
 }

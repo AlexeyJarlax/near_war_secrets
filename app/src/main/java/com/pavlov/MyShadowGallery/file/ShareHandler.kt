@@ -18,7 +18,7 @@ class ShareHandler(private val context: Context) {
         val folder = context.filesDir
         val fileName = NamingStyleManager(context).generateFileName(
             APKM(context).getBooleanFromSPK(
-                APK.KEY_USE_THE_ENCRYPTION_K
+                APK.KEY_USE_THE_ENCRYPTION_K, false
             ), folder
         )
         val fileNameWithoutExtension = removeFileExtension(fileName)

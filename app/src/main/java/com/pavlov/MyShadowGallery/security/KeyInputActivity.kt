@@ -196,7 +196,7 @@ class KeyInputActivity : AppCompatActivity() {
 // чек бокс на удаление ключей ********************************************************************
 
         val isSaveAfterSession =
-            !APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION)
+            !APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, true)
 
         variableKey.isChecked = isSaveAfterSession
         if (!isSaveAfterSession) {
@@ -229,7 +229,7 @@ class KeyInputActivity : AppCompatActivity() {
         }
 
         saveNewKey.setOnClickListener { // сохранить ключ
-            if (APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION)) {
+            if (APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, true)) {
                 APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME1)
                 APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET1)
                 APKM(context = this).delMastersSecret(APK.KEY_BIG_SECRET_NAME2)

@@ -9,7 +9,7 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+<!--    <uses-permission android:name="android.permission.INTERNET" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -54,7 +54,7 @@
         <activity
             android:name=".FAQActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".security.ThreeStepsActivity"
@@ -62,13 +62,13 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".security.SetPasswordActivity"
-            android:exported="true"
-            android:screenOrientation="fullSensor"
+            android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyApp" />
         <activity
             android:name=".security.LoginActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -78,19 +78,19 @@
         <activity
             android:name=".AboutActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".security.KeyInputActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".file.StorageLogActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SearchActivity"
-            android:exported="true"
-            android:screenOrientation="fullSensor" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ItemLoaderActivity"
             android:exported="false"
@@ -99,11 +99,11 @@
             android:name=".SettingsActivity"
             android:configChanges="locale|orientation|screenSize"
             android:exported="false"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyApp" />
         <activity
             android:name=".MainPageActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
     </application>
 

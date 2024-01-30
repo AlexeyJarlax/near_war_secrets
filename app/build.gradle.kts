@@ -25,20 +25,18 @@ android {
         resConfigs("ru", "en", "zh", "es")
         minSdk = 28
         targetSdk = 34
-        versionCode = 48
-        versionName = "1.48"
+        versionCode = 51
+        versionName = "1.51"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-//    buildTypes {
-//        release {
-//            isMinifyEnabled = true  // Включить ProGuard
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
-//    }
+    buildTypes {
+        release {
+            isMinifyEnabled = false  // Выключить ProGuard
+            proguardFiles(
+            )
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
