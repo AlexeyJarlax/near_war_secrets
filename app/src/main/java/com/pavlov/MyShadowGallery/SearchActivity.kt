@@ -97,15 +97,15 @@ class SearchActivity : AppCompatActivity() {
         fillTrackAdapter()
 //        showHistoryViewsAndFillTrackAdapter()
         killTheHistory()
-        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
-        queryInput.setText(randomArtistName)
-        checkMasterSSecret(randomArtistName, false)
+//        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
+//        queryInput.setText(randomArtistName)
+//        checkMasterSSecret(randomArtistName, false)
     } //конец онКриейт
 
-    override fun onStart() {
-        super.onStart()
-        toastIt(getString(R.string.you_can_like))
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        toastIt(getString(R.string.you_can_like))
+//    }
 
     private fun checkMasterSSecret(
         password: String,
@@ -137,11 +137,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun getRandomArtistName(): String {
-        val randomIndex = (0 until ArtistNaming.artistName.size).random()
-        return ArtistNaming.artistName[randomIndex]
-
-    }
+//    private fun getRandomArtistName(): String {
+//        val randomIndex = (0 until ArtistNaming.artistName.size).random()
+//        return ArtistNaming.artistName[randomIndex]
+//
+//    }
 
     private fun goToMainActivity() {
         val displayIntent = Intent(this, MainPageActivity::class.java)
