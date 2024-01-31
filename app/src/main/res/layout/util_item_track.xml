@@ -58,12 +58,12 @@ android:paddingStart="@dimen/dp12">
         <ImageView
             android:id="@+id/ic_point"
             style="@style/IcPoint"
-            android:layout_width="@dimen/dp12"
-            android:layout_height="@dimen/dp12"
+            android:layout_width="@dimen/dp16"
+            android:layout_height="@dimen/dp16"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_point"
+            android:src="@android:drawable/ic_menu_recent_history"
             android:background="@android:color/transparent"
-            tools:src="@drawable/ic_point" />
+            tools:src="@android:drawable/ic_menu_recent_history" />
     </LinearLayout>
 
 </LinearLayout>

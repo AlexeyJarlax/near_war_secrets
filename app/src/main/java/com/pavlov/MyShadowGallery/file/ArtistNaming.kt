@@ -4,45 +4,32 @@ import com.pavlov.MyShadowGallery.TrackData
 
 class ArtistNaming {
     companion object {
-        val artistName = listOf(
-            "The Beatles", "Rolling Stones", "Led Zeppelin", "Pink Floyd",
-            "Queen", "The Who", "U2", "Nirvana", "Metallica", "AC/DC",
-            "Radiohead", "Coldplay", "Red Hot Chili Peppers", "Foo Fighters",
-            "The Doors", "Guns N' Roses", "The Eagles", "Bee Gees", "Fleetwood Mac",
-            "Aerosmith", "Black Sabbath", "The Beach Boys", "The Police", "The Clash",
-            "Pearl Jam", "Dire Straits", "R.E.M.", "Linkin Park", "Genesis",
-            "Oasis", "The Cure", "Ramones", "Van Halen", "Deep Purple",
-            "Bon Jovi", "Rush", "Def Leppard", "The Smiths", "ZZ Top",
-            "The Kinks", "Eagles", "Creedence Clearwater Revival", "The Smashing Pumpkins", "The Supremes",
-            "The Temptations", "The Four Seasons", "The Jackson 5", "The Byrds", "The Bee Gees",
-            "The Carpenters", "The Mamas & the Papas", "The Everly Brothers", "The Platters", "The Isley Brothers",
-            "The Drifters", "The Four Tops", "The Animals", "The Yardbirds", "The Small Faces",
-            "The Hollies", "The Turtles", "The Monkees", "The Zombies", "The Searchers",
-            "The Shadows", "The Ventures", "The Dave Clark Five", "The Ronettes", "The Shirelles",
-            "The Chiffons", "The Crystals", "The Marvelettes", "The Vandellas", "The Miracles",
-            "The Shangri-Las", "The Angels", "The Dixie Cups", "The Exciters", "The Cookies",
-            "The Blossoms", "The O'Jays", "The Spinners", "The Stylistics", "The Chi-Lites",
-            "The Temptations", "The Impressions", "The Delfonics", "The Dramatics", "The Four Tops",
-            "The Miracles", "The Isley Brothers", "The Commodores", "The O'Jays", "The Temptations",
-// Русские музыкальные коллективы
-            "Ария", "Аквариум", "Сплин", "ДДТ", "Кино", "Мумий Тролль",
-            "Ленинград", "Би-2", "Земфира", "Серебро", "МакSим",
-            "Любэ", "Машина Времени", "Смысловые Галлюцинации", "Тату",
-            "Сектор Газа", "Бутусов", "Браво", "Сплин", "МГК",
-            "Танцы Минус", "Чайф", "Машина времени", "КняZz", "Смысловые Галлюцинации", "Валерий Леонтьев", "Мельница", "Канцлер ГИ", "Проще сложного",
+
+        val artistNames = listOf(
+            "Radio Tapok", "New York Jazz Lounge", "Placebo", "Сколот", "Кипелов", "Хелависа", "Марко Поло", "Король и Шут", "Papa Roach", "Metallica", "Nina Simone",
+            "Ария", "Nirvana", "Linkin Park", "Rammstein", "Anthony Graham", "Тени Дорог", "Yogitea", "Scala & Kolacny Brothers", "Bebopovsky And The Orkestry Podyezdov",
+            "Green Apelsin", "ПРОЩЕ СЛОЖНОГО", "Bohren & Der Club of Gore", "Sandaru Sathsara", "Michael Jackson", "Still Corners", "Jarred Dymore", "Jorcx", "Sophie Zelmani",
+            "Motörhead", "Chris Spheeris", "Vangelis", "Lazy Jazz Cat", "Alina Gingertail", "Annett Louisan", "Мельница", "Би-2", "КИНО", "Земфира", "Johann Sebastian Bach",
+            "Le Cœur Au Bout Des Doigts", "Jacqueline Taieb", "Rio Grande", "Freedom Fry", "Omega", "Bon Jovi", "Rachel Hardy", "Nirvana", "Guns N' Roses", "Radio Tapok",
+            "Saez", "New York Jazz Lounge", "Soledad Bravo", "Bebopovsky And The Orkestry Podyezdov","BooTabs", "Дореволюціонный совѣтчикъ", "Chris Rea", "Godsmack",
+            "Сергей Маврин", "Кипелов",  "Max Cruise", "Pete Yorn", "Green Apelsin", "Мураками", "Metallica", "Danheim", "Король и Шут",
+            "Brothers of Metal", "Scooter", "Scissor Sisters", "Bruce Springsteen", "Зоя Ященко", "Lera Lynn", "Karen Elson",
+            "Константин Никольский", "Mark Ayres", "Samuel Barber", "Poets Of The Fall", "Alizbar", "Ashram", "Чичерина", "Константин Никольский", "Мумий Тролль", "Lumen",
+            "Iron Maiden","Франц Шуберт",  "LaFee", "Ария", "Сплин", "ДДТ", "Кино", "Мумий Тролль", "Би-2", "Земфира", "Машина Времени", "Смысловые Галлюцинации", "Тату",
+            "Сектор Газа", "Бутусов", "Браво", "Сплин", "Танцы Минус", "Чайф", "Машина времени", "Смысловые Галлюцинации", "Мельница", "Канцлер ГИ", "Проще сложного",
+            "The Beatles", "Rolling Stones", "Led Zeppelin", "Pink Floyd", "Queen", "The Who", "U2", "Nirvana", "Metallica", "AC/DC",
+            "Radiohead", "Coldplay", "Red Hot Chili Peppers", "Foo Fighters", "The Doors", "Guns N' Roses", "The Eagles", "Bee Gees", "Fleetwood Mac",
+            "Aerosmith", "Black Sabbath", "Linkin Park", "Genesis", "Deep Purple",
+            "Bon Jovi", "The Animals",
 // Испанские музыкальные коллективы
-            "Maná", "Shakira", "Enrique Iglesias", "Juanes", "Ricky Martin",
-            "La Oreja de Van Gogh", "Héroes del Silencio", "Café Tacvba", "Julieta Venegas", "Soda Stereo",
-            "Amaral", "Jarabe de Palo", "Los Fabulosos Cadillacs", "Mecano", "Juan Luis Guerra",
-            "Gloria Estefan", "Carlos Vives", "Celia Cruz", "Marc Anthony", "Chayanne",
-            "Alejandro Sanz", "Vicente Amigo", "Los Secretos", "Los Suaves", "Fito y Fitipaldis",
-            "La Fuga", "Extremoduro", "Hombres G", "Jarabe de Palo", "Bunbury",
-            "El Canto del Loco", "Estopa", "Macaco", "Miguel Bosé", "Nino Bravo",
-            "Orishas", "Pastora Soler", "Rosario", "Sergio Dalma", "Camila",
-            "Daddy Yankee", "RBD", "Reik", "Mana", "Jesse & Joy",
-            "Mägo de Oz", "La Quinta Estación", "David Bisbal", "India Martínez", "Niña Pastori",
-            "La Mala Rodríguez", "Jarabe de Palo", "Estopa", "Malú", "Melendi"
+            "Shakira", "Enrique Iglesias", "Ricky Martin", "La Oreja de Van Gogh", "Héroes del Silencio", "Café Tacvba",
+            "Julieta Venegas", "Soda Stereo", "Amaral", "Juanes", "Marc Anthony", "Alejandro Sanz", "Carlos Vives", "Gloria Estefan",
+            "Chayanne", "Daddy Yankee", "Reik", "Jesse & Joy", "Mana", "Malú"
         )
+
+        fun getRandomArtist(): String {
+            return artistNames.random()
+        }
 
         val fakePlayListName = listOf(
             TrackData("Amerika", "Rammstein", 226000, ""),

@@ -74,7 +74,7 @@
         android:gravity="center"
         android:paddingTop="@dimen/dp26"
         android:paddingBottom="@dimen/dp12"
-        android:text="@string/you_can_like"
+        android:text=""
         android:textSize="@dimen/text_size_sp19"
         android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/search_box_include"
@@ -84,7 +84,8 @@
         android:id="@+id/track_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp8"
+        android:layout_marginTop="@dimen/z"
+        android:paddingBottom="180dp"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/you_were_looking_for"
         app:tint="@color/yp_light_gray_and_yp_white"
@@ -105,7 +106,7 @@
         android:paddingStart="@dimen/dp12"
         android:paddingEnd="@dimen/dp12"
         android:text="@string/clear_the_history"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,5 +129,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible" />
+
+    <View
+        android:layout_width="@dimen/dp78"
+        android:layout_height="@dimen/dp78"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/track_recycler_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -212,6 +212,7 @@ se almacenan en el dispositivo de forma segura y cifrada.</string>
     <string name="error_decryption">Error de descifrado</string>
     <string name="error_key">El error puede ser causado por un cambio en la clave</string>
     <string name="error_del">Error al eliminar el archivo</string>
-    <string name="you_can_like">A usted le podría gustar...</string>
-    <string name="error_serch">Song search is not available</string>
+    <string name="error_serch">La búsqueda de canciones no está disponible</string>
+    <string name="error_connect">Error de conexión</string>
+    <string name="you_can_like">Te podría gustar...</string>
 </resources>

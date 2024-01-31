@@ -89,14 +89,12 @@ class SearchActivity : AppCompatActivity() {
         queryTextChangedListener()
         queryInputListener(isPasswordExists)
         clearButton()
-        fillTrackAdapter()
-//        showHistoryViewsAndFillTrackAdapter()
+//        fillTrackAdapter()
         killTheHistory()
-//        val randomArtistName = getRandomArtistName()  // список "Вам может понравится"
-//        queryInput.setText(randomArtistName)
-//        checkMasterSSecret(randomArtistName, false)
-        fillTrackAdapterWithFakePlaylist()
+        fillTrackAdapterWithOfferPlaylist()
         rotatingImageManager()
+//        searchHistoryNotification.text = ""
+//        killTheHistory.visibility = View.GONE
     } //конец онКриейт
 
 //    override fun onStart() {
@@ -117,7 +115,12 @@ class SearchActivity : AppCompatActivity() {
                 // ошибка парольки, запускаем поиск песен
                 utilErrorBox.visibility = View.INVISIBLE
                 clearTrackAdapter()
-                preparingForSearch(password)
+                preparingForSearch(password) { trackItems ->
+                    val limitedTrackItems = trackItems.take(11) // Ограничение до 7 песен
+                    adapterForAPITracks.updateList(limitedTrackItems)
+                    adapterForAPITracks.setRecyclerView(trackRecyclerView)
+                    trackRecyclerView.visibility = View.VISIBLE
+                }
 //                toastIt("${getString(R.string.search)} $password")
             }
         } else {
@@ -127,7 +130,12 @@ class SearchActivity : AppCompatActivity() {
                 // ошибка парольки, запускаем поиск песен
                 utilErrorBox.visibility = View.INVISIBLE
                 clearTrackAdapter()
-                preparingForSearch(password)
+                preparingForSearch(password){ trackItems ->
+                    val limitedTrackItems = trackItems.take(11) // Ограничение до 7 песен
+                    adapterForAPITracks.updateList(limitedTrackItems)
+                    adapterForAPITracks.setRecyclerView(trackRecyclerView)
+                    trackRecyclerView.visibility = View.VISIBLE
+                }
 //                toastIt("${getString(R.string.search)} $password")
             }
 
@@ -156,17 +164,19 @@ class SearchActivity : AppCompatActivity() {
         killTheHistory = findViewById(R.id.kill_the_history)
     }
 
-    private fun getDefaultTrackList(): List<TrackData> {
-        val shuffledList = ArtistNaming.fakePlayListName.shuffled()
-        val randomTracks = shuffledList.take(8)
-        return randomTracks
-    }
 
-    private fun fillTrackAdapterWithFakePlaylist() {
-        val fakePlaylistTracks = getDefaultTrackList()
-        adapterForAPITracks.updateList(fakePlaylistTracks)
-        adapterForAPITracks.setRecyclerView(trackRecyclerView)
-        trackRecyclerView.visibility = View.VISIBLE
+    private fun fillTrackAdapterWithOfferPlaylist() {
+        val randomArtist = ArtistNaming.getRandomArtist()
+        queryInput.setText("")  // Очистите поле ввода
+        preparingForSearch(randomArtist) { trackItems ->
+            val limitedTrackItems = trackItems.take(7) // Ограничение до 7 песен
+            adapterForAPITracks.updateList(limitedTrackItems)
+            adapterForAPITracks.setRecyclerView(trackRecyclerView)
+            trackRecyclerView.visibility = View.VISIBLE
+            searchHistoryNotification.visibility = View.VISIBLE
+            searchHistoryNotification.text = getString(R.string.you_can_like)
+            killTheHistory.visibility = View.GONE
+        }
     }
 
     private fun callAdapterForHistoryTracks() {
@@ -220,7 +230,7 @@ class SearchActivity : AppCompatActivity() {
             ) {
             }
 
-            override fun onTextChanged(  // ВВОД БЕЗ НАЖАТИЯ
+            override fun onTextChanged(
                 charSequence: CharSequence?,
                 start: Int,
                 before: Int,
@@ -230,7 +240,8 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility =
                     if (searchText.isNotEmpty()) View.VISIBLE else View.INVISIBLE
                 if (hasFocus && searchText.isEmpty()) {
-                    showHistoryViewsAndFillTrackAdapter()
+                    // Пользователь удалил весь текст из поля ввода
+//                    showHistoryViewsAndFillTrackAdapter()
                 } else {
                     hideHistoryViewsAndClearTrackAdapter()
                 }
@@ -243,7 +254,8 @@ class SearchActivity : AppCompatActivity() {
         // ФОКУС И ВВОД
         queryInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && queryInput.text.isEmpty()) {
-                showHistoryViewsAndFillTrackAdapter()
+                // Пользователь вернулся к пустому полю ввода
+//                showHistoryViewsAndFillTrackAdapter()
             } else if (queryInput.text.isNotEmpty()) {
                 hideHistoryViewsAndClearTrackAdapter()
             }
@@ -255,6 +267,7 @@ class SearchActivity : AppCompatActivity() {
         backgroundView.visibility = View.INVISIBLE
         fillTrackAdapter()
         trackRecyclerView.visibility = View.VISIBLE
+        searchHistoryNotification.visibility = View.VISIBLE
         searchHistoryNotification.text = getString(R.string.you_were_looking_for)
         killTheHistory.visibility = View.VISIBLE
     }
@@ -307,17 +320,14 @@ class SearchActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(queryInput.windowToken, 0)
     }
 
-    private fun preparingForSearch(searchText: String) {
+    private fun preparingForSearch(searchText: String, callback: (List<TrackData>) -> Unit) {
         loadingIndicator.visibility = View.VISIBLE
-            Handler(Looper.getMainLooper()).postDelayed({
-                performSearch(searchText) { trackItems ->
-                    loadingIndicator.visibility = View.INVISIBLE
-//                clearButton.isEnabled = true
-                    adapterForAPITracks.updateList(trackItems)
-                    adapterForAPITracks.setRecyclerView(trackRecyclerView)
-                    trackRecyclerView.visibility = View.VISIBLE
-                }
-            }, APK.SERVER_PROCESSING_MILLISECONDS)
+        Handler(Looper.getMainLooper()).postDelayed({
+            performSearch(searchText) { trackItems ->
+                loadingIndicator.visibility = View.INVISIBLE
+                callback(trackItems)
+            }
+        }, APK.SERVER_PROCESSING_MILLISECONDS)
     }
 
     private var lastQuery: String? = null
@@ -419,17 +429,12 @@ class SearchActivity : AppCompatActivity() {
         val errorIcon = findViewById<ImageView>(R.id.error_icon)
         val errorTextWeb = findViewById<TextView>(R.id.error_text_web)
         errorIcon.setImageResource(R.drawable.ic_error_internet)
-        errorTextWeb.text = resources.getString(R.string.error500)
+        errorTextWeb.text = resources.getString(R.string.error_connect)
         val retryButton = findViewById<Button>(R.id.retry_button)
         retryButton.visibility = View.VISIBLE
         utilErrorBox.visibility = View.VISIBLE
 
         retryButton.setOnClickListener {
-            lastQuery?.let { query ->
-                lastCallback?.let { callback ->
-                    preparingForSearch(query)
-                }
-            }
             utilErrorBox.visibility = View.GONE
             retryButton.visibility = View.GONE
             clearButton()
@@ -501,10 +506,12 @@ class SearchActivity : AppCompatActivity() {
 //                toast(getString(R.string.errorserch))
                 rotatingImageView.setImageResource(R.drawable.ic_launcher_foreground)
                 currentImage = 2
+                showHistoryViewsAndFillTrackAdapter()
             } else {
 //                toast(getString(R.string.error500))
                 rotatingImageView.setImageResource(R.drawable.ic_audio)
                 currentImage = 1
+                fillTrackAdapterWithOfferPlaylist()
             }
         }
     }
