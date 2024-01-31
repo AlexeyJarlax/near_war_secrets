@@ -65,7 +65,7 @@ class MyShadowGallery : Application() {
         }
 
         // Проверка и удаление ключа шифрования, если флаг установлен
-        val shouldDeleteEk = APKM(context = applicationContext).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, true)
+        val shouldDeleteEk = APKM(context = applicationContext).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, false)
 
         if (shouldDeleteEk) {
             APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET1)

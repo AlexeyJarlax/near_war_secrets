@@ -187,7 +187,7 @@ class MainPageActivity : AppCompatActivity() {
     }
 
     private fun prestart() {
-        pref1 = APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, true)
+        pref1 = APKM(context = this).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, false)
         pref2 = APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
         if (pref1 && !pref2) {
             val displayIntent = Intent(this, KeyInputActivity::class.java)

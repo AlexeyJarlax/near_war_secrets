@@ -10,7 +10,6 @@ import com.google.gson.Gson
 internal object APK { // AppPreferencesKey Internal - доступно только в модуле
     // хранилища SharedPreferences
     const val PREFS_NAME = "my_prefs_new" // открытое хранилище
-//    const val PREFS_HISTORY_NAME = "SearchHistoryNew" // история песен
     const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs_new" // защищенное хранилище
 
     // SharedPreferences
@@ -24,7 +23,6 @@ internal object APK { // AppPreferencesKey Internal - доступно толь�
 
     // ENCRYPTED SharedPreferences
     const val KEY_SMALL_SECRET = "my_secret_new"  // короткий секретик
-//    const val KEY_BIG_SECRET = "my_big_secret_new"  // длинный секретик
     const val KEY_BIG_SECRET_NAME1 = "my_big_secret_name_1_new"  // 1
     const val KEY_BIG_SECRET1 = "my_big_secret1_new"  // 1
     const val KEY_BIG_SECRET_NAME2 = "my_big_secret_name_2_new"  // 2

@@ -49,7 +49,6 @@ import android.util.Log
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.pavlov.MyShadowGallery.util.Encryption
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.APKM
@@ -491,7 +490,7 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                     fileToDelete.delete()
                                                 }
                                             } catch (e: Exception) {
-                                                showToast(getString(R.string.encryption_error))
+                                                showToast(getString(R.string.error_encryption))
 //                                            loadingIndicator4.visibility = View.INVISIBLE
 //                                                stopSmallLoadingIndicator()
                                             } finally {
@@ -540,13 +539,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                             }
 
                             override fun onError(exception: ImageCaptureException) {
-                                showToast(getString(R.string.save_error))
+                                showToast(getString(R.string.error_save))
                             }
                         })
 
                 }
             } catch (e: Exception) {
-                showToast(getString(R.string.camera_error))
+                showToast(getString(R.string.error_camera))
             }
         }, ContextCompat.getMainExecutor(this))
 
@@ -910,7 +909,7 @@ open class PhotoListAdapter(
                     }
                 } catch (e: Exception) {
                     // Отобразить сообщение об ошибке
-                    activity.showToast(context.getString(R.string.decryption_error))
+                    activity.showToast(context.getString(R.string.error_decryption))
                     activity.showToast(context.getString(R.string.error_key))
                 }
             }
@@ -1129,7 +1128,7 @@ open class PhotoListAdapter(
                             )
                         }
                     } catch (e: Exception) {
-                        activity.showToast(context.getString(R.string.encryption_error))
+                        activity.showToast(context.getString(R.string.error_encryption))
                     }
 
                     deleteFile(encryptedFile)
@@ -1196,11 +1195,11 @@ open class PhotoListAdapter(
                                 }
 
                                 else -> {
-                                    activity.showToast(context.getString(R.string.decryption_error))
+                                    activity.showToast(context.getString(R.string.error_decryption))
                                 }
                             }
                         } catch (e: Exception) {
-                            activity.showToast(context.getString(R.string.decryption_error))
+                            activity.showToast(context.getString(R.string.error_decryption))
                         }
                         closeContext()
                     }
@@ -1253,7 +1252,7 @@ open class PhotoListAdapter(
                         fileToDelete.delete()
                     }
                 } catch (e: Exception) {
-                    activity.showToast(context.getString(R.string.encryption_error))
+                    activity.showToast(context.getString(R.string.error_encryption))
                 } finally {
                 }
             } catch (e: Exception) {
@@ -1405,7 +1404,7 @@ open class PhotoListAdapter(
             return outputFile
         } else {
             Log.e("=== PhotoListAdapter", "=== Output file does not exist")
-            activity.showToast(context.getString(R.string.save_error))
+            activity.showToast(context.getString(R.string.error_save))
             return null
         }
 

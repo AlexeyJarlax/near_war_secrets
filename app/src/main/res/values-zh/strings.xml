@@ -197,12 +197,12 @@
     <string name="error500">500 - 服务器内部错误</string>
     <string name="error503">503 - 服务暂时不可用</string>
     <string name="error0">未知错误</string>
-    <string name="encryption_error">错误：无法完成加密</string>
-    <string name="save_error">保存错误</string>
-    <string name="camera_error">访问相机错误</string>
-    <string name="decryption_error">解密错误</string>
+    <string name="error_encryption">错误：无法完成加密</string>
+    <string name="error_save">保存错误</string>
+    <string name="error_camera">访问相机错误</string>
+    <string name="error_decryption">解密错误</string>
     <string name="error_key">可能密钥已更改</string>
     <string name="error_del">删除文件时出错</string>
     <string name="you_can_like">您可能会喜欢...</string>
-    <string name="errorserch">Song search is not available</string>
+    <string name="error_serch">Song search is not available</string>
 </resources>

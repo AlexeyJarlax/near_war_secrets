@@ -3,6 +3,8 @@ package com.pavlov.MyShadowGallery
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -35,11 +37,23 @@ import com.pavlov.MyShadowGallery.util.AdapterForHistoryTracks
 import com.pavlov.MyShadowGallery.util.ThemeManager
 import java.util.concurrent.TimeUnit
 import android.view.animation.AnimationUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var backgroundView: ImageView
     private var clickCounter = 0
     private lateinit var sharedPreferences: SharedPreferences
+    private val iTunesSearch = "https://itunes.apple.com"
+    private val retrofit =
+        Retrofit.Builder().baseUrl(iTunesSearch).addConverterFactory(GsonConverterFactory.create())
+            .build()
+    private val iTunesSearchAPI = retrofit.create(iTunesApiService::class.java)
     private var hasFocus = true
     private lateinit var queryInput: EditText
     private lateinit var clearButton: ImageButton
@@ -82,9 +96,7 @@ class SearchActivity : AppCompatActivity() {
 //        queryInput.setText(randomArtistName)
 //        checkMasterSSecret(randomArtistName, false)
         fillTrackAdapterWithFakePlaylist()
-        rotatingImageView = findViewById(R.id.rotatingImageView)
-        rotatingImageView.setOnClickListener { changeImage() }
-        rotatingImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation))
+        rotatingImageManager()
     } //конец онКриейт
 
 //    override fun onStart() {
@@ -297,30 +309,95 @@ class SearchActivity : AppCompatActivity() {
 
     private fun preparingForSearch(searchText: String) {
         loadingIndicator.visibility = View.VISIBLE
-//        clearButton.isEnabled = false
-        Handler(Looper.getMainLooper()).postDelayed({
-            performSearch(searchText) { trackItems ->
-                loadingIndicator.visibility = View.INVISIBLE
+            Handler(Looper.getMainLooper()).postDelayed({
+                performSearch(searchText) { trackItems ->
+                    loadingIndicator.visibility = View.INVISIBLE
 //                clearButton.isEnabled = true
-                adapterForAPITracks.updateList(trackItems)
-                adapterForAPITracks.setRecyclerView(trackRecyclerView)
-                trackRecyclerView.visibility = View.VISIBLE
-            }
-        }, APK.SERVER_PROCESSING_MILLISECONDS)
+                    adapterForAPITracks.updateList(trackItems)
+                    adapterForAPITracks.setRecyclerView(trackRecyclerView)
+                    trackRecyclerView.visibility = View.VISIBLE
+                }
+            }, APK.SERVER_PROCESSING_MILLISECONDS)
     }
 
     private var lastQuery: String? = null
     private var lastCallback: ((List<TrackData>) -> Unit)? = null
 
+//    private fun performNoInternetSearch(query: String, callback: (List<TrackData>) -> Unit) {
+//        if (query.isEmpty()) {
+//            // Пользователь не ввел запрос, поэтому отображаем предопределенный список
+//            val defaultTrackList = getDefaultTrackList()
+//            callback(defaultTrackList)
+//        } else {
+//            // Если пользователь ввел запрос, отображаем заглушку ошибки
+//            solvingConnectionProblem()
+//        }
+//    }
+
     private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
-        if (query.isEmpty()) {
-            // Пользователь не ввел запрос, поэтому отображаем предопределенный список
-            val defaultTrackList = getDefaultTrackList()
-            callback(defaultTrackList)
-        } else {
-            // Если пользователь ввел запрос, отображаем заглушку ошибки
-            solvingConnectionProblem()
-        }
+        lastQuery = query        // Сохраняем последний запрос и колбэк
+        lastCallback = callback
+        Log.d(
+            "=== SearchActivity",
+            "=== Запускаем метод performSearch с параметрами Query: $query и Callback"
+        )
+        iTunesSearchAPI.search(query).enqueue(object : Callback<TrackResponse> {
+            override fun onResponse(
+                call: Call<TrackResponse>, response: Response<TrackResponse>
+            ) {
+                if (response.code() == 200) {
+                    val trackResponse = response.body()
+                    val trackData = if (trackResponse?.results?.isNotEmpty() == true) {
+                        // Преобразуем результаты в список объектов TrackData
+                        trackResponse.results.map { track ->
+                            Log.d(
+                                "=== SearchActivity",
+                                "=== Метод performSearch => response.isSuccessful! track.trackName:${track.trackName}"
+                            )
+                            TrackData(
+                                track.trackName,
+                                track.artistName,
+                                track.trackTimeMillis,
+                                track.artworkUrl100
+                            )
+                        }
+                    } else {
+                        Log.d(
+                            "=== SearchActivity",
+                            "=== Метод performSearch => response.isSuccessful! => emptyList() таких песен нет"
+                        )
+                        solvingAbsentProblem() // вызываем заглушку о пустом листе запроса
+                        emptyList()
+                    }
+                    callback(trackData)         // Вызываем колбэк с полученными данными
+                    Log.d(
+                        "=== SearchActivity",
+                        "=== Метод performSearch => response.isSuccessful! => callback(trackData): $trackData"
+                    )
+                } else {
+                    val error = when (response.code()) {
+                        400 -> "${getString(R.string.error400)}"
+                        401 -> "${getString(R.string.error401)}"
+                        403 -> "${getString(R.string.error403)}"
+                        404 -> "${getString(R.string.error404)}"
+                        500 -> "${getString(R.string.error500)}"
+                        503 -> "${getString(R.string.error503)}"
+                        else -> "${getString(R.string.error0)}"
+                    }
+                    Log.d("=== SearchActivity", error)
+                    toast(error)
+                    onFailure(
+                        call, Throwable(error)
+                    )
+                }
+            }
+
+            override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                solvingConnectionProblem()
+                val trackData = emptyList<TrackData>()
+                callback(trackData)
+            }
+        })
     }
 
     private fun solvingAbsentProblem() {
@@ -363,6 +440,10 @@ class SearchActivity : AppCompatActivity() {
 //            utilErrorBox.visibility = View.GONE
 //        }
     }
+    interface iTunesApiService {
+        @GET("search?entity=song")
+        fun search(@Query("term") text: String): Call<TrackResponse>
+    }
 
     private fun clearButton() {
         clearButton.setOnClickListener {
@@ -395,16 +476,50 @@ class SearchActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun changeImage() {
-
-        if (currentImage == 1) {
-            toast(getString(R.string.errorserch))
+    fun rotatingImageManager() {
+        rotatingImageView = findViewById(R.id.rotatingImageView)
+        if(!isInternetPermissionGranted()) {
             rotatingImageView.setImageResource(R.drawable.ic_error_internet)
-            currentImage = 2
+        }
+            rotatingImageView.setOnClickListener { changeImage() }
+            rotatingImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_animation))
+        }
+
+    fun changeImage() {
+        if(!isInternetPermissionGranted()) {
+            if (currentImage == 1) {
+                toast(getString(R.string.error_serch))
+                rotatingImageView.setImageResource(R.drawable.ic_error_notfound)
+                currentImage = 2
+            } else {
+                toast(getString(R.string.error_connect))
+                rotatingImageView.setImageResource(R.drawable.ic_error_internet)
+                currentImage = 1
+            }
         } else {
-            toast(getString(R.string.error500))
-            rotatingImageView.setImageResource(R.drawable.ic_error_notfound)
-            currentImage = 1
+            if (currentImage == 1) {
+//                toast(getString(R.string.errorserch))
+                rotatingImageView.setImageResource(R.drawable.ic_launcher_foreground)
+                currentImage = 2
+            } else {
+//                toast(getString(R.string.error500))
+                rotatingImageView.setImageResource(R.drawable.ic_audio)
+                currentImage = 1
+            }
+        }
+    }
+    private fun isInternetPermissionGranted(): Boolean {
+        try {
+            val connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            val network = connectivityManager.activeNetwork
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+
+            return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                ?: false
+        } catch (e: Exception) {
+            return false
         }
     }
 }
@@ -506,6 +621,14 @@ data class TrackData(
         return String.format("%02d:%02d", minutes, seconds)
     }
 }
+
+data class TrackResponse(val results: List<ITunesTrack>)
+data class ITunesTrack(
+    val trackName: String,
+    val artistName: String,
+    val trackTimeMillis: Long,
+    val artworkUrl100: String
+)
 
 interface OnTrackItemClickListener {
     fun onTrackItemClick(

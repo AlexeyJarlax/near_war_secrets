@@ -82,7 +82,6 @@ class ArtistNaming {
             TrackData("In The Air Tonight", "Phil Collins", 331000, ""),
             TrackData("Yesterday", "Pepito Ros, Sandro Gibellini Trio", 175000, ""),
             TrackData("Engel", "Gregorian", 307000, ""),
-            TrackData("Djawadi: The Rains of Castamere (Arr. Lawson)", "VOCES8, Ramin Djawadi", 187000, ""),
             TrackData("Barracuda", "Heart", 274000, ""),
             TrackData("Helvegen", "Kalandra", 412000, ""),
             TrackData("Wandering Spirits", "David Arkenstone", 397000, ""),
@@ -97,7 +96,7 @@ class ArtistNaming {
             TrackData("Can't Turn Back the Years", "Phil Collins", 278000, ""),
             TrackData("Another Day in Paradise", "Phil Collins", 321000, ""),
             TrackData("True Sorry", "Ibrahim Maalouf", 291000, ""),
-            TrackData("Three Comrades", "Вадим Эйленкриг, Игорь Бутман, Allan Harris, Dmitry Mospan, Doug Shreeve, Anton Baronin", 268000, ""),
+            TrackData("Three Comrades", "Вадим Эйленкриг, Игорь Бутман...", 268000, ""),
             TrackData("Loud and Heavy", "Cody Jinks", 439000, ""),
             TrackData("Awake", "Jeremy Soule", 92000, ""),
             TrackData("The Expanse Theme", "Clinton Shorter", 64000, ""),
@@ -177,7 +176,7 @@ class ArtistNaming {
             TrackData("SunRise", "Northside", 199000, ""),
             TrackData("Forever Young", "Alphaville", 226000, ""),
             TrackData("Аваллон", "Elenor", 193000, ""),
-            TrackData("Возьми моё сердце", "Ария", 0, ""), // Заполни соответствующую длительность
+            TrackData("Возьми моё сердце", "Ария", 0, ""),
             TrackData("Осколок льда", "Ария", 325000, ""),
             TrackData("P'tite pute", "Saez", 267000, ""),
             TrackData("Гвардия Петра", "Radio Tapok", 209000, ""),
@@ -281,6 +280,11 @@ class ArtistNaming {
             TrackData("The Unforgiven", "Ha*Ash", 245000, ""),
             TrackData("Teardrop", "Eklipse", 257000, ""),
             TrackData("Happy Man triple j Like A Version", "Laurel", 203000, ""),
+            TrackData("Кроссворд", "Проще сложного", 190000, ""),
+            TrackData("Свобода", "Проще сложного", 167000, ""),
+            TrackData("Ноты", "Проще сложного", 238000, ""),
+            TrackData("КАД", "Проще сложного", 195000, ""),
+            TrackData("Just Do It", "Проще сложного", 208000, "")
         )
     }
 }

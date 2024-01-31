@@ -43,7 +43,7 @@
         android:onClick="changeImage"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_error_notfound"
+        android:src="@drawable/ic_placeholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

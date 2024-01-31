@@ -207,12 +207,12 @@ of fixed length that can then be used as the encryption key.</string>
     <string name="error500">500 - Internal Server Error</string>
     <string name="error503">503 - Service Unavailable</string>
     <string name="error0">Unknown Error</string>
-    <string name="encryption_error">Error: Unable to complete encryption</string>
-    <string name="save_error">Save error</string>
-    <string name="camera_error">Error accessing the camera</string>
-    <string name="decryption_error">Decryption error</string>
+    <string name="error_encryption">Error: Unable to complete encryption</string>
+    <string name="error_save">Save error</string>
+    <string name="error_camera">Error accessing the camera</string>
+    <string name="error_decryption">Decryption error</string>
     <string name="error_key">The key may have been changed</string>
     <string name="error_del">Error deleting the file</string>
     <string name="you_can_like">You might like...</string>
-    <string name="errorserch">Song search is not available</string>
+    <string name="error_serch">Song search is not available</string>
 </resources>

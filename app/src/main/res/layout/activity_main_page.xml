@@ -137,7 +137,7 @@
                 android:layout_height="@dimen/dp70"
                 android:layout_below="@+id/button_security3"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="-1dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="@dimen/z"
                 android:text="🏳️"
