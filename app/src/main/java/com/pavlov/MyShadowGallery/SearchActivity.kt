@@ -89,18 +89,10 @@ class SearchActivity : AppCompatActivity() {
         queryTextChangedListener()
         queryInputListener(isPasswordExists)
         clearButton()
-//        fillTrackAdapter()
         killTheHistory()
         fillTrackAdapterWithOfferPlaylist()
         rotatingImageManager()
-//        searchHistoryNotification.text = ""
-//        killTheHistory.visibility = View.GONE
     } //конец онКриейт
-
-//    override fun onStart() {
-//        super.onStart()
-//        toast(getString(R.string.you_can_like))
-//    }
 
     private fun checkMasterSSecret(
         password: String,
@@ -289,8 +281,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun clearTrackAdapter() {
         adapterForHistoryTracks.clearHistoryList() // чистит адаптер с историей
-//        trackAdapter.updateList(cleanTrackList)
-//        trackAdapter.clearList()
     }
 
     private fun killTheHistory() {
@@ -332,17 +322,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var lastQuery: String? = null
     private var lastCallback: ((List<TrackData>) -> Unit)? = null
-
-//    private fun performNoInternetSearch(query: String, callback: (List<TrackData>) -> Unit) {
-//        if (query.isEmpty()) {
-//            // Пользователь не ввел запрос, поэтому отображаем предопределенный список
-//            val defaultTrackList = getDefaultTrackList()
-//            callback(defaultTrackList)
-//        } else {
-//            // Если пользователь ввел запрос, отображаем заглушку ошибки
-//            solvingConnectionProblem()
-//        }
-//    }
 
     private fun performSearch(query: String, callback: (List<TrackData>) -> Unit) {
         lastQuery = query        // Сохраняем последний запрос и колбэк
@@ -440,10 +419,6 @@ class SearchActivity : AppCompatActivity() {
             clearButton()
         }
 
-//        utilErrorBox.setOnClickListener {
-//            retryButton.visibility = View.GONE
-//            utilErrorBox.visibility = View.GONE
-//        }
     }
     interface iTunesApiService {
         @GET("search?entity=song")

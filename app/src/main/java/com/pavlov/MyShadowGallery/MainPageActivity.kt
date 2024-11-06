@@ -155,35 +155,6 @@ class MainPageActivity : AppCompatActivity() {
             buttonSecurity3.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
         }
-
-//        simblPass = if (passKey) {
-//            "🔐"
-//        } else {
-//            "🏳️"
-//        }
-//        simblMimic = if (mimikKey) {
-//            "🕶️"
-//        } else {
-//            "🏳️"
-//        }
-//        simblEncryption = if (encryptionKeyName) {
-//            APKM(context = this).getDefauldKeyName()
-//        } else {
-//            "🏳️"
-//        }
-//            keySimbl.backgroundTintList =
-//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color))
-//            keySimbl.text = "🏳️"
-//        } else if (text.length < 4) {
-//            keySimbl.backgroundTintList =
-//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.kototeka_thumb_color2))
-//        } else if (text.length < 6) {
-//            keySimbl.backgroundTintList =
-//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue_light))
-//        } else if (text.length < 8) {
-//            keySimbl.backgroundTintList =
-//                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yp_blue))
-//        }
     }
 
     private fun prestart() {

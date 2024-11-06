@@ -5,12 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
-import com.pavlov.MyShadowGallery.util.ThemeManager
 
 class FAQActivity : AppCompatActivity() {
 
@@ -20,7 +16,6 @@ class FAQActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_faq)
         videoView = findViewById(R.id.video_view_faq)
-//        val backMenuLayout = findViewById<LinearLayout>(R.id.act_abouttheapp_layout)
         val buttonBack = findViewById<Button>(R.id.button_back_from_faq)
         val buttonAddPicture = findViewById<Button>(R.id.button_how_to_add_picture)
         val buttonSharePicture = findViewById<Button>(R.id.button_settings_share)
@@ -76,11 +71,5 @@ class FAQActivity : AppCompatActivity() {
         }
     }
 
-//    fun scrollView() {
-//        val scrollView = findViewById<ScrollView>(R.id.aboutTheAppActivity)
-//        scrollView?.post {
-//            scrollView.smoothScrollTo(0, 0) // Прокрутить вверх
-//        }
-//    }
 }
 

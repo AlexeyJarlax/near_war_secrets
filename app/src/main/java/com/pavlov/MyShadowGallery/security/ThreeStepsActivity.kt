@@ -19,8 +19,6 @@ import com.pavlov.MyShadowGallery.util.APKM
 
 class ThreeStepsActivity : AppCompatActivity() {
 
-    //    private lateinit var loadingIndicator: ProgressBar
-//    private lateinit var utilStepsBox: LinearLayout
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var errorTextWeb: TextView
     private lateinit var errorIcon: ImageView

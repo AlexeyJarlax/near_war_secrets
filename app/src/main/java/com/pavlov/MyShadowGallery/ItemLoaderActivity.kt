@@ -94,9 +94,6 @@ class ItemLoaderActivity : AppCompatActivity() {
     private val permission2: String = Manifest.permission.WRITE_EXTERNAL_STORAGE
     private val permission3: String = Manifest.permission.CAMERA
 
-//    @RequiresApi(Build.VERSION_CODES.R)
-//    val permission4: String = Manifest.permission.MANAGE_EXTERNAL_STORAGE
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val permission5: String = Manifest.permission.READ_MEDIA_IMAGES
 
@@ -426,17 +423,12 @@ class ItemLoaderActivity : AppCompatActivity() {
                                             APK.KEY_USE_THE_ENCRYPTION_K, false
                                         )
                                     ) {
-//                                        smallLoadingIndicator {
                                         MainScope().launch {  // в фоновом потоке, Корутина
                                             startSmallLoadingIndicator()
                                             buttonCapture?.visibility = View.INVISIBLE
-//                                        showToast(getString(R.string.background_process))
-//                                            loadingIndicator4.visibility = View.VISIBLE
-//                                            loadingIndicator2.visibility = View.INVISIBLE
                                             if (loadingIndicator3 != null) {
                                                 loadingIndicator3.visibility = View.INVISIBLE
                                             }
-//                                        showLoadingIndicator()
                                             val rotationDegrees = when (currentCameraSelector) {
                                                 CameraSelector.DEFAULT_FRONT_CAMERA -> {
                                                     if (rotationAngle == 0) {
@@ -491,17 +483,13 @@ class ItemLoaderActivity : AppCompatActivity() {
                                                 }
                                             } catch (e: Exception) {
                                                 showToast(getString(R.string.error_encryption))
-//                                            loadingIndicator4.visibility = View.INVISIBLE
-//                                                stopSmallLoadingIndicator()
                                             } finally {
                                                 stopSmallLoadingIndicator()
                                                 if(buttonGallery?.visibility != View.VISIBLE) {
                                                     buttonCapture?.visibility = View.VISIBLE
                                                 }
                                             }
-//                                        hideLoadingIndicator(isItFrontCamera) // завершение индикатора
                                         }// завершение корутины
-//                                    } // завершение индикатора
                                     } else {
                                         if (rotationAngle == 0) {
                                             showToast(getString(R.string.encryption_no))
@@ -558,12 +546,6 @@ class ItemLoaderActivity : AppCompatActivity() {
 
     private val PICK_IMAGE_REQUEST = 1
 
-//private fun openImagePicker() {
-//    val imagePickerIntent = Intent(Intent.ACTION_PICK)
-//    imagePickerIntent.type = "image/*"
-//    startActivityForResult(imagePickerIntent, PICK_IMAGE_REQUEST)
-//}
-
     private val filePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -574,35 +556,6 @@ class ItemLoaderActivity : AppCompatActivity() {
     private fun openImagePicker() {
         filePickerLauncher.launch("*/*")
     }
-
-//private fun handleSelectedImage(uri: Uri) {
-//    showToast(getString(R.string.download))
-//
-//    val folder = applicationContext.filesDir
-//    var existOrNot = APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
-//    val fileName = NamingStyleManager(application).generateFileName(existOrNot, folder)
-//
-//    val outputFile = File(folder, fileName)
-//
-//    contentResolver.openInputStream(uri)?.use { input ->
-//        FileOutputStream(outputFile).use { output ->
-//            input.copyTo(output)
-//        }
-//    }
-//
-//    if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)) {
-//        encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
-//        encryption.encryptImage(
-//            outputFile.toUri(),
-//            fileName,
-//            APKM(context = this@ItemLoaderActivity).getDefauldKey()
-//        )
-//    } else {
-//        showToast(getString(R.string.encryption_no))
-//        encryption.addPhotoToList(0, outputFile.toUri())
-//        notifyDSC()
-//    }
-//}
 
     private fun handleSelectedFile(uri: Uri) {
         showToast(getString(R.string.download))
@@ -619,50 +572,12 @@ class ItemLoaderActivity : AppCompatActivity() {
             }
         }
 
-
-//        if (outputFile != null) {
-//            if (!outputFile.parentFile?.absolutePath.equals(this.applicationContext.filesDir.absolutePath)) {
-//                // Если не находится, перемещаем файл в нужную папку
-//                val newFile = File(this.applicationContext.filesDir, outputFile.name)
-//                outputFile.renameTo(newFile)
-//                outputFile = newFile
-//            }
-//        }
-
 //                    showToast(getString(R.string.encryption_no))
         encryption.addPhotoToList(0, outputFile.toUri())
         notifyDSC()
 
         photoListAdapter.showShareImageDialog(this, outputFile)
-//        if (APKM(context = this).getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)) {
-//            encryption.createThumbnail(this@ItemLoaderActivity, outputFile.toUri())
-//            encryption.encryptImage(
-//                outputFile.toUri(),
-//                fileName,
-//                APKM(context = this@ItemLoaderActivity).getDefauldKey()
-//            )
-//        } else {
-//            showToast(getString(R.string.encryption_no))
-//            encryption.addPhotoToList(0, outputFile.toUri())
-//            notifyDSC()
-//        }
     }
-
-//override fun onActivityResult(
-//    requestCode: Int, resultCode: Int, data: Intent?
-//) {
-//    super.onActivityResult(requestCode, resultCode, data)
-//
-//    when (requestCode) {
-//        PICK_IMAGE_REQUEST -> {
-//            if (resultCode == Activity.RESULT_OK) {
-//                data?.data?.let { uri ->
-//                    handleSelectedImage(uri)
-//                }
-//            }
-//        }
-//    }
-//}
 }
 
 //==================================================================================================
@@ -1287,21 +1202,9 @@ open class PhotoListAdapter(
 
             // Явное освобождение ресурсов
             FileProviderAdapter.recycleBitmap(rotatedBitmap)
-
-//            val fileUri = FileProviderAdapter.getUriForFile(
-//                context.applicationContext, imageFile
-//            )
             activity.showToast(context.getString(R.string.no_key_found))
             activity.showToast(context.getString(R.string.encryption_no))
             encryption.addPhotoToList(0, imageFile.toUri())
-//            encryption.createThumbnail(context.applicationContext, fileUri)
-//            val newName = imageFile.nameWithoutExtension + ".k"
-//            try {
-//                encryption.encryptImage(
-//                    fileUri,
-//                    newName,
-//                    newDecryption
-//                )
 
             // Удаление shere файла
             val fileToDelete =
@@ -1309,13 +1212,6 @@ open class PhotoListAdapter(
             if (fileToDelete.exists()) {
                 fileToDelete.delete()
             }
-//            } catch (e: Exception) {
-//                activity.showToast(context.getString(R.string.encryption_error))
-//            }
-//            activity.hideLoadingIndicator(true) // завершение индикатора
-//            val intent = Intent(context, ItemLoaderActivity::class.java)
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//            context.startActivity(intent)
             closeContext2()
         } // завершение корутины
     }

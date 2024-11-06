@@ -106,18 +106,6 @@ class KeyInputActivity : AppCompatActivity() {
         val maxLength = 16
         keyName.filters = arrayOf(
             InputFilter.LengthFilter(maxLength),
-//            InputFilter { source, start, end, dest, dstart, dend ->
-//                val input2 = SpannableStringBuilder()
-//                for (i in start until end) {
-//                    val c = source[i]
-//                    if (c.toString().matches(Regex(APK.REGEX))) {
-//                        input2.append(c)
-//                    } else {
-//                        variableKeyText.text = getString(R.string.invalid_character)
-//                    }
-//                }
-//                input2
-//            }
         )
 
         keyInputEditText.filters = arrayOf(InputFilter { source, start, end, dest, dstart, dend ->
