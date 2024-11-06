@@ -22,11 +22,11 @@ android {
 
     defaultConfig {
         applicationId = "com.pavlov.MyShadowGallery"
-        resConfigs("ru", "en", "zh", "es")
+        resourceConfigurations += setOf("ru", "en", "zh", "es")
         minSdk = 28
         targetSdk = 34
-        versionCode = 52
-        versionName = "1.52"
+        versionCode = 53
+        versionName = "1.53"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

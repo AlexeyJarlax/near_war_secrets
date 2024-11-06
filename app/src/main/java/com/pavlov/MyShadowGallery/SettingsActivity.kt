@@ -169,7 +169,7 @@ class SettingsActivity : AppCompatActivity() {
         switchDarkMode.isChecked = ThemeManager.isNightModeEnabled(this)
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             ThemeManager.setNightModeEnabled(this, isChecked)
-            ThemeManager.applyTheme(this) // Добавьте эту строку здесь
+            ThemeManager.applyTheme(this)
         }
 
         // Пользовательский стиль
