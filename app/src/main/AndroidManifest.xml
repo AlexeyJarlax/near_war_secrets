@@ -29,7 +29,6 @@
         android:theme="@style/Theme.MyApp"
         tools:targetApi="tiramisu">
 
-
         <activity
             android:name=".file.ShareActivity"
             android:exported="true"
@@ -86,10 +85,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".file.StorageLogActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".SearchActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity

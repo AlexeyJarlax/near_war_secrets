@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pavlov.MyShadowGallery.MainPageActivity
 import com.pavlov.MyShadowGallery.R
-import com.pavlov.MyShadowGallery.SearchActivity
 import com.pavlov.MyShadowGallery.SettingsActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
@@ -84,11 +83,6 @@ class LoginActivity : AppCompatActivity() {
                     APKM(context = this).saveBooleanToSPK(APK.KEY_FIRST_RUN, false)
                 goToZeroActivity() // ИДЕМ В ТРИ ШАГА К ЗАЩИТЕ
             } else {
-                if ( APKM(context = this).getBooleanFromSPK(APK.KEY_EXIST_OF_MIMICRY, false)// МИМИКРИРУЮЩИЙ ЗАПУСК ?????
-                ) {
-                    mimicry = true
-                    entranceMimic()  // ИДЕМ В МИМИКРИРУЮЩЕЕ ОКНО
-                } else {
                     mimicry = false
                     val savedPassword = APKM(context = this).getMastersSecret(APK.KEY_SMALL_SECRET)
                     if (savedPassword.isBlank()) {    // ЗАПОРОЛЕННЫЙ ЗАПУСК ?????
@@ -97,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
 
                     }
-                }
+
             }
         } else {
 
@@ -197,13 +191,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun entranceMain() {
         val intent = Intent(this, MainPageActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun entranceMimic() {
-        val intent = Intent(this, SearchActivity::class.java)
-        intent.putExtra("isPasswordExists", true) // Set the flag based on your requirement
         startActivity(intent)
         finish()
     }

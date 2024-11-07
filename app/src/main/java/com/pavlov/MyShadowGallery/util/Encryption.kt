@@ -27,7 +27,6 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
 class Encryption(private val context: Context) {
-    val itemLoaderActivity = context as ItemLoaderActivity
     private val photoList = ArrayList<String>()
 
     companion object {
@@ -198,7 +197,7 @@ class Encryption(private val context: Context) {
 
 
 
-    fun createThumbnail(context: Context, input: Any) {
+    fun createThumbnail(context: Context, input: Any, onThumbnailCreated: (String) -> Unit) {
         var imageUri: Uri? = null
         var file: File? = null
 
@@ -249,8 +248,8 @@ class Encryption(private val context: Context) {
                     val thumbnailName =
                         saveThumbnailWithRandomFileName(context, resource, imageUri, file)
                     if (thumbnailName.isNotEmpty()) {
-                        photoList.add(0, thumbnailName)
-                        itemLoaderActivity.notifyDSC()
+                        // Обновляем список фотографий через колбэк
+                        onThumbnailCreated(thumbnailName)
                         Log.e("=== Encryption", "=== Превью сохранено")
                         if (imageUri != null) {
                             deleteOriginalImage(imageUri)
@@ -263,7 +262,7 @@ class Encryption(private val context: Context) {
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    // То же, что и раньше
+
                 }
             })
     }

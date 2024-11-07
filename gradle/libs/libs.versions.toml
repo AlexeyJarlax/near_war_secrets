@@ -1,0 +1,12 @@
+[versions]
+coil = "2.7.0"
+compose = "1.7.5"
+
+# Плагины (если необходимо)
+[plugins]
+android = { id = "com.android.application", version = "7.3.1" }
+
+# Библиотеки
+[libraries]
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }

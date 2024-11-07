@@ -24,8 +24,8 @@
         <string name="heading_search_history_list_view">Historial de Búsqueda:</string>
         <string name="todo">Por hacer</string>
         <string name="there_wil_be_media_library">En esta ventana habrá una biblioteca multimedia</string>
-        <string name="cam_bat_on">Ocultar\ncámara</string>
-        <string name="cam_bat_off">Iniciar\ncámara</string>
+        <string name="cam_bat_hide">Ocultar\ncámara</string>
+        <string name="cam_bat_start">Iniciar\ncámara</string>
         <string name="cam_bat">Cámara</string>
         <string name="snapshot">Tomar\ninstantánea</string>
         <string name="galery">Cargar\narchivo</string>

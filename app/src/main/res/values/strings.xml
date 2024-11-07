@@ -24,8 +24,8 @@
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">Туду</string>
     <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
-    <string name="cam_bat_on">Скрыть\nкамеру</string>
-    <string name="cam_bat_off">Запустить\nкамеру</string>
+    <string name="cam_bat_hide">Скрыть\nкамеру</string>
+    <string name="cam_bat_start">Запустить\nкамеру</string>
     <string name="cam_bat">Камера</string>
     <string name="snapshot">Сделать\nснимок</string>
     <string name="galery">Загрузить\nфайл</string>
@@ -111,7 +111,7 @@
 
     <string name="developers_page">Страница разработчика</string>
     <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
-    <string name="wait">ожидайте...</string>
+    <string name="wait">ожидайте…</string>
     <string name="password">Пароль:</string>
     <string name="invalid_character">недопустимый символ</string>
     <string name="repit_password">Введите пароль еще раз</string>
@@ -125,14 +125,14 @@
     <string name="old_password">Старый пароль</string>
     <string name="access_obtained">Доступ получен</string>
     <string name="encryption_no">Сохранено без шифрования</string>
-    <string name="download">Загрузка...</string>
+    <string name="download">Загрузка…</string>
     <string name="share_the_img">Поделиться изображением</string>
     <string name="encrepted_img">Зашифрованное изображение</string>
     <string name="decripted_img">Дешифрованное изображение</string>
     <string name="timber_img">Миниатюра</string>
     <string name="chuse_img">Выберите файл для отправки</string>
     <string name="encrypted_save">Сохранён зашифрованный файл:</string>
-    <string name="decrypting">Дешифрую...</string>
+    <string name="decrypting">Дешифрую…</string>
     <string name="naming_options">Генератор имен для файлов</string>
     <string name="language_option">Выберите язык приложения</string>
     <string name="naming_option">Выберите стиль наименования файлов</string>
@@ -216,5 +216,8 @@ AES (Advanced Encryption Standard).
     <string name="error_del">Ошибка при удалении файла</string>
     <string name="error_serch">Поиск песен недоступен</string>
     <string name="error_connect">Ошибка соединения</string>
-    <string name="you_can_like">Вам может понравится...</string>
+    <string name="you_can_like">Вам может понравится…</string>
+    <string name="saved">Сохранён</string>
+    <string name="flip">Развернуть</string>
+    <string name="error_gallery">Ошибка доступа к галерее</string>
 </resources>

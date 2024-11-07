@@ -7,12 +7,14 @@ import com.pavlov.MyShadowGallery.util.APK
 import android.os.Bundle
 import androidx.core.content.edit
 import com.pavlov.MyShadowGallery.util.APKM
+import com.pavlov.MyShadowGallery.util.ToastExt
 
 class MyShadowGallery : Application() {
     private var cleanupDone = false
 
     override fun onCreate() {
         super.onCreate()
+        ToastExt.init(this)
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
