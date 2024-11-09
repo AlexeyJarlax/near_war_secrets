@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.ui.item_loader
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -39,11 +39,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.core.net.toUri
+import com.pavlov.MyShadowGallery.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemLoaderScreen(viewModel: ItemLoaderViewModel, onBack: () -> Unit) {
+fun ItemLoaderScreen(
+    viewModel: ItemLoaderViewModel,
+    onBack: () -> Unit,
+    mode: String = ItemLoaderActivity.MODE_FULL
+) {
     val context = LocalContext.current
+    val isStorageMode = mode == ItemLoaderActivity.MODE_STORAGE
     val photoList by viewModel.photoList.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
     var selectedFileName by remember { mutableStateOf<String?>(null) }
@@ -148,7 +154,7 @@ fun ItemLoaderScreen(viewModel: ItemLoaderViewModel, onBack: () -> Unit) {
                     }
 
                     // Отображение превью камеры
-                    if (isPreviewVisible) {
+                    if (isPreviewVisible && !isStorageMode) { // Скрываем превью камеры в режиме storage
                         AndroidView(
                             factory = { previewView },
                             modifier = Modifier
@@ -158,85 +164,87 @@ fun ItemLoaderScreen(viewModel: ItemLoaderViewModel, onBack: () -> Unit) {
                     }
 
                     // Кнопки управления
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Button(onClick = {
-                            if (isPreviewVisible) {
-                                // Скрыть камеру
-                                isPreviewVisible = false
-                            } else {
+                    if (!isStorageMode) { // Показываем кнопки только в полном режиме
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Button(onClick = {
+                                if (isPreviewVisible) {
+                                    // Скрыть камеру
+                                    isPreviewVisible = false
+                                } else {
+                                    // Проверяем разрешение и запрашиваем при необходимости
+                                    if (ContextCompat.checkSelfPermission(
+                                            context, Manifest.permission.CAMERA
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    ) {
+                                        isPreviewVisible = true
+                                    } else {
+                                        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                    }
+                                }
+                            }) {
+                                Text(
+                                    text = if (isPreviewVisible)
+                                        context.getString(R.string.cam_bat_hide)
+                                    else
+                                        context.getString(R.string.cam_bat_start)
+                                )
+                            }
+
+                            Button(onClick = {
                                 // Проверяем разрешение и запрашиваем при необходимости
+                                val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    Manifest.permission.READ_MEDIA_IMAGES
+                                } else {
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                }
                                 if (ContextCompat.checkSelfPermission(
-                                        context, Manifest.permission.CAMERA
+                                        context, permission
                                     ) == PackageManager.PERMISSION_GRANTED
                                 ) {
-                                    isPreviewVisible = true
+                                    galleryLauncher.launch("image/*")
                                 } else {
-                                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                    galleryPermissionLauncher.launch(permission)
                                 }
-                            }
-                        }) {
-                            Text(
-                                text = if (isPreviewVisible)
-                                    context.getString(R.string.cam_bat_hide)
-                                else
-                                    context.getString(R.string.cam_bat_start)
-                            )
-                        }
-
-                        Button(onClick = {
-                            // Проверяем разрешение и запрашиваем при необходимости
-                            val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                Manifest.permission.READ_MEDIA_IMAGES
-                            } else {
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            }
-                            if (ContextCompat.checkSelfPermission(
-                                    context, permission
-                                ) == PackageManager.PERMISSION_GRANTED
-                            ) {
-                                galleryLauncher.launch("image/*")
-                            } else {
-                                galleryPermissionLauncher.launch(permission)
-                            }
-                        }) {
-                            Text(text = context.getString(R.string.galery))
-                        }
-
-                        if (isPreviewVisible) {
-                            Button(onClick = {
-                                // Сделать снимок
-                                val fileName = viewModel.getFileName()
-                                val file = File(context.filesDir, fileName)
-                                val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
-
-                                imageCapture.takePicture(
-                                    outputOptions,
-                                    ContextCompat.getMainExecutor(context),
-                                    object : ImageCapture.OnImageSavedCallback {
-                                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                            viewModel.addPhoto(file.toUri())
-                                            ToastExt.show(context.getString(R.string.saved))
-                                        }
-
-                                        override fun onError(exception: ImageCaptureException) {
-                                            ToastExt.show(context.getString(R.string.error_save))
-                                        }
-                                    }
-                                )
                             }) {
-                                Text(text = context.getString(R.string.snapshot))
+                                Text(text = context.getString(R.string.galery))
                             }
 
-                            Button(onClick = {
-                                // Переключение камеры
-                                viewModel.switchCamera()
-                            }) {
-                                Text(text = context.getString(R.string.flip))
+                            if (isPreviewVisible) {
+                                Button(onClick = {
+                                    // Сделать снимок
+                                    val fileName = viewModel.getFileName()
+                                    val file = File(context.filesDir, fileName)
+                                    val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
+
+                                    imageCapture.takePicture(
+                                        outputOptions,
+                                        ContextCompat.getMainExecutor(context),
+                                        object : ImageCapture.OnImageSavedCallback {
+                                            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                                                viewModel.addPhoto(file.toUri())
+                                                ToastExt.show(context.getString(R.string.saved))
+                                            }
+
+                                            override fun onError(exception: ImageCaptureException) {
+                                                ToastExt.show(context.getString(R.string.error_save))
+                                            }
+                                        }
+                                    )
+                                }) {
+                                    Text(text = context.getString(R.string.snapshot))
+                                }
+
+                                Button(onClick = {
+                                    // Переключение камеры
+                                    viewModel.switchCamera()
+                                }) {
+                                    Text(text = context.getString(R.string.flip))
+                                }
                             }
                         }
                     }

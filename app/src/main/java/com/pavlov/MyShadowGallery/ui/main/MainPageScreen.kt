@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.ui.main
 
 import android.app.Activity
 import android.content.Context
@@ -36,9 +36,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pavlov.MyShadowGallery.AboutActivity
+import com.pavlov.MyShadowGallery.FAQActivity
+import com.pavlov.MyShadowGallery.R
+import com.pavlov.MyShadowGallery.SettingsActivity
 import com.pavlov.MyShadowGallery.file.StorageLogActivity
 import com.pavlov.MyShadowGallery.security.KeyInputActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
+import com.pavlov.MyShadowGallery.ui.item_loader.ItemLoaderActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -123,7 +128,9 @@ fun MainPageScreen() {
                 text = stringResource(R.string.button_item_loader),
                 iconRes = android.R.drawable.ic_menu_add,
                 onClick = {
-                    val displayIntent = Intent(context, ItemLoaderActivity::class.java)
+                    val displayIntent = Intent(context, ItemLoaderActivity::class.java).apply {
+                        putExtra(ItemLoaderActivity.EXTRA_MODE, ItemLoaderActivity.MODE_FULL)
+                    }
                     context.startActivity(displayIntent)
                 }
             )
@@ -132,10 +139,13 @@ fun MainPageScreen() {
                 text = stringResource(R.string.storage),
                 iconRes = android.R.drawable.ic_dialog_dialer,
                 onClick = {
-                    val displayIntent = Intent(context, ItemLoaderActivity::class.java)
+                    val displayIntent = Intent(context, ItemLoaderActivity::class.java).apply {
+                        putExtra(ItemLoaderActivity.EXTRA_MODE, ItemLoaderActivity.MODE_STORAGE)
+                    }
                     context.startActivity(displayIntent)
                 }
             )
+
 
             MainMenuButton(
                 text = stringResource(R.string.storage_log),

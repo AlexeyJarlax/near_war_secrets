@@ -88,7 +88,7 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ItemLoaderActivity"
+            android:name=".ui.item_loader.ItemLoaderActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -98,7 +98,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyApp" />
         <activity
-            android:name=".MainPageActivity"
+            android:name=".ui.main.MainPageActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
     </application>

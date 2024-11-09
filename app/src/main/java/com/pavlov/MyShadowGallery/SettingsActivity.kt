@@ -21,6 +21,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.security.LoginActivity
 import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
+import com.pavlov.MyShadowGallery.ui.main.MainPageActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager

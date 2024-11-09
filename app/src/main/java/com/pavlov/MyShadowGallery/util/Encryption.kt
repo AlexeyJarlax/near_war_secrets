@@ -16,7 +16,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
-import com.pavlov.MyShadowGallery.ItemLoaderActivity
 import com.pavlov.MyShadowGallery.R
 import java.io.ByteArrayOutputStream
 import java.io.File

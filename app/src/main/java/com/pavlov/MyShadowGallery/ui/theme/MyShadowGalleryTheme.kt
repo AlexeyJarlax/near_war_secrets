@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui
+package com.pavlov.MyShadowGallery.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*

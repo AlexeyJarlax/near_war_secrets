@@ -1,15 +1,13 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.MyShadowGallery.ui.item_loader
 
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.lifecycle.*
+import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.file.FileProviderAdapter
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.*

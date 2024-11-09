@@ -15,7 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.pavlov.MyShadowGallery.MainPageActivity
+import com.pavlov.MyShadowGallery.ui.main.MainPageActivity
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.SettingsActivity
 import com.pavlov.MyShadowGallery.util.APK
