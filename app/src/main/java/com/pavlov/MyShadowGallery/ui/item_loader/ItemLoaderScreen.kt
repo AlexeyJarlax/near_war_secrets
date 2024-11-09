@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import com.pavlov.MyShadowGallery.util.ToastExt
 import java.io.File
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -49,14 +50,14 @@ fun ItemLoaderScreen(
     mode: String = ItemLoaderActivity.MODE_FULL
 ) {
     val context = LocalContext.current
+    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
+    var selectedUri: Uri? by remember { mutableStateOf(null) }
     val isStorageMode = mode == ItemLoaderActivity.MODE_STORAGE
     val photoList by viewModel.photoList.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
-
     val lifecycleOwner = LocalLifecycleOwner.current
-
     var isPreviewVisible by remember { mutableStateOf(false) }
     val cameraSelector by viewModel.cameraSelector.observeAsState(CameraSelector.DEFAULT_BACK_CAMERA)
     val imageCapture = remember { ImageCapture.Builder().build() }
@@ -111,7 +112,6 @@ fun ItemLoaderScreen(
                     imageCapture
                 )
             } catch (e: Exception) {
-                // Обработка ошибок
                 ToastExt.show(context.getString(R.string.error_camera))
             }
         }
@@ -154,7 +154,7 @@ fun ItemLoaderScreen(
                     }
 
                     // Отображение превью камеры
-                    if (isPreviewVisible && !isStorageMode) { // Скрываем превью камеры в режиме storage
+                    if (isPreviewVisible && !isStorageMode) {
                         AndroidView(
                             factory = { previewView },
                             modifier = Modifier
@@ -164,7 +164,7 @@ fun ItemLoaderScreen(
                     }
 
                     // Кнопки управления
-                    if (!isStorageMode) { // Показываем кнопки только в полном режиме
+                    if (!isStorageMode) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -173,10 +173,8 @@ fun ItemLoaderScreen(
                         ) {
                             Button(onClick = {
                                 if (isPreviewVisible) {
-                                    // Скрыть камеру
                                     isPreviewVisible = false
                                 } else {
-                                    // Проверяем разрешение и запрашиваем при необходимости
                                     if (ContextCompat.checkSelfPermission(
                                             context, Manifest.permission.CAMERA
                                         ) == PackageManager.PERMISSION_GRANTED
@@ -196,7 +194,6 @@ fun ItemLoaderScreen(
                             }
 
                             Button(onClick = {
-                                // Проверяем разрешение и запрашиваем при необходимости
                                 val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                     Manifest.permission.READ_MEDIA_IMAGES
                                 } else {
@@ -216,7 +213,6 @@ fun ItemLoaderScreen(
 
                             if (isPreviewVisible) {
                                 Button(onClick = {
-                                    // Сделать снимок
                                     val fileName = viewModel.getFileName()
                                     val file = File(context.filesDir, fileName)
                                     val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
@@ -226,8 +222,8 @@ fun ItemLoaderScreen(
                                         ContextCompat.getMainExecutor(context),
                                         object : ImageCapture.OnImageSavedCallback {
                                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                                viewModel.addPhoto(file.toUri())
-                                                ToastExt.show(context.getString(R.string.saved))
+                                                selectedUri = file.toUri()
+                                                viewModel.onSavePhotoClicked(true)
                                             }
 
                                             override fun onError(exception: ImageCaptureException) {
@@ -240,7 +236,6 @@ fun ItemLoaderScreen(
                                 }
 
                                 Button(onClick = {
-                                    // Переключение камеры
                                     viewModel.switchCamera()
                                 }) {
                                     Text(text = context.getString(R.string.flip))
@@ -254,7 +249,6 @@ fun ItemLoaderScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                // Диалоговое окно с изображением
                 if (showImageDialog && selectedFileName != null) {
                     ImageDialog(
                         fileName = selectedFileName!!,
@@ -267,6 +261,29 @@ fun ItemLoaderScreen(
                         onShare = {
                             viewModel.shareImage(selectedFileName!!)
                             showImageDialog = false
+                        }
+                    )
+                }
+
+                // Диалог для сохранения с шифрованием
+                if (showSaveDialog && selectedUri != null) {
+                    AlertDialog(
+                        onDismissRequest = { viewModel.onSavePhotoClicked(false) },
+                        title = { Text("Выбор шифрования") },
+                        text = { Text("Сохранить фотографию с шифрованием или без?") },
+                        confirmButton = {
+                            Button(onClick = {
+                                viewModel.savePhotoWithChoice(selectedUri!!, encrypt = true)
+                            }) {
+                                Text("С шифрованием")
+                            }
+                        },
+                        dismissButton = {
+                            Button(onClick = {
+                                viewModel.savePhotoWithChoice(selectedUri!!, encrypt = false)
+                            }) {
+                                Text("Без шифрования")
+                            }
                         }
                     )
                 }

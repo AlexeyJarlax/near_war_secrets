@@ -58,6 +58,9 @@ class ItemLoaderViewModel(application: Application) : AndroidViewModel(applicati
     private val _loadingIndicatorVisible = MutableLiveData<Boolean>(false)
     val loadingIndicatorVisible: LiveData<Boolean> get() = _loadingIndicatorVisible
 
+    private val _showSaveDialog = MutableLiveData<Boolean>()
+    val showSaveDialog: LiveData<Boolean> get() = _showSaveDialog
+
     init {
         loadSavedPhotos()
     }
@@ -154,5 +157,34 @@ class ItemLoaderViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
         return savedFiles
+    }
+
+    fun onSavePhotoClicked(boolean: Boolean) {
+        // Показываем диалог, когда пользователь нажимает сохранить
+        _showSaveDialog.value = boolean
+    }
+
+    fun savePhotoWithChoice(uri: Uri, encrypt: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val fileName = getFileName()
+            val destinationFile = File(context.filesDir, fileName)
+
+            try {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                if (encrypt) {
+                    val encryptionKey = getEncryptionKeyName(fileName)
+                    encryption.encryptImage(uri, fileName, encryptionKey)
+                } else {
+                    val outputStream = FileOutputStream(destinationFile)
+                    inputStream?.copyTo(outputStream)
+                    outputStream.close()
+                }
+                inputStream?.close()
+                loadSavedPhotos()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        _showSaveDialog.value = false
     }
 }
