@@ -43,8 +43,8 @@ class NamingStyleManager(private val context: Context) {
             }
         }
     }
-//fun generateFileName(context: Context, isBoolean: Boolean, folder: File): String {
-fun generateFileName(isBoolean: Boolean, folder: File): String {
+
+fun generateFileName(isEncrypted: Boolean, folder: File): String {
     if (adjectives.isEmpty() || nouns.isEmpty()) {
         Log.d("FileNameGeneration", "Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
         return "FallbackFileName.unknown"
@@ -53,7 +53,7 @@ fun generateFileName(isBoolean: Boolean, folder: File): String {
     val randomName = "${adjectives.random()}_${nouns.random()}"
     var fileName = "${randomName}.unknown"
 
-    if (isBoolean) {
+    if (isEncrypted) {
         fileName = "${fileName.substringBeforeLast(".")}.k"
     } else {
         fileName = "${fileName.substringBeforeLast(".")}.o"
@@ -67,7 +67,7 @@ fun generateFileName(isBoolean: Boolean, folder: File): String {
 
         while (file.exists()) {
             fileName = "${randomName}_$counter"
-            if (isBoolean) {
+            if (isEncrypted) {
                 fileName = "${fileName}.k"
             } else {
                 fileName = "${fileName}.o"

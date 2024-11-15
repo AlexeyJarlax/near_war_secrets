@@ -1,17 +1,8 @@
 package com.pavlov.MyShadowGallery.util
 
 import android.app.Activity
-import android.content.Intent
-import android.view.View
-import android.widget.ProgressBar
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.pavlov.MyShadowGallery.R
-import com.pavlov.MyShadowGallery.security.LoginActivity
-import kotlinx.coroutines.withContext
-import android.content.Context
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.TextView
@@ -66,40 +57,17 @@ fun Activity.showYesNoDialog(thisTitle: String, onDeleteConfirmed: () -> Unit) {
 }
 
 fun Activity.showLoadingIndicator() {
-    val buttonForCover2 = findViewById<View>(R.id.button_for_cover2) // кнопка заглушка экрана
-    val loadingIndicator2 = findViewById<ProgressBar>(R.id.loading_indicator2) // индикатора загрузки
-    buttonForCover2.visibility = View.VISIBLE
-    loadingIndicator2.visibility = View.VISIBLE
 }
 
 fun Activity.hideLoadingIndicator(cornerLeft: Boolean) {
-    val buttonForCover2 = findViewById<View>(R.id.button_for_cover2)
-    val loadingIndicator2 = findViewById<ProgressBar>(R.id.loading_indicator2)
-
-    val multiplier = if (cornerLeft) 3 else 1
-    Handler(Looper.getMainLooper()).postDelayed({
-        buttonForCover2.visibility = View.INVISIBLE
-        loadingIndicator2.visibility = View.INVISIBLE
-    }, APK.LOAD_PROCESSING_MILLISECONDS * multiplier)
 }
 
 
 fun Activity.startSmallLoadingIndicator() {
     showToast(getString(R.string.background_process))
-
-    val loadingIndicator4 = findViewById<ProgressBar>(R.id.loading_indicator4)
-    val loadingIndicator3 = findViewById<ProgressBar>(R.id.loading_indicator3)
-    val loadingIndicator2 = findViewById<ProgressBar>(R.id.loading_indicator2)
-
-    // Проверка на null перед использованием
-    loadingIndicator4?.visibility = View.VISIBLE
-    loadingIndicator3?.visibility = View.INVISIBLE
-    loadingIndicator2?.visibility = View.INVISIBLE
 }
 
 fun Activity.stopSmallLoadingIndicator() {
-    val loadingIndicator4 = findViewById<ProgressBar>(R.id.loading_indicator4)
-    loadingIndicator4?.visibility = View.INVISIBLE
 }
 
 fun Activity.showToast(text: String) {

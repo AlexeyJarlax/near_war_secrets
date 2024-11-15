@@ -1,7 +1,7 @@
 <resources>
-        <string name="app_name">MSG</string>
+        <string name="app_name">NWS</string>
         <string name="mimicry_app_name">MoodSound Galaxy</string>
-        <string name="app_name_in_main_page">Mi Galería de Sombras</string>
+        <string name="app_name_in_main_page">NearWarSecrets</string>
         <string name="disguise_btn">Disfraz</string>
         <string name="search">Buscar</string>
         <string name="button_back">Atrás</string>
@@ -24,8 +24,8 @@
         <string name="heading_search_history_list_view">Historial de Búsqueda:</string>
         <string name="todo">Por hacer</string>
         <string name="there_wil_be_media_library">En esta ventana habrá una biblioteca multimedia</string>
-        <string name="cam_bat_on">Ocultar\ncámara</string>
-        <string name="cam_bat_off">Iniciar\ncámara</string>
+        <string name="cam_bat_hide">Ocultar\ncámara</string>
+        <string name="cam_bat_start">Iniciar\ncámara</string>
         <string name="cam_bat">Cámara</string>
         <string name="snapshot">Tomar\ninstantánea</string>
         <string name="galery">Cargar\narchivo</string>

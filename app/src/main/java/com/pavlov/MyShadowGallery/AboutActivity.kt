@@ -111,7 +111,7 @@ class AboutActivity : AppCompatActivity() {
         }
     }//конец ОнКриейт
 
-    private fun getAppVersion(): String {
+    private fun getAppVersion(): String? {
         try {
             val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
             return pInfo.versionName

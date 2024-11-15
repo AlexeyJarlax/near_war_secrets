@@ -7,7 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 
-internal object APK { // AppPreferencesKey Internal - доступно только в модуле
+object APK { // AppPreferencesKey Internal - доступно только в модуле
     // хранилища SharedPreferences
     const val PREFS_NAME = "my_prefs_new" // открытое хранилище
     const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs_new" // защищенное хранилище
@@ -57,41 +57,42 @@ internal object APK { // AppPreferencesKey Internal - доступно толь�
 }
 
 // ------------------------------------------------------------------------------------ гетеры и сетеры
-internal class APKM(private val context: Context) {
-    private val sharedPreferences = getSharedPreferences()
-    private fun getSharedPreferences() =
+class APKM(private val context: Context) {
+    // Переименовали функцию, чтобы избежать конфликта имён
+    val sharedPreferences: SharedPreferences = retrieveSharedPreferences()
+
+    private fun retrieveSharedPreferences() =
         context.getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
 
     // ------------------------------------------------------------------------ Boolean гетеры и сетеры
     fun saveBooleanToSPK(key: String, isChecked: Boolean) {
-        val editor = sharedPreferences.edit()
-        editor.putBoolean(key, isChecked)
-        editor.apply()
-    } // APKM(context = this).saveBooleanToSPK(APK.KEY_NIGHT_MODE, false)
+        sharedPreferences.edit {
+            putBoolean(key, isChecked)
+        }
+    }
 
     fun getBooleanFromSPK(key: String, default: Boolean): Boolean {
-        return sharedPreferences.getBoolean(
-            key,
-            default
-        )
-    } // APKM(context = this).getBooleanFromSPK(APK.KEY_NIGHT_MODE, false)
+        return sharedPreferences.getBoolean(key, default)
+    }
 
     // ---------------------------------------------------------------------------- Int гетеры и сетеры
     fun saveIntToSP(key: String, value: Int) {
-        val editor = sharedPreferences.edit()
-        editor.putInt(key, value)
-        editor.apply()
-    } // APKM(context = savedContext).saveIntToSP(APK.DEFAULT_KEY, size)
+        sharedPreferences.edit {
+            putInt(key, value)
+        }
+    }
 
     fun getIntFromSP(key: String): Int {
         return sharedPreferences.getInt(key, 0)
-    } //APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+    }
 
     fun delFromSP(key: String) {
-        val editor = sharedPreferences.edit()
-        editor.remove(key)
-        editor.apply()
-    }//APKM(context).delFromSP(APK.DEFAULT_KEY)
+        sharedPreferences.edit {
+            remove(key)
+        }
+    }
+
+    //APKM(context).delFromSP(APK.DEFAULT_KEY)
 
     // ------------------------------------------------------------------------- String гетеры и сетеры
     fun getStringFromSharedPreferences(key: String): String {

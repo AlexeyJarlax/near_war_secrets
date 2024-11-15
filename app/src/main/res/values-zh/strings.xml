@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">MSG</string>
+    <string name="app_name">NWS</string>
     <string name="mimicry_app_name">MoodSound Galaxy</string>
-    <string name="app_name_in_main_page">我的隐秘画廊</string>
+    <string name="app_name_in_main_page">NearWarSecrets</string>
     <string name="disguise_btn">伪装</string>
     <string name="search">搜索</string>
     <string name="button_back">返回</string>
@@ -24,8 +24,8 @@
     <string name="heading_search_history_list_view">搜索历史记录:</string>
     <string name="todo">待办事项</string>
     <string name="there_wil_be_media_library">在这里将有媒体库</string>
-    <string name="cam_bat_on">隐藏\n摄像头</string>
-    <string name="cam_bat_off">启动\n摄像头</string>
+    <string name="cam_bat_hide">隐藏\n摄像头</string>
+    <string name="cam_bat_start">启动\n摄像头</string>
     <string name="cam_bat">摄像头</string>
     <string name="snapshot">拍照\n</string>
     <string name="galery">上传\n文件</string>

@@ -1,19 +1,25 @@
+import java.net.URI
+
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
-        maven(url = "https://www.jitpack.io")
-        gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://www.jitpack.io")
+    }
+    versionCatalogs {
+        create("libs") {
+            from(files("gradle/libs/libs.versions.toml"))
+        }
     }
 }
+
 
 rootProject.name = "MyShadowGallery"
 include(":app")

@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">MSG</string>
+    <string name="app_name">ПВТ</string>
     <string name="mimicry_app_name">MoodSound Galaxy</string>
-    <string name="app_name_in_main_page">Моя теневая галерея</string>
+    <string name="app_name_in_main_page">Почти военная тайна</string>
     <string name="disguise_btn">Маскировка</string>
     <string name="search">Поиск</string>
     <string name="button_back">Назад</string>
@@ -12,7 +12,7 @@
     <string name="share_the_app">Поделиться приложением</string>
     <string name="write_to_support">Написать в поддержку</string>
     <string name="user_agreement">Политика конфиденциальности</string>
-    <string name="share_app_text">My Shadow Gallery - cкрытая галерея для хранения закодированных изображений с ограниченным доступом:
+    <string name="share_app_text">Почти военная тайна - cкрытая галерея для хранения закодированных изображений с ограниченным доступом:
         https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_text2">Файл зашифрован в My Shadow Gallery. Для просмотра запросите ключ у того, кто отправил вам это сообщение и используйте дешифратор
         https://play.google.com/store/apps/details?id=%1$s</string>
@@ -24,8 +24,8 @@
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">Туду</string>
     <string name="there_wil_be_media_library">в этом окне будет медиатека</string>
-    <string name="cam_bat_on">Скрыть\nкамеру</string>
-    <string name="cam_bat_off">Запустить\nкамеру</string>
+    <string name="cam_bat_hide">Скрыть\nкамеру</string>
+    <string name="cam_bat_start">Запустить\nкамеру</string>
     <string name="cam_bat">Камера</string>
     <string name="snapshot">Сделать\nснимок</string>
     <string name="galery">Загрузить\nфайл</string>
@@ -83,7 +83,7 @@
     <string name="goAhead">Вперед!</string>
     <string name="input">Подтвердить ввод</string>
     <string name="noinput">Отказ от ввода</string>
-    <string name="step00">МОЯ ТЕНЕВАЯ ГАЛЕРЕЯ\n\nНастроим безопасность,\nтри простых шага\n🔐️ 🕶️ 🔏</string>
+    <string name="step00">\nНастроим безопасность,\nтри простых шага\n🔐️ 🕶️ 🔏</string>
     <string name="step01_01">\n🔐️\nШаг 1\nИспользовать пароль для входа в приложение?\n</string>
     <string name="step01_02">\n🔐️\nШаг 1\nПароль\n\nОбнаружен ранее сохраненный пароль для входа в приложение, изменить пароль?</string>
     <string name="step01_03">🗑️ Удалить пароль</string>
@@ -111,7 +111,7 @@
 
     <string name="developers_page">Страница разработчика</string>
     <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
-    <string name="wait">ожидайте...</string>
+    <string name="wait">ожидайте…</string>
     <string name="password">Пароль:</string>
     <string name="invalid_character">недопустимый символ</string>
     <string name="repit_password">Введите пароль еще раз</string>
@@ -125,14 +125,14 @@
     <string name="old_password">Старый пароль</string>
     <string name="access_obtained">Доступ получен</string>
     <string name="encryption_no">Сохранено без шифрования</string>
-    <string name="download">Загрузка...</string>
+    <string name="download">Загрузка…</string>
     <string name="share_the_img">Поделиться изображением</string>
     <string name="encrepted_img">Зашифрованное изображение</string>
     <string name="decripted_img">Дешифрованное изображение</string>
     <string name="timber_img">Миниатюра</string>
     <string name="chuse_img">Выберите файл для отправки</string>
     <string name="encrypted_save">Сохранён зашифрованный файл:</string>
-    <string name="decrypting">Дешифрую...</string>
+    <string name="decrypting">Дешифрую…</string>
     <string name="naming_options">Генератор имен для файлов</string>
     <string name="language_option">Выберите язык приложения</string>
     <string name="naming_option">Выберите стиль наименования файлов</string>
@@ -216,5 +216,8 @@ AES (Advanced Encryption Standard).
     <string name="error_del">Ошибка при удалении файла</string>
     <string name="error_serch">Поиск песен недоступен</string>
     <string name="error_connect">Ошибка соединения</string>
-    <string name="you_can_like">Вам может понравится...</string>
+    <string name="you_can_like">Вам может понравится…</string>
+    <string name="saved">Сохранён</string>
+    <string name="flip">Развернуть</string>
+    <string name="error_gallery">Ошибка доступа к галерее</string>
 </resources>

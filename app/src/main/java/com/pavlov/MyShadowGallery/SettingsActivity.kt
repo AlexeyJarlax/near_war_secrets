@@ -1,6 +1,5 @@
 package com.pavlov.MyShadowGallery
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -20,12 +19,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import com.pavlov.MyShadowGallery.security.LoginActivity
-import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
+import com.pavlov.MyShadowGallery.ui.main.MainActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
-import com.pavlov.MyShadowGallery.util.showManualKeyInputDialog
 import com.pavlov.MyShadowGallery.util.showYesNoDialog
 import java.util.Locale
 
@@ -35,22 +32,10 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var resetSettings: Button
     private lateinit var personalData: Button
 
-//    enum class NamingOption {
-//        RUSSIAN_HEROIC,
-//        ENGLISH_HEROIC,
-//        CHINESE_HERO,
-//        SPANISH_HEROIC,
-//        SYSTEM
-//    }
-
-//    var currentNamingOption: NamingOption = NamingOption.SYSTEM
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         val savedContext = this
-//        val videoView = findViewById<VideoView>(R.id.videoView)
-//        val themeManager = ThemeManager
         val backMenuLayout = findViewById<LinearLayout>(R.id.act_settings_layout)
         var backgroundView = findViewById<ImageView>(R.id.background_image)
         backgroundView.setImageResource(ThemeManager.applyUserSwitch(this))
@@ -58,9 +43,6 @@ class SettingsActivity : AppCompatActivity() {
         val languageOptions = findViewById<Button>(R.id.language_options)
         val namingOptions = findViewById<Button>(R.id.naming_options)
         val back = findViewById<Button>(R.id.button_back_from_settings)
-//        val useTheEncryptionKey: SwitchCompat = findViewById(R.id.use_the_encryption_key)
-//        val delEKWhenClosingTheSession: SwitchCompat =
-//            findViewById(R.id.delete_the_encryption_key_when_closing_the_session)
         val switchDarkMode: SwitchCompat = findViewById(R.id.switch_dark_mode)
         val switchCompat: SwitchCompat = findViewById(R.id.button_tumbler)
 //        val mimicrySwitch: SwitchCompat = findViewById(R.id.disguise)
@@ -71,14 +53,6 @@ class SettingsActivity : AppCompatActivity() {
         resetSettings = findViewById<Button>(R.id.reset_settings) // сброс настроек
         personalData = findViewById<Button>(R.id.personal_data) // персональный данные
         resetSettingsAndClearStorage()
-        // Загрузка сохраненных значений
-//        useTheEncryptionKey.isChecked =
-//            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K)
-//        delEKWhenClosingTheSession.isChecked =
-//            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION)
-//        mimicrySwitch.isChecked =
-//            AppPreferencesKeysMethods(context = this).getBooleanFromSharedPreferences(AppPreferencesKeys.KEY_EXIST_OF_MIMICRY)
-        // Загрузка ебаного SeekBar с его конченными значениями
         val previewSizeSeekBar: SeekBar = findViewById(R.id.preview_size)
         val imagePreviewForSeekbar1: ImageView = findViewById(R.id.image_preview_for_seekbar_1)
         val imagePreviewForSeekbar2: ImageView = findViewById(R.id.image_preview_for_seekbar_2)
@@ -123,14 +97,6 @@ class SettingsActivity : AppCompatActivity() {
         namingOptions.setOnClickListener {
             showNamingSelectionDialog()
         }
-
-        // Использовать ключ шифрования
-//        useTheEncryptionKey.setOnCheckedChangeListener { _, isChecked -> // Использовать ключ шифрования
-//            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
-//                AppPreferencesKeys.KEY_USE_THE_ENCRYPTION_K,
-//                isChecked
-//            )
-//        }
 
         previewSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -212,24 +178,8 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         securitySettings.setOnClickListener {
-            val intent = Intent(this, ThreeStepsActivity::class.java)
-            this.startActivity(intent)
+//            navController.navigate("two_steps_for_save")
         }
-        // Обработка события для Удалить ключ при закрытии сессии
-//        delEKWhenClosingTheSession.setOnCheckedChangeListener { _, isChecked ->
-//            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
-//                AppPreferencesKeys.KEY_DELETE_EK_WHEN_CLOSING_THE_SESSION,
-//                isChecked
-//            )
-//        }
-
-        // Обработка события для Маскировки
-//        mimicrySwitch.setOnCheckedChangeListener { _, isChecked ->
-//            AppPreferencesKeysMethods(context = this).saveBooleanToSharedPreferences(
-//                AppPreferencesKeys.KEY_EXIST_OF_MIMICRY,
-//                isChecked
-//            )
-//        }
 
     } // конец onCreate
 
@@ -303,7 +253,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         fun finishAffinity(context: Context) {
-            val intent = Intent(context, MainPageActivity::class.java)
+            val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             context.startActivity(intent)
         }
@@ -377,17 +327,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun updateAppLanguage() {
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
-
-        // Перезапуск приложения
-//        val restartIntent = Intent(this, SettingsActivity::class.java)
-//        restartIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-//        startActivity(restartIntent)
-//        finish()
-//        exitProcess(0) // Завершение текущего процесса приложения
     }
 
 }
