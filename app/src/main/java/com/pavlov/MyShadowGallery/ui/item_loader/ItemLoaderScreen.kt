@@ -40,19 +40,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.pavlov.MyShadowGallery.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemLoaderScreen(
-    viewModel: ItemLoaderViewModel,
-    onBack: () -> Unit,
-    mode: String = ItemLoaderActivity.MODE_FULL
+    viewModel: ItemLoaderViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
     var selectedUri: Uri? by remember { mutableStateOf(null) }
-    val isStorageMode = mode == ItemLoaderActivity.MODE_STORAGE
+    val isStorageMode = true
     val photoList by viewModel.photoList.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
     var selectedFileName by remember { mutableStateOf<String?>(null) }
@@ -122,7 +123,7 @@ fun ItemLoaderScreen(
             TopAppBar(
                 title = { Text(text = context.getString(R.string.app_name_in_main_page)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = context.getString(R.string.button_back)

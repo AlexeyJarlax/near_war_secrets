@@ -1,17 +1,8 @@
 package com.pavlov.MyShadowGallery.util
 
 import android.app.Activity
-import android.content.Intent
-import android.view.View
-import android.widget.ProgressBar
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.pavlov.MyShadowGallery.R
-import com.pavlov.MyShadowGallery.security.LoginActivity
-import kotlinx.coroutines.withContext
-import android.content.Context
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.TextView

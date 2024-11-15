@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">MSG</string>
+    <string name="app_name">ПВТ</string>
     <string name="mimicry_app_name">MoodSound Galaxy</string>
-    <string name="app_name_in_main_page">Моя теневая галерея</string>
+    <string name="app_name_in_main_page">Почти военная тайна</string>
     <string name="disguise_btn">Маскировка</string>
     <string name="search">Поиск</string>
     <string name="button_back">Назад</string>
@@ -12,7 +12,7 @@
     <string name="share_the_app">Поделиться приложением</string>
     <string name="write_to_support">Написать в поддержку</string>
     <string name="user_agreement">Политика конфиденциальности</string>
-    <string name="share_app_text">My Shadow Gallery - cкрытая галерея для хранения закодированных изображений с ограниченным доступом:
+    <string name="share_app_text">Почти военная тайна - cкрытая галерея для хранения закодированных изображений с ограниченным доступом:
         https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_text2">Файл зашифрован в My Shadow Gallery. Для просмотра запросите ключ у того, кто отправил вам это сообщение и используйте дешифратор
         https://play.google.com/store/apps/details?id=%1$s</string>
@@ -83,7 +83,7 @@
     <string name="goAhead">Вперед!</string>
     <string name="input">Подтвердить ввод</string>
     <string name="noinput">Отказ от ввода</string>
-    <string name="step00">МОЯ ТЕНЕВАЯ ГАЛЕРЕЯ\n\nНастроим безопасность,\nтри простых шага\n🔐️ 🕶️ 🔏</string>
+    <string name="step00">\nНастроим безопасность,\nтри простых шага\n🔐️ 🕶️ 🔏</string>
     <string name="step01_01">\n🔐️\nШаг 1\nИспользовать пароль для входа в приложение?\n</string>
     <string name="step01_02">\n🔐️\nШаг 1\nПароль\n\nОбнаружен ранее сохраненный пароль для входа в приложение, изменить пароль?</string>
     <string name="step01_03">🗑️ Удалить пароль</string>

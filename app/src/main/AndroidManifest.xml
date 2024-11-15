@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
-        android:name=".MyShadowGallery"
+        android:name=".NearWarSecrets"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -56,51 +56,53 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".security.ThreeStepsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".security.SetPasswordActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyApp" />
-        <activity
-            android:name=".security.LoginActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--            android:name=".security.TwoStepsForSaveActivity"-->
+<!--            android:exported="false"-->
+<!--            android:screenOrientation="portrait"/>-->
+<!--        <activity-->
+<!--            android:name=".security.SetPasswordActivity"-->
+<!--            android:exported="false"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:theme="@style/Theme.MyApp" />-->
+<!--        <activity-->
+<!--            android:name=".security.AuthActivity"-->
+<!--            android:exported="true"-->
+<!--            android:screenOrientation="portrait"/>-->
+
         <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".security.KeyInputActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
+<!--        <activity-->
+<!--            android:name=".security.KeyInputActivity"-->
+<!--            android:exported="false"-->
+<!--            android:screenOrientation="portrait"/>-->
         <activity
             android:name=".file.StorageLogActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".ui.item_loader.ItemLoaderActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name=".ui.item_loader.ItemLoaderActivity"-->
+<!--            android:exported="false"-->
+<!--            android:screenOrientation="portrait" />-->
         <activity
             android:name=".SettingsActivity"
             android:configChanges="locale|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyApp" />
+
         <activity
-            android:name=".ui.main.MainPageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:name=".ui.main.MainActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+            <action android:name="android.intent.action.CREATE_SHORTCUT" />
+        </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

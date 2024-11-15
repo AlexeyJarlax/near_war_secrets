@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">MSG</string>
+    <string name="app_name">NWS</string>
     <string name="mimicry_app_name">MoodSound Galaxy</string>
-    <string name="app_name_in_main_page">我的隐秘画廊</string>
+    <string name="app_name_in_main_page">NearWarSecrets</string>
     <string name="disguise_btn">伪装</string>
     <string name="search">搜索</string>
     <string name="button_back">返回</string>

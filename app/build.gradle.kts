@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-//    id("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
@@ -45,15 +45,40 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
+    }
 
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+        dataBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
+
+//    packaging {
+//        resources {
+//            excludes += "META-INF/DEPENDENCIES"
+//        }
+//    }
+
+    hilt {
+        enableAggregatingTask = true
     }
 }
 
 dependencies {
     // графическая обработка
     implementation(libs.coil.compose)
+    implementation(libs.hilt.android)
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-compiler:2.52")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // compose
     implementation ("androidx.compose.ui:ui:1.7.5")

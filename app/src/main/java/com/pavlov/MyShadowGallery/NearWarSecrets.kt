@@ -2,19 +2,18 @@ package com.pavlov.MyShadowGallery;
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import com.pavlov.MyShadowGallery.util.APK
 import android.os.Bundle
-import androidx.core.content.edit
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ToastExt
 
-class MyShadowGallery : Application() {
+class NearWarSecrets : Application() {
     private var cleanupDone = false
 
     override fun onCreate() {
         super.onCreate()
         ToastExt.init(this)
+        applyDayNightTheme()
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -81,4 +80,8 @@ class MyShadowGallery : Application() {
             APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
             }
         }
+
+    private fun applyDayNightTheme() {
+//        settings.applyTheme()
+    }
     }

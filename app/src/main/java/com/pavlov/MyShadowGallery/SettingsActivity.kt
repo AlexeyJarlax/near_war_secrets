@@ -19,9 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import com.pavlov.MyShadowGallery.security.LoginActivity
-import com.pavlov.MyShadowGallery.security.ThreeStepsActivity
-import com.pavlov.MyShadowGallery.ui.main.MainPageActivity
+import com.pavlov.MyShadowGallery.ui.main.MainActivity
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ThemeManager
@@ -180,8 +178,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         securitySettings.setOnClickListener {
-            val intent = Intent(this, ThreeStepsActivity::class.java)
-            this.startActivity(intent)
+//            navController.navigate("two_steps_for_save")
         }
 
     } // конец onCreate
@@ -256,7 +253,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         fun finishAffinity(context: Context) {
-            val intent = Intent(context, MainPageActivity::class.java)
+            val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             context.startActivity(intent)
         }
@@ -330,7 +327,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun updateAppLanguage() {
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()

@@ -11,6 +11,8 @@ import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.file.FileProviderAdapter
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.*
+import dagger.hilt.android.internal.Contexts.getApplication
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -18,8 +20,10 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
-class ItemLoaderViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class ItemLoaderViewModel @Inject constructor(application: Application) : ViewModel() {
 
     private val context: Context = application.applicationContext
 
@@ -133,7 +137,6 @@ class ItemLoaderViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun shareImage(fileName: String) {
-        val context = getApplication<Application>()
         val imageFile = File(context.filesDir, fileName)
         val uri = FileProviderAdapter.getUriForFile(context, imageFile)
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
