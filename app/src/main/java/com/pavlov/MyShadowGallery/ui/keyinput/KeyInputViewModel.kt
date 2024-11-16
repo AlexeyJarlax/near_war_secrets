@@ -1,15 +1,12 @@
 package com.pavlov.MyShadowGallery.ui.keyinput
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class KeyInputViewModel @Inject constructor(

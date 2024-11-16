@@ -6,7 +6,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
-//    id("com.autonomousapps.dependency-analysis")
+    id("com.autonomousapps.dependency-analysis")
 }
 
 android {
@@ -77,8 +77,11 @@ android {
 
 dependencies {
 
+    // Core Library Desugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
+
     //логи Тимбер
-//    implementation(libs.timber)
+    implementation("com.jakewharton.timber:timber:5.0.1")
 
     // графическая обработка
     implementation(libs.coil.compose)

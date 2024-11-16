@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.theme.uiComponents
+package com.pavlov.MyShadowGallery.ui.theme.uiComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

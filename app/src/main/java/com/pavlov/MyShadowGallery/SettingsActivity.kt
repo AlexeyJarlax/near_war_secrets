@@ -223,7 +223,7 @@ class SettingsActivity : AppCompatActivity() {
                     file.delete()
                 }
             }
-            val originalAndPreviews = context.getDir("originalAndPreviews", Context.MODE_PRIVATE)
+            val originalAndPreviews = context.getDir("originalAndPreviews", MODE_PRIVATE)
             val originalAndPreviewsList = originalAndPreviews?.listFiles()
             if (originalAndPreviewsList != null) {
                 for (file in originalAndPreviewsList) {
@@ -238,7 +238,7 @@ class SettingsActivity : AppCompatActivity() {
             val nonEncryptedSharedPreferences: SharedPreferences =
                 context.getSharedPreferences(
                     APK.PREFS_NAME,
-                    Context.MODE_PRIVATE
+                    MODE_PRIVATE
                 )
             nonEncryptedSharedPreferences.edit().clear().apply()
 
@@ -246,7 +246,7 @@ class SettingsActivity : AppCompatActivity() {
             val encryptedSharedPreferences: SharedPreferences =
                 context.getSharedPreferences(
                     APK.MY_SECRETS_PREFS_NAME,
-                    Context.MODE_PRIVATE
+                    MODE_PRIVATE
                 )
             encryptedSharedPreferences.edit().clear().apply()
 

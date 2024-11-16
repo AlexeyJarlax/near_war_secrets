@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.theme.uiComponents
+package com.pavlov.MyShadowGallery.ui.theme.uiComponents
 
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults

@@ -11,7 +11,6 @@ import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.file.FileProviderAdapter
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.*
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -140,7 +139,7 @@ class ItemLoaderViewModel @Inject constructor(application: Application) : ViewMo
         val imageFile = File(context.filesDir, fileName)
         val uri = FileProviderAdapter.getUriForFile(context, imageFile)
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/*"
+            Intent.setType = "image/*"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }

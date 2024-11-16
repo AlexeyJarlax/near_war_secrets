@@ -8,7 +8,6 @@ import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APKM
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 
 class ShareHandler(private val context: Context) {
 

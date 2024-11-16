@@ -4,8 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import com.pavlov.MyShadowGallery.R
 
 // моя палитра:
 val MyBlack = Color(0xFF1C1E27)

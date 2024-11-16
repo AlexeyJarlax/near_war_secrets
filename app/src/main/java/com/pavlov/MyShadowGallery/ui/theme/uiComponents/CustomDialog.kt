@@ -1,4 +1,4 @@
-package com.pavlovalexey.pleinair.theme.uiComponents
+package com.pavlov.MyShadowGallery.ui.theme.uiComponents
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import timber.log.Timber
 import androidx.compose.foundation.layout.Column
-import com.google.accompanist.flowlayout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

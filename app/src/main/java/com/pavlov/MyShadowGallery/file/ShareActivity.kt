@@ -2,8 +2,8 @@ package com.pavlov.MyShadowGallery.file
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.pavlov.MyShadowGallery.R
 
 class ShareActivity : AppCompatActivity() {
