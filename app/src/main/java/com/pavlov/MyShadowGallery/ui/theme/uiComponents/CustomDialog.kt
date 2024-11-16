@@ -18,7 +18,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pavlovalexey.pleinair.R
 import timber.log.Timber
 import androidx.compose.foundation.layout.Column
 import com.google.accompanist.flowlayout.FlowRow

@@ -10,7 +10,7 @@ import com.pavlov.MyShadowGallery.R
 // моя палитра:
 val MyBlack = Color(0xFF1C1E27)
 val MyBlueLight = Color(0xFF9FBBF3)
-val MySecondaryBackground = colorResource(id = R.color.my_normal_blue)
+//val MySecondaryBackground = colorResource(id = R.color.my_normal_blue)
 
 private val LightColorPalette = lightColors(
     primary = Color(0xFF6200EE),

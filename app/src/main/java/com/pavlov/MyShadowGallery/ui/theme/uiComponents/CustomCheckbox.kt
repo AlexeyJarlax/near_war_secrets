@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.colorResource
-import com.pavlovalexey.pleinair.R
+import com.pavlov.MyShadowGallery.R
 
 @Composable
 fun CustomCheckbox(
