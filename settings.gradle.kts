@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NearWarSecrets"
+rootProject.name = "nearWarSecrets"
 include(":app")

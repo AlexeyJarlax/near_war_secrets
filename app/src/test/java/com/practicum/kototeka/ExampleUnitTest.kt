@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery
+package com.pavlov.nearWarSecrets
 
 import org.junit.Test
 
