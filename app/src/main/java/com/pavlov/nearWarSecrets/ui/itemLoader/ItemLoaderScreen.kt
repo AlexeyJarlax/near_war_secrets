@@ -43,6 +43,7 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pavlov.nearWarSecrets.R
+import com.pavlov.nearWarSecrets.ui.theme.uiComponents.MatrixBackground
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -135,6 +136,7 @@ fun ItemLoaderScreen(
         },
         content = { padding ->
             Box(modifier = Modifier.fillMaxSize()) {
+                MatrixBackground()
                 Column(modifier = Modifier.fillMaxSize()) {
                     // Отображение списка фотографий
                     LazyVerticalGrid(

@@ -4,6 +4,7 @@ agp = "8.7.2"
 androidxMaterial3 = "1.2.0-alpha04"
 datastorePreferencesVersion = "1.1.1"
 desugar_jdk_libs = "2.0.3"
+foundationVersion = "1.0.5"
 kotlin = "1.9.24"
 espressoCore = "3.6.1"
 kotlinxCoroutinesPlayServices = "1.7.3"
@@ -61,25 +62,32 @@ retrofit = "2.9.0"
 roomCompilerVersion = "2.6.1"
 roomKtxVersion = "2.6.1"
 roomRuntimeVersion = "2.6.1"
+runtime = "1.0.5"
 runtimeSaveableVersion = "1.7.3"
 runtimeVersion = "1.7.3"
 timberVersion = "5.0.1"
 ui = "1.6.8"
+uiTooling = "1.0.5"
 uiToolingVersion = "1.7.5"
 firebaseStorageKtx = "21.0.0"
 runtimeLivedataVersion = "1.7.1"
 foundationAndroidVersion = "1.7.2"
+uiVersion = "1.0.5"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-foundation-v105 = { module = "androidx.compose.foundation:foundation", version.ref = "foundationVersion" }
 androidx-material-v153 = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-material3-v120alpha04 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtxVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntimeVersion" }
+androidx-runtime-v105 = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+androidx-ui-tooling-v105 = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
+androidx-ui-v105 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
 desugar_jdk_libs-v203 = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 kotlinx-coroutines-play-services-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }

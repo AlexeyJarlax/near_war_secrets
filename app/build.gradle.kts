@@ -127,6 +127,7 @@ dependencies {
     implementation(libs.google.accompanist.flowlayout)
     implementation (libs.androidx.ui.tooling.preview)
     debugImplementation (libs.androidx.ui.tooling)
+    implementation (libs.androidx.runtime)
 
     // Compose навигация
     implementation ("androidx.navigation:navigation-compose:2.8.4")
@@ -176,4 +177,7 @@ dependencies {
 
     // работа со временем
     implementation (libs.androidx.datastore.preferences)
+
+    // анимация как в матрице
+//    import ("androidx.compose.ui.graphics.drawscope.withFrameNanos")
 }

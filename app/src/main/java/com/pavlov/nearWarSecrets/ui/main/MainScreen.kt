@@ -26,7 +26,7 @@ fun MainScreen() {
             composable("item_loader") {
                 ItemLoaderScreen()
             }
-            composable("storage") {
+            composable("storage_log") {
 //                StorageScreen()
             }
             composable("settings") {

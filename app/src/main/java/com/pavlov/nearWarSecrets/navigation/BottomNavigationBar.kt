@@ -18,7 +18,7 @@ import com.pavlov.nearWarSecrets.data.model.BottomNavItem
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
         BottomNavItem("Item Loader", "item_loader", Icons.Default.Add),
-        BottomNavItem("Storage", "storage", Icons.Default.Storage),
+        BottomNavItem("Storage Log", "storage_log", Icons.Default.Storage),
         BottomNavItem("Settings", "settings", Icons.Default.Settings)
     )
     BottomNavigation {

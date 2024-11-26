@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top"
-    tools:context=".SettingsActivity">
+    tools:context=".ui.settings.SettingsActivity">
 
     <FrameLayout
         style="@style/BackMenuLayout"
         android:layout_gravity="top"
         android:background="@color/yp_white_and_yp_black"
-        tools:context=".SettingsActivity">
+        tools:context=".ui.settings.SettingsActivity">
 
         <ImageView
             android:id="@+id/background_image"

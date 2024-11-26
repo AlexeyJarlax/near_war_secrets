@@ -71,7 +71,7 @@
 <!--            android:screenOrientation="portrait"/>-->
 
         <activity
-            android:name=".AboutActivity"
+            android:name=".ui.about.AboutActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
 <!--        <activity-->
@@ -79,7 +79,7 @@
 <!--            android:exported="false"-->
 <!--            android:screenOrientation="portrait"/>-->
         <activity
-            android:name=".file.StorageLogActivity"
+            android:name=".ui.storageLog.StorageLogActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
 <!--        <activity-->
@@ -87,7 +87,7 @@
 <!--            android:exported="false"-->
 <!--            android:screenOrientation="portrait" />-->
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:configChanges="locale|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
