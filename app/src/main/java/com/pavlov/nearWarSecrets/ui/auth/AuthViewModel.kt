@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AuthViewModel(
+@HiltViewModel
+class AuthViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 
@@ -28,6 +31,13 @@ class AuthViewModel(
     private val _message = MutableStateFlow("")
     val message: StateFlow<String> = _message
 
+    // Перенесите объявление навигационных переменных перед блоком init
+    private val _navigateToMain = MutableStateFlow(false)
+    val navigateToMain: StateFlow<Boolean> = _navigateToMain
+
+    private val _navigateToTwoStepsForSave = MutableStateFlow(false)
+    val navigateToTwoStepsForSave: StateFlow<Boolean> = _navigateToTwoStepsForSave
+
     init {
         firstStart()
     }
@@ -36,13 +46,13 @@ class AuthViewModel(
         if (apkm.getBooleanFromSPK(APK.KEY_FIRST_RUN, true)) {
             apkm.saveIntToSP(APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
             apkm.saveBooleanToSPK(APK.KEY_FIRST_RUN, false)
-            // Navigate to TwoStepsForSaveScreen
+            // Переход на экран TwoStepsForSaveScreen
             _navigateToTwoStepsForSave.value = true
         } else {
             val savedPassword = apkm.getMastersSecret(APK.KEY_SMALL_SECRET)
             if (savedPassword.isBlank()) {
                 _isPasswordExist.value = false
-                // Navigate to MainScreen
+                // Переход на главный экран
                 _navigateToMain.value = true
             }
         }
@@ -84,11 +94,4 @@ class AuthViewModel(
         apkm.delMastersSecret(APK.KEY_SMALL_SECRET)
         apkm.saveBooleanToSPK(APK.KEY_EXIST_OF_PASSWORD, false)
     }
-
-    // Navigation events
-    private val _navigateToMain = MutableStateFlow(false)
-    val navigateToMain: StateFlow<Boolean> = _navigateToMain
-
-    private val _navigateToTwoStepsForSave = MutableStateFlow(false)
-    val navigateToTwoStepsForSave: StateFlow<Boolean> = _navigateToTwoStepsForSave
 }

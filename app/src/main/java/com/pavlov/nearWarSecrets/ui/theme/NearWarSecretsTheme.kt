@@ -6,26 +6,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 // моя палитра:
-val MyBlack = Color(0xFF1C1E27)
-val MyBlueLight = Color(0xFF9FBBF3)
+val MyLight = Color(0xFFFAD706)
+val MyDark = Color(0xFF000000)
+val MyCustom = Color(0xFFE51212)
 //val MySecondaryBackground = colorResource(id = R.color.my_normal_blue)
 
 private val LightColorPalette = lightColors(
-    primary = Color(0xFF6200EE),
-    primaryVariant = Color(0xFF3700B3),
-    secondary = Color(0xFF03DAC6)
+    primary = MyLight,
+    primaryVariant = MyCustom,
+    secondary = MyDark
 )
 
 private val DarkColorPalette = darkColors(
-    primary = Color(0xFFBB86FC),
-    primaryVariant = Color(0xFF3700B3),
-    secondary = Color(0xFF03DAC6)
+    primary = MyDark,
+    primaryVariant = MyCustom,
+    secondary = MyLight
 )
 
 val colors = LightColorPalette
 
 @Composable
-fun MyShadowGalleryTheme(
+fun NearWarSecretsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -33,19 +34,19 @@ fun MyShadowGalleryTheme(
     MaterialTheme(
         colors = colors,
         typography = Typography(
-            h1 = MaterialTheme.typography.h1.copy(color = MyBlack),
-            h2 = MaterialTheme.typography.h2.copy(color = MyBlack),
-            h3 = MaterialTheme.typography.h3.copy(color = MyBlack),
-            h4 = MaterialTheme.typography.h4.copy(color = MyBlack),
-            h5 = MaterialTheme.typography.h5.copy(color = MyBlack),
-            h6 = MaterialTheme.typography.h6.copy(color = MyBlack),
-            subtitle1 = MaterialTheme.typography.subtitle1.copy(color = MyBlack),
-            subtitle2 = MaterialTheme.typography.subtitle2.copy(color = MyBlack),
-            body1 = MaterialTheme.typography.body1.copy(color = MyBlack),
-            body2 = MaterialTheme.typography.body2.copy(color = MyBlack),
-            button = MaterialTheme.typography.button.copy(color = MyBlack),
-            caption = MaterialTheme.typography.caption.copy(color = MyBlack),
-            overline = MaterialTheme.typography.overline.copy(color = MyBlack)
+            h1 = MaterialTheme.typography.h1.copy(color = MyLight),
+            h2 = MaterialTheme.typography.h2.copy(color = MyLight),
+            h3 = MaterialTheme.typography.h3.copy(color = MyLight),
+            h4 = MaterialTheme.typography.h4.copy(color = MyLight),
+            h5 = MaterialTheme.typography.h5.copy(color = MyLight),
+            h6 = MaterialTheme.typography.h6.copy(color = MyLight),
+            subtitle1 = MaterialTheme.typography.subtitle1.copy(color = MyLight),
+            subtitle2 = MaterialTheme.typography.subtitle2.copy(color = MyLight),
+            body1 = MaterialTheme.typography.body1.copy(color = MyLight),
+            body2 = MaterialTheme.typography.body2.copy(color = MyLight),
+            button = MaterialTheme.typography.button.copy(color = MyLight),
+            caption = MaterialTheme.typography.caption.copy(color = MyLight),
+            overline = MaterialTheme.typography.overline.copy(color = MyLight)
         ),
         shapes = Shapes,
         content = content

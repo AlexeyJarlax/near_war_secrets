@@ -19,7 +19,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import com.pavlov.nearWarSecrets.ui.main.MainActivity
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
 import com.pavlov.nearWarSecrets.util.ThemeManager

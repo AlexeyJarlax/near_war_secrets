@@ -3,10 +3,13 @@ package com.pavlov.nearWarSecrets.ui.twosteps
 import androidx.lifecycle.ViewModel
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class TwoStepsForSaveViewModel(
+@HiltViewModel
+class TwoStepsForSaveViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 

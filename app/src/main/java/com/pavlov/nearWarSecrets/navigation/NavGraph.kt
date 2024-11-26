@@ -9,13 +9,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
-import com.pavlov.nearWarSecrets.ui.item_loader.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
 import com.pavlov.nearWarSecrets.ui.main.MainScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen
 import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 
-@Keep
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -56,12 +55,6 @@ fun NavGraph(
                         popUpTo("key_input") { inclusive = true }
                     }
                 }
-            )
-        }
-        composable("item_loader") {
-            ItemLoaderScreen(
-                viewModel = hiltViewModel(),
-                navController = navController
             )
         }
         composable("main") {

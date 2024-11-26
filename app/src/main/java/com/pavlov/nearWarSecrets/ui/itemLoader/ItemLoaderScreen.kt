@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.item_loader
+package com.pavlov.nearWarSecrets.ui.itemLoader
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -47,13 +47,12 @@ import com.pavlov.nearWarSecrets.R
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemLoaderScreen(
-    viewModel: ItemLoaderViewModel = hiltViewModel(),
-    navController: NavController
+    viewModel: ItemLoaderViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
     var selectedUri: Uri? by remember { mutableStateOf(null) }
-    val isStorageMode = true
+    val isStorageMode = false
     val photoList by viewModel.photoList.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
     var selectedFileName by remember { mutableStateOf<String?>(null) }
@@ -123,7 +122,9 @@ fun ItemLoaderScreen(
             TopAppBar(
                 title = { Text(text = context.getString(R.string.app_name_in_main_page)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+//                        navController.popBackStack()
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = context.getString(R.string.button_back)

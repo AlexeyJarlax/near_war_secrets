@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.item_loader
+package com.pavlov.nearWarSecrets.ui.itemLoader
 
 import android.app.Application
 import android.content.Context
@@ -139,7 +139,7 @@ class ItemLoaderViewModel @Inject constructor(application: Application) : ViewMo
         val imageFile = File(context.filesDir, fileName)
         val uri = FileProviderAdapter.getUriForFile(context, imageFile)
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            Intent.setType = "image/*"
+            type = "image/*"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }

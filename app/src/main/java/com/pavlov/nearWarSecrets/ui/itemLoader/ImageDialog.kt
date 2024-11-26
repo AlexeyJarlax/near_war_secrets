@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.item_loader
+package com.pavlov.nearWarSecrets.ui.itemLoader
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -26,6 +25,7 @@ import java.io.File
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ImageDialog(
@@ -79,13 +79,13 @@ fun ImageDialog(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = stringResource(R.string.share_the_img)
+                            contentDescription = context.getString(com.pavlov.nearWarSecrets.R.string.share_the_img)
                         )
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(R.string.saving_option5)
+                            contentDescription = context.getString(com.pavlov.nearWarSecrets.R.string.saving_option5)
                         )
                     }
                 }

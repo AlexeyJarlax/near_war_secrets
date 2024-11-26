@@ -76,7 +76,7 @@ class AboutActivity : AppCompatActivity() {
         shareButton.setOnClickListener {
             val appId = "com.pavlov.MyShadowGallery"
             val intent = Intent(Intent.ACTION_SEND)
-            Intent.setType = "text/plain"
+//            Intent.setType = "text/plain"
             intent.putExtra(
                 Intent.EXTRA_TEXT,
                 getString(R.string.share_app_text, appId)
@@ -87,7 +87,7 @@ class AboutActivity : AppCompatActivity() {
         // КНОПКА ТЕХПОДДЕРЖКИ
         helpButton.setOnClickListener {
             Intent(Intent.ACTION_SENDTO).apply {
-                Intent.setData = Uri.parse(getString(R.string.support_email))
+//                Intent.setData = Uri.parse(getString(R.string.support_email))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_email_subject))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.support_email_text))
                 startActivity(this)
@@ -98,7 +98,7 @@ class AboutActivity : AppCompatActivity() {
         userAgreementButton.setOnClickListener {
             val url = getString(R.string.user_agreement_url)
             val intent = Intent(Intent.ACTION_VIEW)
-            Intent.setData = Uri.parse(url)
+//            Intent.setData = Uri.parse(url)
             startActivity(intent)
         }
 
@@ -106,7 +106,7 @@ class AboutActivity : AppCompatActivity() {
         developersPage.setOnClickListener {
             val url = getString(R.string.developers_page_url)
             val intent = Intent(Intent.ACTION_VIEW)
-            Intent.setData = Uri.parse(url)
+//            Intent.setData = Uri.parse(url)
             startActivity(intent)
         }
     }//конец ОнКриейт

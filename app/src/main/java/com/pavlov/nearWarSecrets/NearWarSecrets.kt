@@ -6,7 +6,9 @@ import com.pavlov.nearWarSecrets.util.APK
 import android.os.Bundle
 import com.pavlov.nearWarSecrets.util.APKM
 import com.pavlov.nearWarSecrets.util.ToastExt
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class NearWarSecrets : Application() {
     private var cleanupDone = false
 
@@ -69,15 +71,6 @@ class NearWarSecrets : Application() {
         val shouldDeleteEk = APKM(context = applicationContext).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, false)
 
         if (shouldDeleteEk) {
-            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET1)
-            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME1)
-            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET2)
-            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME2)
-            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET3)
-            APKM(context = applicationContext).delMastersSecret(APK.KEY_BIG_SECRET_NAME3)
-            APKM(context = applicationContext).delFromSP(APK.DEFAULT_KEY)
-            APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
-            APKM(context = applicationContext).saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, false)
             }
         }
 

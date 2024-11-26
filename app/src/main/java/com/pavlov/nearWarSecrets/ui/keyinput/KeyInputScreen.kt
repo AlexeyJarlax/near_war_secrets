@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pavlov.nearWarSecrets.ui.main.MainActivity
+import com.pavlov.nearWarSecrets.MainActivity
 import com.pavlov.nearWarSecrets.util.APKM
 
 @Composable

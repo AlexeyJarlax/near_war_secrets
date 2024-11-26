@@ -94,7 +94,7 @@
             android:theme="@style/Theme.MyApp" />
 
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

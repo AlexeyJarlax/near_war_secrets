@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.item_loader
+package com.pavlov.nearWarSecrets.ui.itemLoader
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

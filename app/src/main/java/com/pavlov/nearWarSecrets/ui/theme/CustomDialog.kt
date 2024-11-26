@@ -1,5 +1,6 @@
-package com.pavlov.nearWarSecrets.ui.theme.uiComponents
+package com.pavlov.nearWarSecrets.ui.theme
 
+import com.pavlov.nearWarSecrets.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,10 +33,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import com.google.accompanist.flowlayout.SizeMode
-import com.pavlovalexey.pleinair.utils.InputFilterUtils
 import androidx.compose.ui.graphics.Color
-import com.pavlovalexey.pleinair.data.model.Option
+import com.pavlov.nearWarSecrets.data.model.Option
+import com.pavlov.nearWarSecrets.ui.theme.uiComponents.CustomCheckbox
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import com.google.accompanist.flowlayout.SizeMode
 
 @Composable
 fun CustomYesOrNoDialog(
@@ -142,7 +145,7 @@ fun CustomOptionDialog(
                 modifier = Modifier.padding(end = 8.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.cancel_30dp),
+                    painter = painterResource(id = R.drawable.ic_clear),
                     contentDescription = "Закрыть",
                     tint = colorResource(id = R.color.my_black)
                 )
@@ -229,18 +232,8 @@ fun CustomTextInputDialog(
         },
         confirmButton = {
             TextButton(onClick = {
-                val error = InputFilterUtils.validateInputText(
-                    context = context,
-                    input = textState,
-                    maxLength = maxLength,
-                    maxNewLines = maxNewLines
-                )
-                if (error != null) {
-                    errorMessage = error
-                } else {
-                    onConfirm(textState)
-                    keyboardController?.hide()
-                }
+                onConfirm(textState)
+                keyboardController?.hide()
             }) {
                 Text("OK")
             }
@@ -276,72 +269,73 @@ maxNewLines = 20 // Максимум 20 переносов строк
 )
  */
 
-@Composable
-fun CustomCheckboxDialog(
-    title: String,
-    options: Array<String>,
-    selectedItems: MutableMap<String, Boolean>,
-    onDismiss: () -> Unit,
-    onConfirm: (Set<String>) -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = {
-            Text(
-                text = title,
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            )
-        },
-        text = {
-            FlowRow(
-                mainAxisSize = SizeMode.Expand,
-                mainAxisSpacing = 16.dp,
-                crossAxisSpacing = 8.dp
-            ) {
-                options.forEach { option ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(vertical = 6.dp)
-                    ) {
-                        CustomCheckbox(
-                            checked = selectedItems[option] ?: false,
-                            onCheckedChange = { isChecked ->
-                                selectedItems[option] = isChecked
-                            },
-                            enabled = true
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = option,
-                            style = TextStyle(fontSize = 16.sp),
-                            modifier = Modifier.wrapContentWidth()
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    val selected = selectedItems.filter { it.value }.keys
-                    onConfirm(selected.toSet())
-                    onDismiss()
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.my_very_wight))
-            ) {
-                Text("✔️", style = TextStyle(fontSize = 18.sp))
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.my_very_wight))
-            ) {
-                Text("❌", style = TextStyle(fontSize = 18.sp))
-            }
-        },
-        backgroundColor = colorResource(id = R.color.my_very_wight),
-        contentColor = colorResource(id = R.color.my_black)
-    )
-}
+//@OptIn(ExperimentalLayoutApi::class)
+//@Composable
+//fun CustomCheckboxDialog(
+//    title: String,
+//    options: Array<String>,
+//    selectedItems: MutableMap<String, Boolean>,
+//    onDismiss: () -> Unit,
+//    onConfirm: (Set<String>) -> Unit
+//) {
+//    AlertDialog(
+//        onDismissRequest = { onDismiss() },
+//        title = {
+//            Text(
+//                text = title,
+//                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+//            )
+//        },
+//        text = {
+//            FlowRow(
+//                mainAxisSize = SizeMode.Expand,
+//                mainAxisSpacing = 16.dp,
+//                crossAxisSpacing = 8.dp
+//            ) {
+//                options.forEach { option ->
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier
+//                            .padding(vertical = 6.dp)
+//                    ) {
+//                        CustomCheckbox(
+//                            checked = selectedItems[option] ?: false,
+//                            onCheckedChange = { isChecked ->
+//                                selectedItems[option] = isChecked
+//                            },
+//                            enabled = true
+//                        )
+//                        Spacer(modifier = Modifier.width(8.dp))
+//                        Text(
+//                            text = option,
+//                            style = TextStyle(fontSize = 16.sp),
+//                            modifier = Modifier.wrapContentWidth()
+//                        )
+//                    }
+//                }
+//            }
+//        },
+//        confirmButton = {
+//            Button(
+//                onClick = {
+//                    val selected = selectedItems.filter { it.value }.keys
+//                    onConfirm(selected.toSet())
+//                    onDismiss()
+//                },
+//                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.my_very_wight))
+//            ) {
+//                Text("✔️", style = TextStyle(fontSize = 18.sp))
+//            }
+//        },
+//        dismissButton = {
+//            Button(
+//                onClick = onDismiss,
+//                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.my_very_wight))
+//            ) {
+//                Text("❌", style = TextStyle(fontSize = 18.sp))
+//            }
+//        },
+//        backgroundColor = colorResource(id = R.color.my_very_wight),
+//        contentColor = colorResource(id = R.color.my_black)
+//    )
+//}
