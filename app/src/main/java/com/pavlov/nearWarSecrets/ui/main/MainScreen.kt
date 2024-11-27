@@ -10,7 +10,10 @@ import androidx.compose.material.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import com.pavlov.nearWarSecrets.navigation.BottomNavigationBar
+import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.settings.SettingsScreen
+import com.pavlov.nearWarSecrets.ui.storageLog.StorageLogScreen
 
 @Composable
 fun MainScreen() {
@@ -27,10 +30,18 @@ fun MainScreen() {
                 ItemLoaderScreen()
             }
             composable("storage_log") {
-//                StorageScreen()
+                StorageLogScreen(navController)
             }
             composable("settings") {
-//                SettingsScreen()
+                SettingsScreen(
+                    navController = navController,
+                    onNavigateBack = { navController.popBackStack() },
+                    onAboutClicked = { navController.navigate("about") },
+                    onSecuritySettingsClicked = { navController.navigate("two_steps_for_save") }
+                )
+            }
+            composable("about") {
+                AboutScreen(navController)
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.pavlov.nearWarSecrets.util
 
 object APK { // AppPreferencesKey Internal - доступно только в модуле
+
+
     // хранилища SharedPreferences
     const val PREFS_NAME = "my_prefs_new" // открытое хранилище
     const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs_new" // защищенное хранилище
@@ -31,12 +33,12 @@ object APK { // AppPreferencesKey Internal - доступно только в м
     const val HISTORY_TRACK_LIST_SIZE = 25
     const val DEFAULT_PREVIEW_SIZE = 30
     const val DEFAULT_MIMIC_PASS: String = "000"
-    
+
     const val REGEX = "[a-zA-Z0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/]+"
 
 
     // переключатели состояний SharedPreferences
-    const val KEY_NIGHT_MODE = "night_mode_new"
+    const val KEY_DARK_MODE = "night_mode_new"
     const val KEY_USER_SWITCH = "user_mode_new"
 
     const val KEY_DELETE_AFTER_SESSION = "delete_ek_when_closing_new"

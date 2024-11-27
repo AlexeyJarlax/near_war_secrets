@@ -43,9 +43,9 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun firstStart() {
-        if (apkm.getBooleanFromSPK(APK.KEY_FIRST_RUN, true)) {
-            apkm.saveIntToSP(APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
-            apkm.saveBooleanToSPK(APK.KEY_FIRST_RUN, false)
+        if (apkm.getBoolean(APK.KEY_FIRST_RUN, true)) {
+            apkm.putInt(APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
+            apkm.putBoolean(APK.KEY_FIRST_RUN, false)
             // Переход на экран TwoStepsForSaveScreen
             _navigateToTwoStepsForSave.value = true
         } else {
@@ -92,6 +92,6 @@ class AuthViewModel @Inject constructor(
 
     private fun doDelPassword() {
         apkm.delMastersSecret(APK.KEY_SMALL_SECRET)
-        apkm.saveBooleanToSPK(APK.KEY_EXIST_OF_PASSWORD, false)
+        apkm.putBoolean(APK.KEY_EXIST_OF_PASSWORD, false)
     }
 }

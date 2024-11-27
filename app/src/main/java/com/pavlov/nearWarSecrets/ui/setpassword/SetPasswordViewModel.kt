@@ -15,6 +15,6 @@ class SetPasswordViewModel @Inject constructor(
 
     fun savePassword(newPassword: String) {
         apkm.saveMastersSecret(newPassword, APK.KEY_SMALL_SECRET)
-        apkm.saveBooleanToSPK(APK.KEY_EXIST_OF_PASSWORD, true)
+        apkm.putBoolean(APK.KEY_EXIST_OF_PASSWORD, true)
     }
 }

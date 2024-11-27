@@ -16,7 +16,7 @@ class ShareHandler(private val context: Context) {
 
         val folder = context.filesDir
         val fileName = NamingStyleManager(context).generateFileName(
-            APKM(context).getBooleanFromSPK(
+            APKM(context).getBoolean(
                 APK.KEY_USE_THE_ENCRYPTION_K, false
             ), folder
         )

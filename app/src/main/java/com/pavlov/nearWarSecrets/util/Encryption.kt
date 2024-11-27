@@ -213,7 +213,7 @@ class Encryption(private val context: Context) {
 
         // Остальной код остается прежним с небольшими изменениями
         var scaledNumber = APKM(context)
-            .getIntFromSP(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
+            .getInt(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
             ?: APK.DEFAULT_PREVIEW_SIZE
         if (scaledNumber <= 0) {
             scaledNumber = 1
@@ -280,7 +280,7 @@ class Encryption(private val context: Context) {
 
         val fileExtension = fileName.substringAfterLast(".")
         val previewFileName = if (fileExtension.isNotEmpty()) {
-            val defaultKey: Int = APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+            val defaultKey: Int = APKM(context).getInt(APK.DEFAULT_KEY)
 
             val fileNameWithoutExtension = fileName.substringBeforeLast(".")
 

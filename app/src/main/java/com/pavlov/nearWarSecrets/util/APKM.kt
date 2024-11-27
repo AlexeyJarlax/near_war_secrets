@@ -20,31 +20,48 @@ class APKM @Inject constructor(
         context.getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
 
     // ------------------------------------------------------------------------ Boolean гетеры и сетеры
-    fun saveBooleanToSPK(key: String, isChecked: Boolean) {
+    fun putBoolean(key: String, isChecked: Boolean) {
         sharedPreferences.edit {
-            putBoolean(key, isChecked)
+            putBoolean(key, isChecked).apply()
         }
     }
 
-    fun getBooleanFromSPK(key: String, default: Boolean): Boolean {
+    fun getBoolean(key: String, default: Boolean): Boolean {
         return sharedPreferences.getBoolean(key, default)
     }
 
     // ---------------------------------------------------------------------------- Int гетеры и сетеры
-    fun saveIntToSP(key: String, value: Int) {
+    fun putInt(key: String, value: Int) {
         sharedPreferences.edit {
-            putInt(key, value)
+            putInt(key, value).apply()
         }
     }
 
-    fun getIntFromSP(key: String): Int {
+    fun getInt(key: String): Int {
         return sharedPreferences.getInt(key, 0)
     }
 
     fun delFromSP(key: String) {
         sharedPreferences.edit {
-            remove(key)
+            remove(key).apply()
         }
+    }
+
+    fun clearStorage(context: Context) {
+        val filesDir = context.filesDir
+        filesDir.listFiles()?.forEach { it.deleteRecursively() }
+
+        val previewsDir = context.getDir("originalAndPreviews", Context.MODE_PRIVATE)
+        previewsDir.listFiles()?.forEach { it.deleteRecursively() }
+    }
+
+    fun clearPreferences(context: Context) {
+        val sharedPreferences = context.getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
+    }
+
+    fun getSharedPreferences(context: Context): SharedPreferences {
+        return context.getSharedPreferences(APK.PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     //APKM(context).delFromSP(APK.DEFAULT_KEY)
@@ -201,7 +218,7 @@ class APKM @Inject constructor(
     }
 
     fun getDefauldKey(): String {
-        val defaultKey: Int = APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+        val defaultKey: Int = APKM(context).getInt(APK.DEFAULT_KEY)
         if (defaultKey == 1) {
             return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET1)
         } else if (defaultKey == 2) {
@@ -214,7 +231,7 @@ class APKM @Inject constructor(
     }
 
     fun getDefauldKeyName(): String {
-        val defaultKey: Int = APKM(context).getIntFromSP(APK.DEFAULT_KEY)
+        val defaultKey: Int = APKM(context).getInt(APK.DEFAULT_KEY)
         if (defaultKey == 1) {
             return APKM(context).getMastersSecret(APK.KEY_BIG_SECRET_NAME1)
         } else if (defaultKey == 2) {

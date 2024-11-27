@@ -220,4 +220,14 @@ AES (Advanced Encryption Standard).
     <string name="saved">Сохранён</string>
     <string name="flip">Развернуть</string>
     <string name="error_gallery">Ошибка доступа к галерее</string>
+    <string name="file_type">тип файла</string>
+    <string name="file_name">имя файла</string>
+    <string name="date">дата</string>
+    <string name="size">размер</string>
+    <string name="settings_title">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="user_switch">User Switch</string>
+    <string name="preview_size_label">Preview Size: %1$dx%2$d</string>
+    <string name="back">Back</string>
+    <string name="about_the_app">О приложении</string>
 </resources>

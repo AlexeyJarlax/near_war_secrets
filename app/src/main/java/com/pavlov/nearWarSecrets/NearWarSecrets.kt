@@ -68,7 +68,7 @@ class NearWarSecrets : Application() {
         }
 
         // Проверка и удаление ключа шифрования, если флаг установлен
-        val shouldDeleteEk = APKM(context = applicationContext).getBooleanFromSPK(APK.KEY_DELETE_AFTER_SESSION, false)
+        val shouldDeleteEk = APKM(context = applicationContext).getBoolean(APK.KEY_DELETE_AFTER_SESSION, false)
 
         if (shouldDeleteEk) {
             }

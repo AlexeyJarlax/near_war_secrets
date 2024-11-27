@@ -122,7 +122,7 @@ class ItemLoaderViewModel @Inject constructor(application: Application) : ViewMo
 
     fun getFileName(): String {
         val folder = context.filesDir
-        val existOrNot = apkManager.getBooleanFromSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
+        val existOrNot = apkManager.getBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
         return NamingStyleManager(context).generateFileName(existOrNot, folder)
     }
 

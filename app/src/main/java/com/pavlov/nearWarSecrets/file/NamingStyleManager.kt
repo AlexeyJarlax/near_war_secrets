@@ -12,7 +12,7 @@ class NamingStyleManager(private val context: Context) {
     private val nouns: List<String>
 
     init {
-        val namingStyle = APKM(context).getIntFromSP(
+        val namingStyle = APKM(context).getInt(
             APK.FILE_NAME_KEY
         )
 

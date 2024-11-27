@@ -52,7 +52,7 @@ class TwoStepsForSaveViewModel @Inject constructor(
             }
             3 -> {
                 apkm.delFromSP(APK.DEFAULT_KEY)
-                apkm.saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
+                apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
                 _navigateToMain.value = true
             }
         }

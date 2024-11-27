@@ -52,48 +52,6 @@
         </provider>
 
         <activity
-            android:name=".FAQActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-
-<!--        <activity-->
-<!--            android:name=".security.TwoStepsForSaveActivity"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait"/>-->
-<!--        <activity-->
-<!--            android:name=".security.SetPasswordActivity"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait"-->
-<!--            android:theme="@style/Theme.MyApp" />-->
-<!--        <activity-->
-<!--            android:name=".security.AuthActivity"-->
-<!--            android:exported="true"-->
-<!--            android:screenOrientation="portrait"/>-->
-
-        <activity
-            android:name=".ui.about.AboutActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-<!--        <activity-->
-<!--            android:name=".security.KeyInputActivity"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait"/>-->
-        <activity
-            android:name=".ui.storageLog.StorageLogActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-<!--        <activity-->
-<!--            android:name=".ui.item_loader.ItemLoaderActivity"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait" />-->
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:configChanges="locale|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyApp" />
-
-        <activity
             android:name=".MainActivity"
             android:exported="true">
         <intent-filter>

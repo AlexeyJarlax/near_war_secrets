@@ -6,10 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 // моя палитра:
-val MyLight = Color(0xFF03DCC2)
+val MyLight = Color(0xFF0FE3C8)
 val MyDark = Color(0xFF000000)
 val MyCustom = Color(0xFF057E6F)
-//val MySecondaryBackground = colorResource(id = R.color.my_normal_blue)
 
 private val LightColorPalette = lightColors(
     primary = MyLight,
