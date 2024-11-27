@@ -1,9 +1,11 @@
-package com.pavlov.nearWarSecrets.util
+package com.pavlov.nearWarSecrets.ui.theme
 
 import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.pavlov.nearWarSecrets.R
+import com.pavlov.nearWarSecrets.util.APK
+import com.pavlov.nearWarSecrets.util.APKM
 
 object ThemeManager {
 

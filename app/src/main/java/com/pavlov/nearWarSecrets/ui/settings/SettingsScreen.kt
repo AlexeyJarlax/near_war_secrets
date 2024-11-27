@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pavlov.nearWarSecrets.R
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pavlov.nearWarSecrets.ui.theme.uiComponents.MatrixBackground
 
@@ -24,7 +25,7 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit,
     onAboutClicked: () -> Unit,
     onSecuritySettingsClicked: () -> Unit,
-    viewModel: SettingsViewModel = viewModel()
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val isDarkModeEnabled by viewModel.isDarkModeEnabled.collectAsState()
     val isUserSwitchEnabled by viewModel.isUserSwitchEnabled.collectAsState()

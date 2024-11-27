@@ -1,19 +1,24 @@
 package com.pavlov.nearWarSecrets.ui.settings
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(
-    application: Application,
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val apkm: APKM
-) : AndroidViewModel(application) {
-    private val context = application.applicationContext
+) : ViewModel() {
 
     private val _isDarkModeEnabled = MutableStateFlow(getDarkModePreference())
     val isDarkModeEnabled: StateFlow<Boolean> = _isDarkModeEnabled

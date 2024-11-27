@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
-        <!-- ЦВЕТОВЫЕ СТИЛИ НОЧЬ\ДЕНЬ РЕАЛИЗОВАННЫ ЧЕРЕЗ COLORS.XML-->
-
-    </style>
-</resources>

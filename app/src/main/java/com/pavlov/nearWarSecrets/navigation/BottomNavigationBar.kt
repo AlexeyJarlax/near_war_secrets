@@ -36,10 +36,10 @@ fun BottomNavigationBar(navController: NavHostController) {
                         // Избегаем множественного создания экземпляров
                         launchSingleTop = true
                         // Сохраняем состояние при возврате
-                        restoreState = true
-                        // Удаляем предыдущие из стека
+                        restoreState = item.route != "settings"
+                        // Remove previous destinations from the stack
                         popUpTo(navController.graph.startDestinationRoute ?: "main") {
-                            saveState = true
+                            saveState = item.route != "settings"
                         }
                     }
                 }

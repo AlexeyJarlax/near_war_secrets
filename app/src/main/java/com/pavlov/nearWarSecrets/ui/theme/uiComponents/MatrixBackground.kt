@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import com.pavlov.nearWarSecrets.ui.theme.MyCustom
+import com.pavlov.nearWarSecrets.ui.theme.My7
 import kotlin.random.Random
 
 @Composable
@@ -119,7 +119,7 @@ class Stream {
                 val textPaint = android.graphics.Paint().apply {
                     isAntiAlias = true
                     textSize = symbolSize
-                    color = MyCustom.toArgb()
+                    color = My7.toArgb()
                     typeface = android.graphics.Typeface.MONOSPACE
                 }
                 nativeCanvas.drawText(

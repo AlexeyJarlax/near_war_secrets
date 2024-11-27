@@ -5,47 +5,74 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// моя палитра:
-val MyLight = Color(0xFF0FE3C8)
-val MyDark = Color(0xFF000000)
-val MyCustom = Color(0xFF057E6F)
+// Моя палитра: Color(0xFF0FE3C8)
+val My1 = Color(0xFF525252) // фон кнопок /
+val My2 = Color(0xFF000000)
+val My3 = Color(0xFF00EED4) // тексты в полях
+val My4 = Color(0xFF000000) // задний фон
+val My5 = Color(0xFFE91E63)
+val My6 = Color(0xFF00D5C1) // текст в кнопках
+val My7 = Color(0xFF87E01A)
 
 private val LightColorPalette = lightColors(
-    primary = MyLight,
-    primaryVariant = MyCustom,
-    secondary = MyDark
+    primary = Color.Green,
+    primaryVariant = Color.Magenta,
+    secondary = Color.Yellow,
+    background = Color.White, // Фон
+    surface = Color.Cyan, // Поверхности
+    onPrimary = Color.Red, // Цвет текста на primary
+    onSecondary = Color.Blue, // Цвет текста на secondary
 )
 
 private val DarkColorPalette = darkColors(
-    primary = MyDark,
-    primaryVariant = MyCustom,
-    secondary = MyLight
+    primary = My1,
+    primaryVariant = My2,
+    secondary = My3,
+    background = My4, // Темный фон по умолчанию
+    surface = My5, // Темные поверхности
+    onPrimary = My6, // Цвет текста на primary
+    onSecondary = My7, // Цвет текста на secondary
 )
-
-val colors = LightColorPalette
 
 @Composable
 fun NearWarSecretsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    customBackgroundColor: Color = if (darkTheme) DarkColorPalette.background else LightColorPalette.background,
+    customIconColor: Color = if (darkTheme) DarkColorPalette.onPrimary else LightColorPalette.onPrimary,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
+    val colors = if (darkTheme) {
+        DarkColorPalette.copy(
+            background = customBackgroundColor,
+            surface = customBackgroundColor,
+            onPrimary = customIconColor,
+            onSecondary = customIconColor,
+        )
+    } else {
+        LightColorPalette.copy(
+            background = customBackgroundColor,
+            surface = customBackgroundColor,
+            onPrimary = customIconColor,
+            onSecondary = customIconColor
+        )
+    }
+
     MaterialTheme(
         colors = colors,
         typography = Typography(
-            h1 = MaterialTheme.typography.h1.copy(color = MyLight),
-            h2 = MaterialTheme.typography.h2.copy(color = MyLight),
-            h3 = MaterialTheme.typography.h3.copy(color = MyLight),
-            h4 = MaterialTheme.typography.h4.copy(color = MyLight),
-            h5 = MaterialTheme.typography.h5.copy(color = MyLight),
-            h6 = MaterialTheme.typography.h6.copy(color = MyLight),
-            subtitle1 = MaterialTheme.typography.subtitle1.copy(color = MyLight),
-            subtitle2 = MaterialTheme.typography.subtitle2.copy(color = MyLight),
-            body1 = MaterialTheme.typography.body1.copy(color = MyLight),
-            body2 = MaterialTheme.typography.body2.copy(color = MyLight),
-            button = MaterialTheme.typography.button.copy(color = MyLight),
-            caption = MaterialTheme.typography.caption.copy(color = MyLight),
-            overline = MaterialTheme.typography.overline.copy(color = MyLight)
+            h1 = MaterialTheme.typography.h1.copy(color = colors.secondary),
+            h2 = MaterialTheme.typography.h2.copy(color = colors.secondary),
+            h3 = MaterialTheme.typography.h3.copy(color = colors.secondary),
+            h4 = MaterialTheme.typography.h4.copy(color = colors.secondary),
+            h5 = MaterialTheme.typography.h5.copy(color = colors.secondary),
+            h6 = MaterialTheme.typography.h6.copy(color = colors.secondary),
+            subtitle1 = MaterialTheme.typography.subtitle1.copy(color = colors.secondary),
+            subtitle2 = MaterialTheme.typography.subtitle2.copy(color = colors.secondary),
+            body1 = MaterialTheme.typography.body1.copy(color = colors.secondary),
+            body2 = MaterialTheme.typography.body2.copy(color = colors.secondary),
+            button = MaterialTheme.typography.button.copy(color = colors.onPrimary),
+            caption = MaterialTheme.typography.caption.copy(color = colors.secondary),
+            overline = MaterialTheme.typography.overline.copy(color = colors.secondary)
         ),
         shapes = Shapes,
         content = content
