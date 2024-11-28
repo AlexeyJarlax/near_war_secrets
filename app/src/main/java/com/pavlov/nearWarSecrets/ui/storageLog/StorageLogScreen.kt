@@ -100,5 +100,5 @@ fun StorageLogScreen(navController: NavController) {
                 }
             }
         }
-    )
+        )
 }

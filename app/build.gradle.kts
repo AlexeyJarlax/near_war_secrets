@@ -100,6 +100,7 @@ dependencies {
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.foundation.layout.android)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
 
     // HTTP-клиент

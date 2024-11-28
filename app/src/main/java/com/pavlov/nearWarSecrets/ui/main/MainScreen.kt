@@ -23,7 +23,7 @@ fun MainScreen(navController: NavHostController) {
             startDestination = NavDestinations.ITEM_LOADER,
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Ваши маршруты
+
             composable(NavDestinations.ITEM_LOADER) { ItemLoaderScreen() }
             composable(NavDestinations.STORAGE_LOG) { StorageLogScreen(navController) }
             composable(NavDestinations.SETTINGS) {
