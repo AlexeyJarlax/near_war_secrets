@@ -8,10 +8,10 @@ import androidx.compose.ui.graphics.Color
 // Моя палитра: Color(0xFF0FE3C8)
 val My1 = Color(0xFF525252) // фон кнопок /
 val My2 = Color(0xFF000000)
-val My3 = Color(0xFF00EED4) // тексты в полях
+val My3 = Color(0xFFFFFFFF) // тексты в полях
 val My4 = Color(0xFF000000) // задний фон
 val My5 = Color(0xFFE91E63)
-val My6 = Color(0xFF00D5C1) // текст в кнопках
+val My6 = Color(0xFFFFFFFF)  // текст в кнопках
 val My7 = Color(0xFF87E01A)
 
 private val LightColorPalette = lightColors(
@@ -35,7 +35,7 @@ private val DarkColorPalette = darkColors(
 )
 
 @Composable
-fun NearWarSecretsTheme(
+fun MyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     customBackgroundColor: Color = if (darkTheme) DarkColorPalette.background else LightColorPalette.background,
     customIconColor: Color = if (darkTheme) DarkColorPalette.onPrimary else LightColorPalette.onPrimary,
