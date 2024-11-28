@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.theme.uiComponents
+package com.pavlov.nearWarSecrets.theme.uiComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

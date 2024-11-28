@@ -1,23 +1,18 @@
 package com.pavlov.nearWarSecrets.ui.settings
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.Switch
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pavlov.nearWarSecrets.R
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.pavlov.nearWarSecrets.ui.theme.uiComponents.MatrixBackground
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
 @Composable
 fun SettingsScreen(
@@ -27,8 +22,6 @@ fun SettingsScreen(
     onSecuritySettingsClicked: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val isDarkModeEnabled by viewModel.isDarkModeEnabled.collectAsState()
-    val isUserSwitchEnabled by viewModel.isUserSwitchEnabled.collectAsState()
     val previewSize by viewModel.previewSize.collectAsState()
     val personalDataText by viewModel.personalDataText.collectAsState()
 
@@ -46,32 +39,6 @@ fun SettingsScreen(
             style = MaterialTheme.typography.h5,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
-
-        // Dark mode switch
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(R.string.dark_mode))
-            Spacer(modifier = Modifier.weight(1f))
-            Switch(
-                checked = isDarkModeEnabled,
-                onCheckedChange = { viewModel.toggleDarkMode(it) }
-            )
-        }
-
-        // User switch
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(R.string.user_switch))
-            Spacer(modifier = Modifier.weight(1f))
-            Switch(
-                checked = isUserSwitchEnabled,
-                onCheckedChange = { viewModel.toggleUserSwitch(it) }
-            )
-        }
 
         // Preview size slider
         Column(
@@ -110,7 +77,7 @@ fun SettingsScreen(
 
         // Buttons
         Button(onClick = { viewModel.clearStorage() }) {
-            Text(text = stringResource(R.string.clear_storage))
+            Text(text = stringResource(R.string.clearing_the_storage))
         }
 
         Button(onClick = { viewModel.resetSettings() }) {

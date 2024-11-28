@@ -37,7 +37,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
-import com.pavlov.nearWarSecrets.ui.theme.uiComponents.MatrixBackground
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

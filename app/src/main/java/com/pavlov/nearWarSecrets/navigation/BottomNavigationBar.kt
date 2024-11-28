@@ -37,7 +37,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         navController.navigate(item.route) {
                             launchSingleTop = true
                             restoreState = item.route != NavDestinations.SETTINGS
-                            popUpTo(navController.graph.startDestinationRoute ?: NavDestinations.MAIN) {
+                            popUpTo(navController.graph.startDestinationRoute ?: NavDestinations.AUTH) {
                                 saveState = item.route != NavDestinations.SETTINGS
                             }
                         }

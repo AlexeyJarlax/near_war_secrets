@@ -20,9 +20,6 @@ class SettingsViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 
-    private val _isDarkModeEnabled = MutableStateFlow(getDarkModePreference())
-    val isDarkModeEnabled: StateFlow<Boolean> = _isDarkModeEnabled
-
     private val _isUserSwitchEnabled = MutableStateFlow(getUserSwitchPreference())
     val isUserSwitchEnabled: StateFlow<Boolean> = _isUserSwitchEnabled
 
@@ -34,17 +31,6 @@ class SettingsViewModel @Inject constructor(
 
     private var clickCount = 0
 
-    // Dark Mode
-    fun toggleDarkMode(enabled: Boolean) {
-        _isDarkModeEnabled.value = enabled
-        saveDarkModePreference(enabled)
-    }
-
-    // User Switch
-    fun toggleUserSwitch(enabled: Boolean) {
-        _isUserSwitchEnabled.value = enabled
-        saveUserSwitchPreference(enabled)
-    }
 
     // Preview Size
     fun updatePreviewSize(size: Int) {
@@ -69,7 +55,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Reset Settings
+    // DELIT ALL
     fun resetSettings() {
         viewModelScope.launch {
             apkm.clearPreferences(context)
@@ -80,19 +66,9 @@ class SettingsViewModel @Inject constructor(
 
     // Reset State to Defaults
     private fun resetState() {
-        _isDarkModeEnabled.value = false
         _isUserSwitchEnabled.value = false
         _previewSize.value = APK.DEFAULT_PREVIEW_SIZE
         _personalDataText.value = "Personal Data"
-    }
-
-    // SharedPreferences Helpers
-    private fun getDarkModePreference(): Boolean {
-        return apkm.getBoolean(APK.KEY_DARK_MODE, false)
-    }
-
-    private fun saveDarkModePreference(enabled: Boolean) {
-        apkm.putBoolean(APK.KEY_DARK_MODE, enabled)
     }
 
     private fun getUserSwitchPreference(): Boolean {

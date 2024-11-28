@@ -12,6 +12,7 @@ import com.pavlov.nearWarSecrets.file.FileProviderAdapter
 import com.pavlov.nearWarSecrets.file.NamingStyleManager
 import com.pavlov.nearWarSecrets.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -22,9 +23,10 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class ItemLoaderViewModel @Inject constructor(application: Application) : ViewModel() {
-
-    private val context: Context = application.applicationContext
+class ItemLoaderViewModel @Inject constructor(
+    application: Application,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
 
     private val _photoList = MutableLiveData<List<String>>()
     val photoList: LiveData<List<String>> get() = _photoList

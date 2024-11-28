@@ -14,8 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pavlov.nearWarSecrets.R
-import com.pavlov.nearWarSecrets.ui.theme.uiComponents.MatrixBackground
-import java.io.File
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import java.text.SimpleDateFormat
 import java.util.*
 

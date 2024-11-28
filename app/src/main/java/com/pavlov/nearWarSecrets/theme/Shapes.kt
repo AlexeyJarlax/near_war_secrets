@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.theme
+package com.pavlov.nearWarSecrets.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

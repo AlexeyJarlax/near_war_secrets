@@ -8,7 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.pavlov.nearWarSecrets.navigation.NavGraph
-import com.pavlov.nearWarSecrets.ui.theme.MyTheme
+import com.pavlov.nearWarSecrets.theme.MyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

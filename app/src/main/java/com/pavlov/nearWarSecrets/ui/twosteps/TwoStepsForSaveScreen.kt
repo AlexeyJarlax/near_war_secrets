@@ -10,6 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
 @Composable
 fun TwoStepsForSaveScreen(
@@ -41,47 +42,56 @@ fun TwoStepsForSaveScreen(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        when (step) {
-            0 -> {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = null
-                )
-                Text("Шаг 0: Начало")
-                Button(onClick = { viewModel.onInputButtonClicked() }) {
-                    Text("Продолжить")
-                }
-            }
-            1 -> {
-                // Здесь можно добавить анимацию или переходы, если нужно
-                Text("Установить пароль?")
-                Row {
-                    Button(onClick = { viewModel.onYesClicked() }) {
-                        Text("Да")
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { viewModel.onNoClicked() }) {
-                        Text("Нет")
-                    }
-                }
-            }
-            3 -> {
-                Text("Установить ключ шифрования?")
-                Row {
-                    Button(onClick = { viewModel.onYesClicked() }) {
-                        Text("Да")
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { viewModel.onNoClicked() }) {
-                        Text("Нет")
+    Scaffold(
+        content = { padding ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                MatrixBackground()
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    when (step) {
+                        0 -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                                contentDescription = null
+                            )
+                            Text("Шаг 0: Начало")
+                            Button(onClick = { viewModel.onInputButtonClicked() }) {
+                                Text("Продолжить")
+                            }
+                        }
+
+                        1 -> {
+                            // Здесь можно добавить анимацию или переходы, если нужно
+                            Text("Установить пароль?")
+                            Row {
+                                Button(onClick = { viewModel.onYesClicked() }) {
+                                    Text("Да")
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Button(onClick = { viewModel.onNoClicked() }) {
+                                    Text("Нет")
+                                }
+                            }
+                        }
+
+                        3 -> {
+                            Text("Установить ключ шифрования?")
+                            Row {
+                                Button(onClick = { viewModel.onYesClicked() }) {
+                                    Text("Да")
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Button(onClick = { viewModel.onNoClicked() }) {
+                                    Text("Нет")
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }

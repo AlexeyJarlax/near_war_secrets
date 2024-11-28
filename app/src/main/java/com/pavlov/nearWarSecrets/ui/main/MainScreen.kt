@@ -20,7 +20,7 @@ fun MainScreen(navController: NavHostController) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = NavDestinations.ITEM_LOADER,
+            startDestination = NavDestinations.AUTH,
             modifier = Modifier.padding(innerPadding)
         ) {
 

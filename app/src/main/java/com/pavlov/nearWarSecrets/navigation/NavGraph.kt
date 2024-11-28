@@ -1,7 +1,6 @@
 package com.pavlov.nearWarSecrets.navigation
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -35,17 +34,14 @@ fun NavGraph(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = NavDestinations.ITEM_LOADER,
+            startDestination = NavDestinations.AUTH,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(NavDestinations.AUTH) {
                 AuthScreen(
-                    onNavigateToMain = { navController.navigate(NavDestinations.MAIN) },
+                    onNavigateToItemLoader = { navController.navigate(NavDestinations.ITEM_LOADER) },
                     onNavigateToTwoStepsForSave = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
                 )
-            }
-            composable(NavDestinations.MAIN) {
-                MainScreen(navController) // MainScreen больше не нужен как Scaffold
             }
             composable(NavDestinations.SET_PASSWORD) {
                 SetPasswordScreen(
