@@ -1,14 +1,12 @@
 package com.pavlov.nearWarSecrets.ui.main
 
-import android.app.Activity
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.material.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.navigation.BottomNavigationBar
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
@@ -16,33 +14,27 @@ import com.pavlov.nearWarSecrets.ui.settings.SettingsScreen
 import com.pavlov.nearWarSecrets.ui.storageLog.StorageLogScreen
 
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
+fun MainScreen(navController: NavHostController) {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "item_loader",
+            startDestination = NavDestinations.ITEM_LOADER,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("item_loader") {
-                ItemLoaderScreen()
-            }
-            composable("storage_log") {
-                StorageLogScreen(navController)
-            }
-            composable("settings") {
+            // Ваши маршруты
+            composable(NavDestinations.ITEM_LOADER) { ItemLoaderScreen() }
+            composable(NavDestinations.STORAGE_LOG) { StorageLogScreen(navController) }
+            composable(NavDestinations.SETTINGS) {
                 SettingsScreen(
                     navController = navController,
                     onNavigateBack = { navController.popBackStack() },
-                    onAboutClicked = { navController.navigate("about") },
-                    onSecuritySettingsClicked = { navController.navigate("two_steps_for_save") }
+                    onAboutClicked = { navController.navigate(NavDestinations.ABOUT) },
+                    onSecuritySettingsClicked = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
                 )
             }
-            composable("about") {
-                AboutScreen(navController)
-            }
+            composable(NavDestinations.ABOUT) { AboutScreen(navController) }
         }
     }
 }

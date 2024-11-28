@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -66,33 +67,38 @@ fun StorageLogScreen(navController: NavController) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        MatrixBackground()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)
-    ) {
-        Button(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.align(Alignment.Start)
-        ) {
-            Text(text = context.getString(R.string.button_back))
-        }
+    Scaffold(
+        content = { padding ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                MatrixBackground()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    Button(
+                        onClick = { navController.popBackStack() },
+                        modifier = Modifier.align(Alignment.Start)
+                    ) {
+                        Text(text = context.getString(R.string.button_back))
+                    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-        SelectionContainer {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .fillMaxWidth()
-            ) {
-                logEntries.forEach { entry ->
-                    Text(text = entry)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    SelectionContainer {
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(scrollState)
+                                .fillMaxWidth()
+                        ) {
+                            logEntries.forEach { entry ->
+                                Text(text = entry)
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}}
+    )
+}

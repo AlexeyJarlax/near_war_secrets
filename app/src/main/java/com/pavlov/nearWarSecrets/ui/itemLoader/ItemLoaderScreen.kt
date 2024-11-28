@@ -119,21 +119,6 @@ fun ItemLoaderScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = context.getString(R.string.app_name_in_main_page)) },
-                navigationIcon = {
-                    IconButton(onClick = {
-//                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = context.getString(R.string.button_back)
-                        )
-                    }
-                }
-            )
-        },
         content = { padding ->
             Box(modifier = Modifier.fillMaxSize()) {
                 MatrixBackground()

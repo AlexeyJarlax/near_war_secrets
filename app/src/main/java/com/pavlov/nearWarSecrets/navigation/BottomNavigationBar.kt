@@ -14,14 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pavlov.nearWarSecrets.data.model.BottomNavItem
+import com.pavlov.nearWarSecrets.data.model.NavDestinations
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
-        BottomNavItem("Loader", "item_loader", Icons.Default.Add),
-        BottomNavItem("Log", "storage_log", Icons.Default.Storage),
-        BottomNavItem("Settings", "settings", Icons.Default.Settings),
-        BottomNavItem("About", "about", Icons.Default.Info)
+        BottomNavItem("Loader", NavDestinations.ITEM_LOADER, Icons.Default.Add),
+        BottomNavItem("Log", NavDestinations.STORAGE_LOG, Icons.Default.Storage),
+        BottomNavItem("Settings", NavDestinations.SETTINGS, Icons.Default.Settings),
+        BottomNavItem("About", NavDestinations.ABOUT, Icons.Default.Info)
     )
     BottomNavigation {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -32,14 +33,13 @@ fun BottomNavigationBar(navController: NavHostController) {
                 label = { Text(item.title) },
                 selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(item.route) {
-                        // Избегаем множественного создания экземпляров
-                        launchSingleTop = true
-                        // Сохраняем состояние при возврате
-                        restoreState = item.route != "settings"
-                        // Remove previous destinations from the stack
-                        popUpTo(navController.graph.startDestinationRoute ?: "main") {
-                            saveState = item.route != "settings"
+                    if (currentRoute != item.route) {
+                        navController.navigate(item.route) {
+                            launchSingleTop = true
+                            restoreState = item.route != NavDestinations.SETTINGS
+                            popUpTo(navController.graph.startDestinationRoute ?: NavDestinations.MAIN) {
+                                saveState = item.route != NavDestinations.SETTINGS
+                            }
                         }
                     }
                 }
