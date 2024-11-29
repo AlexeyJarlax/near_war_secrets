@@ -57,13 +57,15 @@ fun CustomButtonOne(
     ) {
         Icon(
             modifier = modifier
-                .padding(bottom = 14.dp),
+                .padding(0.dp, bottom = 16.dp),
             painter = painterResource(id = iconResId),
             contentDescription = null,
             tint = if (enabled) iconColor else Color.Gray
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
+            modifier = modifier
+                .padding(0.dp),
             text = text,
             fontSize = fontSize,
             fontFamily = FontFamily.Default,

@@ -15,7 +15,6 @@ class NearWarSecrets : Application() {
     override fun onCreate() {
         super.onCreate()
         ToastExt.init(this)
-        applyDayNightTheme()
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -73,8 +72,4 @@ class NearWarSecrets : Application() {
         if (shouldDeleteEk) {
             }
         }
-
-    private fun applyDayNightTheme() {
-//        settings.applyTheme()
-    }
     }

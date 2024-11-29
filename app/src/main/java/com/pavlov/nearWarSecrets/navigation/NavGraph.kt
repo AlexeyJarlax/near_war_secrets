@@ -91,5 +91,9 @@ fun NavGraph(
 
 // показывать ли нижнее меню
 private fun shouldShowBottomBar(navController: NavHostController): Boolean {
-    return true
+    val currentDestination = navController.currentBackStackEntry?.destination?.route
+    return when (currentDestination) {
+        NavDestinations.AUTH, NavDestinations.KEY_INPUT, NavDestinations.SET_PASSWORD -> false
+        else -> true
+    }
 }
