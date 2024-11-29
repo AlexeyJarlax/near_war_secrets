@@ -310,8 +310,7 @@ class Encryption(private val context: Context) {
     }
 
     fun getDefaultThumbnail(context: Context): Bitmap {
-        // Здесь вы можете использовать свою иконку документа или другое дефолтное изображение
-        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_search)
+        val drawable = ContextCompat.getDrawable(context, R.drawable.login_30dp)
         return drawable?.toBitmap() ?: Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     }
 

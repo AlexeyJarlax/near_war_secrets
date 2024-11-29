@@ -3,7 +3,6 @@ package com.pavlov.nearWarSecrets.ui.auth
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pavlov.nearWarSecrets.ui.settings.SettingsViewModel
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.bouncycastle.crypto.params.Blake3Parameters.context
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +37,6 @@ class AuthViewModel @Inject constructor(
     private val _message = MutableStateFlow("")
     val message: StateFlow<String> = _message
 
-    // Перенесите объявление навигационных переменных перед блоком init
     private val _navigateToItemLoader = MutableStateFlow(false)
     val navigateToItemLoader: StateFlow<Boolean> = _navigateToItemLoader
 
@@ -54,13 +51,11 @@ class AuthViewModel @Inject constructor(
         if (apkm.getBoolean(APK.KEY_FIRST_RUN, true)) {
             apkm.putInt(APK.KEY_PREVIEW_SIZE_SEEK_BAR, 30)
             apkm.putBoolean(APK.KEY_FIRST_RUN, false)
-            // Переход на экран TwoStepsForSaveScreen
             _navigateToTwoStepsForSave.value = true
         } else {
             val savedPassword = apkm.getMastersSecret(APK.KEY_SMALL_SECRET)
             if (savedPassword.isBlank()) {
                 _isPasswordExist.value = false
-                // Переход на главный экран
                 _navigateToItemLoader.value = true
             }
         }
@@ -78,20 +73,17 @@ class AuthViewModel @Inject constructor(
             apkm.saveCounter(APK.KEY_COUNT_TRY, _counter.value)
             if (_delPassword.value) {
                 doDelPassword()
-                // Navigate to TwoStepsForSaveScreen
                 _navigateToTwoStepsForSave.value = true
             } else {
-                _message.value = "Успешный вход"
+                _message.value = "Успешный вход."
                 _navigateToItemLoader.value = true
             }
         } else {
             _counter.value -= 1
             _hasError.value = true
             apkm.saveCounter(APK.KEY_COUNT_TRY, _counter.value)
-            _message.value = "Неверный пароль"
+            _message.value = "Неверный пароль."
 
-            if (_counter.value < 27) {
-            }
             if (_counter.value < 1) {
                 resetSettings()
             }
@@ -102,15 +94,13 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             apkm.clearPreferences(context)
             apkm.clearStorage(context)
-            resetState()
+            closeApp()
         }
     }
 
-    // Reset State to Defaults
-    private fun resetState() {
-//        _isUserSwitchEnabled.value = false
-//        _previewSize.value = APK.DEFAULT_PREVIEW_SIZE
-//        _personalDataText.value = "Personal Data"
+    private fun closeApp() {
+        android.os.Process.killProcess(android.os.Process.myPid()) // Убивает текущий процесс
+        System.exit(0) // Завершает виртуальную машину
     }
 
     private fun doDelPassword() {

@@ -1,5 +1,6 @@
 package com.pavlov.nearWarSecrets.theme.uiComponents
 
+import androidx.compose.animation.animateColorAsState
 import com.pavlov.nearWarSecrets.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pavlov.nearWarSecrets.theme.My5
+import com.pavlov.nearWarSecrets.theme.My7
+import androidx.compose.runtime.getValue
 
 @Composable
 fun CustomButtonOne(
@@ -26,26 +30,34 @@ fun CustomButtonOne(
     text: String,
     iconResId: Int,
     modifier: Modifier = Modifier,
-    textColor: Color = colorResource(id = R.color.my_prime_day),
-    iconColor: Color = colorResource(id = R.color.my_prime_day),
+    textColor: Color = My5,
+    iconColor: Color = My5,
     enabled: Boolean = true,
-    fontSize: TextUnit = 22.sp
+    fontSize: TextUnit = 18.sp,
+    pressedColor: Color = My7
 ) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (enabled) Color.Transparent else pressedColor
+    )
+
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor =  if (enabled) Color.Transparent else Color.DarkGray,
+            backgroundColor = backgroundColor,
             contentColor = textColor
         ),
         modifier = modifier
-            .padding(end = 12.dp, bottom = 12.dp)
-            .height(60.dp),
+            .padding(start = 0.dp, end = 0.dp, bottom = 0.dp, top = 0.dp)
+            .height(54.dp)
+            .wrapContentWidth(),
         enabled = enabled,
         elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
         shape = RoundedCornerShape(4.dp),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(0.dp)
     ) {
         Icon(
+            modifier = modifier
+                .padding(bottom = 14.dp),
             painter = painterResource(id = iconResId),
             contentDescription = null,
             tint = if (enabled) iconColor else Color.Gray
@@ -59,6 +71,21 @@ fun CustomButtonOne(
         )
     }
 }
+
+/** Пример использования:
+
+Spacer(modifier = Modifier.height(8.dp))
+
+var password by remember { mutableStateOf("") }
+
+CustomButtonOne(
+onClick = { viewModel.onPasswordEntered(password) },
+text = stringResource(R.string.enter),
+textColor = if (password.isEmpty()) My5 else My7,
+iconColor = if (password.isEmpty()) My5 else My7,
+iconResId = R.drawable.login_30dp
+)
+ */
 
 @Composable
 fun CustomButtonTwo(

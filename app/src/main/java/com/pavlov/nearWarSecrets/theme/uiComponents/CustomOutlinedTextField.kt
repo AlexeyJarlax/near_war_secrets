@@ -48,9 +48,9 @@ fun CustomOutlinedTextField(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(0.dp)
     ) {
-        // Поле ввода с непрозрачным фоном
+
         OutlinedTextField(
             value = value,
             onValueChange = { newValue ->

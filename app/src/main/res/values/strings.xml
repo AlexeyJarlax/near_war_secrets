@@ -230,4 +230,5 @@ AES (Advanced Encryption Standard).
     <string name="preview_size_label">Preview Size: %1$dx%2$d</string>
     <string name="back">Back</string>
     <string name="about_the_app">О приложении</string>
+    <string name="enter">Войти\n</string>
 </resources>

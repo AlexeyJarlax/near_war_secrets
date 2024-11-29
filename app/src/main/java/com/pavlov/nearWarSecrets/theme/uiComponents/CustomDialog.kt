@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -139,7 +141,7 @@ fun CustomOptionDialog(
                 modifier = Modifier.padding(end = 8.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_clear),
+                    imageVector = Icons.Filled.Close,
                     contentDescription = "Закрыть",
                     tint = colorResource(id = R.color.my_black)
                 )

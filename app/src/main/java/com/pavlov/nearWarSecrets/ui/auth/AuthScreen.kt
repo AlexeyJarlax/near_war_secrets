@@ -1,15 +1,18 @@
 package com.pavlov.nearWarSecrets.ui.auth
 
-import android.R.attr.background
+import com.pavlov.nearWarSecrets.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.pavlov.nearWarSecrets.theme.MyTheme
+import com.pavlov.nearWarSecrets.theme.My4
+import com.pavlov.nearWarSecrets.theme.My5
+import com.pavlov.nearWarSecrets.theme.My7
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomOutlinedTextField
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixAnimationSettings.symbols
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
@@ -47,12 +50,12 @@ fun AuthScreen(
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(100.dp),
-                            color = Color(0xFF87E01A)
+                            color = My4
                         )
                         val randomSymbol = symbols.random()
                         Text(
                             text = randomSymbol.toString(),
-                            color = Color(0xFF87E01A),
+                            color = My4,
                             style = MaterialTheme.typography.h4,
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -61,37 +64,43 @@ fun AuthScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
+                            .padding(34.dp),
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = "Введите пароль",
-                            modifier = Modifier
-                                .padding(start = 14.dp)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+
                         var password by remember { mutableStateOf("") }
+
+                        Text(
+                            text = if (password.isEmpty()) "Введите пароль" else ""
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         CustomOutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
                             label = "Пароль",
                             placeholder = "Введите пароль",
-                            backgroundColor = Color.Black
+                            backgroundColor = My4
                         )
+
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(
+
+                        CustomButtonOne(
                             onClick = { viewModel.onPasswordEntered(password) },
-                            modifier = Modifier.padding(start = 14.dp)
-                        ) {
-                            Text("Войти")
-                        }
+                            text = stringResource(R.string.enter),
+                            textColor = if (password.isEmpty()) My5 else My7,
+                            iconColor = if (password.isEmpty()) My5 else My7,
+                            iconResId = R.drawable.login_30dp
+                        )
+
                         if (message.isNotEmpty()) {
                             Text(text = message, color = MaterialTheme.colors.error)
                         }
                         if (hasError) {
                             Text(
                                 text = "Осталось попыток: $counter",
-                                modifier = Modifier.padding(start = 14.dp)
+                                color = MaterialTheme.colors.error
                             )
                         }
                     }

@@ -54,7 +54,7 @@ fun TwoStepsForSaveScreen(
                     when (step) {
                         0 -> {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                                painter = painterResource(id = R.drawable.art2),
                                 contentDescription = null
                             )
                             Text("Шаг 0: Начало")
