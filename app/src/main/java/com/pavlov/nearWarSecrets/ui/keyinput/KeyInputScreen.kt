@@ -7,10 +7,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.MainActivity
+import com.pavlov.nearWarSecrets.theme.My4
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomOutlinedTextField
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.util.APKM
 
@@ -45,22 +48,29 @@ fun KeyInputScreen(
                         .padding(16.dp)
                 ) {
                     if (showNewKeyFields) {
-                        TextField(
+
+                        CustomOutlinedTextField(
                             value = keyName,
                             onValueChange = { viewModel.keyName.value = it },
-                            label = { Text("Имя ключа") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = "Имя ключа",
+                            placeholder = "Узнаваемое название для этого ключа",
+                            backgroundColor = My4,
+                            isPassword = false,
+                            keyboardActions =  { ImeAction.Done }
                         )
+
                         Spacer(modifier = Modifier.height(8.dp))
-                        TextField(
+
+                        CustomOutlinedTextField(
                             value = keyValue,
                             onValueChange = { viewModel.onKeyValueChange(it) },
-                            label = { Text("Ключ") },
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.None
-                            ),
-                            modifier = Modifier.fillMaxWidth()
+                            label = "Значение ключа",
+                            placeholder = "Символы для генерации хэш ключа",
+                            backgroundColor = My4,
+                            isPassword = false,
+                            keyboardActions =  { viewModel.saveKey() }
                         )
+
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = message,

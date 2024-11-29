@@ -28,7 +28,7 @@ import androidx.compose.runtime.getValue
 fun CustomButtonOne(
     onClick: () -> Unit,
     text: String,
-    iconResId: Int,
+    iconResId: Int = 0,
     modifier: Modifier = Modifier,
     textColor: Color = My5,
     iconColor: Color = My5,
@@ -55,17 +55,19 @@ fun CustomButtonOne(
         shape = RoundedCornerShape(4.dp),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Icon(
-            modifier = modifier
-                .padding(0.dp, bottom = 16.dp),
-            painter = painterResource(id = iconResId),
-            contentDescription = null,
-            tint = if (enabled) iconColor else Color.Gray
-        )
+        if (iconResId != 0) {
+            Icon(
+                modifier = modifier
+                    .padding(0.dp),
+                painter = painterResource(id = iconResId),
+                contentDescription = null,
+                tint = if (enabled) iconColor else Color.Gray
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             modifier = modifier
-                .padding(0.dp),
+                .padding(top = 16.dp),
             text = text,
             fontSize = fontSize,
             fontFamily = FontFamily.Default,
@@ -129,6 +131,7 @@ fun CustomButtonTwo(
         )
     }
 }
+
 /**
 CustomButtonTwo(
 onClick = { viewModel.seePrivacyPolicy() },
@@ -136,7 +139,7 @@ text = stringResource(R.string.pp),
 iconResId = R.drawable.description_30dp,
 modifier = Modifier.fillMaxWidth()
 )
-*/
+ */
 
 @Composable
 fun CustomButtonElegantWithAStrokeDark(

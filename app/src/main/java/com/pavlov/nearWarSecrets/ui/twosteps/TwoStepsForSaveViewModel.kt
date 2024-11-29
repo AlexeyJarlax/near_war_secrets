@@ -26,11 +26,11 @@ class TwoStepsForSaveViewModel @Inject constructor(
     val navigateToKeyInput: StateFlow<Boolean> = _navigateToKeyInput
 
     init {
-        val isPasswordExists = apkm.getMastersSecret(APK.KEY_SMALL_SECRET).isNotBlank()
-        _step.value = if (isPasswordExists) 3 else 0
+//        val isPasswordExists = apkm.getMastersSecret(APK.KEY_SMALL_SECRET).isNotBlank()
+//        _step.value = if (isPasswordExists) 3 else 0
     }
 
-    fun onInputButtonClicked() {
+    fun onNextButtonClicked() {
         _step.value = 1
     }
 

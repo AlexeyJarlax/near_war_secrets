@@ -6,7 +6,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.pavlov.nearWarSecrets.R
+import com.pavlov.nearWarSecrets.theme.My4
+import com.pavlov.nearWarSecrets.theme.My5
+import com.pavlov.nearWarSecrets.theme.My7
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomOutlinedTextField
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
 @Composable
@@ -29,55 +37,66 @@ fun SetPasswordScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    if (viewModel.isPasswordExist) {
-//                        TextField(
+//                    if (viewModel.isPasswordExist) {
+//
+//                        CustomOutlinedTextField(
 //                            value = oldPassword,
 //                            onValueChange = { oldPassword = it },
-//                            label = { Text("Старый пароль") }
+//                            label = "Старый пароль",
+//                            placeholder = "Введите старый пароль тут",
+//                            backgroundColor = My4,
+//                            isPassword = false,
+//                            keyboardActions = { ImeAction.Done }
 //                        )
-                        OutlinedTextField(
-                            value = oldPassword,
-                            onValueChange = { oldPassword = it },
-                            label = { Text("Старый пароль") },
-                            placeholder = { Text("qwerty, 123456, 111 не самые лучшие примеры пароля") }
-                        )
+//
+//                        Spacer(modifier = Modifier.height(8.dp))
+//                    }
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-//                    TextField(
-//                        value = newPassword,
-//                        onValueChange = { newPassword = it },
-//                        label = { Text("Новый пароль") }
-//                    )
-                    OutlinedTextField(
+                    CustomOutlinedTextField(
                         value = newPassword,
                         onValueChange = { newPassword = it },
-                        label = { Text("Новый пароль") },
-                        placeholder = { Text("qwerty, 123456, 111 не самые лучшие примеры пароля") }
+                        label = "Новый пароль",
+                        placeholder = "Введите новый пароль тут",
+                        backgroundColor = My4,
+                        isPassword = false,
+                        keyboardActions = { ImeAction.Done }
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
-//                    TextField(
-//                        value = confirmPassword,
-//                        onValueChange = { confirmPassword = it },
-//                        label = { Text("Подтвердите пароль") }
-//                    )
-                    OutlinedTextField(
+
+                    CustomOutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
-                        label = { Text("Подтвердите пароль") },
-                        placeholder = { Text("Должен совпадать в обоих полях") }
+                        label = "Проверка ввода",
+                        placeholder = "Подтвердите новый пароль тут",
+                        backgroundColor = My4,
+                        isPassword = false,
+                        keyboardActions = {
+                            if (newPassword == confirmPassword) {
+                                viewModel.savePassword(newPassword)
+                                onPasswordSet()
+                            } else {
+                                message = "Пароли не совпадают"
+                            }
+                        }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {
-                        if (newPassword == confirmPassword) {
-                            viewModel.savePassword(newPassword)
-                            onPasswordSet()
-                        } else {
-                            message = "Пароли не совпадают"
-                        }
-                    }) {
-                        Text("Сохранить пароль")
-                    }
+
+                    CustomButtonOne(
+                        onClick = {
+                            if (newPassword == confirmPassword) {
+                                viewModel.savePassword(newPassword)
+                                onPasswordSet()
+                            } else {
+                                message = "Пароли не совпадают"
+                            }
+                        },
+                        text = stringResource(com.pavlov.nearWarSecrets.R.string.enter),
+                        textColor = if (confirmPassword.isEmpty()) My5 else My7,
+                        iconColor = if (confirmPassword.isEmpty()) My5 else My7,
+                        iconResId = R.drawable.login_30dp
+                    )
+
                     if (message.isNotEmpty()) {
                         Text(text = message, color = MaterialTheme.colors.error)
                     }

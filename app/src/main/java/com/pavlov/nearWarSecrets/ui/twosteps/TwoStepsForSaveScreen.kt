@@ -6,10 +6,16 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
+import com.pavlov.nearWarSecrets.theme.My5
+import com.pavlov.nearWarSecrets.theme.My7
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
 @Composable
@@ -24,19 +30,19 @@ fun TwoStepsForSaveScreen(
     val navigateToMain by viewModel.navigateToMain.collectAsState()
     val navigateToKeyInput by viewModel.navigateToKeyInput.collectAsState()
 
-    LaunchedEffect(navigateToSetPassword) {
+    LaunchedEffect(navigateToSetPassword) { //поставить пароль на вход
         if (navigateToSetPassword) {
             onNavigateToSetPassword()
         }
     }
 
-    LaunchedEffect(navigateToMain) {
+    LaunchedEffect(navigateToMain) { //ITEM_LOADER
         if (navigateToMain) {
             onNavigateToMain()
         }
     }
 
-    LaunchedEffect(navigateToKeyInput) {
+    LaunchedEffect(navigateToKeyInput) { // ключ шифрования
         if (navigateToKeyInput) {
             onNavigateToKeyInput()
         }
@@ -47,46 +53,49 @@ fun TwoStepsForSaveScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 MatrixBackground()
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     when (step) {
                         0 -> {
-                            Image(
-                                painter = painterResource(id = R.drawable.art2),
-                                contentDescription = null
+                            Text("Два коротких шага, чтобы настроить безопасность приложения")
+                            CustomButtonOne(
+                                onClick = { viewModel.onNextButtonClicked() },
+                                text = "Продолжить",
+                                iconResId = R.drawable.login_30dp
                             )
-                            Text("Шаг 0: Начало")
-                            Button(onClick = { viewModel.onInputButtonClicked() }) {
-                                Text("Продолжить")
-                            }
                         }
 
                         1 -> {
-                            // Здесь можно добавить анимацию или переходы, если нужно
-                            Text("Установить пароль?")
+                            Text("Установить пароль для входа в приложение?")
                             Row {
-                                Button(onClick = { viewModel.onYesClicked() }) {
-                                    Text("Да")
-                                }
+                                CustomButtonOne(
+                                    onClick = { viewModel.onYesClicked() },
+                                    text = "Да"
+                                )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Button(onClick = { viewModel.onNoClicked() }) {
-                                    Text("Нет")
-                                }
+                                CustomButtonOne(
+                                    onClick = { viewModel.onNoClicked() },
+                                    text = "Нет"
+                                )
                             }
                         }
 
                         3 -> {
                             Text("Установить ключ шифрования?")
                             Row {
-                                Button(onClick = { viewModel.onYesClicked() }) {
-                                    Text("Да")
-                                }
+                                CustomButtonOne(
+                                    onClick = { viewModel.onYesClicked() },
+                                    text = "Да"
+                                )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Button(onClick = { viewModel.onNoClicked() }) {
-                                    Text("Нет")
-                                }
+                                CustomButtonOne(
+                                    onClick = { viewModel.onNoClicked() },
+                                    text = "Нет"
+                                )
                             }
                         }
                     }

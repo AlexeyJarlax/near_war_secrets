@@ -1,6 +1,5 @@
 package com.pavlov.nearWarSecrets.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -14,15 +13,15 @@ val My5 = Color(0xFF35570C)
 val My6 = Color(0xFFFFFFFF)  // текст в кнопках
 val My7 = Color(0xFF87E01A) // падающие шрифты, ProgressIndicator, полоска у окна ввода текста
 
-private val LightColorPalette = lightColors(
-    primary = Color.Green,
-    primaryVariant = Color.Magenta,
-    secondary = Color.Yellow,
-    background = Color.White, // Фон
-    surface = Color.Cyan, // Поверхности
-    onPrimary = Color.Red, // Цвет текста на primary
-    onSecondary = Color.Blue, // Цвет текста на secondary
-)
+//private val LightColorPalette = lightColors(
+//    primary = Color.Green,
+//    primaryVariant = Color.Magenta,
+//    secondary = Color.Yellow,
+//    background = Color.White, // Фон
+//    surface = Color.Cyan, // Поверхности
+//    onPrimary = Color.Red, // Цвет текста на primary
+//    onSecondary = Color.Blue, // Цвет текста на secondary
+//)
 
 private val DarkColorPalette = darkColors(
     primary = My1,
@@ -36,26 +35,17 @@ private val DarkColorPalette = darkColors(
 
 @Composable
 fun MyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    customBackgroundColor: Color = if (darkTheme) DarkColorPalette.background else LightColorPalette.background,
-    customIconColor: Color = if (darkTheme) DarkColorPalette.onPrimary else LightColorPalette.onPrimary,
+    customBackgroundColor: Color = DarkColorPalette.background,
+    customIconColor: Color = DarkColorPalette.onPrimary,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette.copy(
-            background = customBackgroundColor,
-            surface = customBackgroundColor,
-            onPrimary = customIconColor,
-            onSecondary = customIconColor,
-        )
-    } else {
-        LightColorPalette.copy(
-            background = customBackgroundColor,
-            surface = customBackgroundColor,
-            onPrimary = customIconColor,
-            onSecondary = customIconColor
-        )
-    }
+    val colors = DarkColorPalette.copy(
+        background = customBackgroundColor,
+        surface = customBackgroundColor,
+        onPrimary = customIconColor,
+        onSecondary = customIconColor
+    )
+
 
     MaterialTheme(
         colors = colors,

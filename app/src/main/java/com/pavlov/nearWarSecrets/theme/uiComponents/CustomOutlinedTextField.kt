@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,9 +43,9 @@ fun CustomOutlinedTextField(
     placeholder: String,
     isError: Boolean = false,
     singleLine: Boolean = true,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     backgroundColor: Color,
-    keyboardActions: KeyboardActions
+    isPassword: Boolean,
+    keyboardActions: () -> Unit // Функция, вызываемая при нажатии на галочку
 ) {
     val transformation = remember { FallingStarsTransformation() }
 
@@ -69,7 +71,13 @@ fun CustomOutlinedTextField(
             isError = isError,
             singleLine = singleLine,
             visualTransformation = transformation,
-            keyboardOptions = keyboardOptions,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
+                imeAction = ImeAction.Done // Устанавливаем действие "Галочка"
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardActions() } // Вызываем переданную функцию
+            ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = backgroundColor,
                 focusedBorderColor = My7,
@@ -82,3 +90,14 @@ fun CustomOutlinedTextField(
         )
     }
 }
+
+/**
+CustomOutlinedTextField(
+value = password,
+onValueChange = { password = it },
+label = "Пароль",
+placeholder = "Пример плохого пароля: qwerty123",
+backgroundColor = My4,
+keyboardActions =  {viewModel.onPasswordEntered(password)}
+)
+ */

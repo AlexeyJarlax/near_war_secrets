@@ -52,7 +52,7 @@ fun NavGraph(
                 TwoStepsForSaveScreen(
                     onNavigateToSetPassword = { navController.navigate(NavDestinations.SET_PASSWORD) },
                     onNavigateToMain = {
-                        navController.navigate(NavDestinations.MAIN) {
+                        navController.navigate(NavDestinations.ITEM_LOADER) {
                             popUpTo(NavDestinations.TWO_STEPS_FOR_SAVE) { inclusive = true }
                         }
                     },

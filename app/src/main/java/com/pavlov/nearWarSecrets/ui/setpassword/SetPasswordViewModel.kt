@@ -11,7 +11,7 @@ class SetPasswordViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 
-    val isPasswordExist = apkm.getMastersSecret(APK.KEY_SMALL_SECRET).isNotBlank()
+//    val isPasswordExist = apkm.getMastersSecret(APK.KEY_SMALL_SECRET).isNotBlank()
 
     fun savePassword(newPassword: String) {
         apkm.saveMastersSecret(newPassword, APK.KEY_SMALL_SECRET)
