@@ -12,4 +12,5 @@ object NavDestinations {
     const val TWO_STEPS_FOR_SAVE = "two_steps_for_save"
     const val SET_PASSWORD = "set_password"
     const val KEY_INPUT = "key_input"
+    const val EXTRACTER = "extract_image"
 }

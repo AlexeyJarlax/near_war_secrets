@@ -67,6 +67,17 @@ fun ItemLoaderScreen(
     val imageCapture = remember { ImageCapture.Builder().build() }
     val previewView = remember { PreviewView(context) }
 
+    // Observe extracted images
+    val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
+    var showExtractedImagesDialog by remember { mutableStateOf(false) }
+
+    // Show dialog when new extracted images are available
+    LaunchedEffect(extractedImages) {
+        if (extractedImages.isNotEmpty()) {
+            showExtractedImagesDialog = true
+        }
+    }
+
     // Лаунчер разрешений для камеры
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -83,7 +94,7 @@ fun ItemLoaderScreen(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            selectedUri = uri
+            selectedUri = it
             viewModel.addPhoto(it)
         }
     }
@@ -290,6 +301,8 @@ fun ItemLoaderScreen(
                     )
                 }
 
+                // Удалите дублирующий LazyVerticalGrid, если он не нужен
+                /*
                 LazyVerticalGrid(columns = GridCells.Fixed(3)) {
                     items(photoList) { fileName ->
                         PhotoItem(
@@ -302,6 +315,7 @@ fun ItemLoaderScreen(
                         )
                     }
                 }
+                */
 
                 // Диалог для сохранения с шифрованием
                 if (showSaveDialog && selectedUri != null) {
@@ -321,12 +335,23 @@ fun ItemLoaderScreen(
                         dismissButton = {
                             CustomButtonOne(
                                 onClick = {
-//                                    viewModel.shareImage(fileName)
-//                                    viewModel.onSavePhotoClicked(false)
+                                    // Поскольку теперь функция shareImage уже перенесена в ImageDialog,
+                                    // здесь можно оставить пустым или выполнить другую логику
                                 },
                                 text = context.getString(R.string.share_the_img),
                                 icon = Icons.Default.Share
                             )
+                        }
+                    )
+                }
+
+                // Показать диалог с извлеченными изображениями
+                if (extractedImages.isNotEmpty() && showExtractedImagesDialog) {
+                    ExtractedImagesDialog(
+                        extractedImages = extractedImages,
+                        onDismiss = {
+                            showExtractedImagesDialog = false
+                            viewModel.clearExtractedImages()
                         }
                     )
                 }

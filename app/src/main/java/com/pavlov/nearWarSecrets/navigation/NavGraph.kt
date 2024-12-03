@@ -11,7 +11,9 @@ import androidx.navigation.compose.composable
 import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
+import com.pavlov.nearWarSecrets.ui.itemLoader.ExtractedImagesScreen
 import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderViewModel
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
 import com.pavlov.nearWarSecrets.ui.main.MainScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen
@@ -23,6 +25,7 @@ import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
+    viewModel: ItemLoaderViewModel,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -69,8 +72,18 @@ fun NavGraph(
                 )
             }
             composable(NavDestinations.ITEM_LOADER) {
-                ItemLoaderScreen()
+                ItemLoaderScreen(viewModel = viewModel)
             }
+
+            composable(NavDestinations.EXTRACTER) {
+                ExtractedImagesScreen(
+                    extractedImages = viewModel.extractedImages.value ?: emptyList(),
+                    onDismiss = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
             composable(NavDestinations.STORAGE_LOG) {
                 StorageLogScreen(navController)
             }
