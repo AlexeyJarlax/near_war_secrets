@@ -30,6 +30,7 @@ import android.graphics.BitmapFactory
 import android.os.Environment
 import android.util.Log
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @HiltViewModel
@@ -112,36 +113,6 @@ class ItemLoaderViewModel @Inject constructor(
         return NamingStyleManager(context).generateFileName(existOrNot, folder)
     }
 
-    fun shareImage(fileName: String) {
-        val file = File(context.filesDir, fileName)
-        if (!file.exists()) {
-            Timber.e("=== File not found: $file")
-            return
-        }
-
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        Timber.d("=== Sharing file with URI: $uri")
-
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/jpeg"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        try {
-            // Используем Activity контекст
-            if (context is Activity) {
-                context.startActivity(Intent.createChooser(shareIntent, "Share Image"))
-            } else {
-                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(Intent.createChooser(shareIntent, "Share Image").apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                })
-            }
-        } catch (e: Exception) {
-            Timber.e("=== Error sharing image: $e")
-        }
-    }
-
     private fun getPreviouslySavedFiles(): List<String> {
         val savedFiles = mutableListOf<String>()
         val directory = context.filesDir
@@ -197,31 +168,44 @@ class ItemLoaderViewModel @Inject constructor(
 
 // Steganography
 
-    fun shareImageWithHiddenOriginal(originalUri: Uri?) {
-        if (originalUri == null) {
-            return
-        }
-
+    fun shareImageWithHiddenOriginal(
+        originalImageFile: File,
+        memeResId: Int,
+        onResult: (Uri?) -> Unit
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val originalInputStream = context.contentResolver.openInputStream(originalUri)
-                val originalBitmap = BitmapFactory.decodeStream(originalInputStream)
+                val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
+                val memeBitmap = BitmapFactory.decodeResource(context.resources, memeResId)
 
-                val memeBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.art)
+                // Изменяем размер оригинала до размера мема, если необходимо
+                val resizedOriginalBitmap = Bitmap.createScaledBitmap(
+                    originalBitmap,
+                    memeBitmap.width,
+                    memeBitmap.height,
+                    true
+                )
 
-                val encodedBitmap = hideImageInMeme(memeBitmap, originalBitmap)
+                val encodedBitmap = hideImageInMeme(memeBitmap, resizedOriginalBitmap)
 
                 val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.jpg"
-                val destinationFile = File(context.filesDir, fileName)
+                val destinationFile = File(context.cacheDir, fileName)
                 val outputStream = FileOutputStream(destinationFile)
                 encodedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 outputStream.flush()
                 outputStream.close()
 
-//                shareImage()
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destinationFile)
+
+                withContext(Dispatchers.Main) {
+                    onResult(uri)
+                }
 
             } catch (e: Exception) {
                 e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    onResult(null)
+                }
             }
         }
     }
