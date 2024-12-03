@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.camera.core.CameraSelector
 import androidx.core.content.FileProvider
 import androidx.lifecycle.*
-import com.pavlov.nearWarSecrets.R
 import com.pavlov.nearWarSecrets.file.NamingStyleManager
 import com.pavlov.nearWarSecrets.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +22,7 @@ import android.graphics.BitmapFactory
 import timber.log.Timber
 
 @HiltViewModel
-class ItemLoaderViewModel @Inject constructor(
+class PicturesViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 

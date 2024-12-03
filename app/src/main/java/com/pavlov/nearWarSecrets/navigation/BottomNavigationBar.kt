@@ -19,7 +19,7 @@ import com.pavlov.nearWarSecrets.data.model.NavDestinations
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
-        BottomNavItem("Главная", NavDestinations.ITEM_LOADER, Icons.Default.Add),
+        BottomNavItem("Главная", NavDestinations.IMAGES, Icons.Default.Add),
         BottomNavItem("Журнал", NavDestinations.STORAGE_LOG, Icons.Default.Storage),
         BottomNavItem("Настройки", NavDestinations.SETTINGS, Icons.Default.Settings),
         BottomNavItem("FAQ", NavDestinations.ABOUT, Icons.Default.Info)

@@ -51,7 +51,7 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemLoaderScreen(
-    viewModel: ItemLoaderViewModel = hiltViewModel()
+    viewModel: PicturesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val photoList by viewModel.photoList.observeAsState(emptyList())

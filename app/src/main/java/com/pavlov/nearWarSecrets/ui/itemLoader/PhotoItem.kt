@@ -23,7 +23,7 @@ import java.io.File
 @Composable
 fun PhotoItem(
     fileName: String,
-    viewModel: ItemLoaderViewModel,
+    viewModel: PicturesViewModel,
     onImageClick: (String) -> Unit
 ) {
     val context = LocalContext.current

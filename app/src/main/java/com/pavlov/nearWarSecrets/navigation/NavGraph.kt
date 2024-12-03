@@ -12,10 +12,10 @@ import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
 import com.pavlov.nearWarSecrets.ui.itemLoader.ExtractedImagesScreen
+import com.pavlov.nearWarSecrets.ui.itemLoader.ImagesScreen
 import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
-import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderViewModel
+import com.pavlov.nearWarSecrets.ui.itemLoader.PicturesViewModel
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
-import com.pavlov.nearWarSecrets.ui.main.MainScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen
 import com.pavlov.nearWarSecrets.ui.settings.SettingsScreen
 import com.pavlov.nearWarSecrets.ui.storageLog.StorageLogScreen
@@ -25,7 +25,7 @@ import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
-    viewModel: ItemLoaderViewModel,
+    viewModel: PicturesViewModel,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -42,7 +42,7 @@ fun NavGraph(
         ) {
             composable(NavDestinations.AUTH) {
                 AuthScreen(
-                    onNavigateToItemLoader = { navController.navigate(NavDestinations.ITEM_LOADER) },
+                    onNavigateToItemLoader = { navController.navigate(NavDestinations.LOADER) },
                     onNavigateToTwoStepsForSave = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
                 )
             }
@@ -55,7 +55,7 @@ fun NavGraph(
                 TwoStepsForSaveScreen(
                     onNavigateToSetPassword = { navController.navigate(NavDestinations.SET_PASSWORD) },
                     onNavigateToMain = {
-                        navController.navigate(NavDestinations.ITEM_LOADER) {
+                        navController.navigate(NavDestinations.LOADER) {
                             popUpTo(NavDestinations.TWO_STEPS_FOR_SAVE) { inclusive = true }
                         }
                     },
@@ -71,7 +71,20 @@ fun NavGraph(
                     }
                 )
             }
-            composable(NavDestinations.ITEM_LOADER) {
+
+            composable(NavDestinations.IMAGES) {
+                ImagesScreen(
+                    itemLoaderScreen = { ItemLoaderScreen(viewModel = viewModel) },
+                    extractedImagesScreen = {
+                        ExtractedImagesScreen(
+                            extractedImages = viewModel.extractedImages.value ?: emptyList(),
+                            onDismiss = { /* Логика закрытия */ }
+                        )
+                    }
+                )
+            }
+
+            composable(NavDestinations.LOADER) {
                 ItemLoaderScreen(viewModel = viewModel)
             }
 

@@ -24,7 +24,7 @@ fun MainScreen(navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
 
-            composable(NavDestinations.ITEM_LOADER) { ItemLoaderScreen() }
+            composable(NavDestinations.LOADER) { ItemLoaderScreen() }
             composable(NavDestinations.STORAGE_LOG) { StorageLogScreen(navController) }
             composable(NavDestinations.SETTINGS) {
                 SettingsScreen(

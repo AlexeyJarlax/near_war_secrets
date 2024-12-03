@@ -37,7 +37,7 @@ import androidx.compose.ui.Alignment
 @Composable
 fun ImageDialog(
     fileName: String,
-    viewModel: ItemLoaderViewModel,
+    viewModel: PicturesViewModel,
     onDismiss: () -> Unit,
     onDelete: () -> Unit
 ) {
