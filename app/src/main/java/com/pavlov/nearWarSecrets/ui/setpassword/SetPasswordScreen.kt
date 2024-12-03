@@ -94,7 +94,7 @@ fun SetPasswordScreen(
                         text = stringResource(com.pavlov.nearWarSecrets.R.string.enter),
                         textColor = if (confirmPassword.isEmpty()) My5 else My7,
                         iconColor = if (confirmPassword.isEmpty()) My5 else My7,
-                        iconResId = R.drawable.login_30dp
+                        icon = R.drawable.login_30dp
                     )
 
                     if (message.isNotEmpty()) {

@@ -23,17 +23,19 @@ import androidx.compose.ui.unit.sp
 import com.pavlov.nearWarSecrets.theme.My5
 import com.pavlov.nearWarSecrets.theme.My7
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.pavlov.nearWarSecrets.theme.My3
 
 @Composable
 fun CustomButtonOne(
     onClick: () -> Unit,
     text: String,
-    iconResId: Int = 0,
+    icon: Any? = null, // Принимает либо ImageVector, либо Int (ресурс)
     modifier: Modifier = Modifier,
-    textColor: Color = My5,
-    iconColor: Color = My5,
+    textColor: Color = My3,
+    iconColor: Color = My3,
     enabled: Boolean = true,
-    fontSize: TextUnit = 18.sp,
+    fontSize: TextUnit = 16.sp,
     pressedColor: Color = My7
 ) {
     val backgroundColor by animateColorAsState(
@@ -55,19 +57,24 @@ fun CustomButtonOne(
         shape = RoundedCornerShape(4.dp),
         contentPadding = PaddingValues(0.dp)
     ) {
-        if (iconResId != 0) {
-            Icon(
-                modifier = modifier
-                    .padding(0.dp),
-                painter = painterResource(id = iconResId),
-                contentDescription = null,
-                tint = if (enabled) iconColor else Color.Gray
-            )
+        if (icon != null) {
+            when (icon) {
+                is ImageVector -> Icon(
+                    modifier = modifier.padding(0.dp),
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = if (enabled) iconColor else Color.Gray
+                )
+                is Int -> Icon(
+                    modifier = modifier.padding(0.dp),
+                    painter = painterResource(id = icon),
+                    contentDescription = null,
+                    tint = if (enabled) iconColor else Color.Gray
+                )
+            }
         }
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            modifier = modifier
-                .padding(top = 16.dp),
             text = text,
             fontSize = fontSize,
             fontFamily = FontFamily.Default,
@@ -87,7 +94,17 @@ onClick = { viewModel.onPasswordEntered(password) },
 text = stringResource(R.string.enter),
 textColor = if (password.isEmpty()) My5 else My7,
 iconColor = if (password.isEmpty()) My5 else My7,
-iconResId = R.drawable.login_30dp
+icon = R.drawable.login_30dp или Icons.Default.InsertPhoto
+)
+
+или
+CustomButtonOne(
+onClick = { },
+text = if (isPreviewVisible)
+context.getString(R.string.cam_bat_hide)
+else
+context.getString(R.string.cam_bat_start),
+icon = Icons.Default.InsertPhoto
 )
  */
 

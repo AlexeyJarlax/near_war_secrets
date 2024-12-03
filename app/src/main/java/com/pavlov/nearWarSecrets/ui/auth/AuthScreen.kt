@@ -76,7 +76,7 @@ fun AuthScreen(
                             text = stringResource(R.string.enter),
                             textColor = if (password.isEmpty()) My5 else My7,
                             iconColor = if (password.isEmpty()) My5 else My7,
-                            iconResId = R.drawable.login_30dp
+                            icon = R.drawable.login_30dp
                         )
 
                         if (message.isNotEmpty()) {

@@ -30,7 +30,6 @@ fun PhotoItem(
     val imageFile = File(context.filesDir, fileName)
     val date = viewModel.getPhotoDate(fileName)
     val name = viewModel.getFileNameWithoutExtension(fileName)
-    val encryptionKeyName = viewModel.getEncryptionKeyName(fileName)
     val painter = rememberImagePainter(data = imageFile)
 
     Column(
@@ -60,13 +59,5 @@ fun PhotoItem(
             style = MaterialTheme.typography.caption,
             modifier = Modifier.align(Alignment.CenterHorizontally) // Центрируем текст
         )
-        if (encryptionKeyName.isNotEmpty()) {
-            Text(
-                text = encryptionKeyName,
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier.align(Alignment.CenterHorizontally) // Центрируем текст
-            )
-        }
     }
 }

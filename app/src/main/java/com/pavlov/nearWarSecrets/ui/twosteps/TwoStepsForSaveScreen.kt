@@ -65,7 +65,7 @@ fun TwoStepsForSaveScreen(
                             CustomButtonOne(
                                 onClick = { viewModel.onNextButtonClicked() },
                                 text = "Продолжить",
-                                iconResId = R.drawable.login_30dp
+                                icon = R.drawable.login_30dp
                             )
                         }
 

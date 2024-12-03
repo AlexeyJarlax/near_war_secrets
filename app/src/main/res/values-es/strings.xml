@@ -1,5 +1,5 @@
 <resources>
-        <string name="app_name">NWS</string>
+        <string name="app_name_1">NWS</string>
         <string name="mimicry_app_name">MoodSound Galaxy</string>
         <string name="app_name_in_main_page">NearWarSecrets</string>
         <string name="disguise_btn">Disfraz</string>
@@ -137,7 +137,7 @@ se almacenan en el dispositivo de forma segura y cifrada.</string>
         <string name="naming_option">Seleccione el estilo de nombre de archivos</string>
         <string name="preview">Vista previa</string>
         <string name="encrypted_file">Archivo cifrado</string>
-        <string name="whithout_enception">Sin cifrado</string>
+        <string name="whithout_encryption">Sin cifrado</string>
         <string name="decripted_file">Archivo descifrado</string>
         <string name="unnown_tipe">Tipo desconocido</string>
         <string name="done">Hecho</string>

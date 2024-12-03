@@ -25,7 +25,6 @@ import java.io.File
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ImageDialog(
@@ -40,7 +39,6 @@ fun ImageDialog(
     val painter = rememberImagePainter(data = imageFile)
     val date = viewModel.getPhotoDate(fileName)
     val name = viewModel.getFileNameWithoutExtension(fileName)
-    val encryptionKeyName = viewModel.getEncryptionKeyName(fileName)
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -52,13 +50,6 @@ fun ImageDialog(
             ) {
                 Text(text = name, style = MaterialTheme.typography.h6)
                 Text(text = date, style = MaterialTheme.typography.subtitle2)
-                if (encryptionKeyName.isNotEmpty()) {
-                    Text(
-                        text = encryptionKeyName,
-                        style = MaterialTheme.typography.subtitle2,
-                        color = MaterialTheme.colors.primary
-                    )
-                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Image(
                     painter = painter,
@@ -73,19 +64,16 @@ fun ImageDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    IconButton(onClick = {
-                        onShare()
-                        onDismiss()
-                    }) {
+                    IconButton(onClick = { onShare() }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = context.getString(com.pavlov.nearWarSecrets.R.string.share_the_img)
+                            contentDescription = "Поделиться"
                         )
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = context.getString(com.pavlov.nearWarSecrets.R.string.saving_option5)
+                            contentDescription = "Удалить"
                         )
                     }
                 }

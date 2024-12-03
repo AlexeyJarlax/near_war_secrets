@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 // Моя палитра: Color(0xFF0FE3C8)
 val My1 = Color(0xFF525252) // фон кнопок /
 val My2 = Color(0xFF000000)
-val My3 = Color(0xFFFFFFFF) // тексты в полях
+val My3 = Color(0xFF508312) // тексты в полях
 val My4 = Color(0xFF000000) // задний фон
 val My5 = Color(0xFF35570C)
 val My6 = Color(0xFFFFFFFF)  // текст в кнопках

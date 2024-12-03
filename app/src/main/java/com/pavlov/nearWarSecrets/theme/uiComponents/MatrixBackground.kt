@@ -23,14 +23,14 @@ object MatrixAnimationSettings {
         'ホ', 'ボ', 'ポ', 'マ', 'ミ', 'ム', 'メ', 'モ', 'ャ', 'ヤ', 'ュ', 'ユ', 'ョ', 'ヨ', 'ラ', 'リ', 'ル', 'レ', 'ロ',
         'ヮ', 'ワ', 'ヰ', 'ヱ', 'ヲ', 'ン', 'ヴ', 'ヵ', 'ヶ', 'ヷ', 'ヸ', 'ヹ', 'ヺ', '・', 'ー', 'ヽ', 'ヾ'
     )
-    const val rows = 4 // количество дорожек с символами
+    const val rows = 5 // количество дорожек с символами
     const val maxVisibleSymbols = 70 // Максимальное количество видимых символов
     const val symbolDelay = 200L // Задержка между появлениями символов (в миллисекундах)
-    const val fadeStep = 0.06f // Шаг уменьшения альфы
+    const val fadeStep = 0.1f // Шаг уменьшения альфы
     const val alphaStart = 1f // Начальное значение альфы
     const val maxYOffset = 100 // Максимальное вертикальное смещение
     const val maxXOffset = 10 // Максимальное горизонтальное смещение (в пикселях)
-    const val maxDelay = 25000L // Макс задержка в миллисек
+    const val maxDelay = 10000L // Макс задержка в миллисек
     const val fontSize = 12 // Размер шрифта
     var symbolPadding = 1.dp // Отступ между символами
 }
@@ -40,10 +40,10 @@ fun MatrixBackground() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black)
     ) {
-        // Каждый столбец символов (поток)
-        for (i in 0 until MatrixAnimationSettings.rows) {
-            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
-        }
+//        // Каждый столбец символов (поток)
+//        for (i in 0 until MatrixAnimationSettings.rows) {
+//            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
+//        }
     }
 }
 

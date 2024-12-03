@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.pavlov.nearWarSecrets.navigation.NavGraph
@@ -16,13 +17,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        supportActionBar?.hide()
         setContent {
             MyTheme {
                 val navController = rememberNavController()
                 NavGraph(
                     navController = navController,
                     activity = this,
-                    modifier = Modifier
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
@@ -39,7 +41,6 @@ class MainActivity : ComponentActivity() {
 
     private fun hideSystemUI() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Для Android 11 и выше
             window.insetsController?.hide(android.view.WindowInsets.Type.statusBars() or android.view.WindowInsets.Type.navigationBars())
         } else {
             // Для более старых версий Android

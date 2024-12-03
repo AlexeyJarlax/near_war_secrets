@@ -1,14 +1,17 @@
 package com.pavlov.nearWarSecrets.ui.itemLoader
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.camera.core.CameraSelector
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.pavlov.nearWarSecrets.R
-import com.pavlov.nearWarSecrets.file.FileProviderAdapter
 import com.pavlov.nearWarSecrets.file.NamingStyleManager
 import com.pavlov.nearWarSecrets.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,53 +24,36 @@ import java.io.InputStream
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Environment
+import android.util.Log
+import androidx.core.content.FileProvider
+import timber.log.Timber
 
 @HiltViewModel
 class ItemLoaderViewModel @Inject constructor(
-    application: Application,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _photoList = MutableLiveData<List<String>>()
     val photoList: LiveData<List<String>> get() = _photoList
 
-    private val encryption = Encryption(context)
     private val apkManager = APKM(context)
 
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val dateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault())
-
-    private val _isPreviewVisible = MutableLiveData<Boolean>(false)
-    val isPreviewVisible: LiveData<Boolean> get() = _isPreviewVisible
-
     private val _cameraSelector = MutableLiveData<CameraSelector>(CameraSelector.DEFAULT_BACK_CAMERA)
     val cameraSelector: LiveData<CameraSelector> get() = _cameraSelector
-
-    private val _rotationAngle = MutableLiveData<Int>(0)
-    val rotationAngle: LiveData<Int> get() = _rotationAngle
-
-    private val _imageDialogVisible = MutableLiveData<Boolean>(false)
-    val imageDialogVisible: LiveData<Boolean> get() = _imageDialogVisible
-
-    private val _selectedImageUri = MutableLiveData<Uri?>(null)
-    val selectedImageUri: LiveData<Uri?> get() = _selectedImageUri
-
-    private val _imageDialogAcceptance = MutableLiveData<Boolean>(false)
-    val imageDialogAcceptance: LiveData<Boolean> get() = _imageDialogAcceptance
-
-    private val _isFrontCamera = MutableLiveData<Boolean>(false)
-    val isFrontCamera: LiveData<Boolean> get() = _isFrontCamera
-
-    private val _loadingIndicatorVisible = MutableLiveData<Boolean>(false)
-    val loadingIndicatorVisible: LiveData<Boolean> get() = _loadingIndicatorVisible
 
     private val _showSaveDialog = MutableLiveData<Boolean>()
     val showSaveDialog: LiveData<Boolean> get() = _showSaveDialog
 
     init {
         loadSavedPhotos()
+        Timber.d("=== init class ItemLoaderViewModel")
     }
 
     private fun loadSavedPhotos() {
@@ -77,7 +63,6 @@ class ItemLoaderViewModel @Inject constructor(
 
     fun addPhoto(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
-            // Копируем файл в папку приложения
             val fileName = getFileName()
             val destinationFile = File(context.filesDir, fileName)
             try {
@@ -86,7 +71,6 @@ class ItemLoaderViewModel @Inject constructor(
                 inputStream?.copyTo(outputStream)
                 inputStream?.close()
                 outputStream.close()
-                // Обновляем список фотографий
                 loadSavedPhotos()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -107,7 +91,7 @@ class ItemLoaderViewModel @Inject constructor(
     fun getPhotoDate(fileName: String): String {
         val file = File(context.filesDir, fileName)
         val date = Date(file.lastModified())
-        return date.toString() // Вы можете отформатировать дату по своему усмотрению
+        return date.toString()
     }
 
     fun getFileNameWithoutExtension(fileName: String): String {
@@ -128,24 +112,34 @@ class ItemLoaderViewModel @Inject constructor(
         return NamingStyleManager(context).generateFileName(existOrNot, folder)
     }
 
-    fun getEncryptionKeyName(fileName: String): String {
-        return when {
-            fileName.endsWith(".p1", ignoreCase = true) -> apkManager.getMastersSecret(APK.KEY_BIG_SECRET_NAME1)
-            fileName.endsWith(".p2", ignoreCase = true) -> apkManager.getMastersSecret(APK.KEY_BIG_SECRET_NAME2)
-            fileName.endsWith(".p3", ignoreCase = true) -> apkManager.getMastersSecret(APK.KEY_BIG_SECRET_NAME3)
-            else -> ""
-        }
-    }
-
     fun shareImage(fileName: String) {
-        val imageFile = File(context.filesDir, fileName)
-        val uri = FileProviderAdapter.getUriForFile(context, imageFile)
+        val file = File(context.filesDir, fileName)
+        if (!file.exists()) {
+            Timber.e("=== File not found: $file")
+            return
+        }
+
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        Timber.d("=== Sharing file with URI: $uri")
+
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/*"
+            type = "image/jpeg"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_the_img)))
+        try {
+            // Используем Activity контекст
+            if (context is Activity) {
+                context.startActivity(Intent.createChooser(shareIntent, "Share Image"))
+            } else {
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(Intent.createChooser(shareIntent, "Share Image").apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
+            }
+        } catch (e: Exception) {
+            Timber.e("=== Error sharing image: $e")
+        }
     }
 
     private fun getPreviouslySavedFiles(): List<String> {
@@ -168,21 +162,17 @@ class ItemLoaderViewModel @Inject constructor(
         _showSaveDialog.value = boolean
     }
 
-    fun savePhotoWithChoice(uri: Uri, encrypt: Boolean) {
+    fun savePhotoWithChoice(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val fileName = getFileName()
+            Timber.d("=== Generated file name: %s", fileName)
             val destinationFile = File(context.filesDir, fileName)
 
             try {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-                if (encrypt) {
-                    val encryptionKey = getEncryptionKeyName(fileName)
-                    encryption.encryptImage(uri, fileName, encryptionKey)
-                } else {
                     val outputStream = FileOutputStream(destinationFile)
                     inputStream?.copyTo(outputStream)
                     outputStream.close()
-                }
                 inputStream?.close()
                 loadSavedPhotos()
             } catch (e: Exception) {
@@ -191,4 +181,86 @@ class ItemLoaderViewModel @Inject constructor(
         }
         _showSaveDialog.value = false
     }
+
+    fun dontSave() {
+        _showSaveDialog.value = false
+    }
+
+// Steganography
+
+    fun shareImageWithHiddenOriginal(originalUri: Uri?) {
+        if (originalUri == null) {
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val originalInputStream = context.contentResolver.openInputStream(originalUri)
+                val originalBitmap = BitmapFactory.decodeStream(originalInputStream)
+
+                val memeBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.art)
+
+                val encodedBitmap = hideImageInMeme(memeBitmap, originalBitmap)
+
+                val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.jpg"
+                val destinationFile = File(context.filesDir, fileName)
+                val outputStream = FileOutputStream(destinationFile)
+                encodedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                outputStream.flush()
+                outputStream.close()
+
+//                shareImage()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun hideImageInMeme(memeBitmap: Bitmap, originalBitmap: Bitmap): Bitmap {
+        val memeWidth = memeBitmap.width
+        val memeHeight = memeBitmap.height
+        val originalWidth = originalBitmap.width
+        val originalHeight = originalBitmap.height
+
+        val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+        for (y in 0 until memeHeight) {
+            for (x in 0 until memeWidth) {
+                val memePixel = memeBitmap.getPixel(x, y)
+
+                if (x < originalWidth && y < originalHeight) {
+                    val originalPixel = originalBitmap.getPixel(x, y)
+
+                    val encodedPixel = encodePixel(memePixel, originalPixel)
+                    encodedBitmap.setPixel(x, y, encodedPixel)
+                }
+            }
+        }
+        return encodedBitmap
+    }
+
+    private fun encodePixel(memePixel: Int, originalPixel: Int): Int {
+        // Извлекаем компоненты пикселей мемчика и оригинала
+        val memeRed = memePixel shr 16 and 0xFF
+        val memeGreen = memePixel shr 8 and 0xFF
+        val memeBlue = memePixel and 0xFF
+
+        val originalRed = originalPixel shr 16 and 0xFF
+        val originalGreen = originalPixel shr 8 and 0xFF
+        val originalBlue = originalPixel and 0xFF
+
+        // Скрываем оригинальные данные в младших битах мемчика
+        val encodedRed = (memeRed and 0xF0) or (originalRed shr 4)
+        val encodedGreen = (memeGreen and 0xF0) or (originalGreen shr 4)
+        val encodedBlue = (memeBlue and 0xF0) or (originalBlue shr 4)
+
+        // Возвращаем новый пиксель
+        return (encodedRed shl 16) or (encodedGreen shl 8) or encodedBlue
+    }
+
+    companion object {
+        const val REQUEST_PERMISSION_CODE = 1001
+    }
 }
+

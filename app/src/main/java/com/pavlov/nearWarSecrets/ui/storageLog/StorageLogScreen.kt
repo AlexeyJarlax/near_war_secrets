@@ -45,7 +45,7 @@ fun StorageLogScreen(navController: NavController) {
             val fileType = when {
                 fileName.endsWith(".p", true) -> context.getString(R.string.preview)
                 fileName.endsWith(".kk", true) -> context.getString(R.string.encrypted_file)
-                fileName.endsWith(".o", true) -> context.getString(R.string.whithout_enception)
+                fileName.endsWith(".o", true) -> context.getString(R.string.whithout_encryption)
                 fileName.endsWith(".peekaboo", true) -> context.getString(R.string.decripted_file)
                 fileName.endsWith(".share", true) -> context.getString(R.string.file_from_web)
                 else -> context.getString(R.string.unnown_tipe)
