@@ -286,13 +286,8 @@ fun ItemLoaderScreen(
                         onDelete = {
                             viewModel.deletePhoto(selectedFileName!!)
                             showImageDialog = false
-                        },
-                        onShare = {
-                            viewModel.shareImage(selectedFileName!!)
-                            showImageDialog = false
                         }
                     )
-
                 }
 
                 LazyVerticalGrid(columns = GridCells.Fixed(3)) {

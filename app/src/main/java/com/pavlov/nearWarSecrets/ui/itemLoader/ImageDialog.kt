@@ -1,5 +1,7 @@
 package com.pavlov.nearWarSecrets.ui.itemLoader
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,8 +33,7 @@ fun ImageDialog(
     fileName: String,
     viewModel: ItemLoaderViewModel,
     onDismiss: () -> Unit,
-    onDelete: () -> Unit,
-    onShare: () -> Unit
+    onDelete: () -> Unit
 ) {
     val context = LocalContext.current
     val imageFile = File(context.filesDir, fileName)
@@ -64,7 +65,19 @@ fun ImageDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    IconButton(onClick = { onShare() }) {
+                    IconButton(onClick = {
+                        val uri = viewModel.getFileUri(fileName)
+                        if (uri != null) {
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "image/jpeg"
+                                putExtra(Intent.EXTRA_STREAM, uri)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            context.startActivity(Intent.createChooser(shareIntent, "Поделиться изображением"))
+                        } else {
+                            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+                        }
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = "Поделиться"

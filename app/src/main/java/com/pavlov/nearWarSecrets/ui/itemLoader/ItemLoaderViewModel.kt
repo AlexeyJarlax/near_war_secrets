@@ -186,6 +186,15 @@ class ItemLoaderViewModel @Inject constructor(
         _showSaveDialog.value = false
     }
 
+    fun getFileUri(fileName: String): Uri? {
+        val file = File(context.filesDir, fileName)
+        return if (file.exists()) {
+            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        } else {
+            null
+        }
+    }
+
 // Steganography
 
     fun shareImageWithHiddenOriginal(originalUri: Uri?) {
