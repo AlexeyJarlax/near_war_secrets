@@ -67,6 +67,7 @@ fun ItemLoaderScreen(
     val imageCapture = remember { ImageCapture.Builder().build() }
     val previewView = remember { PreviewView(context) }
 
+//    val extractedImages = imagesDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
     // Observe extracted images
     val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
     var showExtractedImagesDialog by remember { mutableStateOf(false) }
@@ -138,28 +139,35 @@ fun ItemLoaderScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 MatrixBackground()
                 Column(modifier = Modifier.fillMaxSize()) {
-                    // Отображение списка фотографий
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(padding)
-                    ) {
-                        items(photoList) { fileName ->
-                            PhotoItem(
-                                fileName = fileName,
-                                viewModel = viewModel,
-                                onImageClick = {
-                                    selectedFileName = it
-                                    showImageDialog = true
-                                }
-                            )
+                    // Отображение списка фотографий или заглушки, что их нет
+                    if (photoList.isEmpty()) {
+                        Spacer(modifier = Modifier.height(26.dp))
+                        Text(
+                            text = "Нет добавленных изображений",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(padding)
+                        ) {
+                            items(photoList) { fileName ->
+                                PhotoItem(
+                                    fileName = fileName,
+                                    viewModel = viewModel,
+                                    onImageClick = {
+                                        selectedFileName = it
+                                        showImageDialog = true
+                                    }
+                                )
+                            }
                         }
                     }
-
                     // Отображение превью камеры
                     if (isPreviewVisible && !isStorageMode) {
-                        AndroidView(
+                        AndroidView( // видеоискатель
                             factory = { previewView },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -301,22 +309,6 @@ fun ItemLoaderScreen(
                     )
                 }
 
-                // Удалите дублирующий LazyVerticalGrid, если он не нужен
-                /*
-                LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                    items(photoList) { fileName ->
-                        PhotoItem(
-                            fileName = fileName,
-                            viewModel = viewModel,
-                            onImageClick = {
-                                selectedFileName = fileName
-                                showImageDialog = true
-                            }
-                        )
-                    }
-                }
-                */
-
                 // Диалог для сохранения с шифрованием
                 if (showSaveDialog && selectedUri != null) {
                     AlertDialog(
@@ -334,10 +326,7 @@ fun ItemLoaderScreen(
                         },
                         dismissButton = {
                             CustomButtonOne(
-                                onClick = {
-                                    // Поскольку теперь функция shareImage уже перенесена в ImageDialog,
-                                    // здесь можно оставить пустым или выполнить другую логику
-                                },
+                                onClick = {                                },
                                 text = context.getString(R.string.share_the_img),
                                 icon = Icons.Default.Share
                             )

@@ -1,5 +1,7 @@
 [versions]
 accompanistPermissionsVersion = "0.30.1"
+accompanistZoomable = "1"
+accompanistZoomableVersion = "<latest-version>"
 agp = "8.7.2"
 androidxMaterial3 = "1.2.0-alpha04"
 datastorePreferencesVersion = "1.1.1"
@@ -77,6 +79,8 @@ foundationLayoutAndroidVersion = "1.7.2"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
+accompanist-zoomable = { module = "com.google.accompanist:accompanist-zoomable", version.ref = "accompanistZoomableVersion" }
+accompanist-zoomable-v1 = { module = "com.google.accompanist:accompanist-zoomable", version.ref = "accompanistZoomable" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation-v105 = { module = "androidx.compose.foundation:foundation", version.ref = "foundationVersion" }

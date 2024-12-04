@@ -182,6 +182,6 @@ dependencies {
     // анимация как в матрице
 //    import ("androidx.compose.ui.graphics.drawscope.withFrameNanos")
 
-    //сдвоенный экран со смахиванием
+    //сдвоенный экран pager со смахиванием
     implementation ("com.google.accompanist:accompanist-pager:0.30.1")
 }

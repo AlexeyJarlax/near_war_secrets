@@ -31,7 +31,7 @@ fun NavGraph(
     Scaffold(
         bottomBar = {
             if (shouldShowBottomBar(navController)) {
-                BottomNavigationBar(navController)
+                BottomNavigationBar(navController, activity)
             }
         }
     ) { innerPadding ->
@@ -55,7 +55,7 @@ fun NavGraph(
                 TwoStepsForSaveScreen(
                     onNavigateToSetPassword = { navController.navigate(NavDestinations.SET_PASSWORD) },
                     onNavigateToMain = {
-                        navController.navigate(NavDestinations.LOADER) {
+                        navController.navigate(NavDestinations.IMAGES) {
                             popUpTo(NavDestinations.TWO_STEPS_FOR_SAVE) { inclusive = true }
                         }
                     },
@@ -65,7 +65,7 @@ fun NavGraph(
             composable(NavDestinations.KEY_INPUT) {
                 KeyInputScreen(
                     onNavigateToMain = {
-                        navController.navigate(NavDestinations.MAIN) {
+                        navController.navigate(NavDestinations.IMAGES) {
                             popUpTo(NavDestinations.KEY_INPUT) { inclusive = true }
                         }
                     }
@@ -77,7 +77,6 @@ fun NavGraph(
                     itemLoaderScreen = { ItemLoaderScreen(viewModel = viewModel) },
                     extractedImagesScreen = {
                         ExtractedImagesScreen(
-                            extractedImages = viewModel.extractedImages.value ?: emptyList(),
                             onDismiss = { /* Логика закрытия */ }
                         )
                     }
@@ -90,7 +89,6 @@ fun NavGraph(
 
             composable(NavDestinations.EXTRACTER) {
                 ExtractedImagesScreen(
-                    extractedImages = viewModel.extractedImages.value ?: emptyList(),
                     onDismiss = {
                         navController.popBackStack()
                     }

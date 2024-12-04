@@ -40,10 +40,10 @@ fun MatrixBackground() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black)
     ) {
-//        // Каждый столбец символов (поток)
-//        for (i in 0 until MatrixAnimationSettings.rows) {
-//            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
-//        }
+        // Каждый столбец символов (поток)
+        for (i in 0 until MatrixAnimationSettings.rows) {
+            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
+        }
     }
 }
 

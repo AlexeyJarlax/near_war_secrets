@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pavlov.nearWarSecrets.theme.My4
 import com.pavlov.nearWarSecrets.theme.My5
 import com.pavlov.nearWarSecrets.theme.My7
@@ -76,6 +77,8 @@ fun AuthScreen(
                             text = stringResource(R.string.enter),
                             textColor = if (password.isEmpty()) My5 else My7,
                             iconColor = if (password.isEmpty()) My5 else My7,
+                            fontSize = 20.sp,
+                            iconPadding = 12,
                             icon = R.drawable.login_30dp
                         )
 

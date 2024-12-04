@@ -4,7 +4,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,9 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.window.Dialog
-import coil.compose.rememberImagePainter
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.*
 
 @Composable
 fun ExtractedImagesDialog(
@@ -39,6 +38,7 @@ fun ExtractedImagesDialog(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
+                    .heightIn(max = 600.dp) // Ограничение максимальной высоты диалога
             ) {
                 Text(
                     text = "Извлеченные изображения",
@@ -46,13 +46,13 @@ fun ExtractedImagesDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f) // Заполнение доступного пространства
                 ) {
-                    // Используем правильный метод для работы с коллекцией
                     items(extractedImages) { uri ->
-                        Image(
-                            painter = rememberImagePainter(uri),
-                            contentDescription = null,
+                        ZoomableImage(
+                            uri = uri,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)

@@ -30,12 +30,13 @@ import com.pavlov.nearWarSecrets.theme.My3
 fun CustomButtonOne(
     onClick: () -> Unit,
     text: String,
-    icon: Any? = null, // Принимает либо ImageVector, либо Int (ресурс)
+    icon: Any? = null, // Принимаем либо ImageVector, либо Int (ресурс)
     modifier: Modifier = Modifier,
     textColor: Color = My3,
     iconColor: Color = My3,
     enabled: Boolean = true,
     fontSize: TextUnit = 16.sp,
+    iconPadding: Int = 0, // в редких случаях (например окно логина кнопка Вход делаю корректировку иконки)
     pressedColor: Color = My7
 ) {
     val backgroundColor by animateColorAsState(
@@ -60,13 +61,13 @@ fun CustomButtonOne(
         if (icon != null) {
             when (icon) {
                 is ImageVector -> Icon(
-                    modifier = modifier.padding(0.dp),
+                    modifier = modifier.padding(bottom = iconPadding.dp),
                     imageVector = icon,
                     contentDescription = null,
                     tint = if (enabled) iconColor else Color.Gray
                 )
                 is Int -> Icon(
-                    modifier = modifier.padding(0.dp),
+                    modifier = modifier.padding(bottom = iconPadding.dp),
                     painter = painterResource(id = icon),
                     contentDescription = null,
                     tint = if (enabled) iconColor else Color.Gray

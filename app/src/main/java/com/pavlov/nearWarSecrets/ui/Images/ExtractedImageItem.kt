@@ -21,12 +21,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.pavlov.nearWarSecrets.util.ToastExt
 
-/**
- * Компонент для отображения одного извлеченного изображения с возможностью поделиться.
- *
- * @param uri URI изображения для отображения.
- */
 @Composable
 fun ExtractedImageItem(uri: Uri) {
     val context = LocalContext.current
@@ -66,8 +62,13 @@ fun ExtractedImageItem(uri: Uri) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    // Сохранение изображения в галерею
-                    saveImageToGallery(context, uri)
+                    // Сохранение изображения в приватную директорию приложения
+                    val success = saveImageToPrivateStorage(context, uri)
+                    if (success) {
+                        ToastExt.show("Изображение сохранено")
+                    } else {
+                        ToastExt.show("Ошибка при сохранении")
+                    }
                 }
             ) {
                 Text(text = "Сохранить")

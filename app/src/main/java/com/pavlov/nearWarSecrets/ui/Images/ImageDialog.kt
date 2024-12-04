@@ -72,8 +72,10 @@ fun ImageDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp), // Добавлен отступ 16 dp вокруг Row
+                    horizontalArrangement = Arrangement.Center // Центровка кнопок по горизонтали
                 ) {
                     IconButton(onClick = {
                         showShareOptions = true
