@@ -52,8 +52,7 @@ fun ImageDialog(
     // Основной диалог с изображением
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2)
@@ -68,8 +67,7 @@ fun ImageDialog(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -184,8 +182,7 @@ fun ImageDialog(
     if (isProcessing) {
         MyStyledDialog(onDismissRequest = {}) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomCircularProgressIndicator()

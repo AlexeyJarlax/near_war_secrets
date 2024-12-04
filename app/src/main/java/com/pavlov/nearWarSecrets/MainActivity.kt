@@ -19,12 +19,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    // Получение экземпляра ViewModel через Hilt
     private val viewModel: ImagesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handleIntent(intent) // Обработка входящего Intent при запуске активности
+        handleIntent(intent)
 
         setContent {
             MyTheme {
@@ -32,14 +31,14 @@ class MainActivity : ComponentActivity() {
                 NavGraph(
                     navController = navController,
                     activity = this,
-                    viewModel = viewModel, // Передача ViewModel в NavGraph
+                    imagesVewModel = viewModel,
                     modifier = Modifier.fillMaxSize()
                 )
             }
         }
     }
 
-    override fun onNewIntent(intent: Intent) { // Изменено на non-null Intent
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent) // Обработка новых Intent, когда активность уже запущена
     }
@@ -71,8 +70,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-
-        // Проверка фокуса окна перед скрытием панелей
         if (hasFocus) {
             hideSystemUI()
         }

@@ -19,12 +19,15 @@ import java.util.Date
 import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import timber.log.Timber
 
 @HiltViewModel
 class ImagesViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
+
+    private val TAG = "=== ImagesViewModel - чекаю на методы поделиться с приложением пикчей"
 
     private val _photoList = MutableLiveData<List<String>>()
     val photoList: LiveData<List<String>> get() = _photoList
@@ -34,20 +37,137 @@ class ImagesViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val _cameraSelector = MutableLiveData<CameraSelector>(CameraSelector.DEFAULT_BACK_CAMERA)
+    private val _cameraSelector =
+        MutableLiveData<CameraSelector>(CameraSelector.DEFAULT_BACK_CAMERA)
     val cameraSelector: LiveData<CameraSelector> get() = _cameraSelector
 
     private val _showSaveDialog = MutableLiveData<Boolean>()
     val showSaveDialog: LiveData<Boolean> get() = _showSaveDialog
 
-    // LiveData для извлеченных изображений
+    // LiveData для временных изображений (из поделиться)
     private val _extractedImages = MutableLiveData<List<Uri>>()
-    val extractedImages: LiveData<List<Uri>> get() = _extractedImages
+    val extractedImages: LiveData<List<Uri>> = _extractedImages
+
+    // LiveData для сохраненных изображений (из поделиться)
+    private val _savedImages = MutableLiveData<List<Uri>>()
+    val savedImages: LiveData<List<Uri>> = _savedImages
 
     init {
-        loadSavedPhotos()
+        loadExtractedImages()
+        loadSavedImages()
         Timber.d("=== init class ItemLoaderViewModel")
     }
+
+    /** методы для работы функции приёма изображений от Поделиться*/
+
+    // Загрузка временных изображений
+    private fun loadExtractedImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tempDir = File(context.filesDir, "TempImages")
+            if (!tempDir.exists()) {
+                tempDir.mkdirs()
+            }
+            val images = tempDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
+            _extractedImages.postValue(images)
+            Log.d(TAG, "Загружено временных изображений: ${images.size}")
+        }
+    }
+
+    // Загрузка сохраненных изображений
+    private fun loadSavedImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val savedDir = File(context.filesDir, "ExtractedImages")
+            if (!savedDir.exists()) {
+                savedDir.mkdirs()
+            }
+            val images = savedDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
+            _savedImages.postValue(images)
+            Log.d(TAG, "Загружено сохраненных изображений: ${images.size}")
+        }
+    }
+
+    // Добавление временных изображений
+    fun addReceivedPhotos(uris: List<Uri>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tempDir = File(context.filesDir, "TempImages")
+            if (!tempDir.exists()) {
+                tempDir.mkdirs()
+            }
+            uris.forEach { uri ->
+                val inputStream = context.contentResolver.openInputStream(uri)
+                inputStream?.let { stream ->
+                    val fileName = "temp_image_${System.currentTimeMillis()}.jpg"
+                    val file = File(tempDir, fileName)
+                    file.outputStream().use { output ->
+                        stream.copyTo(output)
+                    }
+                    Log.d(TAG, "Добавлено временное изображение: ${file.absolutePath}")
+                }
+            }
+            loadExtractedImages()
+        }
+    }
+
+    // Удаление временного изображения
+    fun removeExtractedImage(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val file = File(uri.path ?: "")
+            if (file.exists()) {
+                file.delete()
+                Log.d(TAG, "Удалено временное изображение: ${file.absolutePath}")
+            } else {
+                Log.e(TAG, "Файл не найден для удаления: ${uri.path}")
+            }
+            loadExtractedImages()
+        }
+    }
+
+    // Сохранение временного изображения в сохраненные
+    fun saveExtractedImage(uri: Uri): Boolean {
+        return try {
+            val savedDir = File(context.filesDir, "ExtractedImages")
+            if (!savedDir.exists()) {
+                savedDir.mkdirs()
+            }
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val fileName = "image_${System.currentTimeMillis()}.jpg"
+            val file = File(savedDir, fileName)
+            inputStream?.use { input ->
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            Log.d(TAG, "Сохранено изображение: ${file.absolutePath}")
+            // Обновляем список сохраненных изображений
+            loadSavedImages()
+            // Удаляем из временных
+            removeExtractedImage(uri)
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при сохранении изображения: ${e.message}")
+            e.printStackTrace()
+            false
+        }
+    }
+
+    // Очистка временных изображений
+    fun clearExtractedImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tempDir = File(context.filesDir, "TempImages")
+            tempDir.listFiles()?.forEach {
+                if (it.delete()) {
+                    Log.d(TAG, "Удалено временное изображение: ${it.absolutePath}")
+                } else {
+                    Log.e(TAG, "Не удалось удалить временное изображение: ${it.absolutePath}")
+                }
+            }
+            _extractedImages.postValue(emptyList())
+            Timber.tag(TAG).d("Все временные изображения удалены")
+        }
+    }
+
+
+// общие разделы
 
     private fun loadSavedPhotos() {
         val savedFiles = getPreviouslySavedFiles()
@@ -112,7 +232,13 @@ class ImagesViewModel @Inject constructor(
             val files = directory.listFiles()
             if (files != null) {
                 val sortedFiles = files
-                    .filter { it.extension.isNotEmpty() && it.extension !in listOf("kk", "dat", "k") }
+                    .filter {
+                        it.extension.isNotEmpty() && it.extension !in listOf(
+                            "kk",
+                            "dat",
+                            "k"
+                        )
+                    }
                     .sortedByDescending { it.lastModified() }
                 savedFiles.addAll(sortedFiles.map { it.name })
             }
@@ -158,7 +284,7 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    // Стеганография
+// Стеганография
 
     fun shareImageWithHiddenOriginal(
         originalImageFile: File,
@@ -186,16 +312,17 @@ class ImagesViewModel @Inject constructor(
                 }
 
                 // Изменяем размер оригинала до размера мема, если необходимо
-                val resizedOriginalBitmap = if (originalBitmap.width > memeBitmap.width || originalBitmap.height > memeBitmap.height) {
-                    Bitmap.createScaledBitmap(
-                        originalBitmap,
-                        memeBitmap.width,
-                        memeBitmap.height,
-                        true
-                    )
-                } else {
-                    originalBitmap
-                }
+                val resizedOriginalBitmap =
+                    if (originalBitmap.width > memeBitmap.width || originalBitmap.height > memeBitmap.height) {
+                        Bitmap.createScaledBitmap(
+                            originalBitmap,
+                            memeBitmap.width,
+                            memeBitmap.height,
+                            true
+                        )
+                    } else {
+                        originalBitmap
+                    }
 
                 Timber.d("Resized original bitmap: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
 
@@ -219,7 +346,11 @@ class ImagesViewModel @Inject constructor(
 
                 Timber.d("Saved encoded image to: ${destinationFile.absolutePath}")
 
-                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destinationFile)
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    destinationFile
+                )
                 Timber.d("Generated URI for encoded image: $uri")
 
                 withContext(Dispatchers.Main) {
@@ -258,13 +389,12 @@ class ImagesViewModel @Inject constructor(
             }
             encodedBitmap
         } catch (e: Exception) {
-            Timber.e(e, "Error during hideImageInMeme")
+            Timber.e(e, "ошибка в методе hideImageInMeme")
             null
         }
     }
 
     private fun encodePixel(memePixel: Int, originalPixel: Int): Int {
-        // Извлекаем компоненты пикселей мемчика и оригинала
         val memeRed = (memePixel shr 16) and 0xFF
         val memeGreen = (memePixel shr 8) and 0xFF
         val memeBlue = memePixel and 0xFF
@@ -273,16 +403,14 @@ class ImagesViewModel @Inject constructor(
         val originalGreen = (originalPixel shr 8) and 0xFF
         val originalBlue = originalPixel and 0xFF
 
-        // Скрываем оригинальные данные в младших 4 битах мемчика
         val encodedRed = (memeRed and 0xF0) or (originalRed shr 4)
         val encodedGreen = (memeGreen and 0xF0) or (originalGreen shr 4)
         val encodedBlue = (memeBlue and 0xF0) or (originalBlue shr 4)
 
-        // Возвращаем новый пиксель с альфа-каналом 255
         return (0xFF shl 24) or (encodedRed shl 16) or (encodedGreen shl 8) or encodedBlue
     }
 
-    // Функции для обработки входящих изображений
+// Функции для обработки входящих изображений
 
     fun addReceivedPhoto(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -290,21 +418,6 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun addReceivedPhotos(uris: List<Uri>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val extractedUris = mutableListOf<Uri>()
-            for (uri in uris) {
-                val extractedUri = extractOriginalImage(uri)
-                if (extractedUri != null) {
-                    extractedUris.add(extractedUri)
-                }
-            }
-            // Обновляем LiveData
-            withContext(Dispatchers.Main) {
-                _extractedImages.value = (_extractedImages.value ?: emptyList()) + extractedUris
-            }
-        }
-    }
 
     private suspend fun extractOriginalImage(memeUri: Uri): Uri? {
         return withContext(Dispatchers.IO) {
@@ -333,7 +446,11 @@ class ImagesViewModel @Inject constructor(
                 outputStream.flush()
                 outputStream.close()
 
-                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destinationFile)
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    destinationFile
+                )
 
                 uri
             } catch (e: Exception) {
@@ -353,28 +470,22 @@ class ImagesViewModel @Inject constructor(
             for (x in 0 until width) {
                 val memePixel = memeBitmap.getPixel(x, y)
 
-                // Извлекаем нижние 4 бита каждого цветового компонента
                 val encodedRed = (memePixel shr 16) and 0x0F
                 val encodedGreen = (memePixel shr 8) and 0x0F
                 val encodedBlue = memePixel and 0x0F
 
-                // Восстанавливаем оригинальные компоненты
                 val originalRed = encodedRed shl 4
                 val originalGreen = encodedGreen shl 4
                 val originalBlue = encodedBlue shl 4
 
-                // Собираем пиксель с альфа-каналом 255
-                val originalPixel = (0xFF shl 24) or (originalRed shl 16) or (originalGreen shl 8) or originalBlue
+                val originalPixel =
+                    (0xFF shl 24) or (originalRed shl 16) or (originalGreen shl 8) or originalBlue
 
                 originalBitmap.setPixel(x, y, originalPixel)
             }
         }
 
         return originalBitmap
-    }
-
-    fun clearExtractedImages() {
-        _extractedImages.value = emptyList()
     }
 
     companion object {

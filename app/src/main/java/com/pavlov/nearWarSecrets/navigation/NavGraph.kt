@@ -25,7 +25,7 @@ import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
-    viewModel: ImagesViewModel,
+    imagesVewModel: ImagesViewModel,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -74,24 +74,18 @@ fun NavGraph(
 
             composable(NavDestinations.IMAGES) {
                 ImagesScreen(
-                    itemLoaderScreen = { ItemLoaderScreen(viewModel = viewModel) },
-                    extractedImagesScreen = {
-                        ExtractedImagesScreen(
-                            onDismiss = { /* Логика закрытия */ }
-                        )
-                    }
+                    itemLoaderScreen = { ItemLoaderScreen(viewModel = imagesVewModel) },
+                    extractedImagesScreen = { ExtractedImagesScreen(viewModel = imagesVewModel)}
                 )
             }
 
             composable(NavDestinations.LOADER) {
-                ItemLoaderScreen(viewModel = viewModel)
+                ItemLoaderScreen(viewModel = imagesVewModel)
             }
 
             composable(NavDestinations.EXTRACTER) {
                 ExtractedImagesScreen(
-                    onDismiss = {
-                        navController.popBackStack()
-                    }
+                    viewModel = imagesVewModel
                 )
             }
 

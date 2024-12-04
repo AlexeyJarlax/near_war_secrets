@@ -3,14 +3,7 @@ package com.pavlov.nearWarSecrets.ui.Images.extracted
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -24,7 +17,7 @@ import coil.compose.rememberImagePainter
 import com.pavlov.nearWarSecrets.util.ToastExt
 
 @Composable
-fun ExtractedImageItem(uri: Uri) {
+fun SavedImageItem(uri: Uri) {
     val context = LocalContext.current
 
     Column(
@@ -34,7 +27,7 @@ fun ExtractedImageItem(uri: Uri) {
     ) {
         Image(
             painter = rememberImagePainter(uri),
-            contentDescription = "Extracted Image",
+            contentDescription = "Saved Image",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
@@ -48,7 +41,7 @@ fun ExtractedImageItem(uri: Uri) {
         ) {
             Button(
                 onClick = {
-                    // Поделиться извлеченным изображением
+                    // Поделиться сохраненным изображением
                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "image/jpeg"
                         putExtra(Intent.EXTRA_STREAM, uri)
@@ -58,20 +51,6 @@ fun ExtractedImageItem(uri: Uri) {
                 }
             ) {
                 Text(text = "Поделиться")
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    // Сохранение изображения в приватную директорию приложения
-                    val success = saveImageToPrivateStorage(context, uri)
-                    if (success) {
-                        ToastExt.show("Изображение сохранено")
-                    } else {
-                        ToastExt.show("Ошибка при сохранении")
-                    }
-                }
-            ) {
-                Text(text = "Сохранить")
             }
         }
     }

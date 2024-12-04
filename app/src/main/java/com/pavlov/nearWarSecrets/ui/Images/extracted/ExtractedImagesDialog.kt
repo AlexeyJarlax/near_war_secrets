@@ -1,68 +1,83 @@
 package com.pavlov.nearWarSecrets.ui.Images.extracted
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.Composable
-import android.net.Uri
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.*
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import com.pavlov.nearWarSecrets.ui.Images.ZoomableImage
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
+import com.pavlov.nearWarSecrets.util.ToastExt
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 
 @Composable
 fun ExtractedImagesDialog(
-    extractedImages: List<Uri>,
-    onDismiss: () -> Unit
+    uri: Uri,
+    onDismiss: () -> Unit,
+    viewModel: ImagesViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    var isSaved by remember { mutableStateOf(false) }
+
     MyStyledDialog(onDismissRequest = onDismiss) {
-            Column(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Новое изображение",
+                style = MaterialTheme.typography.h6
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            ZoomableImage(
+                uri = uri,
                 modifier = Modifier
-                    .padding(16.dp)
                     .fillMaxWidth()
-                    .heightIn(max = 600.dp) // Ограничение максимальной высоты диалога
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Text(
-                    text = "Извлеченные изображения",
-                    style = MaterialTheme.typography.h6
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f) // Заполнение доступного пространства
-                ) {
-                    items(extractedImages) { uri ->
-                        ZoomableImage(
-                            uri = uri,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
                 Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.align(Alignment.End)
+                    onClick = {
+                        // Сохранение изображения
+                        val success = viewModel.saveExtractedImage(uri)
+                        if (success) {
+                            ToastExt.show("Изображение сохранено")
+                            isSaved = true
+                            onDismiss()
+                        } else {
+                            ToastExt.show("Ошибка при сохранении")
+                        }
+                    },
+                    enabled = !isSaved
                 ) {
-                    Text("Закрыть")
+                    Text("Сохранить")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        // Удаление изображения
+                        viewModel.removeExtractedImage(uri)
+                        ToastExt.show("Изображение удалено")
+                        onDismiss()
+                    }
+                ) {
+                    Text("Удалить")
                 }
             }
         }
     }
+}

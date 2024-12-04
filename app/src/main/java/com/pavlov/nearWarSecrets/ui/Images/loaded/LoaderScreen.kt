@@ -49,7 +49,6 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
-import com.pavlov.nearWarSecrets.ui.Images.PhotoItem
 import com.pavlov.nearWarSecrets.ui.Images.extracted.ExtractedImagesDialog
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -70,15 +69,6 @@ fun ItemLoaderScreen(
     val cameraSelector by viewModel.cameraSelector.observeAsState(CameraSelector.DEFAULT_BACK_CAMERA)
     val imageCapture = remember { ImageCapture.Builder().build() }
     val previewView = remember { PreviewView(context) }
-
-    val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
-    var showExtractedImagesDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(extractedImages) {
-        if (extractedImages.isNotEmpty()) {
-            showExtractedImagesDialog = true
-        }
-    }
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -329,16 +319,6 @@ fun ItemLoaderScreen(
                                 text = context.getString(R.string.share_the_img),
                                 icon = Icons.Default.Share
                             )
-                        }
-                    )
-                }
-
-                if (extractedImages.isNotEmpty() && showExtractedImagesDialog) {
-                    ExtractedImagesDialog(
-                        extractedImages = extractedImages,
-                        onDismiss = {
-                            showExtractedImagesDialog = false
-                            viewModel.clearExtractedImages()
                         }
                     )
                 }

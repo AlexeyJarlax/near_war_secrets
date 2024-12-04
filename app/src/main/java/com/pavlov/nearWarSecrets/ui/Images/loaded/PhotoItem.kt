@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.Images
+package com.pavlov.nearWarSecrets.ui.Images.loaded
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import java.io.File
 
 @Composable
@@ -36,8 +37,8 @@ fun PhotoItem(
         modifier = Modifier
             .padding(4.dp)
             .clickable { onImageClick(fileName) }
-            .fillMaxWidth() // Заполняем всю доступную ширину
-            .background(MaterialTheme.colors.background) // Устанавливаем фон
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
     ) {
         Image(
             painter = painter,
@@ -45,19 +46,19 @@ fun PhotoItem(
             modifier = Modifier
                 .size(120.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .align(Alignment.CenterHorizontally) // Центрируем изображение
+                .align(Alignment.CenterHorizontally)
         )
         Text(
             text = name,
             style = MaterialTheme.typography.subtitle2,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.align(Alignment.CenterHorizontally) // Центрируем текст
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Text(
             text = date,
             style = MaterialTheme.typography.caption,
-            modifier = Modifier.align(Alignment.CenterHorizontally) // Центрируем текст
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
 }

@@ -1,7 +1,6 @@
 package com.pavlov.nearWarSecrets.ui.Images
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,20 +13,37 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.*
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ImagesScreen(
     itemLoaderScreen: @Composable () -> Unit,
-    extractedImagesScreen: @Composable () -> Unit
+    extractedImagesScreen: @Composable () -> Unit,
+    viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
+
+    // Наблюдаем за списком временных изображений
+    val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
+
+    // Автоматически переключаться на вкладку "Полученные" при добавлении нового изображения
+    LaunchedEffect(extractedImages) {
+        if (extractedImages.isNotEmpty()) {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(1) // Переключаемся на вторую вкладку (индекс 1)
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -50,7 +66,7 @@ fun ImagesScreen(
                         selected = pagerState.currentPage == page,
                         onClick = {
                             coroutineScope.launch {
-                                pagerState.scrollToPage(page)
+                                pagerState.animateScrollToPage(page)
                             }
                         },
                         modifier = Modifier.weight(1f),
