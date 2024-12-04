@@ -9,7 +9,7 @@ import androidx.navigation.compose.*
 import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.navigation.BottomNavigationBar
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
-import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.Images.ItemLoaderScreen
 import com.pavlov.nearWarSecrets.ui.settings.SettingsScreen
 import com.pavlov.nearWarSecrets.ui.storageLog.StorageLogScreen
 

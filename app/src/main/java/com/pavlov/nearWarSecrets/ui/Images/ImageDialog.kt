@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.itemLoader
+package com.pavlov.nearWarSecrets.ui.Images
 
 import android.content.Intent
 import android.widget.Toast
@@ -37,7 +37,7 @@ import androidx.compose.ui.Alignment
 @Composable
 fun ImageDialog(
     fileName: String,
-    viewModel: PicturesViewModel,
+    viewModel: ImagesViewModel,
     onDismiss: () -> Unit,
     onDelete: () -> Unit
 ) {

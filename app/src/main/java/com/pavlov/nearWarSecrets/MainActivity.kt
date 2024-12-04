@@ -13,14 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.pavlov.nearWarSecrets.navigation.NavGraph
 import com.pavlov.nearWarSecrets.theme.MyTheme
-import com.pavlov.nearWarSecrets.ui.itemLoader.PicturesViewModel
+import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     // Получение экземпляра ViewModel через Hilt
-    private val viewModel: PicturesViewModel by viewModels()
+    private val viewModel: ImagesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.itemLoader
+package com.pavlov.nearWarSecrets.ui.Images
 
 import android.content.Context
 import android.net.Uri
@@ -22,7 +22,7 @@ import android.graphics.BitmapFactory
 import timber.log.Timber
 
 @HiltViewModel
-class PicturesViewModel @Inject constructor(
+class ImagesViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 

@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.itemLoader
+package com.pavlov.nearWarSecrets.ui.Images
 
 import android.content.Intent
 import android.net.Uri

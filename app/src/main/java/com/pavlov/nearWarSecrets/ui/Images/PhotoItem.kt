@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.itemLoader
+package com.pavlov.nearWarSecrets.ui.Images
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +23,7 @@ import java.io.File
 @Composable
 fun PhotoItem(
     fileName: String,
-    viewModel: PicturesViewModel,
+    viewModel: ImagesViewModel,
     onImageClick: (String) -> Unit
 ) {
     val context = LocalContext.current

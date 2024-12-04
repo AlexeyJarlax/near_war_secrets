@@ -11,10 +11,10 @@ import androidx.navigation.compose.composable
 import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
-import com.pavlov.nearWarSecrets.ui.itemLoader.ExtractedImagesScreen
-import com.pavlov.nearWarSecrets.ui.itemLoader.ImagesScreen
-import com.pavlov.nearWarSecrets.ui.itemLoader.ItemLoaderScreen
-import com.pavlov.nearWarSecrets.ui.itemLoader.PicturesViewModel
+import com.pavlov.nearWarSecrets.ui.Images.ExtractedImagesScreen
+import com.pavlov.nearWarSecrets.ui.Images.ImagesScreen
+import com.pavlov.nearWarSecrets.ui.Images.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen
 import com.pavlov.nearWarSecrets.ui.settings.SettingsScreen
@@ -25,7 +25,7 @@ import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
-    viewModel: PicturesViewModel,
+    viewModel: ImagesViewModel,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -42,7 +42,7 @@ fun NavGraph(
         ) {
             composable(NavDestinations.AUTH) {
                 AuthScreen(
-                    onNavigateToItemLoader = { navController.navigate(NavDestinations.LOADER) },
+                    onNavigateToItemLoader = { navController.navigate(NavDestinations.IMAGES) },
                     onNavigateToTwoStepsForSave = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
                 )
             }
@@ -100,6 +100,7 @@ fun NavGraph(
             composable(NavDestinations.STORAGE_LOG) {
                 StorageLogScreen(navController)
             }
+
             composable(NavDestinations.SETTINGS) {
                 SettingsScreen(
                     navController = navController,

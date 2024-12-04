@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.itemLoader
+package com.pavlov.nearWarSecrets.ui.Images
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -51,7 +51,7 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemLoaderScreen(
-    viewModel: PicturesViewModel = hiltViewModel()
+    viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val photoList by viewModel.photoList.observeAsState(emptyList())

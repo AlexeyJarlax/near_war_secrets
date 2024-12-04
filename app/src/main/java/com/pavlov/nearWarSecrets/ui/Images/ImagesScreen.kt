@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.itemLoader
+package com.pavlov.nearWarSecrets.ui.Images
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,17 +30,17 @@ fun ImagesScreen(
                     }
                 }
             ) {
-                Text("Загрузчик")
+                Text("Загруженные изображения")
             }
             Tab(
                 selected = pagerState.currentPage == 1,
                 onClick = {
-                    coroutineScope.launch { // Запуск корутины для scrollToPage
+                    coroutineScope.launch {
                         pagerState.scrollToPage(1)
                     }
                 }
             ) {
-                Text("Извлеченные изображения")
+                Text("Полученные изображения")
             }
         }
         // Содержимое страниц
