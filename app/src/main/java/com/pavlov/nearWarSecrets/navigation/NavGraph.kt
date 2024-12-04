@@ -11,9 +11,9 @@ import androidx.navigation.compose.composable
 import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
-import com.pavlov.nearWarSecrets.ui.Images.ExtractedImagesScreen
+import com.pavlov.nearWarSecrets.ui.Images.extracted.ExtractedImagesScreen
 import com.pavlov.nearWarSecrets.ui.Images.ImagesScreen
-import com.pavlov.nearWarSecrets.ui.Images.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.Images.loaded.ItemLoaderScreen
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen

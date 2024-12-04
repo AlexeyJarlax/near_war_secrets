@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.Images
+package com.pavlov.nearWarSecrets.ui.Images.extracted
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,19 +21,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
+import com.pavlov.nearWarSecrets.ui.Images.ZoomableImage
 
 @Composable
 fun ExtractedImagesDialog(
     extractedImages: List<Uri>,
     onDismiss: () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colors.surface,
-            modifier = Modifier
-                .border(width = 2.dp, color = Color.Green, shape = RoundedCornerShape(8.dp))
-        ) {
+    MyStyledDialog(onDismissRequest = onDismiss) {
             Column(
                 modifier = Modifier
                     .padding(16.dp)
@@ -55,7 +51,6 @@ fun ExtractedImagesDialog(
                             uri = uri,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
                                 .padding(vertical = 4.dp)
                                 .clip(RoundedCornerShape(8.dp))
                         )
@@ -71,4 +66,3 @@ fun ExtractedImagesDialog(
             }
         }
     }
-}

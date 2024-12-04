@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.Images
+package com.pavlov.nearWarSecrets.ui.Images.loaded
 
 import com.pavlov.nearWarSecrets.R
 import androidx.compose.foundation.Image
@@ -25,6 +25,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 
 @Composable
 fun MemeSelectionDialog(
@@ -37,13 +38,7 @@ fun MemeSelectionDialog(
         R.drawable.mem3
     )
 
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colors.surface,
-            modifier = Modifier
-                .border(width = 2.dp, color = Color.Green, shape = RoundedCornerShape(8.dp))
-        ) {
+    MyStyledDialog(onDismissRequest = onDismiss) {
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -73,5 +68,4 @@ fun MemeSelectionDialog(
                 }
             }
         }
-    }
 }

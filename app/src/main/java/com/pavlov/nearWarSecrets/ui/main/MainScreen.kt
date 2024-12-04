@@ -1,18 +1,5 @@
 package com.pavlov.nearWarSecrets.ui.main
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.material.*
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.*
-import com.pavlov.nearWarSecrets.data.model.NavDestinations
-import com.pavlov.nearWarSecrets.navigation.BottomNavigationBar
-import com.pavlov.nearWarSecrets.ui.about.AboutScreen
-import com.pavlov.nearWarSecrets.ui.Images.ItemLoaderScreen
-import com.pavlov.nearWarSecrets.ui.settings.SettingsScreen
-import com.pavlov.nearWarSecrets.ui.storageLog.StorageLogScreen
-
 //@Composable
 //fun MainScreen(navController: NavHostController) {
 //    Scaffold(

@@ -32,6 +32,98 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndica
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
+// Диалог Извлеченных Изображений
+@Composable
+fun ExtractedImagesDialog(
+    extractedImages: List<Uri>,
+    onDismiss: () -> Unit
+) {
+    MyStyledDialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 600.dp) // Ограничение максимальной высоты диалога
+        ) {
+            Text(
+                text = "Извлеченные изображения",
+                style = MaterialTheme.typography.h6
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f) // Заполнение доступного пространства
+            ) {
+                items(extractedImages) { uri ->
+                    ZoomableImage(
+                        uri = uri,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text("Закрыть")
+            }
+        }
+    }
+}
+
+// Диалог Выбора Мемов
+@Composable
+fun MemeSelectionDialog(
+    onMemeSelected: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val memes = listOf(
+        R.drawable.mem1,
+        R.drawable.mem2,
+        R.drawable.mem3
+    )
+
+    MyStyledDialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(text = "Выберите мем", style = MaterialTheme.typography.h6)
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(items = memes) { memeResId ->
+                    Image(
+                        painter = painterResource(id = memeResId),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clickable {
+                                onMemeSelected(memeResId)
+                                onDismiss()
+                            }
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text("Отмена")
+            }
+        }
+    }
+}
+
+// Диалог Изображения с Опциями Поделиться и Удалить
 @Composable
 fun ImageDialog(
     fileName: String,
@@ -95,7 +187,8 @@ fun ImageDialog(
     if (showShareOptions) {
         MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Поделиться изображением", style = MaterialTheme.typography.h6)
@@ -182,7 +275,7 @@ fun ImageDialog(
 
     // Диалог загрузки
     if (isProcessing) {
-        MyStyledDialog(onDismissRequest = {}) {
+        MyStyledDialog(onDismissRequest = { /* Нельзя закрыть диалог */ }) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -190,7 +283,67 @@ fun ImageDialog(
             ) {
                 CustomCircularProgressIndicator()
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Обработка...")
+                Text("Обработка...", style = MaterialTheme.typography.body1)
+            }
+        }
+    }
+}
+
+// Дополнительные Диалоги (Примеры)
+
+@Composable
+fun ConfirmationDialog(
+    title: String,
+    message: String,
+    confirmButtonText: String = "Подтвердить",
+    dismissButtonText: String = "Отмена",
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    MyStyledDialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(title, style = MaterialTheme.typography.h6)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(message, style = MaterialTheme.typography.body1)
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(onClick = onDismiss) {
+                    Text(dismissButtonText)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = onConfirm) {
+                    Text(confirmButtonText)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MessageDialog(
+    title: String,
+    message: String,
+    buttonText: String = "Закрыть",
+    onButtonClick: () -> Unit
+) {
+    MyStyledDialog(onDismissRequest = onButtonClick) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(title, style = MaterialTheme.typography.h6)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(message, style = MaterialTheme.typography.body1)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onButtonClick) {
+                Text(buttonText)
             }
         }
     }

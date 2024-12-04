@@ -36,6 +36,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.graphics.Color
 import com.pavlov.nearWarSecrets.data.model.Option
 
+
+
+
+
 @Composable
 fun CustomYesOrNoDialog(
     title: String,
