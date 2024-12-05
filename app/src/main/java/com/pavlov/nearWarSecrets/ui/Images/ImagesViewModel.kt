@@ -89,7 +89,29 @@ class ImagesViewModel @Inject constructor(
     }
 
     // Добавление временных изображений
-    fun addReceivedPhotos(uris: List<Uri>) {
+    fun addReceivedPhoto(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tempDir = File(context.filesDir, "TempImages")
+            if (!tempDir.exists()) {
+                tempDir.mkdirs()
+            }
+            val inputStream = context.contentResolver.openInputStream(uri)
+            inputStream?.let { stream ->
+                val fileName = "temp_image_${System.currentTimeMillis()}.jpg"
+                val file = File(tempDir, fileName)
+                file.outputStream().use { output ->
+                    stream.copyTo(output)
+                }
+                Log.d(TAG, "Added temporary image: ${file.absolutePath}")
+                withContext(Dispatchers.Main) {
+                    // Update the LiveData to trigger UI updates
+                    loadExtractedImages()
+                }
+            }
+        }
+    }
+
+    fun addReceivedPhotos(uris: List<Uri>) {   // (для нескольких URI)
         viewModelScope.launch(Dispatchers.IO) {
             val tempDir = File(context.filesDir, "TempImages")
             if (!tempDir.exists()) {
@@ -106,7 +128,9 @@ class ImagesViewModel @Inject constructor(
                     Log.d(TAG, "Добавлено временное изображение: ${file.absolutePath}")
                 }
             }
-            loadExtractedImages()
+            withContext(Dispatchers.Main) {
+                loadExtractedImages()
+            }
         }
     }
 
@@ -215,7 +239,8 @@ private fun loadPhotoList() {
     }
 
     fun getPhotoDate(fileName: String): String {
-        val file = File(context.filesDir, fileName)
+        val photoListDir = File(context.filesDir, "PhotoList")
+        val file = File(photoListDir, fileName)
         val date = Date(file.lastModified())
         return date.toString()
     }
@@ -267,7 +292,8 @@ private fun loadPhotoList() {
     }
 
     fun getFileUri(fileName: String): Uri? {
-        val file = File(context.filesDir, fileName)
+        val photoListDir = File(context.filesDir, "PhotoList")
+        val file = File(photoListDir, fileName)
         return if (file.exists()) {
             FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
         } else {
@@ -402,12 +428,6 @@ private fun loadPhotoList() {
     }
 
 // Функции для обработки входящих изображений
-
-    fun addReceivedPhoto(uri: Uri) {
-        viewModelScope.launch(Dispatchers.IO) {
-            extractOriginalImage(uri)
-        }
-    }
 
 
     private suspend fun extractOriginalImage(memeUri: Uri): Uri? {

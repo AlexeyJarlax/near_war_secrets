@@ -1,9 +1,12 @@
 package com.pavlov.nearWarSecrets.navigation
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,12 +25,44 @@ import com.pavlov.nearWarSecrets.ui.storageLog.StorageLogScreen
 import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 
 @Composable
+
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
     imagesVewModel: ImagesViewModel,
     modifier: Modifier = Modifier,
+    intent: Intent?
 ) {
+    // Обработка intent внутри компонуемой функции (нагородил, чтобы принимать изображения из вне, и при этом навграф не сыпался)
+    LaunchedEffect(intent) {
+        intent?.let { receivedIntent ->
+            val action = receivedIntent.action
+            val type = receivedIntent.type
+
+            if (action == Intent.ACTION_SEND && type != null) {
+                if (type.startsWith("image/")) {
+                    val uri: Uri? = receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM)
+                    uri?.let {
+                        imagesVewModel.addReceivedPhoto(it)
+                        navController.navigate(NavDestinations.EXTRACTER) {
+                            popUpTo(NavDestinations.IMAGES) { inclusive = false }
+                        }
+                    }
+                }
+            } else if (action == Intent.ACTION_SEND_MULTIPLE && type != null) {
+                if (type.startsWith("image/")) {
+                    val uris: ArrayList<Uri>? = receivedIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
+                    uris?.let {
+                        imagesVewModel.addReceivedPhotos(it)
+                        navController.navigate(NavDestinations.EXTRACTER) {
+                            popUpTo(NavDestinations.IMAGES) { inclusive = false }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Scaffold(
         bottomBar = {
             if (shouldShowBottomBar(navController)) {

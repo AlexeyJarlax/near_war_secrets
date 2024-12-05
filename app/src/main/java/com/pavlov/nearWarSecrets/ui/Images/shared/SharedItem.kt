@@ -17,6 +17,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.rememberAsyncImagePainter
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -30,9 +31,13 @@ fun SharedItem(
 ) {
     val context = LocalContext.current
     val file = remember(uri) { File(uri.path ?: "") }
+    if (!file.exists()) {
+        return
+    }
     val dateFormatter = remember { SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()) }
     val formattedDate = remember(file.lastModified()) { dateFormatter.format(Date(file.lastModified())) }
     val fileName = remember(file.name) { file.nameWithoutExtension }
+    val painter = rememberAsyncImagePainter(model = uri)
 
     Column(
         modifier = Modifier

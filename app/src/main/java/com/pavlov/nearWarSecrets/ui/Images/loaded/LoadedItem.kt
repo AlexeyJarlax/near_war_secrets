@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import java.io.File
@@ -28,10 +29,10 @@ fun LoadedItem(
     onImageClick: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val imageFile = File(context.filesDir, fileName)
+    val imageFile = File(context.filesDir, "PhotoList/$fileName")
     val date = viewModel.getPhotoDate(fileName)
     val name = viewModel.getFileNameWithoutExtension(fileName)
-    val painter = rememberImagePainter(data = imageFile)
+    val painter = rememberAsyncImagePainter(model = imageFile)
 
     Column(
         modifier = Modifier
