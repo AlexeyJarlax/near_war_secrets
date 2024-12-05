@@ -22,7 +22,7 @@ import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import java.io.File
 
 @Composable
-fun PhotoItem(
+fun LoadedItem(
     fileName: String,
     viewModel: ImagesViewModel,
     onImageClick: (String) -> Unit

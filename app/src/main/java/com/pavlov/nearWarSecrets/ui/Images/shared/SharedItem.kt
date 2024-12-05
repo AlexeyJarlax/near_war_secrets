@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.Images.extracted
+package com.pavlov.nearWarSecrets.ui.Images.shared
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import androidx.compose.foundation.clickable
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun SavedImageItem(
+fun SharedItem(
     uri: Uri,
     viewModel: ImagesViewModel,
     onImageClick: (Uri) -> Unit

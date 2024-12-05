@@ -53,7 +53,7 @@ import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LoaderScreen(
+fun LoadedScreen(
     viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -145,7 +145,11 @@ fun LoaderScreen(
                             CustomButtonOne(
                                 onClick = {
                                     val fileName = viewModel.getFileName()
-                                    val file = File(context.filesDir, fileName)
+                                    val photoListDir = File(context.filesDir, "PhotoList")
+                                    if (!photoListDir.exists()) {
+                                        photoListDir.mkdirs()
+                                    }
+                                    val file = File(photoListDir, fileName)
                                     val outputOptions =
                                         ImageCapture.OutputFileOptions.Builder(file)
                                             .build()
@@ -277,7 +281,7 @@ fun LoaderScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(photoList) { fileName ->
-                            PhotoItem(
+                            LoadedItem(
                                 fileName = fileName,
                                 viewModel = viewModel,
                                 onImageClick = {
@@ -321,7 +325,9 @@ fun LoaderScreen(
                         },
                         dismissButton = {
                             CustomButtonOne(
-                                onClick = {},
+                                onClick = {
+                                    // Реализуйте логику для поделиться изображением
+                                },
                                 text = context.getString(R.string.share_the_img),
                                 icon = Icons.Default.Share
                             )
@@ -329,6 +335,7 @@ fun LoaderScreen(
                     )
                 }
             }
+
         }
     )
 }

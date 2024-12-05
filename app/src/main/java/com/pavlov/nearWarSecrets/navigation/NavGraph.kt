@@ -11,9 +11,9 @@ import androidx.navigation.compose.composable
 import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
-import com.pavlov.nearWarSecrets.ui.Images.extracted.ExtractedImagesScreen
+import com.pavlov.nearWarSecrets.ui.Images.shared.SharedScreen
 import com.pavlov.nearWarSecrets.ui.Images.ImagesScreen
-import com.pavlov.nearWarSecrets.ui.Images.loaded.LoaderScreen
+import com.pavlov.nearWarSecrets.ui.Images.loaded.LoadedScreen
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen
@@ -74,8 +74,8 @@ fun NavGraph(
 
             composable(NavDestinations.IMAGES) {
                 ImagesScreen(
-                    itemLoaderScreen = { LoaderScreen(viewModel = imagesVewModel) },
-                    extractedImagesScreen = { ExtractedImagesScreen(
+                    itemLoaderScreen = { LoadedScreen(viewModel = imagesVewModel) },
+                    extractedImagesScreen = { SharedScreen(
                         viewModel = imagesVewModel,
                         onImageClick = { uri -> }
                     ) }
@@ -83,11 +83,11 @@ fun NavGraph(
             }
 
             composable(NavDestinations.LOADER) {
-                LoaderScreen(viewModel = imagesVewModel)
+                LoadedScreen(viewModel = imagesVewModel)
             }
 
             composable(NavDestinations.EXTRACTER) {
-                ExtractedImagesScreen(
+                SharedScreen(
                     viewModel = imagesVewModel,
                     onImageClick = { uri -> }
                 )

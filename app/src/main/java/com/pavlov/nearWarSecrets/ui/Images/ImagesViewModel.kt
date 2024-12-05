@@ -49,7 +49,7 @@ class ImagesViewModel @Inject constructor(
     private val _savedImages = MutableLiveData<List<Uri>>()
     val savedImages: LiveData<List<Uri>> = _savedImages
 
-    // LiveData для списка фотографий в ItemLoaderScreen
+    // LiveData для списка фотографий в LoaderScreen
     private val _photoList = MutableLiveData<List<String>>()
     val photoList: LiveData<List<String>> = _photoList
 
@@ -85,19 +85,6 @@ class ImagesViewModel @Inject constructor(
             val images = savedDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
             _savedImages.postValue(images)
             Log.d(TAG, "Загружено сохраненных изображений: ${images.size}")
-        }
-    }
-
-    // Загрузка списка фотографий для ItemLoaderScreen
-    private fun loadPhotoList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val directory = File(context.filesDir, "PhotoList") // Убедитесь, что это правильная папка
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-            val files = directory.listFiles()?.map { it.name } ?: emptyList()
-            _photoList.postValue(files)
-            Log.d(TAG, "Загружено фото для ItemLoaderScreen: ${files.size}")
         }
     }
 
@@ -181,25 +168,35 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-
 // общие разделы
 
-    private fun loadSavedPhotos() {
-        val savedFiles = getPreviouslySavedFiles()
-        _photoList.postValue(savedFiles)
+private fun loadPhotoList() {
+    viewModelScope.launch(Dispatchers.IO) {
+        val directory = File(context.filesDir, "PhotoList")
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        val files = directory.listFiles()?.map { it.name } ?: emptyList()
+        _photoList.postValue(files)
+        Log.d(TAG, "Загружено фото для LoaderScreen: ${files.size}")
     }
+}
 
     fun addPhoto(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val fileName = getFileName()
-            val destinationFile = File(context.filesDir, fileName)
+            val photoListDir = File(context.filesDir, "PhotoList")
+            if (!photoListDir.exists()) {
+                photoListDir.mkdirs()
+            }
+            val destinationFile = File(photoListDir, fileName)
             try {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                 val outputStream = FileOutputStream(destinationFile)
                 inputStream?.copyTo(outputStream)
                 inputStream?.close()
                 outputStream.close()
-                loadSavedPhotos()
+                loadPhotoList()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -208,11 +205,12 @@ class ImagesViewModel @Inject constructor(
 
     fun deletePhoto(fileName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val fileToDelete = File(context.filesDir, fileName)
+            val photoListDir = File(context.filesDir, "PhotoList")
+            val fileToDelete = File(photoListDir, fileName)
             if (fileToDelete.exists()) {
                 fileToDelete.delete()
             }
-            loadSavedPhotos()
+            loadPhotoList() // Обновляем список после удаления
         }
     }
 
@@ -240,27 +238,6 @@ class ImagesViewModel @Inject constructor(
         return NamingStyleManager(context).generateFileName(existOrNot, folder)
     }
 
-    private fun getPreviouslySavedFiles(): List<String> {
-        val savedFiles = mutableListOf<String>()
-        val directory = context.filesDir
-        if (directory.exists() && directory.isDirectory) {
-            val files = directory.listFiles()
-            if (files != null) {
-                val sortedFiles = files
-                    .filter {
-                        it.extension.isNotEmpty() && it.extension !in listOf(
-                            "kk",
-                            "dat",
-                            "k"
-                        )
-                    }
-                    .sortedByDescending { it.lastModified() }
-                savedFiles.addAll(sortedFiles.map { it.name })
-            }
-        }
-        return savedFiles
-    }
-
     fun onSavePhotoClicked(boolean: Boolean) {
         // Показываем диалог, когда пользователь нажимает сохранить
         _showSaveDialog.value = boolean
@@ -269,7 +246,6 @@ class ImagesViewModel @Inject constructor(
     fun savePhotoWithChoice(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val fileName = getFileName()
-            Timber.d("=== Generated file name: %s", fileName)
             val destinationFile = File(context.filesDir, fileName)
 
             try {
@@ -278,7 +254,7 @@ class ImagesViewModel @Inject constructor(
                 inputStream?.copyTo(outputStream)
                 outputStream.close()
                 inputStream?.close()
-                loadSavedPhotos()
+                loadPhotoList()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

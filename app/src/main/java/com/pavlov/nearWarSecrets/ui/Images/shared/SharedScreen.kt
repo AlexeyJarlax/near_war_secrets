@@ -1,4 +1,4 @@
-package com.pavlov.nearWarSecrets.ui.Images.extracted
+package com.pavlov.nearWarSecrets.ui.Images.shared
 
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.foundation.layout.*
@@ -18,12 +18,13 @@ import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import android.net.Uri
 
 @Composable
-fun ExtractedImagesScreen(
+fun SharedScreen(
     viewModel: ImagesViewModel = hiltViewModel(),
     onImageClick: (Uri) -> Unit
 ) {
-
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
+    var selectedUri by remember { mutableStateOf<Uri?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
@@ -57,15 +58,27 @@ fun ExtractedImagesScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(savedImages) { uri ->
-                        SavedImageItem(
+                        SharedItem(
                             uri = uri,
                             viewModel = viewModel,
-                            onImageClick = onImageClick
+                            onImageClick = { clickedUri ->
+                                selectedUri = clickedUri
+                                showDialog = true
+                            }
                         )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Вызов диалога, если необходимо
+        if (showDialog && selectedUri != null) {
+            SharedDialog(
+                uri = selectedUri!!,
+                onDismiss = { showDialog = false },
+                viewModel = viewModel
+            )
         }
     }
 }
