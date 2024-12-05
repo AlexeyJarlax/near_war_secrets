@@ -26,13 +26,6 @@ fun SharedScreen(
     var selectedUri by remember { mutableStateOf<Uri?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(savedImages) {
-        if (savedImages.isNotEmpty()) {
-            selectedUri = savedImages.last()
-            showDialog = true
-        }
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
         Column(
@@ -77,6 +70,13 @@ fun SharedScreen(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+
+    LaunchedEffect(savedImages) {
+        if (savedImages.isNotEmpty()) {
+            selectedUri = savedImages.last()
+            showDialog = true
         }
     }
 }

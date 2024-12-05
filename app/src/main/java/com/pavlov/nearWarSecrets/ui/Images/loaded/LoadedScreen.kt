@@ -1,6 +1,7 @@
 package com.pavlov.nearWarSecrets.ui.Images.loaded
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -39,15 +40,18 @@ import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material.icons.filled.NoEncryption
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.pavlov.nearWarSecrets.R
 import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 
@@ -96,28 +100,6 @@ fun LoadedScreen(
             galleryLauncher.launch("image/*")
         } else {
             ToastExt.show(context.getString(R.string.error_gallery))
-        }
-    }
-
-    LaunchedEffect(isPreviewVisible, cameraSelector) {
-        if (isPreviewVisible) {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-            val cameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
-
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner,
-                    cameraSelector as CameraSelector,
-                    preview,
-                    imageCapture
-                )
-            } catch (e: Exception) {
-                ToastExt.show(context.getString(R.string.error_camera))
-            }
         }
     }
 
@@ -310,32 +292,89 @@ fun LoadedScreen(
                 }
 
                 if (showSaveDialog && selectedUri != null) {
-                    AlertDialog(
-                        onDismissRequest = { viewModel.onSavePhotoClicked(false) },
-                        title = { Text("Сохранить или поделиться изображением?") },
-                        text = { Text("Выберите действие для изображения.") },
-                        confirmButton = {
-                            CustomButtonOne(
-                                onClick = {
-                                    viewModel.savePhotoWithChoice(selectedUri!!)
-                                },
-                                text = context.getString(R.string.save),
-                                icon = Icons.Default.NoEncryption
+                    MyStyledDialog(
+                        onDismissRequest = { viewModel.onSavePhotoClicked(false) }
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            AsyncImage(
+                                model = selectedUri,
+                                contentDescription = "Captured Image",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
                             )
-                        },
-                        dismissButton = {
-                            CustomButtonOne(
-                                onClick = {
-                                    // Реализуйте логику для поделиться изображением
-                                },
-                                text = context.getString(R.string.share_the_img),
-                                icon = Icons.Default.Share
+
+                            // Текстовое описание (опционально)
+                            Text(
+                                text = "Сохранить или поделиться изображением?"
                             )
+
+                            // Кнопки действий
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                CustomButtonOne(
+                                    onClick = {
+                                        viewModel.savePhotoWithChoice(selectedUri!!)
+                                    },
+                                    text = context.getString(R.string.save),
+                                    icon = Icons.Default.NoEncryption
+                                )
+
+                                CustomButtonOne(
+                                    onClick = {
+                                        // Реализуйте логику для поделиться изображением
+                                        // Например, используя Intent
+                                        val shareIntent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(Intent.EXTRA_STREAM, selectedUri)
+                                            type = "image/*"
+                                        }
+                                        context.startActivity(
+                                            Intent.createChooser(
+                                                shareIntent,
+                                                "Поделиться изображением"
+                                            )
+                                        )
+                                        viewModel.onSavePhotoClicked(false)
+                                    },
+                                    text = context.getString(R.string.share_the_img),
+                                    icon = Icons.Default.Share
+                                )
+                            }
                         }
-                    )
+                    }
                 }
             }
-
         }
     )
+
+    LaunchedEffect(isPreviewVisible, cameraSelector) {
+        if (isPreviewVisible) {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+            val cameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(previewView.surfaceProvider)
+            }
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner,
+                    cameraSelector as CameraSelector,
+                    preview,
+                    imageCapture
+                )
+            } catch (e: Exception) {
+                ToastExt.show(context.getString(R.string.error_camera))
+            }
+        }
+    }
 }
+
