@@ -13,7 +13,7 @@ import com.pavlov.nearWarSecrets.ui.about.AboutScreen
 import com.pavlov.nearWarSecrets.ui.auth.AuthScreen
 import com.pavlov.nearWarSecrets.ui.Images.extracted.ExtractedImagesScreen
 import com.pavlov.nearWarSecrets.ui.Images.ImagesScreen
-import com.pavlov.nearWarSecrets.ui.Images.loaded.ItemLoaderScreen
+import com.pavlov.nearWarSecrets.ui.Images.loaded.LoaderScreen
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import com.pavlov.nearWarSecrets.ui.keyinput.KeyInputScreen
 import com.pavlov.nearWarSecrets.ui.setpassword.SetPasswordScreen
@@ -74,18 +74,22 @@ fun NavGraph(
 
             composable(NavDestinations.IMAGES) {
                 ImagesScreen(
-                    itemLoaderScreen = { ItemLoaderScreen(viewModel = imagesVewModel) },
-                    extractedImagesScreen = { ExtractedImagesScreen(viewModel = imagesVewModel)}
+                    itemLoaderScreen = { LoaderScreen(viewModel = imagesVewModel) },
+                    extractedImagesScreen = { ExtractedImagesScreen(
+                        viewModel = imagesVewModel,
+                        onImageClick = { uri -> }
+                    ) }
                 )
             }
 
             composable(NavDestinations.LOADER) {
-                ItemLoaderScreen(viewModel = imagesVewModel)
+                LoaderScreen(viewModel = imagesVewModel)
             }
 
             composable(NavDestinations.EXTRACTER) {
                 ExtractedImagesScreen(
-                    viewModel = imagesVewModel
+                    viewModel = imagesVewModel,
+                    onImageClick = { uri -> }
                 )
             }
 

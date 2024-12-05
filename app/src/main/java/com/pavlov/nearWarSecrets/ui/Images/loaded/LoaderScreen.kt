@@ -30,6 +30,7 @@ import java.io.File
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Cameraswitch
@@ -49,11 +50,10 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
-import com.pavlov.nearWarSecrets.ui.Images.extracted.ExtractedImagesDialog
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemLoaderScreen(
+fun LoaderScreen(
     viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -122,55 +122,16 @@ fun ItemLoaderScreen(
     }
 
     Scaffold(
-        content = { padding ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)) {
-                MatrixBackground()
-
-                // Центрируем AndroidView по вертикали
-                if (isPreviewVisible && !isStorageMode) {
-                    AndroidView(
-                        factory = { previewView },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-
-                // Размещаем список фотографий или заглушку
-                if (photoList.isEmpty()) {
-                    Text(
-                        text = "Нет добавленных изображений",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                            .align(Alignment.TopCenter)
-                    ) {
-                        items(photoList) { fileName ->
-                            PhotoItem(
-                                fileName = fileName,
-                                viewModel = viewModel,
-                                onImageClick = {
-                                    selectedFileName = it
-                                    showImageDialog = true
-                                }
-                            )
-                        }
-                    }
-                }
-
-                // Размещаем кнопки управления внизу экрана
+        bottomBar = {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.8f), // Непрозрачный чёрный фон
+                elevation = 8.dp
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -280,6 +241,53 @@ fun ItemLoaderScreen(
                         )
                     }
                 }
+            }
+        },
+        content = { padding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                MatrixBackground()
+
+                // Центрируем AndroidView по вертикали
+                if (isPreviewVisible && !isStorageMode) {
+                    AndroidView(
+                        factory = { previewView },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+
+                // Размещаем список фотографий или заглушку
+                if (photoList.isEmpty()) {
+                    Text(
+                        text = "Нет добавленных изображений",
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(photoList) { fileName ->
+                            PhotoItem(
+                                fileName = fileName,
+                                viewModel = viewModel,
+                                onImageClick = {
+                                    selectedFileName = it
+                                    showImageDialog = true
+                                }
+                            )
+                        }
+                    }
+                }
 
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -313,9 +321,7 @@ fun ItemLoaderScreen(
                         },
                         dismissButton = {
                             CustomButtonOne(
-                                onClick = {
-                                    // Реализуйте логику для поделиться изображением
-                                },
+                                onClick = {},
                                 text = context.getString(R.string.share_the_img),
                                 icon = Icons.Default.Share
                             )

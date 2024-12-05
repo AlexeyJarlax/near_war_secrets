@@ -1,42 +1,29 @@
 package com.pavlov.nearWarSecrets.ui.Images.extracted
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.Composable
-import android.net.Uri
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
+import android.net.Uri
 
 @Composable
 fun ExtractedImagesScreen(
-    viewModel: ImagesViewModel = hiltViewModel()
+    viewModel: ImagesViewModel = hiltViewModel(),
+    onImageClick: (Uri) -> Unit
 ) {
-    // Список временных изображений
-    val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
 
-    // Список сохраненных изображений
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
-
-    // Состояние для выбранного изображения
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // Отслеживание новых временных изображений и открытие диалога
-    LaunchedEffect(extractedImages) {
-        if (extractedImages.isNotEmpty()) {
-            selectedImageUri = extractedImages.first()
-        }
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
@@ -47,7 +34,6 @@ fun ExtractedImagesScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // Отображение сохраненных изображений
             if (savedImages.isEmpty()) {
                 Box(
                     modifier = Modifier
@@ -56,30 +42,30 @@ fun ExtractedImagesScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Нет сохраненных изображений",
+                        text = "Нет сохранённых изображений",
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
             } else {
-                LazyColumn(
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(savedImages) { uri ->
-                        SavedImageItem(uri = uri)
+                        SavedImageItem(
+                            uri = uri,
+                            viewModel = viewModel,
+                            onImageClick = onImageClick
+                        )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        // Отображение диалога при наличии временных изображений
-        selectedImageUri?.let { uri ->
-            ExtractedImagesDialog(
-                uri = uri,
-                onDismiss = { selectedImageUri = null },
-                viewModel = viewModel
-            )
         }
     }
 }

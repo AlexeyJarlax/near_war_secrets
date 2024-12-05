@@ -27,10 +27,7 @@ class ImagesViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val TAG = "=== ImagesViewModel - чекаю на методы поделиться с приложением пикчей"
-
-    private val _photoList = MutableLiveData<List<String>>()
-    val photoList: LiveData<List<String>> get() = _photoList
+    private val TAG = "ImagesViewModel"
 
     private val apkManager = APKM(context)
 
@@ -52,10 +49,15 @@ class ImagesViewModel @Inject constructor(
     private val _savedImages = MutableLiveData<List<Uri>>()
     val savedImages: LiveData<List<Uri>> = _savedImages
 
+    // LiveData для списка фотографий в ItemLoaderScreen
+    private val _photoList = MutableLiveData<List<String>>()
+    val photoList: LiveData<List<String>> = _photoList
+
     init {
         loadExtractedImages()
         loadSavedImages()
-        Timber.d("=== init class ItemLoaderViewModel")
+        loadPhotoList()
+        Log.d(TAG, "=== init class ImagesViewModel")
     }
 
     /** методы для работы функции приёма изображений от Поделиться*/
@@ -83,6 +85,19 @@ class ImagesViewModel @Inject constructor(
             val images = savedDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
             _savedImages.postValue(images)
             Log.d(TAG, "Загружено сохраненных изображений: ${images.size}")
+        }
+    }
+
+    // Загрузка списка фотографий для ItemLoaderScreen
+    private fun loadPhotoList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val directory = File(context.filesDir, "PhotoList") // Убедитесь, что это правильная папка
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+            val files = directory.listFiles()?.map { it.name } ?: emptyList()
+            _photoList.postValue(files)
+            Log.d(TAG, "Загружено фото для ItemLoaderScreen: ${files.size}")
         }
     }
 

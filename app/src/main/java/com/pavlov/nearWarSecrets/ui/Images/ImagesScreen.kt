@@ -32,15 +32,12 @@ fun ImagesScreen(
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-
-    // Наблюдаем за списком временных изображений
     val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
 
-    // Автоматически переключаться на вкладку "Полученные" при добавлении нового изображения
     LaunchedEffect(extractedImages) {
         if (extractedImages.isNotEmpty()) {
             coroutineScope.launch {
-                pagerState.animateScrollToPage(1) // Переключаемся на вторую вкладку (индекс 1)
+                pagerState.animateScrollToPage(1) // Переключаем при добавлении нового изображения на вторую вкладку (индекс 1)
             }
         }
     }
