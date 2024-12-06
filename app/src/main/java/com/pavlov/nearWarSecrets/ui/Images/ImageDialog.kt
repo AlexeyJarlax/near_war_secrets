@@ -131,6 +131,7 @@ fun ImageDialog(
                         } else {
                             Toast.makeText(context, "Ошибка при сохранении", Toast.LENGTH_SHORT).show()
                         }
+                        onDismiss
                     }) {
                         Icon(
                             imageVector = Icons.Default.Save,

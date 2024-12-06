@@ -1,7 +1,6 @@
 package com.pavlov.nearWarSecrets.ui.Images.loaded
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -14,6 +13,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,14 +22,16 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.pavlov.nearWarSecrets.util.ToastExt
 import java.io.File
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
@@ -37,23 +39,19 @@ import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
-import androidx.compose.material.icons.filled.NoEncryption
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.pavlov.nearWarSecrets.R
 import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
-import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.saveable.rememberSaveable
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -64,12 +62,12 @@ fun LoadedScreen(
     val photoList by viewModel.photoList.observeAsState(emptyList())
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
-    var showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
+    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
     var selectedUri: Uri? by remember { mutableStateOf(null) }
     val isStorageMode = false
     val isLoading by viewModel.isLoading.observeAsState(false)
     val lifecycleOwner = LocalLifecycleOwner.current
-    var isPreviewVisible by remember { mutableStateOf(false) }
+    var isPreviewVisible by rememberSaveable { mutableStateOf(false) } // для сохранения состояние камеры после вращения
     val cameraSelector by viewModel.cameraSelector.observeAsState(CameraSelector.DEFAULT_BACK_CAMERA)
     val imageCapture = remember { ImageCapture.Builder().build() }
     val previewView = remember { PreviewView(context) }
@@ -108,9 +106,11 @@ fun LoadedScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(),
-                color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.8f), // Непрозрачный чёрный фон
+                color = Color.Black.copy(alpha = 0.8f), // Непрозрачный чёрный фон
                 elevation = 8.dp
             ) {
+
+                /** ---------ПАНЕЛЬ УПРАВЛЕНИЯ С КНОПКАМИ: ФОТО, ГАЛЕРЕЯ (СНЯТЬ И РАЗВЕРНУТЬ ДЛЯ КАМЕРЫ) ------------------------------------------*/
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -161,7 +161,7 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     viewModel.switchCamera()
-                                    isPreviewVisible = false
+//                                    isPreviewVisible = false
                                 },
                                 text = context.getString(R.string.flip),
                                 textColor = My7,
@@ -229,6 +229,8 @@ fun LoadedScreen(
                 }
             }
         },
+
+        /** ----------------------------------------ОСНОВНОЙ КОНТЕНТ ---------------------------------------------------------------------------*/
         content = { padding ->
             Box(
                 modifier = Modifier
@@ -237,19 +239,7 @@ fun LoadedScreen(
             ) {
                 MatrixBackground()
 
-                // Центрируем AndroidView по вертикали
-                if (isPreviewVisible && !isStorageMode) {
-                    AndroidView(
-                        factory = { previewView },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-
-                /** СПИСОК ФОТО или заглушка */
-
+                /** ----------------------------------------СПИСОК ФОТО или заглушка -----------------------------------------------------------*/
                 if (photoList.isEmpty()) {
                     Text(
                         text = "Нет добавленных изображений",
@@ -277,10 +267,28 @@ fun LoadedScreen(
                     }
                 }
 
+                /** ----------------------------------------ВИДЕОИСКАТЕЛЬ КАМЕРЫ ТЕЛЕФОНА ---------------------------------------------------*/
+                if (isPreviewVisible && !isStorageMode) {
+                    AndroidView(
+                        factory = { previewView },
+                        modifier = Modifier
+                            .fillMaxSize()
+//                            .height(300.dp)
+                            .align(Alignment.Center)
+                            .border(
+                                width = 2.dp,
+                                color = Color.Yellow,
+                                shape = RoundedCornerShape(16.dp) // Добавление закругленных краев
+                            )
+                            .clip(RoundedCornerShape(16.dp)) // Клепание закругленных краев
+                    )
+                }
+
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
+                /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
                 if (showImageDialog && selectedFileName != null && selectedUri != null) {
                     ImageDialog(
                         uri = selectedUri!!,
@@ -297,10 +305,10 @@ fun LoadedScreen(
                     ImageDialog(
                         uri = selectedUri!!,
                         viewModel = viewModel,
-                        onDismiss = { showSaveDialog = false },
+                        onDismiss = { viewModel.onSavePhotoClicked(false) },
                         onDelete = {
                             viewModel.deletePhoto(selectedFileName!!)
-                            viewModel.showSaveDialog = false
+                            viewModel.onSavePhotoClicked(false)
                         },
                         showSaveButton = true
                     )
