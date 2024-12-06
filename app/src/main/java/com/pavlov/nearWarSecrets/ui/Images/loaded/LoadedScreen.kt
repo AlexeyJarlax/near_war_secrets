@@ -288,20 +288,21 @@ fun LoadedScreen(
                 }
 
                 /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
-                if (showImageDialog && selectedFileName != null && selectedUri != null) {
-                    ImageDialog(
+                if (showImageDialog && selectedUri != null) {
+                    ImageDialog( // клик по фоткам в списке сохраненных
                         uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = { showImageDialog = false },
                         onDelete = {
                             viewModel.deletePhoto(selectedFileName!!)
                             showImageDialog = false
-                        }
+                        },
+                        onSave = {}
                     )
                 }
 
                 if (showSaveDialog && selectedUri != null) {
-                    ImageDialog(
+                    ImageDialog( // клик по snapshot
                         uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = { viewModel.onSavePhotoClicked(false) },
@@ -309,7 +310,16 @@ fun LoadedScreen(
                             viewModel.deletePhoto(selectedFileName!!)
                             viewModel.onSavePhotoClicked(false)
                         },
-                        showSaveButton = true
+                        isItNew = true,
+                        onSave = {
+                            val success = viewModel.saveExtractedImage(selectedUri!!, "PhotoList/")
+                            if (success) {
+                                ToastExt.show("Сохранено")
+                            } else {
+                                ToastExt.show("Ошибка при сохранении")
+                            }
+                        }
+
                     )
                 }
             }

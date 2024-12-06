@@ -32,9 +32,9 @@ class MainActivity : ComponentActivity() {
                 NavGraph(
                     navController = navController,
                     activity = this,
-                    imagesVewModel = viewModel,
+                    imagesViewModel = viewModel,
                     modifier = Modifier.fillMaxSize(),
-                    intent = intent // Передаем intent в NavGraph
+                    intent = intent
                 )
             }
         }
@@ -49,9 +49,9 @@ class MainActivity : ComponentActivity() {
                 NavGraph(
                     navController = navController,
                     activity = this,
-                    imagesVewModel = viewModel,
+                    imagesViewModel = viewModel,
                     modifier = Modifier.fillMaxSize(),
-                    intent = intent // Передаем новый intent
+                    intent = intent
                 )
             }
         }

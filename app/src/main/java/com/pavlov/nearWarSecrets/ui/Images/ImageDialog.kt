@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import java.io.File
@@ -26,17 +25,18 @@ import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
 @Composable
 fun ImageDialog(
+    /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
     uri: Uri,
     viewModel: ImagesViewModel,
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
-    showSaveButton: Boolean = false
+    isItNew: Boolean = false,
+    onSave: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
     val imageFile = File(uri.path ?: "")
 
     if (!imageFile.exists()) {
-        // Если файл не найден, показываем сообщение об ошибке и закрываем диалог
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Файл не найден: ${uri.path}", Toast.LENGTH_SHORT).show()
             onDismiss()
@@ -44,20 +44,20 @@ fun ImageDialog(
         return
     }
 
-    // Определяем директорию файла
     val photoListDir = File(context.filesDir, "PhotoList")
     val extractedImagesDir = File(context.filesDir, "ExtractedImages")
 
-    // Проверяем, в какой директории находится файл
     val actualImageFile = when {
         File(photoListDir, imageFile.name).exists() -> File(photoListDir, imageFile.name)
-        File(extractedImagesDir, imageFile.name).exists() -> File(extractedImagesDir, imageFile.name)
-        else -> imageFile // Если файл не найден в ожидаемых директориях, используем переданный файл
+        File(extractedImagesDir, imageFile.name).exists() -> File(
+            extractedImagesDir,
+            imageFile.name
+        )
+
+        else -> imageFile // Если файл не найден в ожидаемых директориях, использую переданный файл
     }
 
-    // Обновляем Uri на основе найденного файла
-    val actualUri = Uri.fromFile(actualImageFile)
-
+    val actualUri = Uri.fromFile(actualImageFile) // Обновляю Uri на основе найденного файла
     val date = viewModel.getPhotoDate(actualImageFile.name)
     val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
 
@@ -65,7 +65,7 @@ fun ImageDialog(
     var showMemeSelection by remember { mutableStateOf(false) }
     var isProcessing by remember { mutableStateOf(false) }
 
-    // Основной диалог с изображением
+    /** ОСНОВНОЙ ДИАЛОГ С ИЗОБРБАЖЕНИЕМ */
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -73,7 +73,8 @@ fun ImageDialog(
             Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2)
             Spacer(modifier = Modifier.height(8.dp))
-            // Отображение изображения с возможностью масштабирования
+
+            /** ЭКРАН С ВОЗМОЖНОСТЬЮ ЗУМА ПИНЧЕМ */
             ZoomableImage(
                 uri = actualUri,
                 modifier = Modifier
@@ -82,12 +83,12 @@ fun ImageDialog(
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
-            // Первая строка кнопок: Поделиться и Удалить
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 IconButton(onClick = {
                     showShareOptions = true
                 }) {
@@ -96,147 +97,135 @@ fun ImageDialog(
                         contentDescription = "Поделиться"
                     )
                 }
+
                 IconButton(onClick = onDelete) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Удалить"
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            // Вторая строка кнопок: Сохранить (условно) и Закрыть
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (showSaveButton) {
-                    IconButton(onClick = {
-                        // Вызов метода сохранения из ViewModel
-                        val success = viewModel.saveExtractedImage(actualUri)
-                        if (success) {
-                            Toast.makeText(context, "Сохранено", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Ошибка при сохранении", Toast.LENGTH_SHORT).show()
-                        }
-                        onDismiss() // Исправлено: вызов функции
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Save,
-                            contentDescription = "Сохранить"
-                        )
-                    }
-                }
-                IconButton(onClick = onDismiss) {
+
+            if (isItNew) {
+                IconButton(onClick = {
+                    onSave?.invoke()
+//                    onDismiss() // Закрываем диалог после сохранения
+                }) {
                     Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Закрыть"
+                        imageVector = Icons.Default.Save,
+                        contentDescription = "Сохранить"
                     )
                 }
             }
-        }
-    }
-
-    // Диалог выбора способа поделиться
-    if (showShareOptions) {
-        MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Поделиться изображением", style = MaterialTheme.typography.h6)
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        // Поделиться оригиналом
-                        val shareUri = actualUri // Используем actualUri напрямую
-                        if (shareUri != null) {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, shareUri)
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            }
-                            context.startActivity(
-                                Intent.createChooser(
-                                    shareIntent,
-                                    "Поделиться изображением"
-                                )
-                            )
-                        } else {
-                            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
-                        }
-                        showShareOptions = false
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Поделиться оригиналом")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = {
-                        // Показать диалог выбора мема
-                        showMemeSelection = true
-                        showShareOptions = false
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
-                ) {
-                    Text("Зашифровать в мем")
-                }
-            }
-        }
-    }
-
-    // Диалог выбора мема
-    if (showMemeSelection) {
-        MemeSelectionDialog(
-            onMemeSelected = { memeResId ->
-                isProcessing = true
-                viewModel.shareImageWithHiddenOriginal(
-                    originalImageFile = actualImageFile,
-                    memeResId = memeResId,
-                    onResult = { uri ->
-                        isProcessing = false
-                        if (uri != null) {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, uri)
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            }
-                            context.startActivity(
-                                Intent.createChooser(
-                                    shareIntent,
-                                    "Поделиться изображением"
-                                )
-                            )
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Не удалось создать изображение",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
+            IconButton(onClick = onDismiss) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Закрыть"
                 )
-                showMemeSelection = false
-            },
-            onDismiss = {
-                showMemeSelection = false
-            }
-        )
-    }
-
-    // Диалог загрузки
-    if (isProcessing) {
-        MyStyledDialog(onDismissRequest = {}) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CustomCircularProgressIndicator()
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Обработка...")
             }
         }
     }
+}
+
+// Диалог выбора способа поделиться
+if (showShareOptions) {
+    MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Поделиться изображением", style = MaterialTheme.typography.h6)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    // Поделиться оригиналом
+                    val shareUri = actualUri // Используем actualUri напрямую
+                    if (shareUri != null) {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "image/jpeg"
+                            putExtra(Intent.EXTRA_STREAM, shareUri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+                        context.startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                "Поделиться изображением"
+                            )
+                        )
+                    } else {
+                        Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+                    }
+                    showShareOptions = false
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Поделиться оригиналом")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    // Показать диалог выбора мема
+                    showMemeSelection = true
+                    showShareOptions = false
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
+            ) {
+                Text("Зашифровать в мем")
+            }
+        }
+    }
+}
+
+// Диалог выбора мема
+if (showMemeSelection) {
+    MemeSelectionDialog(
+        onMemeSelected = { memeResId ->
+            isProcessing = true
+            viewModel.shareImageWithHiddenOriginal(
+                originalImageFile = actualImageFile,
+                memeResId = memeResId,
+                onResult = { uri ->
+                    isProcessing = false
+                    if (uri != null) {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "image/jpeg"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+                        context.startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                "Поделиться изображением"
+                            )
+                        )
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Не удалось создать изображение",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            )
+            showMemeSelection = false
+        },
+        onDismiss = {
+            showMemeSelection = false
+        }
+    )
+}
+
+// Диалог загрузки
+if (isProcessing) {
+    MyStyledDialog(onDismissRequest = {}) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CustomCircularProgressIndicator()
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Обработка...")
+        }
+    }
+}
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -17,13 +16,14 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import android.net.Uri
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
-import java.io.File
+import com.pavlov.nearWarSecrets.util.ToastExt
 
 @Composable
 fun SharedScreen(
     viewModel: ImagesViewModel = hiltViewModel(),
     onImageClick: (Uri) -> Unit
 ) {
+    val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
     val temporaryImages by viewModel.extractedImages.observeAsState(emptyList())
     var selectedUri by remember { mutableStateOf<Uri?>(null) }
@@ -73,21 +73,47 @@ fun SharedScreen(
             Spacer(modifier = Modifier.height(6.dp))
         }
 
-        // Условный вызов ImageDialog вместо SharedDialog
-        if (showDialog && selectedUri != null) {
+        /** ------------------ НИЖЕ ОСНОВНЫЕ ДИАЛОГИ ВСПЛЫВАЮЩИХ ОКОН -----------------------------------------*/
+        fun closeShareDialogWithMemoryWash() {
+            showDialog = false
+            viewModel.removeExtractedImage(selectedUri!!)
+            viewModel.setAnImageWasSharedWithUsNow(false)
+        }
+
+        if (showDialog && temporaryImages != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
+            ImageDialog(
+                uri = selectedUri!!,
+                viewModel = viewModel,
+                onDismiss = {
+                    closeShareDialogWithMemoryWash()
+                },
+                onDelete = {
+                    closeShareDialogWithMemoryWash()
+                },
+                isItNew = true,
+                onSave = {
+                    val success = viewModel.saveExtractedImage(selectedUri!!, "ExtractedImages/")
+                    if (success) {
+                        ToastExt.show("Сохранено")
+                    } else {
+                        ToastExt.show("Ошибка при сохранении")
+                    }
+                    closeShareDialogWithMemoryWash()
+                }
+            )
+        }
+
+        if (showDialog && selectedUri != null && !anImageWasSharedWithUsNow) { // в отношении изображений, по которым кликнул пользователь в списке уже сохраненных
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,
                 onDismiss = {
                     showDialog = false
-                    // Решите, нужно ли удалять изображение при закрытии диалога
-                    // Например, можно закомментировать следующую строку, если не требуется
-                    // viewModel.removeExtractedImage(selectedUri!!)
                 },
                 onDelete = {
                     showDialog = false
-                    viewModel.removeExtractedImage(selectedUri!!)
-                }
+                },
+                onSave = {}
             )
         }
     }

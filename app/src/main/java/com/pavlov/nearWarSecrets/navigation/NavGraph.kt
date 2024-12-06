@@ -29,7 +29,7 @@ import com.pavlov.nearWarSecrets.ui.twosteps.TwoStepsForSaveScreen
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
-    imagesVewModel: ImagesViewModel,
+    imagesViewModel: ImagesViewModel,
     modifier: Modifier = Modifier,
     intent: Intent?
 ) {
@@ -43,7 +43,8 @@ fun NavGraph(
                 if (type.startsWith("image/")) {
                     val uri: Uri? = receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM)
                     uri?.let {
-                        imagesVewModel.addReceivedPhoto(it)
+                        imagesViewModel.addReceivedPhoto(it)
+                        imagesViewModel.setAnImageWasSharedWithUsNow(true)
                         navController.navigate(NavDestinations.EXTRACTER) {
                             popUpTo(NavDestinations.IMAGES) { inclusive = false }
                         }
@@ -53,7 +54,8 @@ fun NavGraph(
                 if (type.startsWith("image/")) {
                     val uris: ArrayList<Uri>? = receivedIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
                     uris?.let {
-                        imagesVewModel.addReceivedPhotos(it)
+                        imagesViewModel.addReceivedPhotos(it)
+                        imagesViewModel.setAnImageWasSharedWithUsNow(true)
                         navController.navigate(NavDestinations.EXTRACTER) {
                             popUpTo(NavDestinations.IMAGES) { inclusive = false }
                         }
@@ -109,21 +111,21 @@ fun NavGraph(
 
             composable(NavDestinations.IMAGES) {
                 ImagesScreen(
-                    itemLoaderScreen = { LoadedScreen(viewModel = imagesVewModel) },
+                    itemLoaderScreen = { LoadedScreen(viewModel = imagesViewModel) },
                     extractedImagesScreen = { SharedScreen(
-                        viewModel = imagesVewModel,
+                        viewModel = imagesViewModel,
                         onImageClick = { uri -> }
                     ) }
                 )
             }
 
             composable(NavDestinations.LOADER) {
-                LoadedScreen(viewModel = imagesVewModel)
+                LoadedScreen(viewModel = imagesViewModel)
             }
 
             composable(NavDestinations.EXTRACTER) {
                 SharedScreen(
-                    viewModel = imagesVewModel,
+                    viewModel = imagesViewModel,
                     onImageClick = { uri -> }
                 )
             }

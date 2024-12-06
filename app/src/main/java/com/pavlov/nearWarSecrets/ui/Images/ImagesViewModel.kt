@@ -20,6 +20,8 @@ import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 @HiltViewModel
@@ -53,11 +55,22 @@ class ImagesViewModel @Inject constructor(
     private val _photoList = MutableLiveData<List<String>>()
     val photoList: LiveData<List<String>> = _photoList
 
+    private val _anImageWasSharedWithUsNow = MutableStateFlow(false)
+    val anImageWasSharedWithUsNow: StateFlow<Boolean> = _anImageWasSharedWithUsNow
+
     init {
         loadExtractedImages()
         loadSavedImages()
         loadPhotoList()
-        Log.d(TAG, "=== init class ImagesViewModel")
+        Timber.tag(TAG).d("=== init class ImagesViewModel")
+    }
+
+    fun setAnImageWasSharedWithUsNow(value: Boolean) {
+        _anImageWasSharedWithUsNow.value = value
+    }
+
+    fun dontSave() {
+        _showSaveDialog.value = false
     }
 
     /** методы для работы функции приёма изображений от Поделиться*/
@@ -71,7 +84,7 @@ class ImagesViewModel @Inject constructor(
             }
             val images = tempDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
             _extractedImages.postValue(images)
-            Log.d(TAG, "Загружено временных изображений: ${images.size}")
+            Timber.tag(TAG).d("Загружено временных изображений: ${images.size}")
         }
     }
 
@@ -84,7 +97,7 @@ class ImagesViewModel @Inject constructor(
             }
             val images = savedDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
             _savedImages.postValue(images)
-            Log.d(TAG, "Загружено сохраненных изображений: ${images.size}")
+            Timber.tag(TAG).d("Загружено сохраненных изображений: ${images.size}")
         }
     }
 
@@ -102,9 +115,8 @@ class ImagesViewModel @Inject constructor(
                 file.outputStream().use { output ->
                     stream.copyTo(output)
                 }
-                Log.d(TAG, "Added temporary image: ${file.absolutePath}")
+                Timber.tag(TAG).d("Added temporary image: ${file.absolutePath}")
                 withContext(Dispatchers.Main) {
-                    // Update the LiveData to trigger UI updates
                     loadExtractedImages()
                 }
             }
@@ -149,9 +161,9 @@ class ImagesViewModel @Inject constructor(
     }
 
     // Сохранение временного изображения в сохраненные
-    fun saveExtractedImage(uri: Uri): Boolean {
+    fun saveExtractedImage(uri: Uri, whereTo: String): Boolean {
         return try {
-            val savedDir = File(context.filesDir, "ExtractedImages")
+            val savedDir = File(context.filesDir, whereTo)
             if (!savedDir.exists()) {
                 savedDir.mkdirs()
             }
@@ -163,14 +175,12 @@ class ImagesViewModel @Inject constructor(
                     input.copyTo(output)
                 }
             }
-            Log.d(TAG, "Сохранено изображение: ${file.absolutePath}")
-            // Обновляем список сохраненных изображений
+            Timber.tag(TAG).d("Сохранено изображение: ${file.absolutePath}")
             loadSavedImages()
-            // Удаляем из временных
             removeExtractedImage(uri)
             true
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при сохранении изображения: ${e.message}")
+            Timber.tag(TAG).e("Ошибка при сохранении изображения: ${e.message}")
             e.printStackTrace()
             false
         }
@@ -182,9 +192,9 @@ class ImagesViewModel @Inject constructor(
             val tempDir = File(context.filesDir, "TempImages")
             tempDir.listFiles()?.forEach {
                 if (it.delete()) {
-                    Log.d(TAG, "Удалено временное изображение: ${it.absolutePath}")
+                    Timber.tag(TAG).d("Удалено временное изображение: ${it.absolutePath}")
                 } else {
-                    Log.e(TAG, "Не удалось удалить временное изображение: ${it.absolutePath}")
+                    Timber.tag(TAG).e("Не удалось удалить временное изображение: ${it.absolutePath}")
                 }
             }
             _extractedImages.postValue(emptyList())
@@ -202,7 +212,7 @@ private fun loadPhotoList() {
         }
         val files = directory.listFiles()?.map { it.name } ?: emptyList()
         _photoList.postValue(files)
-        Log.d(TAG, "Загружено фото для LoaderScreen: ${files.size}")
+        Timber.tag(TAG).d("Загружено фото для LoaderScreen: ${files.size}")
     }
 }
 
@@ -284,10 +294,6 @@ private fun loadPhotoList() {
                 e.printStackTrace()
             }
         }
-        _showSaveDialog.value = false
-    }
-
-    fun dontSave() {
         _showSaveDialog.value = false
     }
 

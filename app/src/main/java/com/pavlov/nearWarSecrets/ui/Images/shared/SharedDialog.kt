@@ -52,7 +52,7 @@ fun SharedDialog(
                 Button(
                     onClick = {
                         // Сохранение изображения
-                        val success = viewModel.saveExtractedImage(uri)
+                        val success = viewModel.saveExtractedImage(uri, "ExtractedImages")
                         if (success) {
                             ToastExt.show("Изображение сохранено")
                             isSaved = true
