@@ -3,7 +3,10 @@ package com.pavlov.nearWarSecrets.ui.Images.loaded
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -36,30 +41,47 @@ fun LoadedItem(
 
     Column(
         modifier = Modifier
-            .padding(4.dp)
+            .padding(8.dp, top = 16.dp)
             .clickable { onImageClick(fileName) }
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
+            .aspectRatio(0.7f) // Обеспечивает квадратную форму
+            .clip(RoundedCornerShape(8.dp)) // Закруглённые края для всего элемента
+            .background(MaterialTheme.colors.surface) // Фоновый цвет для всего элемента
     ) {
-        Image(
-            painter = painter,
-            contentDescription = null,
+        Box(
             modifier = Modifier
-                .size(120.dp)
+                .fillMaxWidth()
+                .weight(0.7f)
                 .clip(RoundedCornerShape(8.dp))
-                .align(Alignment.CenterHorizontally)
-        )
-        Text(
-            text = name,
-            style = MaterialTheme.typography.subtitle2,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-        Text(
-            text = date,
-            style = MaterialTheme.typography.caption,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize() // Изображение занимает всё пространство Box
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = name,
+                style = MaterialTheme.typography.subtitle2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = date,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }

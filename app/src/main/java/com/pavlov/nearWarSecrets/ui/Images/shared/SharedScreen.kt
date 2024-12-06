@@ -70,7 +70,7 @@ fun SharedScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(6.dp))
         }
 
         // Условный вызов SharedDialog
