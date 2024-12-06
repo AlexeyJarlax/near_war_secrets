@@ -77,14 +77,13 @@ fun SharedScreen(
 
         // Условный вызов ImageDialog вместо SharedDialog
         if (showDialog && selectedUri != null) {
-            // Извлекаем fileName из Uri
-            val fileName = File(selectedUri!!.path!!).name
-
             ImageDialog(
-                fileName = fileName,
+                uri = selectedUri!!,
                 viewModel = viewModel,
                 onDismiss = {
                     showDialog = false
+                    // Решите, нужно ли удалять изображение при закрытии диалога
+                    // Например, можно закомментировать следующую строку, если не требуется
                     // viewModel.removeExtractedImage(selectedUri!!)
                 },
                 onDelete = {

@@ -293,8 +293,13 @@ private fun loadPhotoList() {
 
     fun getFileUri(fileName: String): Uri? {
         val photoListDir = File(context.filesDir, "PhotoList")
-        val file = File(photoListDir, fileName)
-        return if (file.exists()) {
+        val extractedImagesDir = File(context.filesDir, "ExtractedImages")
+        val file = when {
+            File(photoListDir, fileName).exists() -> File(photoListDir, fileName)
+            File(extractedImagesDir, fileName).exists() -> File(extractedImagesDir, fileName)
+            else -> null
+        }
+        return if (file != null && file.exists()) {
             FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
         } else {
             null

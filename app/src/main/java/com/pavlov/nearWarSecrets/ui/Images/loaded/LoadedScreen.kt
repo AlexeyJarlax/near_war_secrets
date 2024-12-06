@@ -64,7 +64,7 @@ fun LoadedScreen(
     val photoList by viewModel.photoList.observeAsState(emptyList())
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
-    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
+    var showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
     var selectedUri: Uri? by remember { mutableStateOf(null) }
     val isStorageMode = false
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -248,7 +248,7 @@ fun LoadedScreen(
                     )
                 }
 
-/** СПИСОК ФОТО или заглушкА */
+                /** СПИСОК ФОТО или заглушка */
 
                 if (photoList.isEmpty()) {
                     Text(
@@ -267,8 +267,9 @@ fun LoadedScreen(
                             LoadedItem(
                                 fileName = fileName,
                                 viewModel = viewModel,
-                                onImageClick = {
-                                    selectedFileName = it
+                                onImageClick = { clickedFileName ->
+                                    selectedFileName = clickedFileName
+                                    selectedUri = viewModel.getFileUri(clickedFileName)
                                     showImageDialog = true
                                 }
                             )
@@ -280,9 +281,9 @@ fun LoadedScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                if (showImageDialog && selectedFileName != null) {
+                if (showImageDialog && selectedFileName != null && selectedUri != null) {
                     ImageDialog(
-                        fileName = selectedFileName!!,
+                        uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = { showImageDialog = false },
                         onDelete = {
@@ -293,64 +294,16 @@ fun LoadedScreen(
                 }
 
                 if (showSaveDialog && selectedUri != null) {
-                    MyStyledDialog(
-                        onDismissRequest = { viewModel.onSavePhotoClicked(false) }
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            AsyncImage(
-                                model = selectedUri,
-                                contentDescription = "Captured Image",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                            )
-
-                            // Текстовое описание (опционально)
-                            Text(
-                                text = "Сохранить или поделиться изображением?"
-                            )
-
-                            // Кнопки действий
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                CustomButtonOne(
-                                    onClick = {
-                                        viewModel.savePhotoWithChoice(selectedUri!!)
-                                    },
-                                    text = context.getString(R.string.save),
-                                    icon = Icons.Default.NoEncryption
-                                )
-
-                                CustomButtonOne(
-                                    onClick = {
-                                        // Реализуйте логику для поделиться изображением
-                                        // Например, используя Intent
-                                        val shareIntent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            putExtra(Intent.EXTRA_STREAM, selectedUri)
-                                            type = "image/*"
-                                        }
-                                        context.startActivity(
-                                            Intent.createChooser(
-                                                shareIntent,
-                                                "Поделиться изображением"
-                                            )
-                                        )
-                                        viewModel.onSavePhotoClicked(false)
-                                    },
-                                    text = context.getString(R.string.share_the_img),
-                                    icon = Icons.Default.Share
-                                )
-                            }
-                        }
-                    }
+                    ImageDialog(
+                        uri = selectedUri!!,
+                        viewModel = viewModel,
+                        onDismiss = { showSaveDialog = false },
+                        onDelete = {
+                            viewModel.deletePhoto(selectedFileName!!)
+                            showSaveDialog = false
+                        },
+                        showSaveButton = true
+                    )
                 }
             }
         }
@@ -378,4 +331,3 @@ fun LoadedScreen(
         }
     }
 }
-
