@@ -3,36 +3,25 @@ package com.pavlov.nearWarSecrets.ui.Images
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.ui.draw.clip
-import coil.compose.rememberImagePainter
-import java.io.File
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
+import java.io.File
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
 @Composable
@@ -41,12 +30,12 @@ fun ImageDialog(
     viewModel: ImagesViewModel,
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
-    showSaveButton: Boolean = false // Новый параметр для отображения кнопки "Сохранить"
+    showSaveButton: Boolean = false
 ) {
     val context = LocalContext.current
     val imageFile = File(uri.path ?: "")
 
-    if (false) {
+    if (!imageFile.exists()) {
         // Если файл не найден, показываем сообщение об ошибке и закрываем диалог
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Файл не найден: ${uri.path}", Toast.LENGTH_SHORT).show()
@@ -69,7 +58,6 @@ fun ImageDialog(
     // Обновляем Uri на основе найденного файла
     val actualUri = Uri.fromFile(actualImageFile)
 
-    val painter = rememberImagePainter(data = actualImageFile)
     val date = viewModel.getPhotoDate(actualImageFile.name)
     val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
 
@@ -131,7 +119,7 @@ fun ImageDialog(
                         } else {
                             Toast.makeText(context, "Ошибка при сохранении", Toast.LENGTH_SHORT).show()
                         }
-                        onDismiss
+                        onDismiss() // Исправлено: вызов функции
                     }) {
                         Icon(
                             imageVector = Icons.Default.Save,
@@ -161,7 +149,7 @@ fun ImageDialog(
                 Button(
                     onClick = {
                         // Поделиться оригиналом
-                        val shareUri = viewModel.getFileUri(actualImageFile.name)
+                        val shareUri = actualUri // Используем actualUri напрямую
                         if (shareUri != null) {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "image/jpeg"

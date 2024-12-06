@@ -77,8 +77,8 @@ fun ImagesScreen(
                         )
                     }
                 }
-                createTab("Загруженные", 0)
-                createTab("Полученные", 1)
+                createTab("Загруженные мной", 0)
+                createTab("Полученные извне", 1)
             }
 
             HorizontalPager(

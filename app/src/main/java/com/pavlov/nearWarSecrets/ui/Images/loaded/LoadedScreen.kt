@@ -253,7 +253,7 @@ fun LoadedScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(photoList) { fileName ->
+                        items(photoList.sortedByDescending { viewModel.getPhotoDate(it) }) { fileName ->
                             LoadedItem(
                                 fileName = fileName,
                                 viewModel = viewModel,
@@ -273,7 +273,6 @@ fun LoadedScreen(
                         factory = { previewView },
                         modifier = Modifier
                             .fillMaxSize()
-//                            .height(300.dp)
                             .align(Alignment.Center)
                             .border(
                                 width = 2.dp,
