@@ -24,10 +24,8 @@ import androidx.compose.ui.draw.clip
 import coil.compose.rememberImagePainter
 import java.io.File
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -40,20 +38,10 @@ fun ImageDialog(
     uri: Uri,
     viewModel: ImagesViewModel,
     onDismiss: () -> Unit,
-    onDelete: () -> Unit,
-    showSaveButton: Boolean = false // Новый параметр для отображения кнопки "Сохранить"
+    onDelete: () -> Unit
 ) {
     val context = LocalContext.current
-    val imageFile = File(uri.path ?: "").takeIf { it.exists() }
-
-    if (imageFile == null) {
-        // Если файл не найден, показываем сообщение об ошибке и закрываем диалог
-        LaunchedEffect(Unit) {
-            Toast.makeText(context, "Файл не найден: ${uri.path}", Toast.LENGTH_SHORT).show()
-            onDismiss()
-        }
-        return
-    }
+    val imageFile = File(uri.path ?: "")
 
     // Определяем директорию файла
     val photoListDir = File(context.filesDir, "PhotoList")
@@ -85,7 +73,6 @@ fun ImageDialog(
             Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2)
             Spacer(modifier = Modifier.height(8.dp))
-            // Отображение изображения с возможностью масштабирования
             ZoomableImage(
                 uri = actualUri,
                 modifier = Modifier
@@ -94,7 +81,6 @@ fun ImageDialog(
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
-            // Первая строка кнопок: Поделиться и Удалить
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -112,36 +98,6 @@ fun ImageDialog(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Удалить"
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            // Вторая строка кнопок: Сохранить (условно) и Закрыть
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (showSaveButton) {
-                    IconButton(onClick = {
-                        // Вызов метода сохранения из ViewModel
-                        val success = viewModel.saveExtractedImage(actualUri)
-                        if (success) {
-                            Toast.makeText(context, "Сохранено", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Ошибка при сохранении", Toast.LENGTH_SHORT).show()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Save,
-                            contentDescription = "Сохранить"
-                        )
-                    }
-                }
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Закрыть"
                     )
                 }
             }
