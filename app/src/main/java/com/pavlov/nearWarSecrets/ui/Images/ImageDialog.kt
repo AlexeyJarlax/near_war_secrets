@@ -1,6 +1,7 @@
 package com.pavlov.nearWarSecrets.ui.Images
 
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
@@ -40,8 +42,9 @@ fun ImageDialog(
     onDelete: () -> Unit
 ) {
     val context = LocalContext.current
-    val imageFile = File(context.filesDir, fileName)
+    val imageFile = File(context.filesDir, "PhotoList/$fileName")
     val painter = rememberImagePainter(data = imageFile)
+    val uri = Uri.fromFile(imageFile)
     val date = viewModel.getPhotoDate(fileName)
     val name = viewModel.getFileNameWithoutExtension(fileName)
 
@@ -57,12 +60,11 @@ fun ImageDialog(
             Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2)
             Spacer(modifier = Modifier.height(8.dp))
-            Image(
-                painter = painter,
-                contentDescription = null,
+            ZoomableImage(
+                uri = uri,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
+                    .weight(1f)
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
