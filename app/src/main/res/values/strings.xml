@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ПВТ</string>
+    <string name="app_name_1">Почти Военная Тайна</string>
     <string name="mimicry_app_name">MoodSound Galaxy</string>
     <string name="app_name_in_main_page">Почти военная тайна</string>
     <string name="disguise_btn">Маскировка</string>
@@ -138,7 +138,7 @@
     <string name="naming_option">Выберите стиль наименования файлов</string>
     <string name="preview">Превью</string>
     <string name="encrypted_file">Шифрованный файл</string>
-    <string name="whithout_enception">Без шифрования</string>
+    <string name="whithout_encryption">Без шифрования</string>
     <string name="decripted_file">Расшифрованный файл</string>
     <string name="unnown_tipe">Неизвестный тип</string>
     <string name="done">Выполнено</string>
@@ -220,4 +220,17 @@ AES (Advanced Encryption Standard).
     <string name="saved">Сохранён</string>
     <string name="flip">Развернуть</string>
     <string name="error_gallery">Ошибка доступа к галерее</string>
+    <string name="file_type">тип файла</string>
+    <string name="file_name">имя файла</string>
+    <string name="date">дата</string>
+    <string name="size">размер</string>
+    <string name="settings_title">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="user_switch">User Switch</string>
+    <string name="preview_size_label">Preview Size: %1$dx%2$d</string>
+    <string name="back">Back</string>
+    <string name="about_the_app">О приложении</string>
+    <string name="enter">Войти\n</string>
+    <string name="whith_encryption">С шифрованием</string>
+    <string name="save">Сохранить</string>
 </resources>

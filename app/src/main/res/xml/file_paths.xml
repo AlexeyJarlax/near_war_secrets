@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <files-path
-        name="files"
-        path="." />
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path name="photo_list" path="PhotoList/" />
+    <files-path name="extracted_images" path="ExtractedImages/" />
+    <cache-path name="cache" path="." />
 </paths>

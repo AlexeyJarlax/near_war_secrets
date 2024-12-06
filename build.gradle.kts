@@ -16,7 +16,6 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.52" apply false
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     kotlin("plugin.serialization") version "1.9.10"
-    id("com.autonomousapps.dependency-analysis") version "2.4.2"  //про лишние библиотеки, анализ библиотек: ./gradlew buildHealth
 }
 
 buildscript {

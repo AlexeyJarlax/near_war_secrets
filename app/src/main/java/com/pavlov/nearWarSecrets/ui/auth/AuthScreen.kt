@@ -1,64 +1,99 @@
 package com.pavlov.nearWarSecrets.ui.auth
 
+import com.pavlov.nearWarSecrets.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pavlov.nearWarSecrets.theme.My4
+import com.pavlov.nearWarSecrets.theme.My5
+import com.pavlov.nearWarSecrets.theme.My7
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomOutlinedTextField
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
+import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToMain: () -> Unit,
+    onNavigateToItemLoader: () -> Unit,
     onNavigateToTwoStepsForSave: () -> Unit
 ) {
     val isPasswordExist by viewModel.isPasswordExist.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val message by viewModel.message.collectAsState()
     val counter by viewModel.counter.collectAsState()
-    val navigateToMain by viewModel.navigateToMain.collectAsState()
+    val navigateToItemLoader by viewModel.navigateToItemLoader.collectAsState()
     val navigateToTwoStepsForSave by viewModel.navigateToTwoStepsForSave.collectAsState()
+    val hasError by viewModel.hasError.collectAsState()
 
-    LaunchedEffect(navigateToMain) {
-        if (navigateToMain) {
-            onNavigateToMain()
-        }
+    LaunchedEffect(navigateToItemLoader) {
+        if (navigateToItemLoader) onNavigateToItemLoader()
     }
 
     LaunchedEffect(navigateToTwoStepsForSave) {
-        if (navigateToTwoStepsForSave) {
-            onNavigateToTwoStepsForSave()
-        }
+        if (navigateToTwoStepsForSave) onNavigateToTwoStepsForSave()
     }
 
-    if (loading) {
-        // Show loading indicator
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-    } else {
-        // Show password input
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Введите пароль")
-            Spacer(modifier = Modifier.height(8.dp))
-            var password by remember { mutableStateOf("") }
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Пароль") }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { viewModel.onPasswordEntered(password) }) {
-                Text("Войти")
+    Scaffold(
+        content = { padding ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                MatrixBackground()
+                if (loading) {
+                        CustomCircularProgressIndicator()
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(34.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        var password by remember { mutableStateOf("") }
+
+                        Text(
+                            text = if (password.isEmpty()) "Введите пароль" else ""
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        CustomOutlinedTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = "Пароль",
+                            placeholder = "...",
+                            backgroundColor = My4,
+                            isPassword = true,
+                            keyboardActions =  {viewModel.onPasswordEntered(password)}
+                            )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        CustomButtonOne(
+                            onClick = { viewModel.onPasswordEntered(password) },
+                            text = stringResource(R.string.enter),
+                            textColor = if (password.isEmpty()) My5 else My7,
+                            iconColor = if (password.isEmpty()) My5 else My7,
+                            fontSize = 20.sp,
+                            iconPadding = 12,
+                            icon = R.drawable.login_30dp
+                        )
+
+                        if (message.isNotEmpty()) {
+                            Text(text = message, color = MaterialTheme.colors.error)
+                        }
+                        if (hasError) {
+                            Text(
+                                text = "Осталось попыток: $counter",
+                                color = MaterialTheme.colors.error
+                            )
+                        }
+                    }
+                }
             }
-            if (message.isNotEmpty()) {
-                Text(text = message, color = MaterialTheme.colors.error)
-            }
-            Text(text = "Осталось попыток: $counter")
         }
-    }
+    )
 }

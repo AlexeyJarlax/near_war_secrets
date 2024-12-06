@@ -93,7 +93,7 @@ class KeyInputViewModel @Inject constructor(
     }
 
     private fun confirm(keyValue: String, nameKeyValue: String) {
-        apkm.saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
+        apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, true)
         if (keyValue.isNotEmpty()) {
             val secret1 = apkm.getMastersSecret(APK.KEY_BIG_SECRET1)
             val secret2 = apkm.getMastersSecret(APK.KEY_BIG_SECRET2)
@@ -102,24 +102,24 @@ class KeyInputViewModel @Inject constructor(
                 secret1.isNullOrBlank() -> {
                     apkm.saveMastersSecret(nameKeyValue, APK.KEY_BIG_SECRET_NAME1)
                     apkm.saveMastersSecret(keyValue, APK.KEY_BIG_SECRET1)
-                    apkm.saveIntToSP(APK.DEFAULT_KEY, 1)
+                    apkm.putInt(APK.DEFAULT_KEY, 1)
                 }
                 secret2.isNullOrBlank() -> {
                     apkm.saveMastersSecret(nameKeyValue, APK.KEY_BIG_SECRET_NAME2)
                     apkm.saveMastersSecret(keyValue, APK.KEY_BIG_SECRET2)
-                    apkm.saveIntToSP(APK.DEFAULT_KEY, 2)
+                    apkm.putInt(APK.DEFAULT_KEY, 2)
                 }
                 secret3.isNullOrBlank() -> {
                     apkm.saveMastersSecret(nameKeyValue, APK.KEY_BIG_SECRET_NAME3)
                     apkm.saveMastersSecret(keyValue, APK.KEY_BIG_SECRET3)
-                    apkm.saveIntToSP(APK.DEFAULT_KEY, 3)
+                    apkm.putInt(APK.DEFAULT_KEY, 3)
                 }
                 else -> {
                     _message.value = "Нет доступных слотов для ключей"
                 }
             }
-            apkm.saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
-            apkm.saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
+            apkm.putBoolean(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
+            apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, true)
             _navigateToMain.value = true
         } else {
             _message.value = "Ключ не задан"
@@ -127,7 +127,7 @@ class KeyInputViewModel @Inject constructor(
     }
 
     fun onDoNotUseKey() {
-        apkm.saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
+        apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
         apkm.delFromSP(APK.DEFAULT_KEY)
         _navigateToMain.value = true
     }
@@ -151,9 +151,9 @@ class KeyInputViewModel @Inject constructor(
     }
 
     fun selectOldKey(keyNumber: Int) {
-        apkm.saveIntToSP(APK.DEFAULT_KEY, keyNumber)
-        apkm.saveBooleanToSPK(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
-        apkm.saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, true)
+        apkm.putInt(APK.DEFAULT_KEY, keyNumber)
+        apkm.putBoolean(APK.KEY_EXIST_OF_ENCRYPTION_K, true)
+        apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, true)
         _navigateToMain.value = true
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NWS</string>
+    <string name="app_name_1">NWS</string>
     <string name="mimicry_app_name">MoodSound Galaxy</string>
     <string name="app_name_in_main_page">NearWarSecrets</string>
     <string name="disguise_btn">伪装</string>
@@ -129,7 +129,7 @@
     <string name="naming_option">选择文件命名风格</string>
     <string name="preview">预览</string>
     <string name="encrypted_file">加密文件</string>
-    <string name="whithout_enception">无加密</string>
+    <string name="whithout_encryption">无加密</string>
     <string name="decripted_file">解密文件</string>
     <string name="unnown_tipe">未知类型</string>
     <string name="done">完成</string>

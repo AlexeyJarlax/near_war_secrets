@@ -3,10 +3,13 @@ package com.pavlov.nearWarSecrets.ui.twosteps
 import androidx.lifecycle.ViewModel
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class TwoStepsForSaveViewModel(
+@HiltViewModel
+class TwoStepsForSaveViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 
@@ -23,11 +26,11 @@ class TwoStepsForSaveViewModel(
     val navigateToKeyInput: StateFlow<Boolean> = _navigateToKeyInput
 
     init {
-        val isPasswordExists = apkm.getMastersSecret(APK.KEY_SMALL_SECRET).isNotBlank()
-        _step.value = if (isPasswordExists) 3 else 0
+//        val isPasswordExists = apkm.getMastersSecret(APK.KEY_SMALL_SECRET).isNotBlank()
+//        _step.value = if (isPasswordExists) 3 else 0
     }
 
-    fun onInputButtonClicked() {
+    fun onNextButtonClicked() {
         _step.value = 1
     }
 
@@ -49,7 +52,7 @@ class TwoStepsForSaveViewModel(
             }
             3 -> {
                 apkm.delFromSP(APK.DEFAULT_KEY)
-                apkm.saveBooleanToSPK(APK.KEY_USE_THE_ENCRYPTION_K, false)
+                apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
                 _navigateToMain.value = true
             }
         }

@@ -34,10 +34,9 @@ object ToastExt {
     }
 }
 
-
 /** применение:
- * контекст для вьюмодели:
-@ApplicationContext private val context: Context,
+ * контекст для вьюмодели через конструктор:
+@Inject constructor(@ApplicationContext private val context: Context)
 
 * контекст для экрана:
 val context = LocalContext.current

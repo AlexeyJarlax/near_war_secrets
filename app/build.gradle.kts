@@ -1,12 +1,15 @@
+import org.gradle.kotlin.dsl.android
+import org.gradle.kotlin.dsl.hilt
+
 plugins {
     id("com.android.application")
+    id("kotlin-android")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.autonomousapps.dependency-analysis")
 }
 
 android {
@@ -26,10 +29,10 @@ android {
     defaultConfig {
         applicationId = "com.pavlov.nearWarSecrets"
         resourceConfigurations += setOf("ru", "en", "zh", "es")
-        minSdk = 28
+        minSdk = 29
         targetSdk = 35
-        versionCode = 53
-        versionName = "1.53"
+        versionCode = 57
+        versionName = "1.57"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,6 +41,12 @@ android {
             isMinifyEnabled = false  // Выключить ProGuard
             proguardFiles(
             )
+        }
+    }
+
+    bundle {
+        abi {
+            enableSplit = true
         }
     }
 
@@ -64,63 +73,115 @@ android {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
 
-//    packaging {
-//        resources {
-//            excludes += "META-INF/DEPENDENCIES"
-//        }
-//    }
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
 
     hilt {
         enableAggregatingTask = true
     }
+
+    kapt {
+        correctErrorTypes = true
+        includeCompileClasspath = false
+    }
+}
+
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
 }
 
 dependencies {
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.foundation.layout.android)
+    coreLibraryDesugaring (libs.desugar.jdk.libs)
 
-    // Core Library Desugaring
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
+    // HTTP-клиент
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
 
-    //логи Тимбер
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    // mailto: URI
+    implementation(libs.email.intent.builder)
 
-    // графическая обработка
-    implementation(libs.coil.compose)
+    // Dagger Hilt
     implementation(libs.hilt.android)
-    implementation("com.google.dagger:hilt-android:2.52")
-    kapt("com.google.dagger:hilt-compiler:2.52")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.hilt.navigation.compose.v100)
 
-    // compose
-    implementation ("androidx.compose.ui:ui:1.7.5")
-    implementation ("androidx.compose.material:material:1.7.5")
-    implementation ("androidx.compose.ui:ui-tooling-preview:1.7.5")
-    implementation ("androidx.activity:activity-compose:1.9.3")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    // Jetpack Compose
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.runtime.livedata)
+    implementation(libs.android.maps.compose)
+    implementation(libs.maps.compose.v272)
+    implementation(libs.androidx.foundation)
+    implementation(libs.google.accompanist.flowlayout)
+    implementation (libs.androidx.ui.tooling.preview)
+    debugImplementation (libs.androidx.ui.tooling)
+    implementation (libs.androidx.runtime)
+
+    // Compose навигация
     implementation ("androidx.navigation:navigation-compose:2.8.4")
-    implementation ("androidx.compose.material:material-icons-extended:1.7.5")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // графическая обработка (более современное решение по загрузке пикч вместо Glide или Picasso)
+    implementation(libs.coil.compose)
 
-//    implementation("com.github.christian:PhotoView:2.3.0")
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    // визуал material
+    implementation (libs.androidx.material3)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.material.icons.extended)
+    implementation ("androidx.compose.material:material-icons-extended:1.4.3")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("androidx.camera:camera-camera2:1.4.0")
     implementation("androidx.camera:camera-lifecycle:1.4.0")
     implementation("androidx.camera:camera-view:1.4.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    implementation("com.google.code.gson:gson:2.11.0") // эта строка и ниже: связь с сервером
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0") // Корутины многопоточности
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")  // хэширование
+
+    // шифрование
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // корутин
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.peko)
+
+    //логи Тимбер
+    implementation(libs.timber)
+
+    // Требуемые обфускатором R8:
+    implementation(libs.bcprov.jdk15on)
+    implementation("org.conscrypt:conscrypt-android:2.5.2")
+
+    // тестирование
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+
+    // поиск текущего расположения юзера
+    implementation (libs.play.services.location)
+    implementation (libs.kotlinx.coroutines.play.services)
+
+    // запрос разрешений
+    implementation (libs.accompanist.permissions)
+
+    // Room
+    implementation (libs.androidx.room.runtime)
+    ksp (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
+
+    // работа со временем
+    implementation (libs.androidx.datastore.preferences)
+
+    // анимация как в матрице
+//    import ("androidx.compose.ui.graphics.drawscope.withFrameNanos")
+
+    //сдвоенный экран pager со смахиванием
+    implementation ("com.google.accompanist:accompanist-pager:0.30.1")
 }
