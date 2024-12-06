@@ -300,7 +300,7 @@ fun LoadedScreen(
                         onDismiss = { showSaveDialog = false },
                         onDelete = {
                             viewModel.deletePhoto(selectedFileName!!)
-                            showSaveDialog = false
+                            viewModel.showSaveDialog = false
                         },
                         showSaveButton = true
                     )

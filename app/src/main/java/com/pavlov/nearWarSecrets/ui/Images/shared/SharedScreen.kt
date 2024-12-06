@@ -46,9 +46,7 @@ fun SharedScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Нет сохранённых изображений",
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.colors.onBackground
+                        text = "Нет сохранённых изображений"
                     )
                 }
             } else {

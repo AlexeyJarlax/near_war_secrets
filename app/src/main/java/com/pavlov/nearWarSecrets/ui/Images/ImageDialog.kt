@@ -44,9 +44,9 @@ fun ImageDialog(
     showSaveButton: Boolean = false // Новый параметр для отображения кнопки "Сохранить"
 ) {
     val context = LocalContext.current
-    val imageFile = File(uri.path ?: "").takeIf { it.exists() }
+    val imageFile = File(uri.path ?: "")
 
-    if (imageFile == null) {
+    if (false) {
         // Если файл не найден, показываем сообщение об ошибке и закрываем диалог
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Файл не найден: ${uri.path}", Toast.LENGTH_SHORT).show()
