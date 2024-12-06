@@ -57,39 +57,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Function to handle incoming intents.
-     * Accepts images shared from other apps.
-     */
-//    private fun handleIntent(intent: Intent?) {
-//        if (intent == null) return
-//
-//        val action = intent.action
-//        val type = intent.type
-//
-//        if (action == Intent.ACTION_SEND && type != null) {
-//            if (type.startsWith("image/")) {
-//                val uri: Uri? = intent.getParcelableExtra(Intent.EXTRA_STREAM)
-//                uri?.let {
-//                    viewModel.addReceivedPhoto(it)
-//                    navController.navigate(NavDestinations.EXTRACTER) {
-//                        popUpTo(NavDestinations.IMAGES) { inclusive = false }
-//                    }
-//                }
-//            }
-//        } else if (action == Intent.ACTION_SEND_MULTIPLE && type != null) {
-//            if (type.startsWith("image/")) {
-//                val uris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
-//                uris?.let {
-//                    viewModel.addReceivedPhotos(it)
-//                    navController.navigate(NavDestinations.EXTRACTER) {
-//                        popUpTo(NavDestinations.IMAGES) { inclusive = false }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {

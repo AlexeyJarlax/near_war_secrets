@@ -23,6 +23,7 @@ fun SharedScreen(
     onImageClick: (Uri) -> Unit
 ) {
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
+    val temporaryImages by viewModel.extractedImages.observeAsState(emptyList()) // Добавлено
     var selectedUri by remember { mutableStateOf<Uri?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
@@ -35,7 +36,7 @@ fun SharedScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (savedImages.isEmpty()) {
+            if (savedImages.isEmpty() && temporaryImages.isEmpty()) { // Изменено
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -57,7 +58,7 @@ fun SharedScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(savedImages) { uri ->
+                    items(savedImages + temporaryImages) { uri -> // Объединяем списки
                         SharedItem(
                             uri = uri,
                             viewModel = viewModel,
@@ -71,11 +72,24 @@ fun SharedScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
+
+        // Условный вызов SharedDialog
+        if (showDialog && selectedUri != null) {
+            SharedDialog(
+                uri = selectedUri!!,
+                onDismiss = {
+                    showDialog = false
+                    viewModel.removeExtractedImage(selectedUri!!) // Удаляем временное изображение после закрытия диалога
+                },
+                viewModel = viewModel
+            )
+        }
     }
 
-    LaunchedEffect(savedImages) {
-        if (savedImages.isNotEmpty()) {
-            selectedUri = savedImages.last()
+    // Отслеживаем добавление временных изображений
+    LaunchedEffect(temporaryImages) {
+        if (temporaryImages.isNotEmpty()) {
+            selectedUri = temporaryImages.last()
             showDialog = true
         }
     }
