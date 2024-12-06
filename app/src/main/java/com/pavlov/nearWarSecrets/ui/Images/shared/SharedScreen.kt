@@ -16,6 +16,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import android.net.Uri
+import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
+import java.io.File
 
 @Composable
 fun SharedScreen(
@@ -23,7 +25,7 @@ fun SharedScreen(
     onImageClick: (Uri) -> Unit
 ) {
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
-    val temporaryImages by viewModel.extractedImages.observeAsState(emptyList()) // Добавлено
+    val temporaryImages by viewModel.extractedImages.observeAsState(emptyList())
     var selectedUri by remember { mutableStateOf<Uri?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
@@ -36,7 +38,7 @@ fun SharedScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (savedImages.isEmpty() && temporaryImages.isEmpty()) { // Изменено
+            if (savedImages.isEmpty() && temporaryImages.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -58,7 +60,7 @@ fun SharedScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(savedImages + temporaryImages) { uri -> // Объединяем списки
+                    items(savedImages + temporaryImages) { uri ->
                         SharedItem(
                             uri = uri,
                             viewModel = viewModel,
@@ -73,15 +75,22 @@ fun SharedScreen(
             Spacer(modifier = Modifier.height(6.dp))
         }
 
-        // Условный вызов SharedDialog
+        // Условный вызов ImageDialog вместо SharedDialog
         if (showDialog && selectedUri != null) {
-            SharedDialog(
-                uri = selectedUri!!,
+            // Извлекаем fileName из Uri
+            val fileName = File(selectedUri!!.path!!).name
+
+            ImageDialog(
+                fileName = fileName,
+                viewModel = viewModel,
                 onDismiss = {
                     showDialog = false
-                    viewModel.removeExtractedImage(selectedUri!!) // Удаляем временное изображение после закрытия диалога
+                    // viewModel.removeExtractedImage(selectedUri!!)
                 },
-                viewModel = viewModel
+                onDelete = {
+                    showDialog = false
+                    viewModel.removeExtractedImage(selectedUri!!)
+                }
             )
         }
     }
