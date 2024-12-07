@@ -35,27 +35,26 @@ class ImagesViewModel @Inject constructor(
 
     private val apkManager = APKM(context)
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    private val _cameraSelector =
-        MutableLiveData<CameraSelector>(CameraSelector.DEFAULT_BACK_CAMERA)
-    val cameraSelector: LiveData<CameraSelector> get() = _cameraSelector
+    private val _cameraSelector = MutableStateFlow(CameraSelector.DEFAULT_BACK_CAMERA)
+    val cameraSelector: StateFlow<CameraSelector> get() = _cameraSelector
 
-    private val _showSaveDialog = MutableLiveData<Boolean>()
-    val showSaveDialog: LiveData<Boolean> get() = _showSaveDialog
+    private val _showSaveDialog = MutableStateFlow(false)
+    val showSaveDialog: StateFlow<Boolean> get() = _showSaveDialog
 
-    private val _receivedfromoutside = MutableLiveData<List<String>>()
-    val receivedfromoutside: LiveData<List<String>> = _receivedfromoutside
+    private val _receivedfromoutside = MutableStateFlow<List<String>>(emptyList())
+    val receivedfromoutside: StateFlow<List<String>> = _receivedfromoutside
 
-    private val _tempImages = MutableLiveData<List<String>>()
-    val tempImages: LiveData<List<String>> = _tempImages
+    private val _tempImages = MutableStateFlow<List<String>>(emptyList())
+    val tempImages: StateFlow<List<String>> = _tempImages
 
-    private val _savedImages = MutableLiveData<List<Uri>>()
-    val savedImages: LiveData<List<Uri>> = _savedImages
+    private val _savedImages = MutableStateFlow<List<Uri>>(emptyList())
+    val savedImages: StateFlow<List<Uri>> = _savedImages
 
-    private val _uploadedbyme = MutableLiveData<List<String>>()
-    val uploadedbyme: LiveData<List<String>> = _uploadedbyme
+    private val _uploadedbyme = MutableStateFlow<List<String>>(emptyList())
+    val uploadedbyme: StateFlow<List<String>> = _uploadedbyme
 
     private val _anImageWasSharedWithUsNow = MutableStateFlow(false)
     val anImageWasSharedWithUsNow: StateFlow<Boolean> = _anImageWasSharedWithUsNow
@@ -91,11 +90,10 @@ class ImagesViewModel @Inject constructor(
     }
 
     /** --------------------------------------------------ЛОАДЕРЫ СПИСКОВ--------------------------------------------------*/
-    // Метод для загрузки файлов и обновления LiveData
     private suspend fun loadFiles(
         directoryName: String,
         mapper: (File) -> String?,
-        liveData: MutableLiveData<List<String>>
+        stateFlow: MutableStateFlow<List<String>>
     ) {
         try {
             val directory = File(context.filesDir, directoryName)
@@ -119,7 +117,7 @@ class ImagesViewModel @Inject constructor(
                 }
             } ?: emptyList()
 
-            liveData.postValue(files)
+            stateFlow.value = files
             Timber.tag(TAG).d("=== Загружено ${files.size} элементов из $directoryName.")
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "=== Ошибка при загрузке файлов из $directoryName.")
@@ -129,18 +127,14 @@ class ImagesViewModel @Inject constructor(
     private fun loadExtractedImages() {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.tag(TAG).d("=== Загрузка временных изображений (TEMP_IMAGES)")
-            loadFiles(TEMP_IMAGES, { file ->
-                file.name
-            }, _tempImages)
+            loadFiles(TEMP_IMAGES, { it.name }, _tempImages)
         }
     }
 
     private fun loadReceivedfromoutsideImages() {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.tag(TAG).d("=== Загрузка сохранённых изображений (RECEIVED_FROM_OUTSIDE)")
-            loadFiles(RECEIVED_FROM_OUTSIDE, { file ->
-                file.name
-            }, _receivedfromoutside)
+            loadFiles(RECEIVED_FROM_OUTSIDE, { it.name }, _receivedfromoutside)
         }
     }
 
@@ -169,13 +163,14 @@ class ImagesViewModel @Inject constructor(
                     }
                 } ?: emptyList()
 
-                _uploadedbyme.postValue(files)
+                _uploadedbyme.value = files
                 Timber.tag(TAG).d("=== Загружено ${files.size} файлов в $UPLOADED_BY_ME.")
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при загрузке файлов из $UPLOADED_BY_ME.")
             }
         }
     }
+
 
     /** ---------------------------------------------------- ЭДАРЫ -----------------------------------------------------------*/
 
@@ -373,8 +368,11 @@ class ImagesViewModel @Inject constructor(
                 inputStream.close()
             }
 
-            loadReceivedfromoutsideImages() // Обновляем список после сохранения
-            removeExtractedImage(uri)
+            viewModelScope.launch(Dispatchers.IO) {
+                loadReceivedfromoutsideImages()
+                removeExtractedImage(uri)
+                clearExtractedImages()
+            }
             true
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "=== Ошибка при сохранении изображения: $uri")
@@ -494,8 +492,7 @@ class ImagesViewModel @Inject constructor(
                 } else {
                     Timber.tag(TAG).d("=== Директория $TEMP_IMAGES не существует.")
                 }
-                // Очищаем список временных изображений
-                _tempImages.postValue(emptyList())
+                _tempImages.value = emptyList()
                 Timber.tag(TAG).d("=== Все временные изображения очищены")
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при очистке временных изображений")

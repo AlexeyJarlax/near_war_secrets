@@ -31,10 +31,10 @@ fun SharedScreen(
     onImageClick: (Uri) -> Unit
 ) {
     val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
-    val receivedfromoutside by viewModel.receivedfromoutside.observeAsState(emptyList())
-    val tempImages by viewModel.tempImages.observeAsState(emptyList())
+    val receivedfromoutside by viewModel.receivedfromoutside.collectAsState()
+    val tempImages by viewModel.tempImages.collectAsState()
     var showImageDialog by remember { mutableStateOf(false) }
-    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
+    val showSaveDialog by viewModel.showSaveDialog.collectAsState()
     val selectedUri by viewModel.selectedUri.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -98,7 +98,8 @@ fun SharedScreen(
             showImageDialog = false
         }
 
-        if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) {   //  через "Поделиться"
+        // Обработка диалога для новых изображений, полученных через "Поделиться"
+        if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -140,7 +141,8 @@ fun SharedScreen(
             }
         }
 
-        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) {   // для уже сохраненных изображений
+        // Обработка диалога для уже сохраненных изображений
+        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) { // Изменено условие
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,

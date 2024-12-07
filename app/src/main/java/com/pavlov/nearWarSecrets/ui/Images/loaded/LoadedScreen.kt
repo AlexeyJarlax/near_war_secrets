@@ -61,18 +61,18 @@ fun LoadedScreen(
     viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val uploadedbyme by viewModel.uploadedbyme.observeAsState(emptyList())
+    val uploadedbyme by viewModel.uploadedbyme.collectAsState()
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
-    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
+    val showSaveDialog by viewModel.showSaveDialog.collectAsState()
     val selectedUri by viewModel.selectedUri.collectAsState()
-    val isStorageMode = false
-    val isLoading by viewModel.isLoading.observeAsState(false)
+    val isLoading by viewModel.isLoading.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
-    var isPreviewVisible by rememberSaveable { mutableStateOf(false) } // для сохранения состояние камеры после вращения
-    val cameraSelector by viewModel.cameraSelector.observeAsState(CameraSelector.DEFAULT_BACK_CAMERA)
+    var isPreviewVisible by rememberSaveable { mutableStateOf(false) }
+    val cameraSelector by viewModel.cameraSelector.collectAsState()
     val imageCapture = remember { ImageCapture.Builder().build() }
     val previewView = remember { PreviewView(context) }
+    val isStorageMode = false
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
