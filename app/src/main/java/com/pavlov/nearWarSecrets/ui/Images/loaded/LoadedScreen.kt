@@ -52,6 +52,7 @@ import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -127,7 +128,7 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     val fileName = viewModel.getFileName()
-                                    val photoListDir = File(context.filesDir, "PhotoList")
+                                    val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
                                     if (!photoListDir.exists()) {
                                         photoListDir.mkdirs()
                                     }
@@ -312,7 +313,7 @@ fun LoadedScreen(
                         },
                         isItNew = true,
                         onSave = {
-                            val success = viewModel.saveExtractedImage(selectedUri!!, "PhotoList/")
+                            val success = viewModel.saveExtractedImage(selectedUri!!, UPLOADED_BY_ME)
                             if (success) {
                                 ToastExt.show("Сохранено")
                             } else {

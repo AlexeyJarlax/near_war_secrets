@@ -23,6 +23,8 @@ import java.io.File
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
+import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 
 @Composable
 fun ImageDialog(
@@ -45,8 +47,8 @@ fun ImageDialog(
         return
     }
 
-    val photoListDir = File(context.filesDir, "PhotoList")
-    val extractedImagesDir = File(context.filesDir, "ExtractedImages")
+    val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
+    val extractedImagesDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
 
     val actualImageFile = when {
         File(photoListDir, imageFile.name).exists() -> File(photoListDir, imageFile.name)

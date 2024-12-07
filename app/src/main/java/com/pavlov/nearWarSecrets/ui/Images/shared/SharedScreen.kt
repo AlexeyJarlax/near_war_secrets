@@ -16,6 +16,7 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import android.net.Uri
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
+import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.nearWarSecrets.util.ToastExt
 
 @Composable
@@ -92,7 +93,7 @@ fun SharedScreen(
                 },
                 isItNew = true,
                 onSave = {
-                    val success = viewModel.saveExtractedImage(selectedUri!!, "ExtractedImages/")
+                    val success = viewModel.saveExtractedImage(selectedUri!!, RECEIVED_FROM_OUTSIDE)
                     if (success) {
                         ToastExt.show("Сохранено")
                     } else {

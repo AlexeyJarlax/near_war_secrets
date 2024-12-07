@@ -20,6 +20,8 @@ import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
@@ -91,7 +93,7 @@ class ImagesViewModel @Inject constructor(
     // Загрузка сохраненных изображений
     private fun loadSavedImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val savedDir = File(context.filesDir, "ExtractedImages")
+            val savedDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
             if (!savedDir.exists()) {
                 savedDir.mkdirs()
             }
@@ -206,7 +208,7 @@ class ImagesViewModel @Inject constructor(
 
 private fun loadPhotoList() {
     viewModelScope.launch(Dispatchers.IO) {
-        val directory = File(context.filesDir, "PhotoList")
+        val directory = File(context.filesDir, UPLOADED_BY_ME)
         if (!directory.exists()) {
             directory.mkdirs()
         }
@@ -219,7 +221,7 @@ private fun loadPhotoList() {
     fun addPhoto(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val fileName = getFileName()
-            val photoListDir = File(context.filesDir, "PhotoList")
+            val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
             if (!photoListDir.exists()) {
                 photoListDir.mkdirs()
             }
@@ -239,7 +241,7 @@ private fun loadPhotoList() {
 
     fun deletePhoto(fileName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val photoListDir = File(context.filesDir, "PhotoList")
+            val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
             val fileToDelete = File(photoListDir, fileName)
             if (fileToDelete.exists()) {
                 fileToDelete.delete()
@@ -249,7 +251,7 @@ private fun loadPhotoList() {
     }
 
     fun getPhotoDate(fileName: String): String {
-        val photoListDir = File(context.filesDir, "PhotoList")
+        val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
         val file = File(photoListDir, fileName)
         val date = Date(file.lastModified())
         return date.toString()
@@ -298,8 +300,8 @@ private fun loadPhotoList() {
     }
 
     fun getFileUri(fileName: String): Uri? {
-        val photoListDir = File(context.filesDir, "PhotoList")
-        val extractedImagesDir = File(context.filesDir, "ExtractedImages")
+        val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
+        val extractedImagesDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
         val file = when {
             File(photoListDir, fileName).exists() -> File(photoListDir, fileName)
             File(extractedImagesDir, fileName).exists() -> File(extractedImagesDir, fileName)

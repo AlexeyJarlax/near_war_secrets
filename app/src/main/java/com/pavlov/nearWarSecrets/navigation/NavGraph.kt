@@ -85,7 +85,7 @@ fun NavGraph(
             }
             composable(NavDestinations.SET_PASSWORD) {
                 SetPasswordScreen(
-                    onPasswordSet = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
+                    onPasswordSet = { navController.navigate(NavDestinations.IMAGES) }
                 )
             }
             composable(NavDestinations.TWO_STEPS_FOR_SAVE) {

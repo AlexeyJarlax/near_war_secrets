@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.pavlov.nearWarSecrets.util.ToastExt
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
+import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 
 @Composable
 fun SharedDialog(
@@ -52,7 +53,7 @@ fun SharedDialog(
                 Button(
                     onClick = {
                         // Сохранение изображения
-                        val success = viewModel.saveExtractedImage(uri, "ExtractedImages")
+                        val success = viewModel.saveExtractedImage(uri, RECEIVED_FROM_OUTSIDE)
                         if (success) {
                             ToastExt.show("Изображение сохранено")
                             isSaved = true

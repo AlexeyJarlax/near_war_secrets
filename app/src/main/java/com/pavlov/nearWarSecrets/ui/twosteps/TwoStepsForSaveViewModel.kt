@@ -39,9 +39,9 @@ class TwoStepsForSaveViewModel @Inject constructor(
             1 -> {
                 _navigateToSetPassword.value = true
             }
-            3 -> {
-                _navigateToKeyInput.value = true
-            }
+//            3 -> {
+//                _navigateToKeyInput.value = true
+//            }
         }
     }
 
@@ -50,11 +50,11 @@ class TwoStepsForSaveViewModel @Inject constructor(
             1 -> {
                 _step.value = 3
             }
-            3 -> {
-                apkm.delFromSP(APK.DEFAULT_KEY)
-                apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
-                _navigateToMain.value = true
-            }
+//            3 -> {
+//                apkm.delFromSP(APK.DEFAULT_KEY)
+//                apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
+//                _navigateToMain.value = true
+//            }
         }
     }
 }
