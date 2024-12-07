@@ -21,7 +21,10 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndica
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Cable
+import androidx.compose.material.icons.filled.HideImage
+import androidx.compose.material.icons.filled.InsertPhoto
 import com.pavlov.nearWarSecrets.theme.My3
+import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
@@ -86,34 +89,74 @@ fun ImageDialog(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                CustomButtonOne(
-                    onClick = { showShareOptions = true },
-                    text = "Поделиться",
-                    icon = Icons.Default.Share
-                )
+                if (isItNew) { // кейс с 4 кнопками
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        CustomButtonOne(
+                            onClick = {
+                                onSave?.invoke()
+                                onDismiss()
+                            },
+                            text = "Сохранить",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Save
+                        )
+                        CustomButtonOne(
+                            onClick = { showShareOptions = true },
+                            text = "Поделиться",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Share
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        CustomButtonOne(
+                            onClick = onDelete,
+                            text = "Удалить",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Delete
+                        )
 
-                if (isItNew) {
+                        CustomButtonOne(
+                            onClick = onDismiss,
+                            text = "Закрыть",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Close
+                        )
+                    }
+                } else { // кейс с 3 кнопками
                     CustomButtonOne(
-                        onClick = {
-                            onSave?.invoke()
-                            onDismiss()
-                        },
-                        text = "Сохранить",
-                        icon = Icons.Default.Save
+                        onClick = { showShareOptions = true },
+                        text = "Поделиться",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.Share
+                    )
+                    CustomButtonOne(
+                        onClick = onDelete,
+                        text = "Удалить",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.Delete
+                    )
+                    CustomButtonOne(
+                        onClick = onDismiss,
+                        text = "Закрыть",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.Close
                     )
                 }
-
-                CustomButtonOne(
-                    onClick = onDelete,
-                    text = "Удалить",
-                    icon = Icons.Default.Delete
-                )
-
-                CustomButtonOne(
-                    onClick = onDismiss,
-                    text = "Закрыть",
-                    icon = Icons.Default.Close
-                )
             }
         }
     }
@@ -125,11 +168,10 @@ fun ImageDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Поделиться изображением", style = MaterialTheme.typography.h6, color = Color.White)
+                Text("Способ отправки:")
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
+                CustomButtonOne(// Поделиться оригиналом
                     onClick = {
-                        // Поделиться оригиналом
                         val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
                         if (shareUri != null) {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
@@ -148,28 +190,29 @@ fun ImageDialog(
                         }
                         showShareOptions = false
                     },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Поделиться изображением")
-                }
+                    text = "Поделиться оригиналом",
+                    textColor = My7,
+                    iconColor = My7,
+                    icon = Icons.Default.InsertPhoto
+                )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(
+
+                CustomButtonOne( // поделиться шифровкой в мемчик
                     onClick = {
-                        // Показать диалог выбора мема
                         showMemeSelection = true
                         showShareOptions = false
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
-                ) {
-                    Text("Зашифровать в мем")
-                }
+                    text = "Зашифровать в мемчик",
+                    textColor = My7,
+                    iconColor = My7,
+                    icon = Icons.Default.HideImage
+                )
             }
         }
     }
 
-    // Диалог выбора мема
-    if (showMemeSelection) {
+    if (showMemeSelection) { // Диалог выбора мема
         MemeSelectionDialog(
             onMemeSelected = { memeResId ->
                 isProcessing = true
@@ -179,7 +222,18 @@ fun ImageDialog(
                     onResult = { uri ->
                         isProcessing = false
                         if (uri != null) {
-                            hiddenImageUri = uri
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "image/jpeg"
+                                putExtra(Intent.EXTRA_STREAM, uri)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            context.startActivity(
+                                Intent.createChooser(
+                                    shareIntent,
+                                    "Поделиться изображением"
+                                )
+                            )
+                            onDismiss()
                         } else {
                             Toast.makeText(
                                 context,

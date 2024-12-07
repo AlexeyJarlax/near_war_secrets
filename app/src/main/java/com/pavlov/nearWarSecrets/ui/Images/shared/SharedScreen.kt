@@ -113,8 +113,12 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     onSave = {
                         viewModel.saveSharedImage(selectedUri!!) { hiddenImageUri ->
                             if (hiddenImageUri != null) {
+                                // Скрытое изображение успешно извлечено
                                 ToastExt.show("Сохранено скрытое изображение")
+                                // Обновите UI, если необходимо, например, показать скрытое изображение
+                                // Можно установить hiddenImageUri в состояние и отобразить его
                             } else {
+                                // Сохранено обычное изображение
                                 ToastExt.show("Сохранено обычное изображение")
                             }
                             viewModel.setAnImageWasSharedWithUsNow(false)

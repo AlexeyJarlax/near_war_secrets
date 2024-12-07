@@ -19,8 +19,6 @@ import java.util.Date
 import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.pavlov.nearWarSecrets.util.APK.MARKER_COLOR
-import com.pavlov.nearWarSecrets.util.APK.MARKER_SIZE
 import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
 import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
@@ -337,10 +335,10 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun saveSharedImage(uri: Uri, onExtractionResult: (Uri?) -> Unit): Boolean {
+    fun saveSharedImage(uri: Uri, onExtractionResult: (Uri?) -> Unit) {
         val whereTo = RECEIVED_FROM_OUTSIDE
         Timber.tag(TAG).d("=== Сохранение временного изображения: $uri в $whereTo")
-        return try {
+        try {
             val savedDir = File(context.filesDir, whereTo)
             if (!savedDir.exists()) {
                 val created = savedDir.mkdirs()
@@ -354,7 +352,8 @@ class ImagesViewModel @Inject constructor(
             val inputStream = context.contentResolver.openInputStream(uri)
             if (inputStream == null) {
                 Timber.tag(TAG).e("=== Не удалось открыть InputStream для URI: $uri")
-                return false
+                onExtractionResult(null)
+                return
             }
 
             val fileName = getFileName()
@@ -367,7 +366,8 @@ class ImagesViewModel @Inject constructor(
                 Timber.tag(TAG).d("=== Изображение сохранено: ${file.absolutePath}")
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при копировании данных в файл: ${file.absolutePath}")
-                return false
+                onExtractionResult(null)
+                return
             } finally {
                 inputStream.close()
             }
@@ -406,10 +406,9 @@ class ImagesViewModel @Inject constructor(
                 removeExtractedImage(uri)
                 clearTempImages()
             }
-            true
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "=== Ошибка при сохранении изображения: $uri")
-            false
+            onExtractionResult(null)
         }
     }
 
@@ -638,10 +637,10 @@ class ImagesViewModel @Inject constructor(
                 Timber.tag(TAG).d("=== Закодированное изображение размером: ${encodedBitmap.width}x${encodedBitmap.height}")
 
                 _encryptionProgress.value = _encryptionProgress.value + "Сохранение закодированного изображения..."
-                val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.jpg"
+                val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.png" // Используем PNG
                 val destinationFile = File(context.cacheDir, fileName)
                 val outputStream = FileOutputStream(destinationFile)
-                encodedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                encodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream) // Сохранение как PNG
                 outputStream.flush()
                 outputStream.close()
 
@@ -679,17 +678,18 @@ class ImagesViewModel @Inject constructor(
     }
 
     fun hasMarker(bitmap: Bitmap): Boolean {
-        for (y in 0 until MARKER_SIZE) {
-            for (x in 0 until MARKER_SIZE) {
-                if (x >= bitmap.width || y >= bitmap.height) {
-                    return false
-                }
-                if (bitmap.getPixel(x, y) != MARKER_COLOR) {
-                    return false
-                }
+        var extractedCode = 0
+        for (i in 0 until SteganographyConstants.HEADER_SIZE) {
+            if (i >= bitmap.width * bitmap.height) {
+                return false
             }
+            val x = i % bitmap.width
+            val y = i / bitmap.width
+            val pixel = bitmap.getPixel(x, y)
+            val headerBits = pixel and 0xF
+            extractedCode = (extractedCode shl 4) or headerBits
         }
-        return true
+        return extractedCode == SteganographyConstants.HEADER_CODE
     }
 
     private fun hideImageInMeme(memeBitmap: Bitmap, originalBitmap: Bitmap): Bitmap? {
@@ -702,17 +702,28 @@ class ImagesViewModel @Inject constructor(
             _encryptionProgress.value = _encryptionProgress.value + "Bitmap.Config.ARGB_8888..."
             val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-            // маркер отмечает метод шифрования и само наличие его
-            for (y in 0 until MARKER_SIZE) {
-                for (x in 0 until MARKER_SIZE) {
-                    if (x < memeWidth && y < memeHeight) {
-                        encodedBitmap.setPixel(x, y, MARKER_COLOR)
-                    }
+            // Вставка маркера в первые HEADER_SIZE пикселей
+            for (i in 0 until SteganographyConstants.HEADER_SIZE) {
+                val shift = (SteganographyConstants.HEADER_SIZE - 1 - i) * 4
+                val headerBits = (SteganographyConstants.HEADER_CODE shr shift) and 0xF
+                if (i < memeWidth * memeHeight) {
+                    val x = i % memeWidth
+                    val y = i / memeWidth
+                    val originalPixel = memeBitmap.getPixel(x, y)
+                    val newPixel = (originalPixel and 0xFFFFFFF0.toInt()) or headerBits
+                    encodedBitmap.setPixel(x, y, newPixel)
                 }
             }
 
+            // Затем скрываем оригинальное изображение начиная с HEADER_SIZE пикселей
             for (y in 0 until memeHeight) {
                 for (x in 0 until memeWidth) {
+                    val pixelIndex = y * memeWidth + x
+                    if (pixelIndex < SteganographyConstants.HEADER_SIZE) {
+                        // Пропускаем пиксели, используемые для маркера
+                        continue
+                    }
+
                     val memePixel = memeBitmap.getPixel(x, y)
 
                     if (x < originalWidth && y < originalHeight) {
@@ -730,7 +741,6 @@ class ImagesViewModel @Inject constructor(
             null
         }
     }
-
 
     private fun encodePixel(memePixel: Int, originalPixel: Int): Int {
         val memeRed = (memePixel shr 16) and 0xFF
@@ -820,5 +830,10 @@ class ImagesViewModel @Inject constructor(
 
     companion object {
         const val REQUEST_PERMISSION_CODE = 1001
+    }
+
+    object SteganographyConstants {
+        const val HEADER_CODE: Int = 0xFACEB00C.toInt() // Уникальный код маркера
+        const val HEADER_SIZE = 8 // Количество пикселей, используемых для маркера
     }
 }
