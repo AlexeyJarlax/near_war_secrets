@@ -65,7 +65,9 @@ fun LoadedScreen(
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
-    var selectedUri: Uri? by remember { mutableStateOf(null) }
+    // Удаляем локальное состояние selectedUri
+    // var selectedUri: Uri? by remember { mutableStateOf(null) }
+    val selectedUri by viewModel.selectedUri.collectAsState()
     val isStorageMode = false
     val isLoading by viewModel.isLoading.observeAsState(false)
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -88,7 +90,6 @@ fun LoadedScreen(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            selectedUri = it
             viewModel.addPhoto(it)
         }
     }
@@ -143,8 +144,9 @@ fun LoadedScreen(
                                         ContextCompat.getMainExecutor(context),
                                         object : ImageCapture.OnImageSavedCallback {
                                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                                selectedUri = file.toUri()
-                                                viewModel.onSavePhotoClicked(true)
+                                                viewModel.addPhoto(file.toUri())
+                                                viewModel.setSelectedUri(file.toUri())
+                                                isPreviewVisible = false
                                             }
 
                                             override fun onError(exception: ImageCaptureException) {
@@ -163,7 +165,7 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     viewModel.switchCamera()
-//                                    isPreviewVisible = false
+                                    // isPreviewVisible = false
                                 },
                                 text = context.getString(R.string.flip),
                                 textColor = My7,
@@ -260,9 +262,13 @@ fun LoadedScreen(
                                 fileName = fileName,
                                 viewModel = viewModel,
                                 onImageClick = { clickedFileName ->
-                                    selectedFileName = clickedFileName
-                                    selectedUri = viewModel.getFileUri(clickedFileName)
-                                    showImageDialog = true
+                                    val uri = viewModel.getFileUri(clickedFileName)
+                                    if (uri != null) {
+                                        viewModel.setSelectedUri(uri)
+                                        showImageDialog = true
+                                    } else {
+                                        ToastExt.show("Не удалось получить URI для файла: $clickedFileName")
+                                    }
                                 }
                             )
                         }
@@ -294,9 +300,13 @@ fun LoadedScreen(
                     ImageDialog( // клик по фоткам в списке сохраненных
                         uri = selectedUri!!,
                         viewModel = viewModel,
-                        onDismiss = { showImageDialog = false },
+                        onDismiss = {
+                            viewModel.clearSelectedUri()
+                            showImageDialog = false
+                        },
                         onDelete = {
                             viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
                             showImageDialog = false
                         },
                         onSave = {}
@@ -320,6 +330,7 @@ fun LoadedScreen(
                             } else {
                                 ToastExt.show("Ошибка при сохранении")
                             }
+                            viewModel.clearSelectedUri()
                         }
 
                     )

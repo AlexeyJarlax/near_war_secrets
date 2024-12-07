@@ -27,9 +27,9 @@ fun SharedScreen(
     val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
     val temporaryImages by viewModel.receivedfromoutside.observeAsState(emptyList())
-    var selectedUri by remember { mutableStateOf<Uri?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
+    val selectedUri by viewModel.selectedUri.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
@@ -65,7 +65,7 @@ fun SharedScreen(
                             uri = uri,
                             viewModel = viewModel,
                             onImageClick = { clickedUri ->
-                                selectedUri = clickedUri
+                                viewModel.setSelectedUri(clickedUri)
                                 showImageDialog = true
                             }
                         )
@@ -81,7 +81,7 @@ fun SharedScreen(
                 viewModel.setAnImageWasSharedWithUsNow(false)
                 viewModel.removeExtractedImage(uri)
                 viewModel.deletePhoto(uri)
-                selectedUri = null
+                viewModel.clearSelectedUri()
             }
             showImageDialog = false
         }
@@ -104,9 +104,7 @@ fun SharedScreen(
                     } else {
                         ToastExt.show("Ошибка при сохранении")
                     }
-                    viewModel.setAnImageWasSharedWithUsNow(false)
-
-                    selectedUri = null
+                    closeShareDialogWithMemoryWash()
                 }
             )
         }
@@ -116,12 +114,12 @@ fun SharedScreen(
                 uri = selectedUri!!,
                 viewModel = viewModel,
                 onDismiss = {
-                    selectedUri = null
+                    viewModel.clearSelectedUri()
                     showImageDialog = false
                 },
                 onDelete = {
                     viewModel.deletePhoto(selectedUri!!)
-                    selectedUri = null
+                    viewModel.clearSelectedUri()
                     showImageDialog = false
                 },
                 onSave = {}
@@ -132,7 +130,7 @@ fun SharedScreen(
     // Отслеживаем добавление временных изображений
     LaunchedEffect(temporaryImages) {
         if (temporaryImages.isNotEmpty()) {
-            selectedUri = temporaryImages.last()
+            viewModel.setSelectedUri(temporaryImages.last())
             showImageDialog = true
         }
     }

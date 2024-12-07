@@ -57,6 +57,9 @@ class ImagesViewModel @Inject constructor(
     private val _anImageWasSharedWithUsNow = MutableStateFlow(false)
     val anImageWasSharedWithUsNow: StateFlow<Boolean> = _anImageWasSharedWithUsNow
 
+    private val _selectedUri = MutableStateFlow<Uri?>(null)
+    val selectedUri: StateFlow<Uri?> get() = _selectedUri
+
     init {
         Timber.tag(TAG).d("=== Инициализация ImagesViewModel")
         loadExtractedImages()
@@ -72,6 +75,16 @@ class ImagesViewModel @Inject constructor(
     fun dontSave() {
         _showSaveDialog.value = false
         Timber.tag(TAG).d("=== Диалог сохранения скрыт")
+    }
+
+    fun setSelectedUri(uri: Uri?) {
+        _selectedUri.value = uri
+        Timber.tag(TAG).d("=== Установлено selectedUri: $uri")
+    }
+
+    fun clearSelectedUri() {
+        _selectedUri.value = null
+        Timber.tag(TAG).d("=== Очистка selectedUri")
     }
 
     /** --------------------------------------------------ЛОАДЕРЫ СПИСКОВ--------------------------------------------------*/
@@ -443,8 +456,8 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("=== Удаление временного изображения: $uri")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val file = File(uri.path ?: "")
-                if (file.exists()) {
+                val file = uriToFile(uri)
+                if (file != null && file.exists()) {
                     val deleted = file.delete()
                     if (deleted) {
                         Timber.tag(TAG).d("=== Временное изображение удалено: ${file.absolutePath}")
@@ -452,7 +465,7 @@ class ImagesViewModel @Inject constructor(
                         Timber.tag(TAG).e("=== Не удалось удалить временное изображение: ${file.absolutePath}")
                     }
                 } else {
-                    Timber.tag(TAG).e("=== Файл не найден для удаления: ${uri.path}")
+                    Timber.tag(TAG).e("=== Файл не найден для удаления: $uri")
                 }
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при удалении временного изображения: $uri")
