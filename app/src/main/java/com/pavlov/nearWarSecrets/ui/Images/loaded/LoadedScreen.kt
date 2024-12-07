@@ -295,22 +295,6 @@ fun LoadedScreen(
                 }
 
                 /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
-                if (showImageDialog && selectedUri != null) {
-                    ImageDialog( // клик по фоткам в списке сохраненных
-                        uri = selectedUri!!,
-                        viewModel = viewModel,
-                        onDismiss = {
-                            viewModel.clearSelectedUri()
-                            showImageDialog = false
-                        },
-                        onDelete = {
-                            viewModel.deletePhoto(selectedUri!!)
-                            viewModel.clearSelectedUri()
-                            showImageDialog = false
-                        },
-                        onSave = {}
-                    )
-                }
 
                 if (showSaveDialog && selectedUri != null) {
                     ImageDialog( // клик по snapshot
@@ -328,15 +312,27 @@ fun LoadedScreen(
                         },
                         isItNew = true,
                         onSave = {
-                            val success = viewModel.saveExtractedImage(selectedUri!!, UPLOADED_BY_ME)
-                            if (success) {
-                                ToastExt.show("Сохранено")
-                            } else {
-                                ToastExt.show("Ошибка при сохранении")
-                            }
+                            viewModel.addPhoto(selectedUri!!)
                             viewModel.clearSelectedUri()
                         }
 
+                    )
+                }
+
+                if (showImageDialog && selectedUri != null) {
+                    ImageDialog( // клик по фоткам в списке сохраненных
+                        uri = selectedUri!!,
+                        viewModel = viewModel,
+                        onDismiss = {
+                            viewModel.clearSelectedUri()
+                            showImageDialog = false
+                        },
+                        onDelete = {
+                            viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
+                            showImageDialog = false
+                        },
+                        onSave = {}
                     )
                 }
             }

@@ -294,7 +294,7 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun addPhoto(uri: Uri) { // для фоток из галереи
+    fun addPhoto(uri: Uri) { // для фоток из галереи и из камеры
         Timber.tag(TAG).d("=== Добавление фотографии из галереи: $uri")
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -329,8 +329,9 @@ class ImagesViewModel @Inject constructor(
 
                 loadUploadedbymeImages()
             } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "=== Ошибка при добавлении фотографии из галереи: $uri")
+                Timber.tag(TAG).e(e, "=== Ошибка при добавлении фотографии из галереи или видеоискателя: $uri")
             }
+            clearTempImages()
         }
     }
 
@@ -371,7 +372,7 @@ class ImagesViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 loadReceivedfromoutsideImages()
                 removeExtractedImage(uri)
-                clearExtractedImages()
+                clearTempImages()
             }
             true
         } catch (e: Exception) {
@@ -472,7 +473,7 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun clearExtractedImages() {
+    fun clearTempImages() {
         Timber.tag(TAG).d("=== Очистка всех временных изображений")
         viewModelScope.launch(Dispatchers.IO) {
             try {

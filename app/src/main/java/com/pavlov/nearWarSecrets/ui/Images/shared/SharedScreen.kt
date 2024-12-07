@@ -1,6 +1,5 @@
 package com.pavlov.nearWarSecrets.ui.Images.shared
 
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -14,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
-import android.net.Uri
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.IosShare
@@ -26,10 +24,7 @@ import com.pavlov.nearWarSecrets.util.ToastExt
 import timber.log.Timber
 
 @Composable
-fun SharedScreen(
-    viewModel: ImagesViewModel = hiltViewModel(),
-    onImageClick: (Uri) -> Unit
-) {
+fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
     val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
     val receivedfromoutside by viewModel.receivedfromoutside.collectAsState()
     val tempImages by viewModel.tempImages.collectAsState()
@@ -94,7 +89,7 @@ fun SharedScreen(
                 viewModel.deletePhoto(uri)
                 viewModel.clearSelectedUri()
             }
-            viewModel.clearExtractedImages()
+            viewModel.clearTempImages()
             showImageDialog = false
         }
 
@@ -125,7 +120,7 @@ fun SharedScreen(
                         }
                         viewModel.setAnImageWasSharedWithUsNow(false)
                         viewModel.clearSelectedUri()
-                        viewModel.clearExtractedImages()
+                        viewModel.clearTempImages()
                     }
                 )
                 Icon( // индикатор диалога, с которым поделились
@@ -149,13 +144,13 @@ fun SharedScreen(
                 onDismiss = {
                     viewModel.clearSelectedUri()
                     showImageDialog = false
-                    viewModel.clearExtractedImages()
+                    viewModel.clearTempImages()
                 },
                 onDelete = {
                     viewModel.deletePhoto(selectedUri!!)
                     viewModel.clearSelectedUri()
                     showImageDialog = false
-                    viewModel.clearExtractedImages()
+                    viewModel.clearTempImages()
                 },
                 onSave = {}
             )

@@ -112,10 +112,7 @@ fun NavGraph(
             composable(NavDestinations.IMAGES) {
                 ImagesScreen(
                     itemLoaderScreen = { LoadedScreen(viewModel = imagesViewModel) },
-                    extractedImagesScreen = { SharedScreen(
-                        viewModel = imagesViewModel,
-                        onImageClick = { uri -> }
-                    ) }
+                    extractedImagesScreen = { SharedScreen(viewModel = imagesViewModel) }
                 )
             }
 
@@ -124,10 +121,7 @@ fun NavGraph(
             }
 
             composable(NavDestinations.EXTRACTER) {
-                SharedScreen(
-                    viewModel = imagesViewModel,
-                    onImageClick = { uri -> }
-                )
+                SharedScreen(viewModel = imagesViewModel)
             }
 
             composable(NavDestinations.STORAGE_LOG) {
