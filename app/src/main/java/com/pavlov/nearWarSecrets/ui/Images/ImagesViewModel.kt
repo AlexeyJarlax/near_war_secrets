@@ -21,6 +21,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
 import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,25 +46,22 @@ class ImagesViewModel @Inject constructor(
     private val _showSaveDialog = MutableLiveData<Boolean>()
     val showSaveDialog: LiveData<Boolean> get() = _showSaveDialog
 
-    // LiveData для временных изображений (из поделиться)
-    private val _extractedImages = MutableLiveData<List<Uri>>()
-    val extractedImages: LiveData<List<Uri>> = _extractedImages
+    private val _receivedfromoutside = MutableLiveData<List<Uri>>()
+    val receivedfromoutside: LiveData<List<Uri>> = _receivedfromoutside
 
-    // LiveData для сохраненных изображений (из поделиться)
     private val _savedImages = MutableLiveData<List<Uri>>()
     val savedImages: LiveData<List<Uri>> = _savedImages
 
-    // LiveData для списка фотографий в LoaderScreen
-    private val _photoList = MutableLiveData<List<String>>()
-    val photoList: LiveData<List<String>> = _photoList
+    private val _uploadedbyme = MutableLiveData<List<String>>()
+    val uploadedbyme: LiveData<List<String>> = _uploadedbyme
 
     private val _anImageWasSharedWithUsNow = MutableStateFlow(false)
     val anImageWasSharedWithUsNow: StateFlow<Boolean> = _anImageWasSharedWithUsNow
 
     init {
         loadExtractedImages()
-        loadSavedImages()
-        loadPhotoList()
+        loadReceivedfromoutsideImages()
+        loadUploadedbymeImages()
         Timber.tag(TAG).d("=== init class ImagesViewModel")
     }
 
@@ -75,23 +73,20 @@ class ImagesViewModel @Inject constructor(
         _showSaveDialog.value = false
     }
 
-    /** методы для работы функции приёма изображений от Поделиться*/
-
-    // Загрузка временных изображений
+    /** --------------------------------------------------ЛОАДЕРЫ СПИСКОВ--------------------------------------------------*/
     private fun loadExtractedImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, "TempImages")
+            val tempDir = File(context.filesDir, TEMP_IMAGES)
             if (!tempDir.exists()) {
                 tempDir.mkdirs()
             }
             val images = tempDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
-            _extractedImages.postValue(images)
-            Timber.tag(TAG).d("Загружено временных изображений: ${images.size}")
+            _receivedfromoutside.postValue(images)
+            Timber.tag(TAG).d("=== Загружено временных изображений: ${images.size}")
         }
     }
 
-    // Загрузка сохраненных изображений
-    private fun loadSavedImages() {
+    private fun loadReceivedfromoutsideImages() {
         viewModelScope.launch(Dispatchers.IO) {
             val savedDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
             if (!savedDir.exists()) {
@@ -99,14 +94,44 @@ class ImagesViewModel @Inject constructor(
             }
             val images = savedDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
             _savedImages.postValue(images)
-            Timber.tag(TAG).d("Загружено сохраненных изображений: ${images.size}")
+            Timber.tag(TAG).d("=== Загружено сохраненных изображений: ${images.size}")
         }
     }
 
-    // Добавление временных изображений
+    private fun loadUploadedbymeImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val directory = File(context.filesDir, UPLOADED_BY_ME)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+            val files = directory.listFiles()?.map { it.name } ?: emptyList()
+            _uploadedbyme.postValue(files)
+            Timber.tag(TAG).d("=== Загружено фото для LoaderScreen: ${files.size}")
+        }
+    }
+
+    /** ---------------------------------------------------- ЭДАРЫ -----------------------------------------------------------*/
+
+    fun getFileUri(fileName: String): Uri? { // в начале получаем правильный Uri
+        val uploadedbyme = File(context.filesDir, UPLOADED_BY_ME)
+        val receivedfromoutside = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
+        val tempimages = File(context.filesDir, TEMP_IMAGES)
+        val file = when {
+            File(uploadedbyme, fileName).exists() -> File(uploadedbyme, fileName)
+            File(receivedfromoutside, fileName).exists() -> File(receivedfromoutside, fileName)
+            File(tempimages, fileName).exists() -> File(tempimages, fileName)
+            else -> null
+        }
+        return if (file != null && file.exists()) {
+            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        } else {
+            null
+        }
+    }
+
     fun addReceivedPhoto(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, "TempImages")
+            val tempDir = File(context.filesDir, TEMP_IMAGES)
             if (!tempDir.exists()) {
                 tempDir.mkdirs()
             }
@@ -117,7 +142,7 @@ class ImagesViewModel @Inject constructor(
                 file.outputStream().use { output ->
                     stream.copyTo(output)
                 }
-                Timber.tag(TAG).d("Added temporary image: ${file.absolutePath}")
+                Timber.tag(TAG).d("=== Added temporary image: ${file.absolutePath}")
                 withContext(Dispatchers.Main) {
                     loadExtractedImages()
                 }
@@ -127,7 +152,7 @@ class ImagesViewModel @Inject constructor(
 
     fun addReceivedPhotos(uris: List<Uri>) {   // (для нескольких URI)
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, "TempImages")
+            val tempDir = File(context.filesDir, TEMP_IMAGES)
             if (!tempDir.exists()) {
                 tempDir.mkdirs()
             }
@@ -139,7 +164,7 @@ class ImagesViewModel @Inject constructor(
                     file.outputStream().use { output ->
                         stream.copyTo(output)
                     }
-                    Log.d(TAG, "Добавлено временное изображение: ${file.absolutePath}")
+                    Timber.tag(TAG).d("=== Добавлено временное изображение: ${file.absolutePath}")
                 }
             }
             withContext(Dispatchers.Main) {
@@ -148,17 +173,24 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    // Удаление временного изображения
-    fun removeExtractedImage(uri: Uri) {
+    fun addPhoto(uri: Uri) { // для фоток из галереи
         viewModelScope.launch(Dispatchers.IO) {
-            val file = File(uri.path ?: "")
-            if (file.exists()) {
-                file.delete()
-                Log.d(TAG, "Удалено временное изображение: ${file.absolutePath}")
-            } else {
-                Log.e(TAG, "Файл не найден для удаления: ${uri.path}")
+            val fileName = getFileName()
+            val uploadedbymeDir = File(context.filesDir, UPLOADED_BY_ME)
+            if (!uploadedbymeDir.exists()) {
+                uploadedbymeDir.mkdirs()
             }
-            loadExtractedImages()
+            val destinationFile = File(uploadedbymeDir, fileName)
+            try {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                val outputStream = FileOutputStream(destinationFile)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+                loadUploadedbymeImages()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -177,78 +209,76 @@ class ImagesViewModel @Inject constructor(
                     input.copyTo(output)
                 }
             }
-            Timber.tag(TAG).d("Сохранено изображение: ${file.absolutePath}")
-            loadSavedImages()
+            Timber.tag(TAG).d("=== Сохранено изображение: ${file.absolutePath}")
+            loadReceivedfromoutsideImages()
             removeExtractedImage(uri)
             true
         } catch (e: Exception) {
-            Timber.tag(TAG).e("Ошибка при сохранении изображения: ${e.message}")
+            Timber.tag(TAG).e("=== Ошибка при сохранении изображения: ${e.message}")
             e.printStackTrace()
             false
+        }
+    }
+
+    /** ---------------------------------------------------- ДЕЛИТЕРЫ -----------------------------------------------------------*/
+   fun uriToFile(uri: Uri): File? { // Например: content://com.pavlov.nearWarSecrets.fileprovider/uploadedbyme/image_...jpg
+        val segments = uri.pathSegments
+        if (segments.size >= 2) {
+            val dirName = segments[0]
+            val fileName = segments[1]
+            val directory = File(context.filesDir, dirName)
+            return File(directory, fileName)
+        }
+        return null
+    }
+
+    fun deletePhoto(fileUri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val file = uriToFile(fileUri)
+                if (file != null && file.exists()) {
+                    file.delete()
+                } else {
+                    Timber.e("Файл не найден: $fileUri")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "=== ошибка удаления: $fileUri")
+            } finally {
+                loadUploadedbymeImages()
+            }
+        }
+    }
+
+    fun removeExtractedImage(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val file = File(uri.path ?: "")
+            if (file.exists()) {
+                file.delete()
+                Timber.tag(TAG).d("=== Удалено временное изображение: ${file.absolutePath}")
+            } else {
+                Timber.tag(TAG).e("=== Файл не найден для удаления: ${uri.path}")
+            }
+            loadExtractedImages()
         }
     }
 
     // Очистка временных изображений
     fun clearExtractedImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, "TempImages")
+            val tempDir = File(context.filesDir, TEMP_IMAGES)
             tempDir.listFiles()?.forEach {
                 if (it.delete()) {
-                    Timber.tag(TAG).d("Удалено временное изображение: ${it.absolutePath}")
+                    Timber.tag(TAG).d("=== Удалено временное изображение: ${it.absolutePath}")
                 } else {
-                    Timber.tag(TAG).e("Не удалось удалить временное изображение: ${it.absolutePath}")
+                    Timber.tag(TAG).e("=== Не удалось удалить временное изображение: ${it.absolutePath}")
                 }
             }
-            _extractedImages.postValue(emptyList())
-            Timber.tag(TAG).d("Все временные изображения удалены")
+            _receivedfromoutside.postValue(emptyList())
+            Timber.tag(TAG).d("=== Все временные изображения удалены")
         }
     }
 
-// общие разделы
-
-private fun loadPhotoList() {
-    viewModelScope.launch(Dispatchers.IO) {
-        val directory = File(context.filesDir, UPLOADED_BY_ME)
-        if (!directory.exists()) {
-            directory.mkdirs()
-        }
-        val files = directory.listFiles()?.map { it.name } ?: emptyList()
-        _photoList.postValue(files)
-        Timber.tag(TAG).d("Загружено фото для LoaderScreen: ${files.size}")
-    }
-}
-
-    fun addPhoto(uri: Uri) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val fileName = getFileName()
-            val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
-            if (!photoListDir.exists()) {
-                photoListDir.mkdirs()
-            }
-            val destinationFile = File(photoListDir, fileName)
-            try {
-                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-                val outputStream = FileOutputStream(destinationFile)
-                inputStream?.copyTo(outputStream)
-                inputStream?.close()
-                outputStream.close()
-                loadPhotoList()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun deletePhoto(fileName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
-            val fileToDelete = File(photoListDir, fileName)
-            if (fileToDelete.exists()) {
-                fileToDelete.delete()
-            }
-            loadPhotoList() // Обновляем список после удаления
-        }
-    }
+    /** ---------------------------------------------------- ОБЩИЕ РАЗДЕЛЫ -----------------------------------------------------------*/
 
     fun getPhotoDate(fileName: String): String {
         val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
@@ -280,40 +310,6 @@ private fun loadPhotoList() {
         _showSaveDialog.value = boolean
     }
 
-    fun savePhotoWithChoice(uri: Uri) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val fileName = getFileName()
-            val destinationFile = File(context.filesDir, fileName)
-
-            try {
-                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-                val outputStream = FileOutputStream(destinationFile)
-                inputStream?.copyTo(outputStream)
-                outputStream.close()
-                inputStream?.close()
-                loadPhotoList()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        _showSaveDialog.value = false
-    }
-
-    fun getFileUri(fileName: String): Uri? {
-        val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
-        val extractedImagesDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
-        val file = when {
-            File(photoListDir, fileName).exists() -> File(photoListDir, fileName)
-            File(extractedImagesDir, fileName).exists() -> File(extractedImagesDir, fileName)
-            else -> null
-        }
-        return if (file != null && file.exists()) {
-            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        } else {
-            null
-        }
-    }
-
 // Стеганография
 
     fun shareImageWithHiddenOriginal(
@@ -323,10 +319,10 @@ private fun loadPhotoList() {
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Timber.d("Starting steganography with memeResId: $memeResId")
+                Timber.d("=== Starting steganography with memeResId: $memeResId")
                 val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
                 if (originalBitmap == null) {
-                    Timber.e("Failed to decode original image from file: ${originalImageFile.absolutePath}")
+                    Timber.e("=== Failed to decode original image from file: ${originalImageFile.absolutePath}")
                     withContext(Dispatchers.Main) {
                         onResult(null)
                     }
@@ -354,7 +350,7 @@ private fun loadPhotoList() {
                         originalBitmap
                     }
 
-                Timber.d("Resized original bitmap: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
+                Timber.d("=== Resized original bitmap: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
 
                 val encodedBitmap = hideImageInMeme(memeBitmap, resizedOriginalBitmap)
                 if (encodedBitmap == null) {
@@ -365,7 +361,7 @@ private fun loadPhotoList() {
                     return@launch
                 }
 
-                Timber.d("Encoded bitmap: ${encodedBitmap.width}x${encodedBitmap.height}")
+                Timber.d("=== Encoded bitmap: ${encodedBitmap.width}x${encodedBitmap.height}")
 
                 val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.jpg"
                 val destinationFile = File(context.cacheDir, fileName)
@@ -374,21 +370,21 @@ private fun loadPhotoList() {
                 outputStream.flush()
                 outputStream.close()
 
-                Timber.d("Saved encoded image to: ${destinationFile.absolutePath}")
+                Timber.d("=== Saved encoded image to: ${destinationFile.absolutePath}")
 
                 val uri = FileProvider.getUriForFile(
                     context,
                     "${context.packageName}.fileprovider",
                     destinationFile
                 )
-                Timber.d("Generated URI for encoded image: $uri")
+                Timber.d("=== Generated URI for encoded image: $uri")
 
                 withContext(Dispatchers.Main) {
                     onResult(uri)
                 }
 
             } catch (e: Exception) {
-                Timber.e(e, "Error during shareImageWithHiddenOriginal")
+                Timber.e(e, "=== Error during shareImageWithHiddenOriginal")
                 withContext(Dispatchers.Main) {
                     onResult(null)
                 }
@@ -419,7 +415,7 @@ private fun loadPhotoList() {
             }
             encodedBitmap
         } catch (e: Exception) {
-            Timber.e(e, "ошибка в методе hideImageInMeme")
+            Timber.e(e, "=== ошибка в методе hideImageInMeme")
             null
         }
     }
@@ -451,14 +447,14 @@ private fun loadPhotoList() {
                 inputStream?.close()
 
                 if (memeBitmap == null) {
-                    Timber.e("Failed to decode meme image from URI: $memeUri")
+                    Timber.e("=== Failed to decode meme image from URI: $memeUri")
                     return@withContext null
                 }
 
                 val originalBitmap = extractOriginalFromMeme(memeBitmap)
 
                 if (originalBitmap == null) {
-                    Timber.e("Failed to extract original image from meme.")
+                    Timber.e("=== Failed to extract original image from meme.")
                     return@withContext null
                 }
 

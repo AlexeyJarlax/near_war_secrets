@@ -2,5 +2,6 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <files-path name="uploadedbyme" path="uploadedbyme/" />
     <files-path name="receivedfromoutside" path="receivedfromoutside/" />
+    <files-path name="tempimages" path="tempimages/" />
     <cache-path name="cache" path="." />
 </paths>

@@ -52,6 +52,7 @@ import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
 import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -60,7 +61,7 @@ fun LoadedScreen(
     viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val photoList by viewModel.photoList.observeAsState(emptyList())
+    val uploadedbyme by viewModel.uploadedbyme.observeAsState(emptyList())
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
@@ -128,7 +129,7 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     val fileName = viewModel.getFileName()
-                                    val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
+                                    val photoListDir = File(context.filesDir, TEMP_IMAGES)
                                     if (!photoListDir.exists()) {
                                         photoListDir.mkdirs()
                                     }
@@ -241,7 +242,7 @@ fun LoadedScreen(
                 MatrixBackground()
 
                 /** ----------------------------------------СПИСОК ФОТО или заглушка -----------------------------------------------------------*/
-                if (photoList.isEmpty()) {
+                if (uploadedbyme.isEmpty()) {
                     Text(
                         text = "Нет добавленных изображений",
                         modifier = Modifier.align(Alignment.Center)
@@ -254,7 +255,7 @@ fun LoadedScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(photoList.sortedByDescending { viewModel.getPhotoDate(it) }) { fileName ->
+                        items(uploadedbyme.sortedByDescending { viewModel.getPhotoDate(it) }) { fileName ->
                             LoadedItem(
                                 fileName = fileName,
                                 viewModel = viewModel,
@@ -295,7 +296,7 @@ fun LoadedScreen(
                         viewModel = viewModel,
                         onDismiss = { showImageDialog = false },
                         onDelete = {
-                            viewModel.deletePhoto(selectedFileName!!)
+                            viewModel.deletePhoto(selectedUri!!)
                             showImageDialog = false
                         },
                         onSave = {}
@@ -308,7 +309,7 @@ fun LoadedScreen(
                         viewModel = viewModel,
                         onDismiss = { viewModel.onSavePhotoClicked(false) },
                         onDelete = {
-                            viewModel.deletePhoto(selectedFileName!!)
+                            viewModel.deletePhoto(selectedUri!!)
                             viewModel.onSavePhotoClicked(false)
                         },
                         isItNew = true,

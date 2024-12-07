@@ -32,7 +32,7 @@ fun ImagesScreen(
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    val extractedImages by viewModel.extractedImages.observeAsState(emptyList())
+    val extractedImages by viewModel.receivedfromoutside.observeAsState(emptyList())
 
     LaunchedEffect(extractedImages) {
         if (extractedImages.isNotEmpty()) {

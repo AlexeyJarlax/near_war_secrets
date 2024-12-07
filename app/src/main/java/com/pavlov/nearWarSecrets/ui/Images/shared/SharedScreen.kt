@@ -26,9 +26,10 @@ fun SharedScreen(
 ) {
     val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
     val savedImages by viewModel.savedImages.observeAsState(emptyList())
-    val temporaryImages by viewModel.extractedImages.observeAsState(emptyList())
+    val temporaryImages by viewModel.receivedfromoutside.observeAsState(emptyList())
     var selectedUri by remember { mutableStateOf<Uri?>(null) }
-    var showDialog by remember { mutableStateOf(false) }
+    var showImageDialog by remember { mutableStateOf(false) }
+    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
 
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
@@ -65,7 +66,7 @@ fun SharedScreen(
                             viewModel = viewModel,
                             onImageClick = { clickedUri ->
                                 selectedUri = clickedUri
-                                showDialog = true
+                                showImageDialog = true
                             }
                         )
                     }
@@ -76,12 +77,12 @@ fun SharedScreen(
 
         /** ------------------ НИЖЕ ОСНОВНЫЕ ДИАЛОГИ ВСПЛЫВАЮЩИХ ОКОН -----------------------------------------*/
         fun closeShareDialogWithMemoryWash() {
-            showDialog = false
-            viewModel.removeExtractedImage(selectedUri!!)
             viewModel.setAnImageWasSharedWithUsNow(false)
+            viewModel.removeExtractedImage(selectedUri!!)
+            showImageDialog = false
         }
 
-        if (showDialog && temporaryImages != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
+        if (showImageDialog && temporaryImages != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,
@@ -104,15 +105,16 @@ fun SharedScreen(
             )
         }
 
-        if (showDialog && selectedUri != null && !anImageWasSharedWithUsNow) { // в отношении изображений, по которым кликнул пользователь в списке уже сохраненных
+        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) { // в отношении изображений, по которым кликнул пользователь в списке уже сохраненных
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,
                 onDismiss = {
-                    showDialog = false
+                    showImageDialog = false
                 },
                 onDelete = {
-                    showDialog = false
+                    viewModel.deletePhoto(selectedUri!!)
+                    showImageDialog = false
                 },
                 onSave = {}
             )
@@ -123,7 +125,7 @@ fun SharedScreen(
     LaunchedEffect(temporaryImages) {
         if (temporaryImages.isNotEmpty()) {
             selectedUri = temporaryImages.last()
-            showDialog = true
+            showImageDialog = true
         }
     }
 }

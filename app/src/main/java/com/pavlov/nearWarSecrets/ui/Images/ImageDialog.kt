@@ -19,110 +19,90 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
-import java.io.File
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
-import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
-import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 
-@Composable
-fun ImageDialog(
     /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
-    uri: Uri,
-    viewModel: ImagesViewModel,
-    onDismiss: () -> Unit,
-    onDelete: () -> Unit,
-    isItNew: Boolean = false,
-    onSave: (() -> Unit)? = null
-) {
-    val context = LocalContext.current
-    val imageFile = File(uri.path ?: "")
+    @Composable
+    fun ImageDialog(
+        uri: Uri,
+        viewModel: ImagesViewModel,
+        onDismiss: () -> Unit,
+        onDelete: () -> Unit,
+        isItNew: Boolean = false,
+        onSave: (() -> Unit)? = null
+    ) {
+        val context = LocalContext.current
+        val actualImageFile = viewModel.uriToFile(uri)
 
-    if (!imageFile.exists()) {
-        LaunchedEffect(Unit) {
-            Toast.makeText(context, "Файл не найден: ${uri.path}", Toast.LENGTH_SHORT).show()
-            onDismiss()
+        if (actualImageFile == null || !actualImageFile.exists()) {
+            LaunchedEffect(Unit) {
+                Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+                onDismiss()
+            }
+            return
         }
-        return
-    }
 
-    val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
-    val extractedImagesDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
+        val date = viewModel.getPhotoDate(actualImageFile.name)
+        val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
+        val actualUri = Uri.fromFile(actualImageFile)
 
-    val actualImageFile = when {
-        File(photoListDir, imageFile.name).exists() -> File(photoListDir, imageFile.name)
-        File(extractedImagesDir, imageFile.name).exists() -> File(
-            extractedImagesDir,
-            imageFile.name
-        )
+        var showShareOptions by remember { mutableStateOf(false) }
+        var showMemeSelection by remember { mutableStateOf(false) }
+        var isProcessing by remember { mutableStateOf(false) }
 
-        else -> imageFile // Если файл не найден в ожидаемых директориях, использую переданный файл
-    }
-
-    val actualUri = Uri.fromFile(actualImageFile) // Обновляю Uri на основе найденного файла
-    val date = viewModel.getPhotoDate(actualImageFile.name)
-    val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
-
-    var showShareOptions by remember { mutableStateOf(false) }
-    var showMemeSelection by remember { mutableStateOf(false) }
-    var isProcessing by remember { mutableStateOf(false) }
-
-    /** ОСНОВНОЙ ДИАЛОГ С ИЗОБРБАЖЕНИЕМ */
-    MyStyledDialog(onDismissRequest = onDismiss) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = name, style = MaterialTheme.typography.h6)
-            Text(text = date, style = MaterialTheme.typography.subtitle2)
-            Spacer(modifier = Modifier.height(8.dp))
-
-            /** ЭКРАН С ВОЗМОЖНОСТЬЮ ЗУМА ПИНЧЕМ */
-            ZoomableImage(
-                uri = actualUri,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+        MyStyledDialog(onDismissRequest = onDismiss) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.Center,
-//                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth()
             ) {
+                Text(text = name, style = MaterialTheme.typography.h6)
+                Text(text = date, style = MaterialTheme.typography.subtitle2)
+                Spacer(modifier = Modifier.height(8.dp))
 
-                CustomButtonOne(
-                    onClick = { showShareOptions = true },
-                    text = "Поделиться",
-                    icon = Icons.Default.Share
+                ZoomableImage(
+                    uri = actualUri,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
                 )
 
-                if (isItNew) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     CustomButtonOne(
-                        onClick = {
-                            onSave?.invoke()
-                            onDismiss()
-                        },
-                        text = "Сохранить",
-                        icon = Icons.Default.Save
+                        onClick = { showShareOptions = true },
+                        text = "Поделиться",
+                        icon = Icons.Default.Share
+                    )
+
+                    if (isItNew) {
+                        CustomButtonOne(
+                            onClick = {
+                                onSave?.invoke()
+                                onDismiss()
+                            },
+                            text = "Сохранить",
+                            icon = Icons.Default.Save
+                        )
+                    }
+
+                    CustomButtonOne(
+                        onClick = onDelete,
+                        text = "Удалить",
+                        icon = Icons.Default.Delete
+                    )
+
+                    CustomButtonOne(
+                        onClick = onDismiss,
+                        text = "Закрыть",
+                        icon = Icons.Default.Close
                     )
                 }
-
-                CustomButtonOne(
-                    onClick = onDelete,
-                    text = "Удалить",
-                    icon = Icons.Default.Delete
-                )
-
-                CustomButtonOne(
-                    onClick = onDismiss,
-                    text = "Закрыть",
-                    icon = Icons.Default.Close
-                )
             }
         }
-    }
 
 // Диалог выбора способа поделиться
     if (showShareOptions) {
