@@ -26,7 +26,7 @@ fun CustomCircularProgressIndicator() {
     LaunchedEffect(Unit) {
         while (true) {
             currentSymbol.value = symbols.random()
-            delay(1000L)
+            delay(2000L)
         }
     }
 

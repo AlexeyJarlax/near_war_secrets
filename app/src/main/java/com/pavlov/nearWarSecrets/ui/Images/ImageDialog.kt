@@ -22,6 +22,8 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndica
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Cable
+import com.pavlov.nearWarSecrets.theme.My3
+import com.pavlov.nearWarSecrets.theme.My5
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
@@ -218,7 +220,7 @@ fun ImageDialog(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Обработка шифрования...")
+                Text(text = "Обработка шифрования", color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Column(
@@ -235,11 +237,11 @@ fun ImageDialog(
                             Icon(
                                 imageVector = Icons.Default.Cable,
                                 contentDescription = null,
-                                tint = Color.Green,
+                                tint = My3,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = step)
+                            Text(text = step, color = My3)
                         }
                     }
                 }
