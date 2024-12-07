@@ -45,8 +45,11 @@ class ImagesViewModel @Inject constructor(
     private val _showSaveDialog = MutableLiveData<Boolean>()
     val showSaveDialog: LiveData<Boolean> get() = _showSaveDialog
 
-    private val _receivedfromoutside = MutableLiveData<List<Uri>>()
-    val receivedfromoutside: LiveData<List<Uri>> = _receivedfromoutside
+    private val _receivedfromoutside = MutableLiveData<List<String>>()
+    val receivedfromoutside: LiveData<List<String>> = _receivedfromoutside
+
+    private val _tempImages = MutableLiveData<List<String>>()
+    val tempImages: LiveData<List<String>> = _tempImages
 
     private val _savedImages = MutableLiveData<List<Uri>>()
     val savedImages: LiveData<List<Uri>> = _savedImages
@@ -88,10 +91,11 @@ class ImagesViewModel @Inject constructor(
     }
 
     /** --------------------------------------------------ЛОАДЕРЫ СПИСКОВ--------------------------------------------------*/
-    private suspend fun <T> loadFiles(
+    // Метод для загрузки файлов и обновления LiveData
+    private suspend fun loadFiles(
         directoryName: String,
-        mapper: (File) -> T?,
-        liveData: MutableLiveData<List<T>>
+        mapper: (File) -> String?,
+        liveData: MutableLiveData<List<String>>
     ) {
         try {
             val directory = File(context.filesDir, directoryName)
@@ -126,14 +130,8 @@ class ImagesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             Timber.tag(TAG).d("=== Загрузка временных изображений (TEMP_IMAGES)")
             loadFiles(TEMP_IMAGES, { file ->
-                val uri = getFileUri(file.name)
-                if (uri != null) {
-                    uri
-                } else {
-                    Timber.tag(TAG).e("=== Не удалось получить URI для файла: ${file.absolutePath}")
-                    null
-                }
-            }, _receivedfromoutside)
+                file.name
+            }, _tempImages)
         }
     }
 
@@ -141,14 +139,8 @@ class ImagesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             Timber.tag(TAG).d("=== Загрузка сохранённых изображений (RECEIVED_FROM_OUTSIDE)")
             loadFiles(RECEIVED_FROM_OUTSIDE, { file ->
-                val uri = getFileUri(file.name)
-                if (uri != null) {
-                    uri
-                } else {
-                    Timber.tag(TAG).e("=== Не удалось получить URI для файла: ${file.absolutePath}")
-                    null
-                }
-            }, _savedImages)
+                file.name
+            }, _receivedfromoutside)
         }
     }
 
@@ -244,6 +236,7 @@ class ImagesViewModel @Inject constructor(
                 try {
                     file.outputStream().use { output ->
                         inputStream.copyTo(output)
+                        _anImageWasSharedWithUsNow.value = true
                     }
                     Timber.tag(TAG).d("=== Временное изображение добавлено: ${file.absolutePath}")
                 } catch (e: Exception) {
@@ -346,7 +339,6 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    // Сохранение временного изображения в сохраненные
     fun saveExtractedImage(uri: Uri, whereTo: String): Boolean {
         Timber.tag(TAG).d("=== Сохранение временного изображения: $uri в $whereTo")
         return try {
@@ -366,11 +358,12 @@ class ImagesViewModel @Inject constructor(
                 return false
             }
 
-            val fileName = "image_${System.currentTimeMillis()}.jpg"
+            val fileName = getFileName()
             val file = File(savedDir, fileName)
             try {
                 file.outputStream().use { output ->
                     inputStream.copyTo(output)
+                    _anImageWasSharedWithUsNow.value = false
                 }
                 Timber.tag(TAG).d("=== Изображение сохранено: ${file.absolutePath}")
             } catch (e: Exception) {
@@ -380,7 +373,7 @@ class ImagesViewModel @Inject constructor(
                 inputStream.close()
             }
 
-            loadReceivedfromoutsideImages()
+            loadReceivedfromoutsideImages() // Обновляем список после сохранения
             removeExtractedImage(uri)
             true
         } catch (e: Exception) {
@@ -388,7 +381,6 @@ class ImagesViewModel @Inject constructor(
             false
         }
     }
-
     /** ---------------------------------------------------- ДЕЛИТЕРЫ -----------------------------------------------------------*/
     fun uriToFile(uri: Uri): File? {
         Timber.tag(TAG).d("=== Преобразование URI в файл: $uri")
@@ -447,7 +439,14 @@ class ImagesViewModel @Inject constructor(
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при удалении файла: $fileUri")
             } finally {
-                loadUploadedbymeImages()
+                // Проверяем, из какой папки был удален файл и обновляем соответствующий список
+                val file = uriToFile(fileUri)
+                if (file != null && file.parentFile?.name == RECEIVED_FROM_OUTSIDE) {
+                    loadReceivedfromoutsideImages()
+                }
+                if (file != null && file.parentFile?.name == UPLOADED_BY_ME) {
+                    loadUploadedbymeImages()
+                }
             }
         }
     }
@@ -475,7 +474,6 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    // Очистка временных изображений
     fun clearExtractedImages() {
         Timber.tag(TAG).d("=== Очистка всех временных изображений")
         viewModelScope.launch(Dispatchers.IO) {
@@ -496,7 +494,8 @@ class ImagesViewModel @Inject constructor(
                 } else {
                     Timber.tag(TAG).d("=== Директория $TEMP_IMAGES не существует.")
                 }
-                _receivedfromoutside.postValue(emptyList())
+                // Очищаем список временных изображений
+                _tempImages.postValue(emptyList())
                 Timber.tag(TAG).d("=== Все временные изображения очищены")
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при очистке временных изображений")

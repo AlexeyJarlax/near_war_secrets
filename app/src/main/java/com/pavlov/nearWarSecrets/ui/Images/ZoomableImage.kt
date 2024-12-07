@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.IntSize
 import coil.compose.rememberImagePainter
 import android.net.Uri
 
@@ -20,7 +19,6 @@ fun ZoomableImage(
     uri: Uri,
     modifier: Modifier = Modifier
 ) {
-    // Состояния для масштаба и смещения
     var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }

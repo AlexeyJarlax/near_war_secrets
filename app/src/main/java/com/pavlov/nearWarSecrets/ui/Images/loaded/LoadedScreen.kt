@@ -65,8 +65,6 @@ fun LoadedScreen(
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
-    // Удаляем локальное состояние selectedUri
-    // var selectedUri: Uri? by remember { mutableStateOf(null) }
     val selectedUri by viewModel.selectedUri.collectAsState()
     val isStorageMode = false
     val isLoading by viewModel.isLoading.observeAsState(false)

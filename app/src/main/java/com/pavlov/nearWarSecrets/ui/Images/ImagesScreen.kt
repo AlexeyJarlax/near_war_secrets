@@ -33,9 +33,10 @@ fun ImagesScreen(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val extractedImages by viewModel.receivedfromoutside.observeAsState(emptyList())
+    val tempImages by viewModel.tempImages.observeAsState(emptyList())
 
-    LaunchedEffect(extractedImages) {
-        if (extractedImages.isNotEmpty()) {
+    LaunchedEffect(tempImages) {
+        if (tempImages.isNotEmpty()) {
             coroutineScope.launch {
                 pagerState.animateScrollToPage(1) // Переключаем при добавлении нового изображения на вторую вкладку (индекс 1)
             }

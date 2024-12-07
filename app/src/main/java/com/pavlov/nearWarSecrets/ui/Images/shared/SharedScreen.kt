@@ -18,12 +18,12 @@ import android.net.Uri
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.IosShare
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.nearWarSecrets.util.ToastExt
+import timber.log.Timber
 
 @Composable
 fun SharedScreen(
@@ -31,8 +31,8 @@ fun SharedScreen(
     onImageClick: (Uri) -> Unit
 ) {
     val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
-    val savedImages by viewModel.savedImages.observeAsState(emptyList())
-    val temporaryImages by viewModel.receivedfromoutside.observeAsState(emptyList())
+    val receivedfromoutside by viewModel.receivedfromoutside.observeAsState(emptyList())
+    val tempImages by viewModel.tempImages.observeAsState(emptyList())
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
     val selectedUri by viewModel.selectedUri.collectAsState()
@@ -46,7 +46,7 @@ fun SharedScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (savedImages.isEmpty() && temporaryImages.isEmpty()) {
+            if (receivedfromoutside.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -66,13 +66,18 @@ fun SharedScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(savedImages + temporaryImages) { uri ->
+                    items(receivedfromoutside.sortedByDescending { viewModel.getPhotoDate(it) }) { fileName ->
                         SharedItem(
-                            uri = uri,
+                            fileName = fileName,
                             viewModel = viewModel,
-                            onImageClick = { clickedUri ->
-                                viewModel.setSelectedUri(clickedUri)
-                                showImageDialog = true
+                            onImageClick = { clickedFileName ->
+                                val uri = viewModel.getFileUri(clickedFileName)
+                                if (uri != null) {
+                                    viewModel.setSelectedUri(uri)
+                                    showImageDialog = true
+                                } else {
+                                    ToastExt.show("Не удалось получить URI для файла: $clickedFileName")
+                                }
                             }
                         )
                     }
@@ -89,10 +94,11 @@ fun SharedScreen(
                 viewModel.deletePhoto(uri)
                 viewModel.clearSelectedUri()
             }
+            viewModel.clearExtractedImages()
             showImageDialog = false
         }
 
-        if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
+        if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) {   //  через "Поделиться"
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -116,7 +122,9 @@ fun SharedScreen(
                         } else {
                             ToastExt.show("Ошибка при сохранении")
                         }
-                        closeShareDialogWithMemoryWash()
+                        viewModel.setAnImageWasSharedWithUsNow(false)
+                        viewModel.clearSelectedUri()
+                        viewModel.clearExtractedImages()
                     }
                 )
                 Icon( // индикатор диалога, с которым поделились
@@ -132,30 +140,37 @@ fun SharedScreen(
             }
         }
 
-        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) {
-            // в отношении изображений, по которым кликнул пользователь в списке уже сохраненных
+        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) {   // для уже сохраненных изображений
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,
                 onDismiss = {
                     viewModel.clearSelectedUri()
                     showImageDialog = false
+                    viewModel.clearExtractedImages()
                 },
                 onDelete = {
                     viewModel.deletePhoto(selectedUri!!)
                     viewModel.clearSelectedUri()
                     showImageDialog = false
+                    viewModel.clearExtractedImages()
                 },
                 onSave = {}
             )
         }
     }
 
-    // Отслеживаем добавление временных изображений
-    LaunchedEffect(temporaryImages) {
-        if (temporaryImages.isNotEmpty()) {
-            viewModel.setSelectedUri(temporaryImages.last())
-            showImageDialog = true
+    LaunchedEffect(anImageWasSharedWithUsNow, tempImages) {
+        if (anImageWasSharedWithUsNow && tempImages.isNotEmpty()) {
+            Timber.d("=== Новый image был получен через 'Поделиться': ${tempImages.last()}")
+            val latestTempImage = tempImages.last()
+            val uri = viewModel.getFileUri(latestTempImage)
+            if (uri != null) {
+                viewModel.setSelectedUri(uri)
+                showImageDialog = true
+            } else {
+                ToastExt.show("Не удалось получить URI для файла: $latestTempImage")
+            }
         }
     }
 }
