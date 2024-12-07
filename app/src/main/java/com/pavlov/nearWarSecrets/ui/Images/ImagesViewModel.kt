@@ -335,7 +335,8 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun saveExtractedImage(uri: Uri, whereTo: String): Boolean {
+    fun saveSharedImage(uri: Uri): Boolean {
+        val whereTo = RECEIVED_FROM_OUTSIDE
         Timber.tag(TAG).d("=== Сохранение временного изображения: $uri в $whereTo")
         return try {
             val savedDir = File(context.filesDir, whereTo)

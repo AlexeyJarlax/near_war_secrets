@@ -112,7 +112,7 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     isItNew = true,
                     onSave = {
                         val success =
-                            viewModel.saveExtractedImage(selectedUri!!, RECEIVED_FROM_OUTSIDE)
+                            viewModel.saveSharedImage(selectedUri!!)
                         if (success) {
                             ToastExt.show("Сохранено")
                         } else {
