@@ -1,7 +1,7 @@
 package com.pavlov.nearWarSecrets.ui.Images
 
+import android.app.Dialog
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -21,13 +21,9 @@ import androidx.compose.ui.unit.dp
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Cable
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import com.pavlov.nearWarSecrets.R
 
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
 
@@ -195,6 +191,7 @@ fun ImageDialog(
                                     "Поделиться изображением"
                                 )
                             )
+                            onDismiss()
                         } else {
                             Toast.makeText(
                                 context,
@@ -213,30 +210,7 @@ fun ImageDialog(
     }
 
     // Диалог загрузки с описанием процесса шифрования
-    if (isProcessing) { // Диалог загрузки
-
-        // Инициализация MediaPlayer для воспроизведения звука
-        val mediaPlayer = remember {
-            MediaPlayer.create(context, R.raw.tune1)
-        }
-
-        // Отслеживание последнего шага для предотвращения повторного воспроизведения звука
-        var lastStepCount by remember { mutableStateOf(0) }
-
-        // Воспроизведение звука при добавлении нового шага
-        LaunchedEffect(encryptionProgress) {
-            if (encryptionProgress.size > lastStepCount) {
-                mediaPlayer.start()
-                lastStepCount = encryptionProgress.size
-            }
-        }
-
-        // Освобождение ресурсов MediaPlayer при уничтожении Composable
-        DisposableEffect(Unit) {
-            onDispose {
-                mediaPlayer.release()
-            }
-        }
+    if (isProcessing) {
 
         MyStyledDialog(onDismissRequest = {}) {
             Column(
@@ -244,7 +218,7 @@ fun ImageDialog(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Обработка шифрования...", style = MaterialTheme.typography.h6, color = Color.White)
+                Text("Обработка шифрования...")
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Column(
@@ -259,16 +233,17 @@ fun ImageDialog(
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Check,
+                                imageVector = Icons.Default.Cable,
                                 contentDescription = null,
                                 tint = Color.Green,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = step, color = Color.White)
+                            Text(text = step)
                         }
                     }
                 }
+                CustomCircularProgressIndicator()
             }
         }
     }

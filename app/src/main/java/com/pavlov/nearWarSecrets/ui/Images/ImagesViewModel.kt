@@ -74,7 +74,7 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("=== Установлено _anImageWasSharedWithUsNow = $value")
     }
 
-    fun dontSave() {
+    fun dontShow() {
         _showSaveDialog.value = false
         Timber.tag(TAG).d("=== Диалог сохранения скрыт")
     }
