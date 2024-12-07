@@ -23,86 +23,87 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
-    /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
-    @Composable
-    fun ImageDialog(
-        uri: Uri,
-        viewModel: ImagesViewModel,
-        onDismiss: () -> Unit,
-        onDelete: () -> Unit,
-        isItNew: Boolean = false,
-        onSave: (() -> Unit)? = null
-    ) {
-        val context = LocalContext.current
-        val actualImageFile = viewModel.uriToFile(uri)
+/** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
+@Composable
+fun ImageDialog(
+    uri: Uri,
+    viewModel: ImagesViewModel,
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit,
+    isItNew: Boolean = false,
+    onSave: (() -> Unit)? = null
+) {
+    val context = LocalContext.current
+    val actualImageFile = viewModel.uriToFile(uri)
 
-        if (actualImageFile == null || !actualImageFile.exists()) {
-            LaunchedEffect(Unit) {
-                Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
-                onDismiss()
-            }
-            return
+    if (actualImageFile == null || !actualImageFile.exists()) {
+        LaunchedEffect(Unit) {
+            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+            onDismiss()
         }
+        return
+    }
 
-        val date = viewModel.getPhotoDate(actualImageFile.name)
-        val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
-        val actualUri = Uri.fromFile(actualImageFile)
+    val date = viewModel.getPhotoDate(actualImageFile.name)
+    val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
+    // Используем getFileUri для получения content:// URI
+    val actualUri = viewModel.getFileUri(actualImageFile.name) ?: Uri.EMPTY
 
-        var showShareOptions by remember { mutableStateOf(false) }
-        var showMemeSelection by remember { mutableStateOf(false) }
-        var isProcessing by remember { mutableStateOf(false) }
+    var showShareOptions by remember { mutableStateOf(false) }
+    var showMemeSelection by remember { mutableStateOf(false) }
+    var isProcessing by remember { mutableStateOf(false) }
 
-        MyStyledDialog(onDismissRequest = onDismiss) {
+    MyStyledDialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = name, style = MaterialTheme.typography.h6)
+            Text(text = date, style = MaterialTheme.typography.subtitle2)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            ZoomableImage(
+                uri = actualUri,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = name, style = MaterialTheme.typography.h6)
-                Text(text = date, style = MaterialTheme.typography.subtitle2)
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ZoomableImage(
-                    uri = actualUri,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .clip(RoundedCornerShape(8.dp))
+                CustomButtonOne(
+                    onClick = { showShareOptions = true },
+                    text = "Поделиться",
+                    icon = Icons.Default.Share
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                if (isItNew) {
                     CustomButtonOne(
-                        onClick = { showShareOptions = true },
-                        text = "Поделиться",
-                        icon = Icons.Default.Share
-                    )
-
-                    if (isItNew) {
-                        CustomButtonOne(
-                            onClick = {
-                                onSave?.invoke()
-                                onDismiss()
-                            },
-                            text = "Сохранить",
-                            icon = Icons.Default.Save
-                        )
-                    }
-
-                    CustomButtonOne(
-                        onClick = onDelete,
-                        text = "Удалить",
-                        icon = Icons.Default.Delete
-                    )
-
-                    CustomButtonOne(
-                        onClick = onDismiss,
-                        text = "Закрыть",
-                        icon = Icons.Default.Close
+                        onClick = {
+                            onSave?.invoke()
+                            onDismiss()
+                        },
+                        text = "Сохранить",
+                        icon = Icons.Default.Save
                     )
                 }
+
+                CustomButtonOne(
+                    onClick = onDelete,
+                    text = "Удалить",
+                    icon = Icons.Default.Delete
+                )
+
+                CustomButtonOne(
+                    onClick = onDismiss,
+                    text = "Закрыть",
+                    icon = Icons.Default.Close
+                )
             }
         }
+    }
 
 // Диалог выбора способа поделиться
     if (showShareOptions) {
@@ -115,12 +116,11 @@ import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        // Поделиться оригиналом
-                        val shareUri = actualUri // Используем actualUri напрямую
-                        if (shareUri != null) {
+                        // Поделиться оригиналом с использованием content:// URI
+                        if (actualUri != Uri.EMPTY) {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, shareUri)
+                                putExtra(Intent.EXTRA_STREAM, actualUri)
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
                             context.startActivity(

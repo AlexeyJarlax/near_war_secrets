@@ -19,7 +19,6 @@ import java.util.Date
 import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
 import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
@@ -59,190 +58,363 @@ class ImagesViewModel @Inject constructor(
     val anImageWasSharedWithUsNow: StateFlow<Boolean> = _anImageWasSharedWithUsNow
 
     init {
+        Timber.tag(TAG).d("=== Инициализация ImagesViewModel")
         loadExtractedImages()
         loadReceivedfromoutsideImages()
         loadUploadedbymeImages()
-        Timber.tag(TAG).d("=== init class ImagesViewModel")
     }
 
     fun setAnImageWasSharedWithUsNow(value: Boolean) {
         _anImageWasSharedWithUsNow.value = value
+        Timber.tag(TAG).d("=== Установлено _anImageWasSharedWithUsNow = $value")
     }
 
     fun dontSave() {
         _showSaveDialog.value = false
+        Timber.tag(TAG).d("=== Диалог сохранения скрыт")
     }
 
     /** --------------------------------------------------ЛОАДЕРЫ СПИСКОВ--------------------------------------------------*/
+    private suspend fun <T> loadFiles(
+        directoryName: String,
+        mapper: (File) -> T?,
+        liveData: MutableLiveData<List<T>>
+    ) {
+        try {
+            val directory = File(context.filesDir, directoryName)
+            if (!directory.exists()) {
+                val created = directory.mkdirs()
+                if (created) {
+                    Timber.tag(TAG).d("=== Директория $directoryName создана.")
+                } else {
+                    Timber.tag(TAG).e("=== Не удалось создать директорию $directoryName.")
+                }
+            } else {
+                Timber.tag(TAG).d("=== Директория $directoryName уже существует.")
+            }
+
+            val files = directory.listFiles()?.mapNotNull { file ->
+                try {
+                    mapper(file)
+                } catch (e: Exception) {
+                    Timber.tag(TAG).e(e, "=== Ошибка при преобразовании файла: ${file.absolutePath}")
+                    null
+                }
+            } ?: emptyList()
+
+            liveData.postValue(files)
+            Timber.tag(TAG).d("=== Загружено ${files.size} элементов из $directoryName.")
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "=== Ошибка при загрузке файлов из $directoryName.")
+        }
+    }
+
     private fun loadExtractedImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, TEMP_IMAGES)
-            if (!tempDir.exists()) {
-                tempDir.mkdirs()
-            }
-            val images = tempDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
-            _receivedfromoutside.postValue(images)
-            Timber.tag(TAG).d("=== Загружено временных изображений: ${images.size}")
+            Timber.tag(TAG).d("=== Загрузка временных изображений (TEMP_IMAGES)")
+            loadFiles(TEMP_IMAGES, { file ->
+                val uri = getFileUri(file.name)
+                if (uri != null) {
+                    uri
+                } else {
+                    Timber.tag(TAG).e("=== Не удалось получить URI для файла: ${file.absolutePath}")
+                    null
+                }
+            }, _receivedfromoutside)
         }
     }
 
     private fun loadReceivedfromoutsideImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val savedDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
-            if (!savedDir.exists()) {
-                savedDir.mkdirs()
-            }
-            val images = savedDir.listFiles()?.map { Uri.fromFile(it) } ?: emptyList()
-            _savedImages.postValue(images)
-            Timber.tag(TAG).d("=== Загружено сохраненных изображений: ${images.size}")
+            Timber.tag(TAG).d("=== Загрузка сохранённых изображений (RECEIVED_FROM_OUTSIDE)")
+            loadFiles(RECEIVED_FROM_OUTSIDE, { file ->
+                val uri = getFileUri(file.name)
+                if (uri != null) {
+                    uri
+                } else {
+                    Timber.tag(TAG).e("=== Не удалось получить URI для файла: ${file.absolutePath}")
+                    null
+                }
+            }, _savedImages)
         }
     }
 
     private fun loadUploadedbymeImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val directory = File(context.filesDir, UPLOADED_BY_ME)
-            if (!directory.exists()) {
-                directory.mkdirs()
+            Timber.tag(TAG).d("=== Загрузка загруженных пользователем изображений (UPLOADED_BY_ME)")
+            try {
+                val directory = File(context.filesDir, UPLOADED_BY_ME)
+                if (!directory.exists()) {
+                    val created = directory.mkdirs()
+                    if (created) {
+                        Timber.tag(TAG).d("=== Директория $UPLOADED_BY_ME создана.")
+                    } else {
+                        Timber.tag(TAG).e("=== Не удалось создать директорию $UPLOADED_BY_ME.")
+                    }
+                } else {
+                    Timber.tag(TAG).d("=== Директория $UPLOADED_BY_ME уже существует.")
+                }
+
+                val files = directory.listFiles()?.mapNotNull { file ->
+                    try {
+                        file.name
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).e(e, "=== Ошибка при получении имени файла: ${file.absolutePath}")
+                        null
+                    }
+                } ?: emptyList()
+
+                _uploadedbyme.postValue(files)
+                Timber.tag(TAG).d("=== Загружено ${files.size} файлов в $UPLOADED_BY_ME.")
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "=== Ошибка при загрузке файлов из $UPLOADED_BY_ME.")
             }
-            val files = directory.listFiles()?.map { it.name } ?: emptyList()
-            _uploadedbyme.postValue(files)
-            Timber.tag(TAG).d("=== Загружено фото для LoaderScreen: ${files.size}")
         }
     }
 
     /** ---------------------------------------------------- ЭДАРЫ -----------------------------------------------------------*/
 
-    fun getFileUri(fileName: String): Uri? { // в начале получаем правильный Uri
-        val uploadedbyme = File(context.filesDir, UPLOADED_BY_ME)
-        val receivedfromoutside = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
-        val tempimages = File(context.filesDir, TEMP_IMAGES)
+    fun getFileUri(fileName: String): Uri? { // Возвращает content:// URI
+        Timber.tag(TAG).d("=== Получение URI для файла: $fileName")
+        val uploadedbymeDir = File(context.filesDir, UPLOADED_BY_ME)
+        val receivedfromoutsideDir = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
+        val tempimagesDir = File(context.filesDir, TEMP_IMAGES)
+
         val file = when {
-            File(uploadedbyme, fileName).exists() -> File(uploadedbyme, fileName)
-            File(receivedfromoutside, fileName).exists() -> File(receivedfromoutside, fileName)
-            File(tempimages, fileName).exists() -> File(tempimages, fileName)
-            else -> null
+            File(uploadedbymeDir, fileName).exists() -> File(uploadedbymeDir, fileName)
+            File(receivedfromoutsideDir, fileName).exists() -> File(receivedfromoutsideDir, fileName)
+            File(tempimagesDir, fileName).exists() -> File(tempimagesDir, fileName)
+            else -> {
+                Timber.tag(TAG).e("=== Файл не найден: $fileName в известных директориях.")
+                null
+            }
         }
-        return if (file != null && file.exists()) {
-            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        } else {
+
+        return try {
+            if (file != null && file.exists()) {
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+                Timber.tag(TAG).d("=== Получен URI: $uri для файла: ${file.absolutePath}")
+                uri
+            } else {
+                Timber.tag(TAG).e("=== Файл не существует: ${file?.absolutePath}")
+                null
+            }
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "=== Ошибка при получении URI для файла: $fileName")
             null
         }
     }
 
     fun addReceivedPhoto(uri: Uri) {
+        Timber.tag(TAG).d("=== Добавление полученного изображения: $uri")
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, TEMP_IMAGES)
-            if (!tempDir.exists()) {
-                tempDir.mkdirs()
-            }
-            val inputStream = context.contentResolver.openInputStream(uri)
-            inputStream?.let { stream ->
+            try {
+                val tempDir = File(context.filesDir, TEMP_IMAGES)
+                if (!tempDir.exists()) {
+                    val created = tempDir.mkdirs()
+                    if (created) {
+                        Timber.tag(TAG).d("=== Директория $TEMP_IMAGES создана.")
+                    } else {
+                        Timber.tag(TAG).e("=== Не удалось создать директорию $TEMP_IMAGES.")
+                        return@launch
+                    }
+                }
+
+                val inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream == null) {
+                    Timber.tag(TAG).e("=== Не удалось открыть InputStream для URI: $uri")
+                    return@launch
+                }
+
                 val fileName = "temp_image_${System.currentTimeMillis()}.jpg"
                 val file = File(tempDir, fileName)
-                file.outputStream().use { output ->
-                    stream.copyTo(output)
+                try {
+                    file.outputStream().use { output ->
+                        inputStream.copyTo(output)
+                    }
+                    Timber.tag(TAG).d("=== Временное изображение добавлено: ${file.absolutePath}")
+                } catch (e: Exception) {
+                    Timber.tag(TAG).e(e, "=== Ошибка при копировании данных в файл: ${file.absolutePath}")
+                } finally {
+                    inputStream.close()
                 }
-                Timber.tag(TAG).d("=== Added temporary image: ${file.absolutePath}")
-                withContext(Dispatchers.Main) {
-                    loadExtractedImages()
-                }
+
+                loadExtractedImages()
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "=== Ошибка при добавлении полученного изображения: $uri")
             }
         }
     }
 
     fun addReceivedPhotos(uris: List<Uri>) {   // (для нескольких URI)
+        Timber.tag(TAG).d("=== Добавление нескольких полученных изображений: ${uris.size} шт.")
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, TEMP_IMAGES)
-            if (!tempDir.exists()) {
-                tempDir.mkdirs()
-            }
-            uris.forEach { uri ->
-                val inputStream = context.contentResolver.openInputStream(uri)
-                inputStream?.let { stream ->
-                    val fileName = "temp_image_${System.currentTimeMillis()}.jpg"
-                    val file = File(tempDir, fileName)
-                    file.outputStream().use { output ->
-                        stream.copyTo(output)
+            try {
+                val tempDir = File(context.filesDir, TEMP_IMAGES)
+                if (!tempDir.exists()) {
+                    val created = tempDir.mkdirs()
+                    if (created) {
+                        Timber.tag(TAG).d("=== Директория $TEMP_IMAGES создана.")
+                    } else {
+                        Timber.tag(TAG).e("=== Не удалось создать директорию $TEMP_IMAGES.")
+                        return@launch
                     }
-                    Timber.tag(TAG).d("=== Добавлено временное изображение: ${file.absolutePath}")
                 }
-            }
-            withContext(Dispatchers.Main) {
+
+                uris.forEach { uri ->
+                    try {
+                        val inputStream = context.contentResolver.openInputStream(uri)
+                        if (inputStream == null) {
+                            Timber.tag(TAG).e("=== Не удалось открыть InputStream для URI: $uri")
+                            return@forEach
+                        }
+
+                        val fileName = "temp_image_${System.currentTimeMillis()}.jpg"
+                        val file = File(tempDir, fileName)
+                        try {
+                            file.outputStream().use { output ->
+                                inputStream.copyTo(output)
+                            }
+                            Timber.tag(TAG).d("=== Временное изображение добавлено: ${file.absolutePath}")
+                        } catch (e: Exception) {
+                            Timber.tag(TAG).e(e, "=== Ошибка при копировании данных в файл: ${file.absolutePath}")
+                        } finally {
+                            inputStream.close()
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).e(e, "=== Ошибка при обработке URI: $uri")
+                    }
+                }
+
                 loadExtractedImages()
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "=== Ошибка при добавлении нескольких полученных изображений.")
             }
         }
     }
 
     fun addPhoto(uri: Uri) { // для фоток из галереи
+        Timber.tag(TAG).d("=== Добавление фотографии из галереи: $uri")
         viewModelScope.launch(Dispatchers.IO) {
-            val fileName = getFileName()
-            val uploadedbymeDir = File(context.filesDir, UPLOADED_BY_ME)
-            if (!uploadedbymeDir.exists()) {
-                uploadedbymeDir.mkdirs()
-            }
-            val destinationFile = File(uploadedbymeDir, fileName)
             try {
-                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-                val outputStream = FileOutputStream(destinationFile)
-                inputStream?.copyTo(outputStream)
-                inputStream?.close()
-                outputStream.close()
+                val fileName = getFileName()
+                val uploadedbymeDir = File(context.filesDir, UPLOADED_BY_ME)
+                if (!uploadedbymeDir.exists()) {
+                    val created = uploadedbymeDir.mkdirs()
+                    if (created) {
+                        Timber.tag(TAG).d("=== Директория $UPLOADED_BY_ME создана.")
+                    } else {
+                        Timber.tag(TAG).e("=== Не удалось создать директорию $UPLOADED_BY_ME.")
+                        return@launch
+                    }
+                }
+
+                val destinationFile = File(uploadedbymeDir, fileName)
+                try {
+                    val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                    if (inputStream == null) {
+                        Timber.tag(TAG).e("=== Не удалось открыть InputStream для URI: $uri")
+                        return@launch
+                    }
+
+                    val outputStream = FileOutputStream(destinationFile)
+                    inputStream.copyTo(outputStream)
+                    inputStream.close()
+                    outputStream.close()
+                    Timber.tag(TAG).d("=== Фотография сохранена: ${destinationFile.absolutePath}")
+                } catch (e: Exception) {
+                    Timber.tag(TAG).e(e, "=== Ошибка при копировании данных в файл: ${destinationFile.absolutePath}")
+                }
+
                 loadUploadedbymeImages()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.tag(TAG).e(e, "=== Ошибка при добавлении фотографии из галереи: $uri")
             }
         }
     }
 
     // Сохранение временного изображения в сохраненные
     fun saveExtractedImage(uri: Uri, whereTo: String): Boolean {
+        Timber.tag(TAG).d("=== Сохранение временного изображения: $uri в $whereTo")
         return try {
             val savedDir = File(context.filesDir, whereTo)
             if (!savedDir.exists()) {
-                savedDir.mkdirs()
-            }
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val fileName = "image_${System.currentTimeMillis()}.jpg"
-            val file = File(savedDir, fileName)
-            inputStream?.use { input ->
-                file.outputStream().use { output ->
-                    input.copyTo(output)
+                val created = savedDir.mkdirs()
+                if (created) {
+                    Timber.tag(TAG).d("=== Директория $whereTo создана.")
+                } else {
+                    Timber.tag(TAG).e("=== Не удалось создать директорию $whereTo.")
                 }
             }
-            Timber.tag(TAG).d("=== Сохранено изображение: ${file.absolutePath}")
+
+            val inputStream = context.contentResolver.openInputStream(uri)
+            if (inputStream == null) {
+                Timber.tag(TAG).e("=== Не удалось открыть InputStream для URI: $uri")
+                return false
+            }
+
+            val fileName = "image_${System.currentTimeMillis()}.jpg"
+            val file = File(savedDir, fileName)
+            try {
+                file.outputStream().use { output ->
+                    inputStream.copyTo(output)
+                }
+                Timber.tag(TAG).d("=== Изображение сохранено: ${file.absolutePath}")
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "=== Ошибка при копировании данных в файл: ${file.absolutePath}")
+                return false
+            } finally {
+                inputStream.close()
+            }
+
             loadReceivedfromoutsideImages()
             removeExtractedImage(uri)
             true
         } catch (e: Exception) {
-            Timber.tag(TAG).e("=== Ошибка при сохранении изображения: ${e.message}")
-            e.printStackTrace()
+            Timber.tag(TAG).e(e, "=== Ошибка при сохранении изображения: $uri")
             false
         }
     }
 
     /** ---------------------------------------------------- ДЕЛИТЕРЫ -----------------------------------------------------------*/
-   fun uriToFile(uri: Uri): File? { // Например: content://com.pavlov.nearWarSecrets.fileprovider/uploadedbyme/image_...jpg
+    fun uriToFile(uri: Uri): File? { // Например: content://com.pavlov.nearWarSecrets.fileprovider/uploadedbyme/image_...jpg
+        Timber.tag(TAG).d("=== Преобразование URI в файл: $uri")
         val segments = uri.pathSegments
-        if (segments.size >= 2) {
+        return if (segments.size >= 2) {
             val dirName = segments[0]
             val fileName = segments[1]
             val directory = File(context.filesDir, dirName)
-            return File(directory, fileName)
+            val file = File(directory, fileName)
+            if (file.exists()) {
+                Timber.tag(TAG).d("=== Преобразованный файл: ${file.absolutePath}")
+                file
+            } else {
+                Timber.tag(TAG).e("=== Файл не существует: ${file.absolutePath}")
+                null
+            }
+        } else {
+            Timber.tag(TAG).e("=== Неверный формат URI: $uri")
+            null
         }
-        return null
     }
 
     fun deletePhoto(fileUri: Uri) {
+        Timber.tag(TAG).d("=== Удаление фотографии: $fileUri")
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val file = uriToFile(fileUri)
                 if (file != null && file.exists()) {
-                    file.delete()
+                    val deleted = file.delete()
+                    if (deleted) {
+                        Timber.tag(TAG).d("=== Файл удалён: ${file.absolutePath}")
+                    } else {
+                        Timber.tag(TAG).e("=== Не удалось удалить файл: ${file.absolutePath}")
+                    }
                 } else {
-                    Timber.e("Файл не найден: $fileUri")
+                    Timber.tag(TAG).e("=== Файл не найден для удаления: $fileUri")
                 }
             } catch (e: Exception) {
-                Timber.e(e, "=== ошибка удаления: $fileUri")
+                Timber.tag(TAG).e(e, "=== Ошибка при удалении файла: $fileUri")
             } finally {
                 loadUploadedbymeImages()
             }
@@ -250,45 +422,77 @@ class ImagesViewModel @Inject constructor(
     }
 
     fun removeExtractedImage(uri: Uri) {
+        Timber.tag(TAG).d("=== Удаление временного изображения: $uri")
         viewModelScope.launch(Dispatchers.IO) {
-            val file = File(uri.path ?: "")
-            if (file.exists()) {
-                file.delete()
-                Timber.tag(TAG).d("=== Удалено временное изображение: ${file.absolutePath}")
-            } else {
-                Timber.tag(TAG).e("=== Файл не найден для удаления: ${uri.path}")
+            try {
+                val file = File(uri.path ?: "")
+                if (file.exists()) {
+                    val deleted = file.delete()
+                    if (deleted) {
+                        Timber.tag(TAG).d("=== Временное изображение удалено: ${file.absolutePath}")
+                    } else {
+                        Timber.tag(TAG).e("=== Не удалось удалить временное изображение: ${file.absolutePath}")
+                    }
+                } else {
+                    Timber.tag(TAG).e("=== Файл не найден для удаления: ${uri.path}")
+                }
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "=== Ошибка при удалении временного изображения: $uri")
+            } finally {
+                loadExtractedImages()
             }
-            loadExtractedImages()
         }
     }
 
     // Очистка временных изображений
     fun clearExtractedImages() {
+        Timber.tag(TAG).d("=== Очистка всех временных изображений")
         viewModelScope.launch(Dispatchers.IO) {
-            val tempDir = File(context.filesDir, TEMP_IMAGES)
-            tempDir.listFiles()?.forEach {
-                if (it.delete()) {
-                    Timber.tag(TAG).d("=== Удалено временное изображение: ${it.absolutePath}")
+            try {
+                val tempDir = File(context.filesDir, TEMP_IMAGES)
+                if (tempDir.exists()) {
+                    tempDir.listFiles()?.forEach { file ->
+                        try {
+                            if (file.delete()) {
+                                Timber.tag(TAG).d("=== Временное изображение удалено: ${file.absolutePath}")
+                            } else {
+                                Timber.tag(TAG).e("=== Не удалось удалить временное изображение: ${file.absolutePath}")
+                            }
+                        } catch (e: Exception) {
+                            Timber.tag(TAG).e(e, "=== Ошибка при удалении файла: ${file.absolutePath}")
+                        }
+                    }
                 } else {
-                    Timber.tag(TAG).e("=== Не удалось удалить временное изображение: ${it.absolutePath}")
+                    Timber.tag(TAG).d("=== Директория $TEMP_IMAGES не существует.")
                 }
+                _receivedfromoutside.postValue(emptyList())
+                Timber.tag(TAG).d("=== Все временные изображения очищены")
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "=== Ошибка при очистке временных изображений")
             }
-            _receivedfromoutside.postValue(emptyList())
-            Timber.tag(TAG).d("=== Все временные изображения удалены")
         }
     }
 
     /** ---------------------------------------------------- ОБЩИЕ РАЗДЕЛЫ -----------------------------------------------------------*/
 
     fun getPhotoDate(fileName: String): String {
+        Timber.tag(TAG).d("=== Получение даты для файла: $fileName")
         val photoListDir = File(context.filesDir, UPLOADED_BY_ME)
         val file = File(photoListDir, fileName)
-        val date = Date(file.lastModified())
-        return date.toString()
+        return if (file.exists()) {
+            val date = Date(file.lastModified())
+            Timber.tag(TAG).d("=== Дата файла $fileName: $date")
+            date.toString()
+        } else {
+            Timber.tag(TAG).e("=== Файл не найден для получения даты: ${file.absolutePath}")
+            "Неизвестно"
+        }
     }
 
     fun getFileNameWithoutExtension(fileName: String): String {
-        return fileName.substringBeforeLast('.')
+        val name = fileName.substringBeforeLast('.')
+        Timber.tag(TAG).d("=== Получено имя файла без расширения: $name из $fileName")
+        return name
     }
 
     fun switchCamera() {
@@ -297,40 +501,44 @@ class ImagesViewModel @Inject constructor(
             CameraSelector.DEFAULT_FRONT_CAMERA
         else
             CameraSelector.DEFAULT_BACK_CAMERA
+        Timber.tag(TAG).d("=== Переключение камеры. Текущий селектор: $_cameraSelector")
     }
 
     fun getFileName(): String {
         val folder = context.filesDir
         val existOrNot = apkManager.getBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
-        return NamingStyleManager(context).generateFileName(existOrNot, folder)
+        val fileName = NamingStyleManager(context).generateFileName(existOrNot, folder)
+        Timber.tag(TAG).d("=== Сгенерировано имя файла: $fileName")
+        return fileName
     }
 
     fun onSavePhotoClicked(boolean: Boolean) {
-        // Показываем диалог, когда пользователь нажимает сохранить
         _showSaveDialog.value = boolean
+        Timber.tag(TAG).d("=== Диалог сохранения отображён: $boolean")
     }
 
-// Стеганография
+    // Стеганография
 
     fun shareImageWithHiddenOriginal(
         originalImageFile: File,
         memeResId: Int,
         onResult: (Uri?) -> Unit
     ) {
+        Timber.tag(TAG).d("=== Начало стеганографии для файла: ${originalImageFile.absolutePath} с memeResId: $memeResId")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Timber.d("=== Starting steganography with memeResId: $memeResId")
                 val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
                 if (originalBitmap == null) {
-                    Timber.e("=== Failed to decode original image from file: ${originalImageFile.absolutePath}")
+                    Timber.tag(TAG).e("=== Не удалось декодировать оригинальное изображение из файла: ${originalImageFile.absolutePath}")
                     withContext(Dispatchers.Main) {
                         onResult(null)
                     }
                     return@launch
                 }
+
                 val memeBitmap = BitmapFactory.decodeResource(context.resources, memeResId)
                 if (memeBitmap == null) {
-                    Timber.e("Failed to decode meme resource: $memeResId")
+                    Timber.tag(TAG).e("=== Не удалось декодировать ресурс мем: $memeResId")
                     withContext(Dispatchers.Main) {
                         onResult(null)
                     }
@@ -350,18 +558,18 @@ class ImagesViewModel @Inject constructor(
                         originalBitmap
                     }
 
-                Timber.d("=== Resized original bitmap: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
+                Timber.tag(TAG).d("=== Изменённый размер оригинального бита: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
 
                 val encodedBitmap = hideImageInMeme(memeBitmap, resizedOriginalBitmap)
                 if (encodedBitmap == null) {
-                    Timber.e("Failed to encode image")
+                    Timber.tag(TAG).e("=== Не удалось закодировать изображение")
                     withContext(Dispatchers.Main) {
                         onResult(null)
                     }
                     return@launch
                 }
 
-                Timber.d("=== Encoded bitmap: ${encodedBitmap.width}x${encodedBitmap.height}")
+                Timber.tag(TAG).d("=== Закодированное изображение размером: ${encodedBitmap.width}x${encodedBitmap.height}")
 
                 val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.jpg"
                 val destinationFile = File(context.cacheDir, fileName)
@@ -370,21 +578,31 @@ class ImagesViewModel @Inject constructor(
                 outputStream.flush()
                 outputStream.close()
 
-                Timber.d("=== Saved encoded image to: ${destinationFile.absolutePath}")
+                Timber.tag(TAG).d("=== Закодированное изображение сохранено: ${destinationFile.absolutePath}")
 
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.fileprovider",
-                    destinationFile
-                )
-                Timber.d("=== Generated URI for encoded image: $uri")
+                val uri = try {
+                    FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileprovider",
+                        destinationFile
+                    )
+                } catch (e: Exception) {
+                    Timber.tag(TAG).e(e, "=== Ошибка при получении URI для файла: ${destinationFile.absolutePath}")
+                    null
+                }
+
+                if (uri != null) {
+                    Timber.tag(TAG).d("=== Сгенерирован URI для закодированного изображения: $uri")
+                } else {
+                    Timber.tag(TAG).e("=== Не удалось сгенерировать URI для закодированного изображения")
+                }
 
                 withContext(Dispatchers.Main) {
                     onResult(uri)
                 }
 
             } catch (e: Exception) {
-                Timber.e(e, "=== Error during shareImageWithHiddenOriginal")
+                Timber.tag(TAG).e(e, "=== Ошибка во время стеганографии для файла: ${originalImageFile.absolutePath}")
                 withContext(Dispatchers.Main) {
                     onResult(null)
                 }
@@ -393,6 +611,7 @@ class ImagesViewModel @Inject constructor(
     }
 
     private fun hideImageInMeme(memeBitmap: Bitmap, originalBitmap: Bitmap): Bitmap? {
+        Timber.tag(TAG).d("=== Начало скрытия изображения в мем")
         return try {
             val memeWidth = memeBitmap.width
             val memeHeight = memeBitmap.height
@@ -413,9 +632,10 @@ class ImagesViewModel @Inject constructor(
                     }
                 }
             }
+            Timber.tag(TAG).d("=== Скрытие изображения завершено")
             encodedBitmap
         } catch (e: Exception) {
-            Timber.e(e, "=== ошибка в методе hideImageInMeme")
+            Timber.tag(TAG).e(e, "=== Ошибка в методе hideImageInMeme")
             null
         }
     }
