@@ -16,7 +16,7 @@ import android.net.Uri
 
 @Composable
 fun ZoomableImage(
-    uri: Uri,
+    uri: Uri?,
     modifier: Modifier = Modifier
 ) {
     var scale by remember { mutableStateOf(1f) }

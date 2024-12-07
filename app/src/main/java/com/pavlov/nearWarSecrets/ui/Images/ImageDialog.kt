@@ -1,6 +1,5 @@
 package com.pavlov.nearWarSecrets.ui.Images
 
-import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -23,7 +22,6 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Cable
 import com.pavlov.nearWarSecrets.theme.My3
-import com.pavlov.nearWarSecrets.theme.My5
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
@@ -64,21 +62,20 @@ fun ImageDialog(
     var showShareOptions by remember { mutableStateOf(false) }
     var showMemeSelection by remember { mutableStateOf(false) }
     var isProcessing by remember { mutableStateOf(false) }
+    var hiddenImageUri by remember { mutableStateOf<Uri?>(null) }
 
     val encryptionProgress by viewModel.encryptionProgress.collectAsState()
-
-
 
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = name, style = MaterialTheme.typography.h6)
-            Text(text = date, style = MaterialTheme.typography.subtitle2)
+            Text(text = name, style = MaterialTheme.typography.h6, color = Color.White)
+            Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
 
             ZoomableImage(
-                uri = actualUri,
+                uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -128,12 +125,12 @@ fun ImageDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Поделиться изображением", style = MaterialTheme.typography.h6)
+                Text("Поделиться изображением", style = MaterialTheme.typography.h6, color = Color.White)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
                         // Поделиться оригиналом
-                        val shareUri = actualUri // Используем content:// URI напрямую
+                        val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
                         if (shareUri != null) {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "image/jpeg"
@@ -153,7 +150,7 @@ fun ImageDialog(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Поделиться оригиналом")
+                    Text("Поделиться изображением")
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
@@ -182,18 +179,7 @@ fun ImageDialog(
                     onResult = { uri ->
                         isProcessing = false
                         if (uri != null) {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, uri)
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            }
-                            context.startActivity(
-                                Intent.createChooser(
-                                    shareIntent,
-                                    "Поделиться изображением"
-                                )
-                            )
-                            onDismiss()
+                            hiddenImageUri = uri
                         } else {
                             Toast.makeText(
                                 context,

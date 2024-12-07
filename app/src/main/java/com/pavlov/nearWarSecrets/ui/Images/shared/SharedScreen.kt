@@ -111,16 +111,16 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     },
                     isItNew = true,
                     onSave = {
-                        val success =
-                            viewModel.saveSharedImage(selectedUri!!)
-                        if (success) {
-                            ToastExt.show("Сохранено")
-                        } else {
-                            ToastExt.show("Ошибка при сохранении")
+                        viewModel.saveSharedImage(selectedUri!!) { hiddenImageUri ->
+                            if (hiddenImageUri != null) {
+                                ToastExt.show("Сохранено скрытое изображение")
+                            } else {
+                                ToastExt.show("Сохранено обычное изображение")
+                            }
+                            viewModel.setAnImageWasSharedWithUsNow(false)
+                            viewModel.clearSelectedUri()
+                            viewModel.clearTempImages()
                         }
-                        viewModel.setAnImageWasSharedWithUsNow(false)
-                        viewModel.clearSelectedUri()
-                        viewModel.clearTempImages()
                     }
                 )
                 Icon( // индикатор диалога, с которым поделились

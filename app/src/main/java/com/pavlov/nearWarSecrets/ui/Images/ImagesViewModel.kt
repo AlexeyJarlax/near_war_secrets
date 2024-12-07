@@ -19,6 +19,8 @@ import java.util.Date
 import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.pavlov.nearWarSecrets.util.APK.MARKER_COLOR
+import com.pavlov.nearWarSecrets.util.APK.MARKER_SIZE
 import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
 import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
@@ -335,7 +337,7 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun saveSharedImage(uri: Uri): Boolean {
+    fun saveSharedImage(uri: Uri, onExtractionResult: (Uri?) -> Unit): Boolean {
         val whereTo = RECEIVED_FROM_OUTSIDE
         Timber.tag(TAG).d("=== Сохранение временного изображения: $uri в $whereTo")
         return try {
@@ -370,7 +372,36 @@ class ImagesViewModel @Inject constructor(
                 inputStream.close()
             }
 
+            // После сохранения, проверить наличие маркера и извлечь скрытое изображение
             viewModelScope.launch(Dispatchers.IO) {
+                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                if (bitmap != null) {
+                    if (hasMarker(bitmap)) {
+                        Timber.tag(TAG).d("=== Маркер обнаружен. Извлечение скрытого изображения.")
+                        val hiddenImageUri = extractOriginalImage(uri)
+                        if (hiddenImageUri != null) {
+                            Timber.tag(TAG).d("=== Скрытое изображение извлечено: $hiddenImageUri")
+                            withContext(Dispatchers.Main) {
+                                onExtractionResult(hiddenImageUri)
+                            }
+                        } else {
+                            Timber.tag(TAG).e("=== Не удалось извлечь скрытое изображение.")
+                            withContext(Dispatchers.Main) {
+                                onExtractionResult(null)
+                            }
+                        }
+                    } else {
+                        Timber.tag(TAG).d("=== Маркер не обнаружен. Обработка как обычного изображения.")
+                        withContext(Dispatchers.Main) {
+                            onExtractionResult(null)
+                        }
+                    }
+                } else {
+                    Timber.tag(TAG).e("=== Не удалось декодировать Bitmap из файла: ${file.absolutePath}")
+                    withContext(Dispatchers.Main) {
+                        onExtractionResult(null)
+                    }
+                }
                 loadReceivedfromoutsideImages()
                 removeExtractedImage(uri)
                 clearTempImages()
@@ -381,6 +412,7 @@ class ImagesViewModel @Inject constructor(
             false
         }
     }
+
     /** ---------------------------------------------------- ДЕЛИТЕРЫ -----------------------------------------------------------*/
     fun uriToFile(uri: Uri): File? {
         Timber.tag(TAG).d("=== Преобразование URI в файл: $uri")
@@ -646,6 +678,20 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
+    fun hasMarker(bitmap: Bitmap): Boolean {
+        for (y in 0 until MARKER_SIZE) {
+            for (x in 0 until MARKER_SIZE) {
+                if (x >= bitmap.width || y >= bitmap.height) {
+                    return false
+                }
+                if (bitmap.getPixel(x, y) != MARKER_COLOR) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
     private fun hideImageInMeme(memeBitmap: Bitmap, originalBitmap: Bitmap): Bitmap? {
         Timber.tag(TAG).d("=== Начало скрытия изображения в мем")
         return try {
@@ -655,6 +701,15 @@ class ImagesViewModel @Inject constructor(
             val originalHeight = originalBitmap.height
             _encryptionProgress.value = _encryptionProgress.value + "Bitmap.Config.ARGB_8888..."
             val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+            // маркер отмечает метод шифрования и само наличие его
+            for (y in 0 until MARKER_SIZE) {
+                for (x in 0 until MARKER_SIZE) {
+                    if (x < memeWidth && y < memeHeight) {
+                        encodedBitmap.setPixel(x, y, MARKER_COLOR)
+                    }
+                }
+            }
 
             for (y in 0 until memeHeight) {
                 for (x in 0 until memeWidth) {
