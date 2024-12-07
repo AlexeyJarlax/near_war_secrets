@@ -41,9 +41,9 @@ fun MatrixBackground() {
         modifier = Modifier.fillMaxSize().background(Color.Black)
     ) {
         // Каждый столбец символов (поток)
-        for (i in 0 until MatrixAnimationSettings.rows) {
-            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
-        }
+//        for (i in 0 until MatrixAnimationSettings.rows) {
+//            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
+//        }
     }
 }
 

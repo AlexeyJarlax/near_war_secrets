@@ -151,12 +151,7 @@
     <string name="saving_option3">Попытаться расшифровать файл\n\n</string>
     <string name="saving_option5">Удалить файл</string>
     <string name="feature_in_development">функция в разработке</string>
-    <string name="storage_log_activity">Журнал изображений в хранилище приложения.\n
-                    Превью сохраняется с расширением p.\nШифрованные файлы сохраняются с расширением .kk\n
-                    Сохранённые без шифрования - с расширением .o\n
-                    Расшифрованный файл, которым делится пользователь, существует в системе не продолжительное время с расширением .peekaboo\n
-                    Файл, который передан в приложение по средствам функции "поделиться" существует в системе с расширением .share\n\n
-                    ----------------\n\n</string>
+    <string name="storage_log_activity">Журнал изображений в хранилище приложения.\n======================\n\n</string>
 
     <string name="how_does_is_work">Как это работает</string>
     <string name="how_to_share_picture">Как отправить изображение?</string>
@@ -233,4 +228,6 @@ AES (Advanced Encryption Standard).
     <string name="enter">Войти\n</string>
     <string name="whith_encryption">С шифрованием</string>
     <string name="save">Сохранить</string>
+    <string name="file_path">расположение</string>
+    <string name="directory_empty">Содержание отсутствует</string>
 </resources>

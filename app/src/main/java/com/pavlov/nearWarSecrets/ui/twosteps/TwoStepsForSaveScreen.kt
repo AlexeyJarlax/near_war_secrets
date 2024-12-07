@@ -61,7 +61,13 @@ fun TwoStepsForSaveScreen(
                 ) {
                     when (step) {
                         0 -> {
-                            Text("Два коротких шага, чтобы настроить безопасность приложения")
+                            Text("ПОЧТИ ВОЕННАЯ ТАЙНА\n\n" +
+                                    "Приложение для секретной переписки позволяет:\n" +
+                                    "- Отправить зашифрованное сообщение;\n" +
+                                    "- Отправить зашифрованное изображение;\n" +
+                                    "- Скрыть текст внутри изображения или например мемчика;\n" +
+                                    "- Скрыть одно фото внутри другого;\n" +
+                                    "- Запрятать архив с любым количеством файлов внутри любого изображения.\n")
                             CustomButtonOne(
                                 onClick = { viewModel.onNextButtonClicked() },
                                 text = "Продолжить",
@@ -84,20 +90,20 @@ fun TwoStepsForSaveScreen(
                             }
                         }
 
-                        3 -> {
-                            Text("Установить ключ шифрования?")
-                            Row {
-                                CustomButtonOne(
-                                    onClick = { viewModel.onYesClicked() },
-                                    text = "Да"
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                CustomButtonOne(
-                                    onClick = { viewModel.onNoClicked() },
-                                    text = "Нет"
-                                )
-                            }
-                        }
+//                        3 -> {
+//                            Text("Установить ключ шифрования?")
+//                            Row {
+//                                CustomButtonOne(
+//                                    onClick = { viewModel.onYesClicked() },
+//                                    text = "Да"
+//                                )
+//                                Spacer(modifier = Modifier.width(8.dp))
+//                                CustomButtonOne(
+//                                    onClick = { viewModel.onNoClicked() },
+//                                    text = "Нет"
+//                                )
+//                            }
+//                        }
                     }
                 }
             }

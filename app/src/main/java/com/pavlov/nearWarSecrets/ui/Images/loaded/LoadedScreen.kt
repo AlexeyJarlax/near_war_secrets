@@ -52,6 +52,8 @@ import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
+import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,18 +61,18 @@ fun LoadedScreen(
     viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val photoList by viewModel.photoList.observeAsState(emptyList())
+    val uploadedbyme by viewModel.uploadedbyme.collectAsState()
     var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
-    val showSaveDialog by viewModel.showSaveDialog.observeAsState(false)
-    var selectedUri: Uri? by remember { mutableStateOf(null) }
-    val isStorageMode = false
-    val isLoading by viewModel.isLoading.observeAsState(false)
+    val showSaveDialog by viewModel.showSaveDialog.collectAsState()
+    val selectedUri by viewModel.selectedUri.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
-    var isPreviewVisible by rememberSaveable { mutableStateOf(false) } // для сохранения состояние камеры после вращения
-    val cameraSelector by viewModel.cameraSelector.observeAsState(CameraSelector.DEFAULT_BACK_CAMERA)
+    var isPreviewVisible by rememberSaveable { mutableStateOf(false) }
+    val cameraSelector by viewModel.cameraSelector.collectAsState()
     val imageCapture = remember { ImageCapture.Builder().build() }
     val previewView = remember { PreviewView(context) }
+    val isStorageMode = false
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -86,7 +88,6 @@ fun LoadedScreen(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            selectedUri = it
             viewModel.addPhoto(it)
         }
     }
@@ -127,7 +128,7 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     val fileName = viewModel.getFileName()
-                                    val photoListDir = File(context.filesDir, "PhotoList")
+                                    val photoListDir = File(context.filesDir, TEMP_IMAGES)
                                     if (!photoListDir.exists()) {
                                         photoListDir.mkdirs()
                                     }
@@ -141,7 +142,9 @@ fun LoadedScreen(
                                         ContextCompat.getMainExecutor(context),
                                         object : ImageCapture.OnImageSavedCallback {
                                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                                selectedUri = file.toUri()
+//                                                viewModel.addPhoto(file.toUri())
+                                                viewModel.setSelectedUri(file.toUri())
+                                                isPreviewVisible = false
                                                 viewModel.onSavePhotoClicked(true)
                                             }
 
@@ -161,7 +164,7 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     viewModel.switchCamera()
-//                                    isPreviewVisible = false
+                                    // isPreviewVisible = false
                                 },
                                 text = context.getString(R.string.flip),
                                 textColor = My7,
@@ -240,7 +243,7 @@ fun LoadedScreen(
                 MatrixBackground()
 
                 /** ----------------------------------------СПИСОК ФОТО или заглушка -----------------------------------------------------------*/
-                if (photoList.isEmpty()) {
+                if (uploadedbyme.isEmpty()) {
                     Text(
                         text = "Нет добавленных изображений",
                         modifier = Modifier.align(Alignment.Center)
@@ -253,14 +256,18 @@ fun LoadedScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(photoList.sortedByDescending { viewModel.getPhotoDate(it) }) { fileName ->
+                        items(uploadedbyme.sortedByDescending { viewModel.getPhotoDate(it) }) { fileName ->
                             LoadedItem(
                                 fileName = fileName,
                                 viewModel = viewModel,
                                 onImageClick = { clickedFileName ->
-                                    selectedFileName = clickedFileName
-                                    selectedUri = viewModel.getFileUri(clickedFileName)
-                                    showImageDialog = true
+                                    val uri = viewModel.getFileUri(clickedFileName)
+                                    if (uri != null) {
+                                        viewModel.setSelectedUri(uri)
+                                        showImageDialog = true
+                                    } else {
+                                        ToastExt.show("Не удалось получить URI для файла: $clickedFileName")
+                                    }
                                 }
                             )
                         }
@@ -288,38 +295,44 @@ fun LoadedScreen(
                 }
 
                 /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
-                if (showImageDialog && selectedUri != null) {
-                    ImageDialog( // клик по фоткам в списке сохраненных
-                        uri = selectedUri!!,
-                        viewModel = viewModel,
-                        onDismiss = { showImageDialog = false },
-                        onDelete = {
-                            viewModel.deletePhoto(selectedFileName!!)
-                            showImageDialog = false
-                        },
-                        onSave = {}
-                    )
-                }
 
                 if (showSaveDialog && selectedUri != null) {
                     ImageDialog( // клик по snapshot
                         uri = selectedUri!!,
                         viewModel = viewModel,
-                        onDismiss = { viewModel.onSavePhotoClicked(false) },
+                        onDismiss = {
+                            viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
+                            viewModel.onSavePhotoClicked(false)
+                                    },
                         onDelete = {
-                            viewModel.deletePhoto(selectedFileName!!)
+                            viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
                             viewModel.onSavePhotoClicked(false)
                         },
                         isItNew = true,
                         onSave = {
-                            val success = viewModel.saveExtractedImage(selectedUri!!, "PhotoList/")
-                            if (success) {
-                                ToastExt.show("Сохранено")
-                            } else {
-                                ToastExt.show("Ошибка при сохранении")
-                            }
+                            viewModel.addPhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
                         }
 
+                    )
+                }
+
+                if (showImageDialog && selectedUri != null) {
+                    ImageDialog( // клик по фоткам в списке сохраненных
+                        uri = selectedUri!!,
+                        viewModel = viewModel,
+                        onDismiss = {
+                            viewModel.clearSelectedUri()
+                            showImageDialog = false
+                        },
+                        onDelete = {
+                            viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
+                            showImageDialog = false
+                        },
+                        onSave = {}
                     )
                 }
             }

@@ -85,7 +85,7 @@ fun NavGraph(
             }
             composable(NavDestinations.SET_PASSWORD) {
                 SetPasswordScreen(
-                    onPasswordSet = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
+                    onPasswordSet = { navController.navigate(NavDestinations.IMAGES) }
                 )
             }
             composable(NavDestinations.TWO_STEPS_FOR_SAVE) {
@@ -112,10 +112,7 @@ fun NavGraph(
             composable(NavDestinations.IMAGES) {
                 ImagesScreen(
                     itemLoaderScreen = { LoadedScreen(viewModel = imagesViewModel) },
-                    extractedImagesScreen = { SharedScreen(
-                        viewModel = imagesViewModel,
-                        onImageClick = { uri -> }
-                    ) }
+                    extractedImagesScreen = { SharedScreen(viewModel = imagesViewModel) }
                 )
             }
 
@@ -124,10 +121,7 @@ fun NavGraph(
             }
 
             composable(NavDestinations.EXTRACTER) {
-                SharedScreen(
-                    viewModel = imagesViewModel,
-                    onImageClick = { uri -> }
-                )
+                SharedScreen(viewModel = imagesViewModel)
             }
 
             composable(NavDestinations.STORAGE_LOG) {

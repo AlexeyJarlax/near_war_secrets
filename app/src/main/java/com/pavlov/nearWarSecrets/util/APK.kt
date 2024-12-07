@@ -33,9 +33,12 @@ object APK { // AppPreferencesKey Internal - доступно только в м
     const val HISTORY_TRACK_LIST_SIZE = 25
     const val DEFAULT_PREVIEW_SIZE = 30
     const val DEFAULT_MIMIC_PASS: String = "000"
-
     const val REGEX = "[a-zA-Z0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/]+"
-
+    const val TEMP_IMAGES = "tempimages" // ВРЕМЕННЫЕ ИЗОБРАЖЕНИЯ
+    const val UPLOADED_BY_ME = "uploadedbyme" // ПРИМЕНИТЕЛЬНО К СВОИМ ПИКЧАМ, ЗАГРУЖЕННЫМ ПОЛЬЗОВАТЕЛЕМ
+    const val RECEIVED_FROM_OUTSIDE = "receivedfromoutside" // ПРИМЕНИТЕЛЬНО К ТОМУ, ЧЕМ С НИМ ПОДЕЛИЛИСЬ ДРУГИЕ
+    const val MARKER_COLOR = 0xFFFF0000.toInt() // Чисто красный цвет
+    const val MARKER_SIZE = 10 // Размер маркера 10x10 пикселей
 
     // переключатели состояний SharedPreferences
     const val KEY_DARK_MODE = "night_mode_new"

@@ -19,14 +19,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
-import java.io.File
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Cable
+import androidx.compose.material.icons.filled.HideImage
+import androidx.compose.material.icons.filled.InsertPhoto
+import com.pavlov.nearWarSecrets.theme.My3
+import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
+/** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
+
 @Composable
 fun ImageDialog(
-    /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
     uri: Uri,
     viewModel: ImagesViewModel,
     onDismiss: () -> Unit,
@@ -35,106 +40,139 @@ fun ImageDialog(
     onSave: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
-    val imageFile = File(uri.path ?: "")
+    val actualImageFile = viewModel.uriToFile(uri)
 
-    if (!imageFile.exists()) {
+    if (actualImageFile == null || !actualImageFile.exists()) {
         LaunchedEffect(Unit) {
-            Toast.makeText(context, "Файл не найден: ${uri.path}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
             onDismiss()
         }
         return
     }
 
-    val photoListDir = File(context.filesDir, "PhotoList")
-    val extractedImagesDir = File(context.filesDir, "ExtractedImages")
-
-    val actualImageFile = when {
-        File(photoListDir, imageFile.name).exists() -> File(photoListDir, imageFile.name)
-        File(extractedImagesDir, imageFile.name).exists() -> File(
-            extractedImagesDir,
-            imageFile.name
-        )
-
-        else -> imageFile // Если файл не найден в ожидаемых директориях, использую переданный файл
-    }
-
-    val actualUri = Uri.fromFile(actualImageFile) // Обновляю Uri на основе найденного файла
     val date = viewModel.getPhotoDate(actualImageFile.name)
     val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
+    val actualUri = viewModel.getFileUri(actualImageFile.name)
+
+    if (actualUri == null) {
+        LaunchedEffect(Unit) {
+            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+            onDismiss()
+        }
+        return
+    }
 
     var showShareOptions by remember { mutableStateOf(false) }
     var showMemeSelection by remember { mutableStateOf(false) }
     var isProcessing by remember { mutableStateOf(false) }
+    var hiddenImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    /** ОСНОВНОЙ ДИАЛОГ С ИЗОБРБАЖЕНИЕМ */
+    val encryptionProgress by viewModel.encryptionProgress.collectAsState()
+
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = name, style = MaterialTheme.typography.h6)
-            Text(text = date, style = MaterialTheme.typography.subtitle2)
+            Text(text = name, style = MaterialTheme.typography.h6, color = Color.White)
+            Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
 
-            /** ЭКРАН С ВОЗМОЖНОСТЬЮ ЗУМА ПИНЧЕМ */
             ZoomableImage(
-                uri = actualUri,
+                uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .clip(RoundedCornerShape(8.dp))
             )
+
             Spacer(modifier = Modifier.height(8.dp))
             Column(
-                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.Center,
-//                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth()
             ) {
+                if (isItNew) { // кейс с 4 кнопками
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        CustomButtonOne(
+                            onClick = {
+                                onSave?.invoke()
+                                onDismiss()
+                            },
+                            text = "Сохранить",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Save
+                        )
+                        CustomButtonOne(
+                            onClick = { showShareOptions = true },
+                            text = "Поделиться",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Share
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        CustomButtonOne(
+                            onClick = onDelete,
+                            text = "Удалить",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Delete
+                        )
 
-                CustomButtonOne(
-                    onClick = { showShareOptions = true },
-                    text = "Поделиться",
-                    icon = Icons.Default.Share
-                )
-
-                if (isItNew) {
+                        CustomButtonOne(
+                            onClick = onDismiss,
+                            text = "Закрыть",
+                            textColor = My7,
+                            iconColor = My7,
+                            icon = Icons.Default.Close
+                        )
+                    }
+                } else { // кейс с 3 кнопками
                     CustomButtonOne(
-                        onClick = {
-                            onSave?.invoke()
-                            onDismiss()
-                        },
-                        text = "Сохранить",
-                        icon = Icons.Default.Save
+                        onClick = { showShareOptions = true },
+                        text = "Поделиться",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.Share
+                    )
+                    CustomButtonOne(
+                        onClick = onDelete,
+                        text = "Удалить",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.Delete
+                    )
+                    CustomButtonOne(
+                        onClick = onDismiss,
+                        text = "Закрыть",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.Close
                     )
                 }
-
-                CustomButtonOne(
-                    onClick = onDelete,
-                    text = "Удалить",
-                    icon = Icons.Default.Delete
-                )
-
-                CustomButtonOne(
-                    onClick = onDismiss,
-                    text = "Закрыть",
-                    icon = Icons.Default.Close
-                )
             }
         }
     }
 
-// Диалог выбора способа поделиться
+    // Диалог выбора способа поделиться
     if (showShareOptions) {
         MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Поделиться изображением", style = MaterialTheme.typography.h6)
+                Text("Способ отправки:")
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
+                CustomButtonOne(// Поделиться оригиналом
                     onClick = {
-                        // Поделиться оригиналом
-                        val shareUri = actualUri // Используем actualUri напрямую
+                        val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
                         if (shareUri != null) {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "image/jpeg"
@@ -152,28 +190,29 @@ fun ImageDialog(
                         }
                         showShareOptions = false
                     },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Поделиться оригиналом")
-                }
+                    text = "Поделиться оригиналом",
+                    textColor = My7,
+                    iconColor = My7,
+                    icon = Icons.Default.InsertPhoto
+                )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(
+
+                CustomButtonOne( // поделиться шифровкой в мемчик
                     onClick = {
-                        // Показать диалог выбора мема
                         showMemeSelection = true
                         showShareOptions = false
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
-                ) {
-                    Text("Зашифровать в мем")
-                }
+                    text = "Зашифровать в мемчик",
+                    textColor = My7,
+                    iconColor = My7,
+                    icon = Icons.Default.HideImage
+                )
             }
         }
     }
 
-// Диалог выбора мема
-    if (showMemeSelection) {
+    if (showMemeSelection) { // Диалог выбора мема
         MemeSelectionDialog(
             onMemeSelected = { memeResId ->
                 isProcessing = true
@@ -194,6 +233,7 @@ fun ImageDialog(
                                     "Поделиться изображением"
                                 )
                             )
+                            onDismiss()
                         } else {
                             Toast.makeText(
                                 context,
@@ -211,16 +251,41 @@ fun ImageDialog(
         )
     }
 
-// Диалог загрузки
+    // Диалог загрузки с описанием процесса шифрования
     if (isProcessing) {
+
         MyStyledDialog(onDismissRequest = {}) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                CustomCircularProgressIndicator()
+                Text(text = "Обработка шифрования", color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Обработка...")
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 200.dp)
+                        .padding(8.dp)
+                ) {
+                    encryptionProgress.forEach { step ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Cable,
+                                contentDescription = null,
+                                tint = My3,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = step, color = My3)
+                        }
+                    }
+                }
+                CustomCircularProgressIndicator()
             }
         }
     }

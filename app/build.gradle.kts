@@ -31,8 +31,8 @@ android {
         resourceConfigurations += setOf("ru", "en", "zh", "es")
         minSdk = 29
         targetSdk = 35
-        versionCode = 57
-        versionName = "1.57"
+        versionCode = 59
+        versionName = "1.59"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

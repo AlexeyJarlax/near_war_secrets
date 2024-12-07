@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,8 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
+import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 import java.io.File
 
 @Composable
@@ -34,7 +33,7 @@ fun LoadedItem(
     onImageClick: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val imageFile = File(context.filesDir, "PhotoList/$fileName")
+    val imageFile = File(context.filesDir, "$UPLOADED_BY_ME/$fileName")
     val date = viewModel.getPhotoDate(fileName)
     val name = viewModel.getFileNameWithoutExtension(fileName)
     val painter = rememberAsyncImagePainter(model = imageFile)
@@ -44,9 +43,9 @@ fun LoadedItem(
             .padding(8.dp, top = 16.dp)
             .clickable { onImageClick(fileName) }
             .fillMaxWidth()
-            .aspectRatio(0.7f) // Обеспечивает квадратную форму
-            .clip(RoundedCornerShape(8.dp)) // Закруглённые края для всего элемента
-            .background(MaterialTheme.colors.surface) // Фоновый цвет для всего элемента
+            .aspectRatio(0.7f)
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colors.surface)
     ) {
         Box(
             modifier = Modifier
@@ -59,7 +58,7 @@ fun LoadedItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxSize() // Изображение занимает всё пространство Box
+                    .fillMaxSize()
             )
         }
         Column(
