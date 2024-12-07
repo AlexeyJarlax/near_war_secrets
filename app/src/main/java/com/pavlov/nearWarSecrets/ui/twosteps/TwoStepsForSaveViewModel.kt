@@ -48,7 +48,8 @@ class TwoStepsForSaveViewModel @Inject constructor(
     fun onNoClicked() {
         when (_step.value) {
             1 -> {
-                _step.value = 3
+//                _step.value = 3
+                _navigateToMain.value = true
             }
 //            3 -> {
 //                apkm.delFromSP(APK.DEFAULT_KEY)

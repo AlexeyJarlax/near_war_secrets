@@ -24,6 +24,7 @@ import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
+
 @Composable
 fun ImageDialog(
     uri: Uri,
@@ -46,8 +47,15 @@ fun ImageDialog(
 
     val date = viewModel.getPhotoDate(actualImageFile.name)
     val name = viewModel.getFileNameWithoutExtension(actualImageFile.name)
-    // Используем getFileUri для получения content:// URI
-    val actualUri = viewModel.getFileUri(actualImageFile.name) ?: Uri.EMPTY
+    val actualUri = viewModel.getFileUri(actualImageFile.name)
+
+    if (actualUri == null) {
+        LaunchedEffect(Unit) {
+            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+            onDismiss()
+        }
+        return
+    }
 
     var showShareOptions by remember { mutableStateOf(false) }
     var showMemeSelection by remember { mutableStateOf(false) }
@@ -105,7 +113,7 @@ fun ImageDialog(
         }
     }
 
-// Диалог выбора способа поделиться
+    // Диалог выбора способа поделиться
     if (showShareOptions) {
         MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
             Column(
@@ -116,11 +124,12 @@ fun ImageDialog(
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        // Поделиться оригиналом с использованием content:// URI
-                        if (actualUri != Uri.EMPTY) {
+                        // Поделиться оригиналом
+                        val shareUri = actualUri // Используем content:// URI напрямую
+                        if (shareUri != null) {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, actualUri)
+                                putExtra(Intent.EXTRA_STREAM, shareUri)
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
                             context.startActivity(
@@ -154,7 +163,7 @@ fun ImageDialog(
         }
     }
 
-// Диалог выбора мема
+    // Диалог выбора мема
     if (showMemeSelection) {
         MemeSelectionDialog(
             onMemeSelected = { memeResId ->
@@ -193,7 +202,7 @@ fun ImageDialog(
         )
     }
 
-// Диалог загрузки
+    // Диалог загрузки
     if (isProcessing) {
         MyStyledDialog(onDismissRequest = {}) {
             Column(

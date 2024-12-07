@@ -377,24 +377,42 @@ class ImagesViewModel @Inject constructor(
     }
 
     /** ---------------------------------------------------- ДЕЛИТЕРЫ -----------------------------------------------------------*/
-    fun uriToFile(uri: Uri): File? { // Например: content://com.pavlov.nearWarSecrets.fileprovider/uploadedbyme/image_...jpg
+    fun uriToFile(uri: Uri): File? {
         Timber.tag(TAG).d("=== Преобразование URI в файл: $uri")
-        val segments = uri.pathSegments
-        return if (segments.size >= 2) {
-            val dirName = segments[0]
-            val fileName = segments[1]
-            val directory = File(context.filesDir, dirName)
-            val file = File(directory, fileName)
-            if (file.exists()) {
-                Timber.tag(TAG).d("=== Преобразованный файл: ${file.absolutePath}")
-                file
-            } else {
-                Timber.tag(TAG).e("=== Файл не существует: ${file.absolutePath}")
+        return when (uri.scheme) {
+            "content" -> {
+                val segments = uri.pathSegments
+                if (segments.size >= 2) {
+                    val dirName = segments[0]
+                    val fileName = segments[1]
+                    val directory = File(context.filesDir, dirName)
+                    val file = File(directory, fileName)
+                    if (file.exists()) {
+                        Timber.tag(TAG).d("=== Преобразованный файл: ${file.absolutePath}")
+                        file
+                    } else {
+                        Timber.tag(TAG).e("=== Файл не существует: ${file.absolutePath}")
+                        null
+                    }
+                } else {
+                    Timber.tag(TAG).e("=== Неверный формат URI: $uri")
+                    null
+                }
+            }
+            "file" -> {
+                val file = File(uri.path ?: "")
+                if (file.exists()) {
+                    Timber.tag(TAG).d("=== Преобразованный файл: ${file.absolutePath}")
+                    file
+                } else {
+                    Timber.tag(TAG).e("=== Файл не существует: ${file.absolutePath}")
+                    null
+                }
+            }
+            else -> {
+                Timber.tag(TAG).e("=== Неподдерживаемая схема URI: ${uri.scheme}")
                 null
             }
-        } else {
-            Timber.tag(TAG).e("=== Неверный формат URI: $uri")
-            null
         }
     }
 

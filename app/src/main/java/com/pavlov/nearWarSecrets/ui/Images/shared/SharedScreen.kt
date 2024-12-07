@@ -77,12 +77,16 @@ fun SharedScreen(
 
         /** ------------------ НИЖЕ ОСНОВНЫЕ ДИАЛОГИ ВСПЛЫВАЮЩИХ ОКОН -----------------------------------------*/
         fun closeShareDialogWithMemoryWash() {
-            viewModel.setAnImageWasSharedWithUsNow(false)
-            viewModel.removeExtractedImage(selectedUri!!)
+            selectedUri?.let { uri ->
+                viewModel.setAnImageWasSharedWithUsNow(false)
+                viewModel.removeExtractedImage(uri)
+                viewModel.deletePhoto(uri)
+                selectedUri = null
+            }
             showImageDialog = false
         }
 
-        if (showImageDialog && temporaryImages != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
+        if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,
@@ -100,7 +104,9 @@ fun SharedScreen(
                     } else {
                         ToastExt.show("Ошибка при сохранении")
                     }
-                    closeShareDialogWithMemoryWash()
+                    viewModel.setAnImageWasSharedWithUsNow(false)
+
+                    selectedUri = null
                 }
             )
         }
@@ -110,10 +116,12 @@ fun SharedScreen(
                 uri = selectedUri!!,
                 viewModel = viewModel,
                 onDismiss = {
+                    selectedUri = null
                     showImageDialog = false
                 },
                 onDelete = {
                     viewModel.deletePhoto(selectedUri!!)
+                    selectedUri = null
                     showImageDialog = false
                 },
                 onSave = {}
