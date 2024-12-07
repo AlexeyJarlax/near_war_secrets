@@ -144,9 +144,10 @@ fun LoadedScreen(
                                         ContextCompat.getMainExecutor(context),
                                         object : ImageCapture.OnImageSavedCallback {
                                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                                viewModel.addPhoto(file.toUri())
+//                                                viewModel.addPhoto(file.toUri())
                                                 viewModel.setSelectedUri(file.toUri())
                                                 isPreviewVisible = false
+                                                viewModel.onSavePhotoClicked(true)
                                             }
 
                                             override fun onError(exception: ImageCaptureException) {
@@ -317,9 +318,14 @@ fun LoadedScreen(
                     ImageDialog( // клик по snapshot
                         uri = selectedUri!!,
                         viewModel = viewModel,
-                        onDismiss = { viewModel.onSavePhotoClicked(false) },
+                        onDismiss = {
+                            viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
+                            viewModel.onSavePhotoClicked(false)
+                                    },
                         onDelete = {
                             viewModel.deletePhoto(selectedUri!!)
+                            viewModel.clearSelectedUri()
                             viewModel.onSavePhotoClicked(false)
                         },
                         isItNew = true,

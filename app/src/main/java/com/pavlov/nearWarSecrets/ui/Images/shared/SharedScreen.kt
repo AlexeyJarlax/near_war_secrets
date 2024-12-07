@@ -15,6 +15,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import android.net.Uri
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.nearWarSecrets.util.ToastExt
@@ -87,29 +93,47 @@ fun SharedScreen(
         }
 
         if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) { // в отношении изображений, полученных через поделиться
-            ImageDialog(
-                uri = selectedUri!!,
-                viewModel = viewModel,
-                onDismiss = {
-                    closeShareDialogWithMemoryWash()
-                },
-                onDelete = {
-                    closeShareDialogWithMemoryWash()
-                },
-                isItNew = true,
-                onSave = {
-                    val success = viewModel.saveExtractedImage(selectedUri!!, RECEIVED_FROM_OUTSIDE)
-                    if (success) {
-                        ToastExt.show("Сохранено")
-                    } else {
-                        ToastExt.show("Ошибка при сохранении")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(2.dp)
+            ) {
+                ImageDialog(
+                    uri = selectedUri!!,
+                    viewModel = viewModel,
+                    onDismiss = {
+                        closeShareDialogWithMemoryWash()
+                    },
+                    onDelete = {
+                        closeShareDialogWithMemoryWash()
+                    },
+                    isItNew = true,
+                    onSave = {
+                        val success =
+                            viewModel.saveExtractedImage(selectedUri!!, RECEIVED_FROM_OUTSIDE)
+                        if (success) {
+                            ToastExt.show("Сохранено")
+                        } else {
+                            ToastExt.show("Ошибка при сохранении")
+                        }
+                        closeShareDialogWithMemoryWash()
                     }
-                    closeShareDialogWithMemoryWash()
-                }
-            )
+                )
+                Icon( // индикатор диалога, с которым поделились
+                    imageVector = Icons.Default.IosShare,
+                    contentDescription = "Этим изображением поделились",
+                    tint = Color.Green,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(top = 2.dp)
+                        .graphicsLayer(rotationZ = -90f)
+                )
+            }
         }
 
-        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) { // в отношении изображений, по которым кликнул пользователь в списке уже сохраненных
+        if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) {
+            // в отношении изображений, по которым кликнул пользователь в списке уже сохраненных
             ImageDialog(
                 uri = selectedUri!!,
                 viewModel = viewModel,
