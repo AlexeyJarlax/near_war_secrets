@@ -50,9 +50,6 @@ class ImagesViewModel @Inject constructor(
     private val _tempImages = MutableStateFlow<List<String>>(emptyList())
     val tempImages: StateFlow<List<String>> = _tempImages
 
-    private val _savedImages = MutableStateFlow<List<Uri>>(emptyList())
-    val savedImages: StateFlow<List<Uri>> = _savedImages
-
     private val _uploadedbyme = MutableStateFlow<List<String>>(emptyList())
     val uploadedbyme: StateFlow<List<String>> = _uploadedbyme
 
@@ -61,6 +58,9 @@ class ImagesViewModel @Inject constructor(
 
     private val _selectedUri = MutableStateFlow<Uri?>(null)
     val selectedUri: StateFlow<Uri?> get() = _selectedUri
+
+    private val _encryptionProgress = MutableStateFlow<List<String>>(emptyList())
+    val encryptionProgress: StateFlow<List<String>> = _encryptionProgress
 
     init {
         Timber.tag(TAG).d("=== Инициализация ImagesViewModel")
@@ -439,7 +439,6 @@ class ImagesViewModel @Inject constructor(
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "=== Ошибка при удалении файла: $fileUri")
             } finally {
-                // Проверяем, из какой папки был удален файл и обновляем соответствующий список
                 val file = uriToFile(fileUri)
                 if (file != null && file.parentFile?.name == RECEIVED_FROM_OUTSIDE) {
                     loadReceivedfromoutsideImages()
@@ -556,6 +555,10 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("=== Начало стеганографии для файла: ${originalImageFile.absolutePath} с memeResId: $memeResId")
         viewModelScope.launch(Dispatchers.IO) {
             try {
+
+                _encryptionProgress.value = emptyList()// Сброс прогресса
+                _encryptionProgress.value = _encryptionProgress.value + "Сброс прогресса..."
+                _encryptionProgress.value = _encryptionProgress.value + "Загрузка оригинального изображения..."
                 val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
                 if (originalBitmap == null) {
                     Timber.tag(TAG).e("=== Не удалось декодировать оригинальное изображение из файла: ${originalImageFile.absolutePath}")
@@ -565,6 +568,7 @@ class ImagesViewModel @Inject constructor(
                     return@launch
                 }
 
+                _encryptionProgress.value = _encryptionProgress.value + "Загрузка изображения оболочки..."
                 val memeBitmap = BitmapFactory.decodeResource(context.resources, memeResId)
                 if (memeBitmap == null) {
                     Timber.tag(TAG).e("=== Не удалось декодировать ресурс мем: $memeResId")
@@ -574,7 +578,7 @@ class ImagesViewModel @Inject constructor(
                     return@launch
                 }
 
-                // Изменяем размер оригинала до размера мема, если необходимо
+                _encryptionProgress.value = _encryptionProgress.value + "Подгонка размеров изображений..."
                 val resizedOriginalBitmap =
                     if (originalBitmap.width > memeBitmap.width || originalBitmap.height > memeBitmap.height) {
                         Bitmap.createScaledBitmap(
@@ -587,8 +591,9 @@ class ImagesViewModel @Inject constructor(
                         originalBitmap
                     }
 
-                Timber.tag(TAG).d("=== Изменённый размер оригинального бита: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
+                Timber.tag(TAG).d("=== Изменённый размер оригинального изображения: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
 
+                _encryptionProgress.value = _encryptionProgress.value + "Процесс шифрования..."
                 val encodedBitmap = hideImageInMeme(memeBitmap, resizedOriginalBitmap)
                 if (encodedBitmap == null) {
                     Timber.tag(TAG).e("=== Не удалось закодировать изображение")
@@ -600,6 +605,7 @@ class ImagesViewModel @Inject constructor(
 
                 Timber.tag(TAG).d("=== Закодированное изображение размером: ${encodedBitmap.width}x${encodedBitmap.height}")
 
+                _encryptionProgress.value = _encryptionProgress.value + "Сохранение закодированного изображения..."
                 val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.jpg"
                 val destinationFile = File(context.cacheDir, fileName)
                 val outputStream = FileOutputStream(destinationFile)
@@ -609,6 +615,7 @@ class ImagesViewModel @Inject constructor(
 
                 Timber.tag(TAG).d("=== Закодированное изображение сохранено: ${destinationFile.absolutePath}")
 
+                _encryptionProgress.value = _encryptionProgress.value + "Генерация URI"
                 val uri = try {
                     FileProvider.getUriForFile(
                         context,
@@ -646,7 +653,7 @@ class ImagesViewModel @Inject constructor(
             val memeHeight = memeBitmap.height
             val originalWidth = originalBitmap.width
             val originalHeight = originalBitmap.height
-
+            _encryptionProgress.value = _encryptionProgress.value + "Bitmap.Config.ARGB_8888..."
             val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
 
             for (y in 0 until memeHeight) {
@@ -669,6 +676,7 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
+
     private fun encodePixel(memePixel: Int, originalPixel: Int): Int {
         val memeRed = (memePixel shr 16) and 0xFF
         val memeGreen = (memePixel shr 8) and 0xFF
@@ -686,7 +694,6 @@ class ImagesViewModel @Inject constructor(
     }
 
 // Функции для обработки входящих изображений
-
 
     private suspend fun extractOriginalImage(memeUri: Uri): Uri? {
         return withContext(Dispatchers.IO) {
@@ -707,7 +714,6 @@ class ImagesViewModel @Inject constructor(
                     return@withContext null
                 }
 
-                // Сохраняем оригинальное изображение в файл
                 val fileName = "original_image_${System.currentTimeMillis()}.jpg"
                 val destinationFile = File(context.cacheDir, fileName)
                 val outputStream = FileOutputStream(destinationFile)
