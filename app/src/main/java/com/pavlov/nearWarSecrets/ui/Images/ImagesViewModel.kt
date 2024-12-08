@@ -372,7 +372,7 @@ class ImagesViewModel @Inject constructor(
                 inputStream.close()
             }
 
-            // После сохранения, проверить наличие маркера и извлечь скрытое изображение
+            // После сохранения, проверка наличие маркера и извлечение изображения
             viewModelScope.launch(Dispatchers.IO) {
                 val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                 if (bitmap != null) {
@@ -576,7 +576,7 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("=== Диалог сохранения отображён: $boolean")
     }
 
-    // Стеганография
+/** ---------------------------------------------------- Стеганография --------------------------------------------------*/
 
     fun shareImageWithHiddenOriginal(
         originalImageFile: File,
@@ -587,7 +587,7 @@ class ImagesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
 
-                _encryptionProgress.value = emptyList()// Сброс прогресса
+                _encryptionProgress.value = emptyList()
                 _encryptionProgress.value = _encryptionProgress.value + "Сброс прогресса..."
                 _encryptionProgress.value = _encryptionProgress.value + "Загрузка оригинального изображения..."
                 val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
@@ -637,10 +637,10 @@ class ImagesViewModel @Inject constructor(
                 Timber.tag(TAG).d("=== Закодированное изображение размером: ${encodedBitmap.width}x${encodedBitmap.height}")
 
                 _encryptionProgress.value = _encryptionProgress.value + "Сохранение закодированного изображения..."
-                val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.png" // Используем PNG
+                val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.png"
                 val destinationFile = File(context.cacheDir, fileName)
                 val outputStream = FileOutputStream(destinationFile)
-                encodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream) // Сохранение как PNG
+                encodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                 outputStream.flush()
                 outputStream.close()
 
@@ -715,12 +715,10 @@ class ImagesViewModel @Inject constructor(
                 }
             }
 
-            // Затем скрываем оригинальное изображение начиная с HEADER_SIZE пикселей
             for (y in 0 until memeHeight) {
                 for (x in 0 until memeWidth) {
                     val pixelIndex = y * memeWidth + x
                     if (pixelIndex < SteganographyConstants.HEADER_SIZE) {
-                        // Пропускаем пиксели, используемые для маркера
                         continue
                     }
 
@@ -758,8 +756,7 @@ class ImagesViewModel @Inject constructor(
         return (0xFF shl 24) or (encodedRed shl 16) or (encodedGreen shl 8) or encodedBlue
     }
 
-// Функции для обработки входящих изображений
-
+// Функция для обработки входящих изображений
     private suspend fun extractOriginalImage(memeUri: Uri): Uri? {
         return withContext(Dispatchers.IO) {
             try {

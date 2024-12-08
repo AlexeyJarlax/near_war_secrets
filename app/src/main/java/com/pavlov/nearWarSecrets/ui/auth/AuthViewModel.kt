@@ -99,8 +99,8 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun closeApp() {
-        android.os.Process.killProcess(android.os.Process.myPid()) // Убивает текущий процесс
-        System.exit(0) // Завершает виртуальную машину
+        android.os.Process.killProcess(android.os.Process.myPid())
+        System.exit(0)
     }
 
     private fun doDelPassword() {

@@ -1,22 +1,15 @@
 package com.pavlov.nearWarSecrets.ui.twosteps
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
-import com.pavlov.nearWarSecrets.theme.My5
-import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
@@ -33,19 +26,19 @@ fun TwoStepsForSaveScreen(
     val navigateToKeyInput by viewModel.navigateToKeyInput.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(navigateToSetPassword) { //поставить пароль на вход
+    LaunchedEffect(navigateToSetPassword) {
         if (navigateToSetPassword) {
             onNavigateToSetPassword()
         }
     }
 
-    LaunchedEffect(navigateToMain) { //ITEM_LOADER
+    LaunchedEffect(navigateToMain) {
         if (navigateToMain) {
             onNavigateToMain()
         }
     }
 
-    LaunchedEffect(navigateToKeyInput) { // ключ шифрования
+    LaunchedEffect(navigateToKeyInput) {
         if (navigateToKeyInput) {
             onNavigateToKeyInput()
         }

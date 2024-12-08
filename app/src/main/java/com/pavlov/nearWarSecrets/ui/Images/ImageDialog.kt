@@ -180,7 +180,7 @@ fun ImageDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    CustomButtonOne(// Поделиться оригиналом
+                    CustomButtonOne(
                         onClick = {
                             val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
                             if (shareUri != null) {
@@ -262,8 +262,8 @@ fun ImageDialog(
         )
     }
 
-    // Диалог загрузки с описанием процесса шифрования
-    if (isProcessing) {
+
+    if (isProcessing) { // Диалог загрузки с описанием процесса шифрования
 
         MyStyledDialog(onDismissRequest = {}) {
             Column(

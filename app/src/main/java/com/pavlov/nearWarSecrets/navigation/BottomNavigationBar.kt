@@ -6,8 +6,6 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -69,7 +67,7 @@ fun BottomNavigationBar(navController: NavHostController, activity: Activity) {
                 selected = currentRoute == item.route,
                 onClick = {
                     if (item.route == NavDestinations.EXIT) {
-                        activity.finish() // Выход из приложения
+                        activity.finish()
                     } else if (currentRoute != item.route) {
                         navController.navigate(item.route) {
                             launchSingleTop = true

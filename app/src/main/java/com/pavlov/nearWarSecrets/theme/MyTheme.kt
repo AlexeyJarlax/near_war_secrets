@@ -4,14 +4,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Моя палитра: Color(0xFF0FE3C8)
+// Моя палитра:
 val My1 = Color(0xFF525252) // фон кнопок /
 val My2 = Color(0xFF000000)
 val My3 = Color(0xFF508312) // тексты в полях
 val My4 = Color(0xFF000000) // задний фон
 val My5 = Color(0xFF35570C)
 val My6 = Color(0xFFFFFFFF)  // текст в кнопках
-val My7 = Color(0xFF87E01A) // падающие шрифты, ProgressIndicator, полоска у окна ввода текста
+val My7 = Color(0xFF87E01A) // падающие шрифты, ProgressIndicator, полоска у окна ввода текста, кнопки
 
 //private val LightColorPalette = lightColors(
 //    primary = Color.Green,

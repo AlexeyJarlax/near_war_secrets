@@ -41,9 +41,9 @@ fun MatrixBackground() {
         modifier = Modifier.fillMaxSize().background(Color.Black)
     ) {
         // Каждый столбец символов (поток)
-//        for (i in 0 until MatrixAnimationSettings.rows) {
-//            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
-//        }
+        for (i in 0 until MatrixAnimationSettings.rows) {
+            MatrixColumn(MatrixAnimationSettings.symbols, i, MatrixAnimationSettings.fontSize)
+        }
     }
 }
 
@@ -52,23 +52,19 @@ fun MatrixColumn(symbols: List<Char>, columnIndex: Int, fontSize: Int) {
     var symbolList by remember { mutableStateOf(listOf<MatrixSymbol>()) }
     var animationRunning by remember { mutableStateOf(true) } // Флаг анимации
 
-    // Получаем ширину экрана
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenWidthPx = with(LocalDensity.current) { screenWidth.toInt() }
 
-    // Генерируем случайное горизонтальное смещение
     val randomXOffset = (Random.nextInt(1, 21) * 20)
     val randomStartDelay = Random.nextLong(100L, MatrixAnimationSettings.maxDelay)
 
     LaunchedEffect(Unit) {
-        delay(randomStartDelay) // Задержка перед началом анимации
+        delay(randomStartDelay)
 
-        // Создаем анимацию для каждого символа
         while (animationRunning && isActive) {
-            // Задержка между появлениями символов
+
             delay(MatrixAnimationSettings.symbolDelay)
 
-            // Создание нового символа с оптимизацией на память
             val newSymbol = MatrixSymbol(
                 symbol = symbols.random(),
                 index = Random.nextInt(0, 1000),
@@ -77,28 +73,20 @@ fun MatrixColumn(symbols: List<Char>, columnIndex: Int, fontSize: Int) {
                 xOffset = randomXOffset
             )
 
-            // Обновление состояния списка символов без блокировки UI
             symbolList = symbolList + newSymbol
-
-            // Уменьшаем альфу у старых символов (сделано с использованием map для оптимизации)
             symbolList = symbolList.mapIndexed { index, symbol ->
                 symbol.copy(alpha = symbol.alpha - MatrixAnimationSettings.fadeStep)
             }
-
-            // Удаляем старые символы после определенного количества
             if (symbolList.size > MatrixAnimationSettings.maxVisibleSymbols) {
                 symbolList = symbolList.drop(1)
             }
-
-            // Завершаем анимацию, если все символы исчезли (alpha достигло 0)
             if (symbolList.all { it.alpha <= 0f }) {
-                animationRunning = false // Останавливаем анимацию
-                symbolList = emptyList() // Освобождаем память
+                animationRunning = false
+                symbolList = emptyList()
             }
         }
     }
 
-    // Рендерим каждый символ
     symbolList.forEach { symbol ->
         Text(
             text = symbol.symbol.toString(),
@@ -115,6 +103,6 @@ data class MatrixSymbol(
     val symbol: Char,
     val index: Int,
     val alpha: Float,
-    val yOffset: Int, // Позиция по вертикали
-    val xOffset: Int // Позиция по горизонтали
+    val yOffset: Int,
+    val xOffset: Int
 )

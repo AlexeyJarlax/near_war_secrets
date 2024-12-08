@@ -5,10 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.PersonOff
 import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.runtime.*
@@ -75,7 +73,7 @@ fun SettingsScreen(
                         icon = Icons.Default.Shield,
                     )
 
-                    // Кнопка "Очистить хранилище" с подтверждением
+                    // Кнопка "Очистить хранилище"
                     CustomButtonOne(
                         onClick = { showClearStorageDialog = true },
                         text = stringResource(R.string.clearing_the_storage),
@@ -84,7 +82,7 @@ fun SettingsScreen(
                         icon = Icons.Default.FolderOff
                     )
 
-                    // Кнопка "Сбросить настройки" с подтверждением
+                    // Кнопка "Сбросить настройки"
                     CustomButtonOne(
                         onClick = { showResetSettingsDialog = true },
                         text = stringResource(R.string.reset_settings),
@@ -94,7 +92,6 @@ fun SettingsScreen(
                     )
                 }
 
-                // Диалог выбора языка
                 if (showLanguageDialog) {
                     LanguageSelectionDialog(
                         onDismiss = { showLanguageDialog = false },
@@ -104,7 +101,6 @@ fun SettingsScreen(
                     )
                 }
 
-                // Диалог подтверждения для очистки хранилища
                 if (showClearStorageDialog) {
                     ConfirmationDialog(
                         title = stringResource(R.string.confirm),
@@ -117,7 +113,6 @@ fun SettingsScreen(
                     )
                 }
 
-                // Диалог подтверждения для сброса настроек
                 if (showResetSettingsDialog) {
                     ConfirmationDialog(
                         title = stringResource(R.string.confirm),

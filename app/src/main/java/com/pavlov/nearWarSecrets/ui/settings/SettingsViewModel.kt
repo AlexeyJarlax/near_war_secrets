@@ -26,7 +26,6 @@ class SettingsViewModel @Inject constructor(
 
     private var clickCount = 0
 
-    // Очистка хранилища
     fun clearStorage() {
         viewModelScope.launch {
             try {
@@ -38,7 +37,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Сброс настроек
     fun resetSettings() {
         viewModelScope.launch {
             try {
@@ -60,7 +58,6 @@ class SettingsViewModel @Inject constructor(
         _language.value = "en" // Сброс языка на английский
     }
 
-    // Установка языка
     fun setLanguage(languageCode: String) {
         viewModelScope.launch {
             ToastExt.show("Язык поменяется при следующем запуске")

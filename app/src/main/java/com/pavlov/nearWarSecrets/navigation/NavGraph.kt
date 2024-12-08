@@ -142,7 +142,6 @@ fun NavGraph(
     }
 }
 
-// показывать ли нижнее меню
 private fun shouldShowBottomBar(navController: NavHostController): Boolean {
     val currentDestination = navController.currentBackStackEntry?.destination?.route
     return when (currentDestination) {
