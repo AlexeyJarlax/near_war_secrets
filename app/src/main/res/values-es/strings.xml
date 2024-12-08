@@ -74,7 +74,7 @@
         <string name="clear_the_history">Borrar historial</string>
         <string name="added">Añadido: </string>
         <string name="preview_scaling_factor">Factor de escalado de vista previa (px):</string>
-        <string name="reset_settings">Limpiar todos los datos: restablecer configuraciones, clave, contraseña, limpiar almacenamiento</string>
+        <string name="reset_settings_confirm">Limpiar todos los datos: restablecer configuraciones, clave, contraseña, limpiar almacenamiento</string>
         <string name="personal_data">Datos personales</string>
         <string name="disguise_it_as_a_music_player">Disfrazar como reproductor de música</string>
         <string name="language">Idioma/language/应用语言/idioma</string>

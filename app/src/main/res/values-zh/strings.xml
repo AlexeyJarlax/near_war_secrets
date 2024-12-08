@@ -67,7 +67,7 @@
     <string name="clear_the_history">清除历史记录</string>
     <string name="added">已添加: </string>
     <string name="preview_scaling_factor">预览缩放因子(px):</string>
-    <string name="reset_settings">清除所有数据: 重置设置、密钥、密码、清空存储</string>
+    <string name="reset_settings_confirm">清除所有数据: 重置设置、密钥、密码、清空存储</string>
     <string name="personal_data">个人数据</string>
     <string name="disguise_it_as_a_music_player">伪装成音乐播放器</string>
     <string name="language">语言/language/应用语言/idioma</string>

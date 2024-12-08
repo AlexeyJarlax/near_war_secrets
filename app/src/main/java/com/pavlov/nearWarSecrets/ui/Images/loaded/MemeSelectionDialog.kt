@@ -18,10 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialogWithTitle
 import timber.log.Timber
 
 @Composable
@@ -50,14 +52,23 @@ fun MemeSelectionDialog(
         }
     }
 
-    MyStyledDialog(
+    MyStyledDialogWithTitle(
         onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Выберите мемчик",
+                style = MaterialTheme.typography.h6,
+            )
+        },
+        gap = 0,
         content = {
+            Spacer(modifier = Modifier.width(16.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 400.dp) // Ограничение по высоте для прокрутки
             ) {
+
                 items(memeList) { memeResId ->
                     Row(
                         modifier = Modifier

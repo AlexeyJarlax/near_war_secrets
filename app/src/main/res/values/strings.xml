@@ -76,7 +76,8 @@
     <string name="clear_the_history">Очистить историю</string>
     <string name="added">Добавлен: </string>
     <string name="preview_scaling_factor">Коэффициент скалирования превью(px):</string>
-    <string name="reset_settings">Очистить все данные: сбросить настройки, ключ, пароль, очистить хранилище </string>
+    <string name="reset_settings">Очистить все данные</string>
+    <string name="reset_settings_confirm">Очистить все данные: сбросить настройки, ключь, пароль, очистить хранилище. Подтвердить? </string>
     <string name="personal_data">Персональные данные</string>
     <string name="disguise_it_as_a_music_player">Замаскировать под музыкальный плеер</string>
     <string name="language">Язык/language/应用语言/idioma</string>
@@ -151,7 +152,7 @@
     <string name="saving_option3">Попытаться расшифровать файл\n\n</string>
     <string name="saving_option5">Удалить файл</string>
     <string name="feature_in_development">функция в разработке</string>
-    <string name="storage_log_activity">Журнал изображений в хранилище приложения.\n======================\n\n</string>
+    <string name="storage_log_activity">= Журнал изображений в хранилище приложения. =\n======================\n\n</string>
 
     <string name="how_does_is_work">Как это работает</string>
     <string name="how_to_share_picture">Как отправить изображение?</string>
@@ -186,7 +187,7 @@ AES (Advanced Encryption Standard).
     <string name="choose_encryption_key">Выберите ключ</string>
     <string name="enter_encryption_key1">Ввести ключ вручную</string>
     <string name="enter_encryption_key2">Ввести ключ вручную (при успешном дешифровании файл будет перекодирован в ключ по умолчанию)</string>
-    <string name="clear_storage">Данные будут удалены безвозвратно</string>
+    <string name="clear_storage">Данные из хранилища будут удалены безвозвратно, подтвердить?</string>
     <string name="confirm_clear_storage_title">Нажмите число восемь для подтверждения</string>
     <string name="key_d">%d файла зашифрованы этим ключом</string>
     <string name="made_by_key">%d Зашифрован ключом</string>
@@ -219,7 +220,7 @@ AES (Advanced Encryption Standard).
     <string name="file_name">имя файла</string>
     <string name="date">дата</string>
     <string name="size">размер</string>
-    <string name="settings_title">Settings</string>
+    <string name="settings_title">Настройки</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="user_switch">User Switch</string>
     <string name="preview_size_label">Preview Size: %1$dx%2$d</string>
@@ -230,4 +231,5 @@ AES (Advanced Encryption Standard).
     <string name="save">Сохранить</string>
     <string name="file_path">расположение</string>
     <string name="directory_empty">Содержание отсутствует</string>
+    <string name="confirm">Подтвердите действие</string>
 </resources>

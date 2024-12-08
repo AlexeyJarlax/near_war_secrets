@@ -23,9 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
+import androidx.compose.material3.Text
 import com.pavlov.nearWarSecrets.theme.My3
 import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialogWithTitle
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
 
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
@@ -163,53 +165,62 @@ fun ImageDialog(
 
     // Диалог выбора способа поделиться
     if (showShareOptions) {
-        MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Способ отправки:")
-                Spacer(modifier = Modifier.height(16.dp))
-                CustomButtonOne(// Поделиться оригиналом
-                    onClick = {
-                        val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
-                        if (shareUri != null) {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, shareUri)
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            }
-                            context.startActivity(
-                                Intent.createChooser(
-                                    shareIntent,
-                                    "Поделиться изображением"
+        MyStyledDialogWithTitle(
+            onDismissRequest = { showShareOptions = false },
+            title = {
+                Text(
+                    text = "Способ отправки",
+                    style = MaterialTheme.typography.h6,
+                )
+            },
+            gap = 0,
+            content = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CustomButtonOne(// Поделиться оригиналом
+                        onClick = {
+                            val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
+                            if (shareUri != null) {
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "image/jpeg"
+                                    putExtra(Intent.EXTRA_STREAM, shareUri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(
+                                    Intent.createChooser(
+                                        shareIntent,
+                                        "Поделиться изображением"
+                                    )
                                 )
-                            )
-                        } else {
-                            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
-                        }
-                        showShareOptions = false
-                    },
-                    text = "Поделиться оригиналом",
-                    textColor = My7,
-                    iconColor = My7,
-                    icon = Icons.Default.InsertPhoto
-                )
+                            } else {
+                                Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+                            }
+                            showShareOptions = false
+                        },
+                        text = "Поделиться оригиналом",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.InsertPhoto
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                CustomButtonOne( // поделиться шифровкой в мемчик
-                    onClick = {
-                        showMemeSelection = true
-                        showShareOptions = false
-                    },
-                    text = "Зашифровать в мемчик",
-                    textColor = My7,
-                    iconColor = My7,
-                    icon = Icons.Default.HideImage
-                )
+                    CustomButtonOne( // поделиться шифровкой в мемчик
+                        onClick = {
+                            showMemeSelection = true
+                            showShareOptions = false
+                        },
+                        text = "Зашифровать в мемчик",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.HideImage
+                    )
+                }
             }
-        }
+        )
     }
 
     if (showMemeSelection) { // Диалог выбора мема

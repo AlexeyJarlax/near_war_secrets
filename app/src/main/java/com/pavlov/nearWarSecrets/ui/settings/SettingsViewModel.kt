@@ -1,12 +1,10 @@
 package com.pavlov.nearWarSecrets.ui.settings
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
+import com.pavlov.nearWarSecrets.util.ToastExt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,25 +18,15 @@ class SettingsViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 
-    private val _isUserSwitchEnabled = MutableStateFlow(getUserSwitchPreference())
-    val isUserSwitchEnabled: StateFlow<Boolean> = _isUserSwitchEnabled
-
-    private val _previewSize = MutableStateFlow(getPreviewSizePreference())
-    val previewSize: StateFlow<Int> = _previewSize
-
     private val _personalDataText = MutableStateFlow("Personal Data")
     val personalDataText: StateFlow<String> = _personalDataText
 
+    private val _language = MutableStateFlow("en") // Значение по умолчанию
+    val language: StateFlow<String> = _language
+
     private var clickCount = 0
 
-
-    // Preview Size
-    fun updatePreviewSize(size: Int) {
-        _previewSize.value = size
-        savePreviewSizePreference(size)
-    }
-
-    // Personal Data Toggle
+    // Переключение личных данных
     fun togglePersonalData() {
         clickCount++
         _personalDataText.value = if (clickCount % 2 == 0) {
@@ -48,14 +36,14 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Clear Storage
+    // Очистка хранилища
     fun clearStorage() {
         viewModelScope.launch {
             apkm.clearStorage(context)
         }
     }
 
-    // DELIT ALL
+    // Сброс настроек
     fun resetSettings() {
         viewModelScope.launch {
             apkm.clearPreferences(context)
@@ -64,26 +52,16 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Reset State to Defaults
     private fun resetState() {
-        _isUserSwitchEnabled.value = false
-        _previewSize.value = APK.DEFAULT_PREVIEW_SIZE
         _personalDataText.value = "Personal Data"
+        _language.value = "en" // Сброс языка на английский
     }
 
-    private fun getUserSwitchPreference(): Boolean {
-        return apkm.getBoolean(APK.KEY_USER_SWITCH, false)
-    }
-
-    private fun saveUserSwitchPreference(enabled: Boolean) {
-        apkm.putBoolean(APK.KEY_USER_SWITCH, enabled)
-    }
-
-    private fun getPreviewSizePreference(): Int {
-        return apkm.getInt(APK.KEY_PREVIEW_SIZE_SEEK_BAR)
-    }
-
-    private fun savePreviewSizePreference(size: Int) {
-        apkm.putInt(APK.KEY_PREVIEW_SIZE_SEEK_BAR, size)
+    // Установка языка
+    fun setLanguage(languageCode: String) {
+        viewModelScope.launch {
+            ToastExt.show("Язык поменяется при следующем запуске")
+            _language.value = languageCode
+        }
     }
 }
