@@ -42,7 +42,7 @@ fun AuthScreen(
     Scaffold(
         content = { padding ->
             Box(modifier = Modifier.fillMaxSize()) {
-                MatrixBackground()
+                MatrixBackground(255)
                 if (loading) {
                         CustomCircularProgressIndicator()
                 } else {

@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +27,7 @@ import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import com.pavlov.nearWarSecrets.theme.My3
 import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
@@ -107,7 +107,7 @@ fun ImageDialog(
                 .fillMaxWidth()
                 .padding(16.dp) // Добавляем внутренние отступы
         ) {
-            Text(text = name, style = MaterialTheme.typography.h6, color = Color.White)
+            Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -115,7 +115,7 @@ fun ImageDialog(
                 uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) // Задаём фиксированную высоту для изображения
+                    .weight(1f)
                     .clip(RoundedCornerShape(8.dp))
             )
 
@@ -303,6 +303,7 @@ fun ImageDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
+                    .background(Color.Transparent),
             ) {
                 Text(text = "Обработка шифрования", color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -314,7 +315,7 @@ fun ImageDialog(
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
                         .padding(8.dp)
-                        .background(Color(0xFF1E1E1E))
+                        .background(Color.Transparent)
                         .clip(RoundedCornerShape(8.dp))
                         .padding(8.dp)
                 ) {
@@ -333,12 +334,9 @@ fun ImageDialog(
                             Text(text = step, color = My3)
                         }
                     }
+                    Spacer(modifier = Modifier.height(28.dp))
+                    CustomCircularProgressIndicator()
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Индикатор прогресса
-                CustomCircularProgressIndicator()
             }
         }
     }

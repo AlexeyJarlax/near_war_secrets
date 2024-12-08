@@ -1,5 +1,6 @@
 package com.pavlov.nearWarSecrets.theme.uiComponents
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -29,8 +30,9 @@ fun CustomCircularProgressIndicator() {
     }
 
     Box(
-        modifier = Modifier.size(110.dp),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize().background(Color.Transparent),
+        contentAlignment = Alignment.Center,
+
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(100.dp),

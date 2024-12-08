@@ -39,7 +39,7 @@ data class MatrixSymbol(
 )
 
 @Composable
-fun MatrixBackground() {
+fun MatrixBackground(greencomponent: Int = 155) {
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val screenWidthPx = with(density) { configuration.screenWidthDp.dp.toPx() }
@@ -135,7 +135,7 @@ fun MatrixBackground() {
                 paint.color = android.graphics.Color.argb(
                     alphaInt,
                     0,
-                    255,
+                    greencomponent,
                     0
                 )
                 drawContext.canvas.nativeCanvas.drawText(

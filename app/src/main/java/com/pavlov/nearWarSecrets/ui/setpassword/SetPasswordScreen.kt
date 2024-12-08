@@ -28,7 +28,7 @@ fun SetPasswordScreen(
     Scaffold(
         content = { padding ->
             Box(modifier = Modifier.fillMaxSize()) {
-                MatrixBackground()
+                MatrixBackground(255)
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
