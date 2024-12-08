@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Shield
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -56,24 +57,6 @@ fun SettingsScreen(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
 
-                    // Кнопка "Очистить хранилище" с подтверждением
-                    CustomButtonOne(
-                        onClick = { showClearStorageDialog = true },
-                        text = stringResource(R.string.clearing_the_storage),
-                        textColor = My7,
-                        iconColor = My7,
-                        icon = Icons.Default.FolderOff
-                    )
-
-                    // Кнопка "Сбросить настройки" с подтверждением
-                    CustomButtonOne(
-                        onClick = { showResetSettingsDialog = true },
-                        text = stringResource(R.string.reset_settings),
-                        textColor = My7,
-                        iconColor = My7,
-                        icon = Icons.Default.SettingsBackupRestore,
-                    )
-
                     // Кнопка "Выбрать язык"
                     CustomButtonOne(
                         onClick = { showLanguageDialog = true },
@@ -90,6 +73,24 @@ fun SettingsScreen(
                         textColor = My7,
                         iconColor = My7,
                         icon = Icons.Default.Shield,
+                    )
+
+                    // Кнопка "Очистить хранилище" с подтверждением
+                    CustomButtonOne(
+                        onClick = { showClearStorageDialog = true },
+                        text = stringResource(R.string.clearing_the_storage),
+                        textColor = Color.Red,
+                        iconColor = Color.Red,
+                        icon = Icons.Default.FolderOff
+                    )
+
+                    // Кнопка "Сбросить настройки" с подтверждением
+                    CustomButtonOne(
+                        onClick = { showResetSettingsDialog = true },
+                        text = stringResource(R.string.reset_settings),
+                        textColor = Color.Red,
+                        iconColor = Color.Red,
+                        icon = Icons.Default.SettingsBackupRestore,
                     )
                 }
 

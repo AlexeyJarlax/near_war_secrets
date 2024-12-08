@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
@@ -65,7 +66,8 @@ fun TwoStepsForSaveScreen(
                         0 -> {
                             Text(
                                 text = context.getString(R.string.new_about_app),
-                                style = MaterialTheme.typography.body1, // Используйте подходящий стиль
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.body1,
                                 modifier = Modifier
                                     .padding(20.dp)
                             )

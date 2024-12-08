@@ -18,8 +18,8 @@
         https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="share_app_title">Поделиться приложением</string>
     <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">Сообщение разработчику этого приложения</string>
-    <string name="support_email_text">текст сообщения</string>
+    <string name="support_email_subject">Разработчику</string>
+    <string name="support_email_text">Разработчик, ты просто красавчик!</string>
     <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
     <string name="heading_search_history_list_view">История запросов поисковой строки:</string>
     <string name="todo">Туду</string>
@@ -152,8 +152,7 @@
     <string name="saving_option3">Попытаться расшифровать файл\n\n</string>
     <string name="saving_option5">Удалить файл</string>
     <string name="feature_in_development">функция в разработке</string>
-    <string name="storage_log_activity">= Журнал изображений в хранилище приложения. =\n======================\n\n</string>
-
+    <string name="storage_log_activity">Журнал хранения</string>
     <string name="how_does_is_work">Как это работает</string>
     <string name="how_to_share_picture">Как отправить изображение?</string>
     <string name="how_to_accept_picture">Как получить изображение?</string>

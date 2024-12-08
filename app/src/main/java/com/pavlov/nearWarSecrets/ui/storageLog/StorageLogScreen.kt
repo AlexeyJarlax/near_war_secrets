@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -32,7 +33,7 @@ fun StorageLogScreen(navController: NavController) {
     )
 
     LaunchedEffect(Unit) {
-        val introMessage = context.getString(R.string.storage_log_activity)
+        val introMessage = ""
         logEntries.add(LogEntry.Text(introMessage))
 
         directories.forEach { (dirName, displayName) ->
@@ -61,7 +62,7 @@ fun StorageLogScreen(navController: NavController) {
                     logEntries.add(LogEntry.Text(logEntry))
                 }
             } else {
-                logEntries.add(LogEntry.Text("${context.getString(R.string.directory_empty)}: $displayName"))
+                logEntries.add(LogEntry.Text(context.getString(R.string.directory_empty)))
             }
         }
     }
@@ -75,7 +76,13 @@ fun StorageLogScreen(navController: NavController) {
                         .fillMaxSize()
                         .padding(8.dp)
                 ) {
-
+                    Text(
+                        text = context.getString(R.string.storage_log_activity),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier
+                            .padding(20.dp)
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
 
                     SelectionContainer {
