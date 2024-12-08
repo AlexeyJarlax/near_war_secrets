@@ -42,18 +42,16 @@ import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
 import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
-import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.ui.Images.ImageDialog
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 import com.pavlov.nearWarSecrets.util.APK.TEMP_IMAGES
-import com.pavlov.nearWarSecrets.util.APK.UPLOADED_BY_ME
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,7 +60,6 @@ fun LoadedScreen(
 ) {
     val context = LocalContext.current
     val uploadedbyme by viewModel.uploadedbyme.collectAsState()
-    var selectedFileName by remember { mutableStateOf<String?>(null) }
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.collectAsState()
     val selectedUri by viewModel.selectedUri.collectAsState()
@@ -107,7 +104,7 @@ fun LoadedScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth(),
-                color = Color.Black.copy(alpha = 0.8f), // Непрозрачный чёрный фон
+                color = Color.Black.copy(alpha = 0.8f),
                 elevation = 8.dp
             ) {
 
@@ -142,7 +139,6 @@ fun LoadedScreen(
                                         ContextCompat.getMainExecutor(context),
                                         object : ImageCapture.OnImageSavedCallback {
                                             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//                                                viewModel.addPhoto(file.toUri())
                                                 viewModel.setSelectedUri(file.toUri())
                                                 isPreviewVisible = false
                                                 viewModel.onSavePhotoClicked(true)
@@ -164,7 +160,6 @@ fun LoadedScreen(
                             CustomButtonOne(
                                 onClick = {
                                     viewModel.switchCamera()
-                                    // isPreviewVisible = false
                                 },
                                 text = context.getString(R.string.flip),
                                 textColor = My7,
@@ -284,12 +279,11 @@ fun LoadedScreen(
                             .border(
                                 width = 2.dp,
                                 color = Color.Yellow,
-                                shape = RoundedCornerShape(16.dp) // Добавление закругленных краев
+                                shape = RoundedCornerShape(16.dp)
                             )
-                            .clip(RoundedCornerShape(16.dp)) // Клепание закругленных краев
+                            .clip(RoundedCornerShape(16.dp))
                     )
                 }
-
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }

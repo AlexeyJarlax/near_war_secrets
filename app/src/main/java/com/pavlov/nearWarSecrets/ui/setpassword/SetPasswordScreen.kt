@@ -2,7 +2,6 @@ package com.pavlov.nearWarSecrets.ui.setpassword
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
@@ -22,7 +21,6 @@ fun SetPasswordScreen(
     viewModel: SetPasswordViewModel = hiltViewModel(),
     onPasswordSet: () -> Unit
 ) {
-    var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
@@ -30,27 +28,13 @@ fun SetPasswordScreen(
     Scaffold(
         content = { padding ->
             Box(modifier = Modifier.fillMaxSize()) {
-                MatrixBackground()
+                MatrixBackground(255)
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-//                    if (viewModel.isPasswordExist) {
-//
-//                        CustomOutlinedTextField(
-//                            value = oldPassword,
-//                            onValueChange = { oldPassword = it },
-//                            label = "Старый пароль",
-//                            placeholder = "Введите старый пароль тут",
-//                            backgroundColor = My4,
-//                            isPassword = false,
-//                            keyboardActions = { ImeAction.Done }
-//                        )
-//
-//                        Spacer(modifier = Modifier.height(8.dp))
-//                    }
 
                     CustomOutlinedTextField(
                         value = newPassword,

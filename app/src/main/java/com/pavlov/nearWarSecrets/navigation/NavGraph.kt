@@ -131,7 +131,6 @@ fun NavGraph(
             composable(NavDestinations.SETTINGS) {
                 SettingsScreen(
                     navController = navController,
-                    onNavigateBack = { navController.popBackStack() },
                     onAboutClicked = { navController.navigate(NavDestinations.ABOUT) },
                     onSecuritySettingsClicked = { navController.navigate(NavDestinations.TWO_STEPS_FOR_SAVE) }
                 )
@@ -143,7 +142,6 @@ fun NavGraph(
     }
 }
 
-// показывать ли нижнее меню
 private fun shouldShowBottomBar(navController: NavHostController): Boolean {
     val currentDestination = navController.currentBackStackEntry?.destination?.route
     return when (currentDestination) {

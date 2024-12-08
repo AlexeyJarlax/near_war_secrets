@@ -1,6 +1,5 @@
 package com.pavlov.nearWarSecrets.ui.Images.loaded
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import com.pavlov.nearWarSecrets.R
 import androidx.compose.foundation.Image
@@ -18,10 +17,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
-import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialogWithTitle
 import timber.log.Timber
 
 @Composable
@@ -36,10 +36,8 @@ fun MemeSelectionDialog(
         R.drawable.x533x451
     )
 
-    // Получение контекста для доступа к ресурсам
     val context = LocalContext.current
 
-    // Функция для получения размера изображения
     fun getImageSize(resourceId: Int): String {
         return try {
             val bitmap = BitmapFactory.decodeResource(context.resources, resourceId)
@@ -50,14 +48,23 @@ fun MemeSelectionDialog(
         }
     }
 
-    MyStyledDialog(
+    MyStyledDialogWithTitle(
         onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Выберите мемчик",
+                style = MaterialTheme.typography.h6,
+            )
+        },
+        gap = 0,
         content = {
+            Spacer(modifier = Modifier.width(16.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 400.dp) // Ограничение по высоте для прокрутки
+                    .heightIn(max = 400.dp)
             ) {
+
                 items(memeList) { memeResId ->
                     Row(
                         modifier = Modifier

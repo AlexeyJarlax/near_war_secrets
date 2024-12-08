@@ -6,14 +6,13 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -36,7 +35,7 @@ fun BottomNavigationBar(navController: NavHostController, activity: Activity) {
             icon = IconType.VectorIcon(Icons.Default.Storage)
         ),
         BottomNavItem(
-            "Настройки",
+            "Опции",
             NavDestinations.SETTINGS,
             icon = IconType.VectorIcon(Icons.Default.Settings)
         ),
@@ -52,6 +51,7 @@ fun BottomNavigationBar(navController: NavHostController, activity: Activity) {
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
             BottomNavigationItem(
+                modifier = Modifier.weight(1f),
                 icon = {
                     when (val iconType = item.icon) {
                         is IconType.VectorIcon -> Icon(
@@ -65,16 +65,18 @@ fun BottomNavigationBar(navController: NavHostController, activity: Activity) {
                         )
                     }
                 },
-                label = { Text(item.title) },
+                label = { Text(item.title, maxLines = 1) },
                 selected = currentRoute == item.route,
                 onClick = {
                     if (item.route == NavDestinations.EXIT) {
-                        activity.finish() // Выход из приложения
+                        activity.finish()
                     } else if (currentRoute != item.route) {
                         navController.navigate(item.route) {
                             launchSingleTop = true
                             restoreState = item.route != NavDestinations.SETTINGS
-                            popUpTo(navController.graph.startDestinationRoute ?: NavDestinations.AUTH) {
+                            popUpTo(
+                                navController.graph.startDestinationRoute ?: NavDestinations.AUTH
+                            ) {
                                 saveState = item.route != NavDestinations.SETTINGS
                             }
                         }

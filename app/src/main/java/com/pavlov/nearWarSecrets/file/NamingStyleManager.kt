@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.pavlov.nearWarSecrets.util.APK
 import com.pavlov.nearWarSecrets.util.APKM
+import timber.log.Timber
 import java.io.File
 
 class NamingStyleManager(private val context: Context) {
@@ -46,7 +47,8 @@ class NamingStyleManager(private val context: Context) {
 
 fun generateFileName(isEncrypted: Boolean, folder: File): String {
     if (adjectives.isEmpty() || nouns.isEmpty()) {
-        Log.d("FileNameGeneration", "Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
+        Timber.tag("=== FileNameGeneration")
+            .d("=== Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
         return "FallbackFileName.unknown"
     }
 
@@ -63,7 +65,7 @@ fun generateFileName(isEncrypted: Boolean, folder: File): String {
         var counter = 1
         var file = File(folder, fileName)
 
-        Log.d("FileNameGeneration", "Generated FileName: $fileName")
+        Timber.tag("=== FileNameGeneration").d("=== Generated FileName: $fileName")
 
         while (file.exists()) {
             fileName = "${randomName}_$counter"
@@ -75,15 +77,13 @@ fun generateFileName(isEncrypted: Boolean, folder: File): String {
             file = File(folder, fileName)
             counter++
 
-            Log.d("FileNameGeneration", "Conflict! New FileName: $fileName")
+            Timber.tag("=== FileNameGeneration").d("=== Conflict! New FileName: $fileName")
         }
     }
-
     return applyNamingOption(fileName)
 }
 
     private fun applyNamingOption(fileName: String): String {
-        // Дополнительные преобразования в соответствии с текущим стилем
         return fileName
     }
 }

@@ -3,7 +3,10 @@ package com.pavlov.nearWarSecrets.ui.Images
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -12,21 +15,27 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import com.pavlov.nearWarSecrets.theme.My3
 import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
+import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialogWithTitle
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
 
@@ -69,11 +78,36 @@ fun ImageDialog(
 
     val encryptionProgress by viewModel.encryptionProgress.collectAsState()
 
+    // Создаём канал для очереди фраз
+    val progressQueue = remember { Channel<String>(Channel.UNLIMITED) }
+
+    // Список для отображения фраз
+    val displayProgress = remember { mutableStateListOf<String>() }
+
+    // Запускаем обработчик очереди
+    LaunchedEffect(Unit) {
+        for (step in progressQueue) {
+            if (!displayProgress.contains(step)) { // Проверка на наличие фразы в списке
+                displayProgress.add(step)
+            }
+            delay(1000L) // Задержка 1 секунда между фразами
+        }
+    }
+
+    // Отправляем новые фразы в очередь
+    LaunchedEffect(encryptionProgress) {
+        encryptionProgress.forEach { step ->
+            progressQueue.send(step)
+        }
+    }
+
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp) // Добавляем внутренние отступы
         ) {
-            Text(text = name, style = MaterialTheme.typography.h6, color = Color.White)
+            Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -86,6 +120,7 @@ fun ImageDialog(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
+
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -163,53 +198,63 @@ fun ImageDialog(
 
     // Диалог выбора способа поделиться
     if (showShareOptions) {
-        MyStyledDialog(onDismissRequest = { showShareOptions = false }) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Способ отправки:")
-                Spacer(modifier = Modifier.height(16.dp))
-                CustomButtonOne(// Поделиться оригиналом
-                    onClick = {
-                        val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
-                        if (shareUri != null) {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
-                                putExtra(Intent.EXTRA_STREAM, shareUri)
-                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            }
-                            context.startActivity(
-                                Intent.createChooser(
-                                    shareIntent,
-                                    "Поделиться изображением"
+        MyStyledDialogWithTitle(
+            onDismissRequest = { showShareOptions = false },
+            title = {
+                Text(
+                    text = "Способ отправки",
+                    style = MaterialTheme.typography.h6,
+                )
+            },
+            gap = 0,
+            content = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp), // Добавляем внутренние отступы
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CustomButtonOne(
+                        onClick = {
+                            val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
+                            if (shareUri != null) {
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "image/jpeg"
+                                    putExtra(Intent.EXTRA_STREAM, shareUri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(
+                                    Intent.createChooser(
+                                        shareIntent,
+                                        "Поделиться изображением"
+                                    )
                                 )
-                            )
-                        } else {
-                            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
-                        }
-                        showShareOptions = false
-                    },
-                    text = "Поделиться оригиналом",
-                    textColor = My7,
-                    iconColor = My7,
-                    icon = Icons.Default.InsertPhoto
-                )
+                            } else {
+                                Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+                            }
+                            showShareOptions = false
+                        },
+                        text = "Поделиться оригиналом",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.InsertPhoto
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                CustomButtonOne( // поделиться шифровкой в мемчик
-                    onClick = {
-                        showMemeSelection = true
-                        showShareOptions = false
-                    },
-                    text = "Зашифровать в мемчик",
-                    textColor = My7,
-                    iconColor = My7,
-                    icon = Icons.Default.HideImage
-                )
+                    CustomButtonOne( // поделиться шифровкой в мемчик
+                        onClick = {
+                            showMemeSelection = true
+                            showShareOptions = false
+                        },
+                        text = "Зашифровать в мемчик",
+                        textColor = My7,
+                        iconColor = My7,
+                        icon = Icons.Default.HideImage
+                    )
+                }
             }
-        }
+        )
     }
 
     if (showMemeSelection) { // Диалог выбора мема
@@ -251,25 +296,30 @@ fun ImageDialog(
         )
     }
 
-    // Диалог загрузки с описанием процесса шифрования
-    if (isProcessing) {
+    if (isProcessing) { // Диалог загрузки с описанием процесса шифрования
 
         MyStyledDialog(onDismissRequest = {}) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
+                    .background(Color.Transparent),
             ) {
                 Text(text = "Обработка шифрования", color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Список фраз с прокруткой
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 200.dp)
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(8.dp)
+                        .background(Color.Transparent)
+                        .clip(RoundedCornerShape(8.dp))
                         .padding(8.dp)
                 ) {
-                    encryptionProgress.forEach { step ->
+                    displayProgress.forEach { step ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(vertical = 2.dp)
@@ -284,8 +334,9 @@ fun ImageDialog(
                             Text(text = step, color = My3)
                         }
                     }
+                    Spacer(modifier = Modifier.height(28.dp))
+                    CustomCircularProgressIndicator()
                 }
-                CustomCircularProgressIndicator()
             }
         }
     }

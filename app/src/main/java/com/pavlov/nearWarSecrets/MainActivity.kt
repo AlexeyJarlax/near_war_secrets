@@ -1,7 +1,12 @@
 package com.pavlov.nearWarSecrets
 
+/**
+ * Все экраны на компоуз + вью модельки. Старт с сингл активити, без фрагментов.
+ * Стили, навигация тоже компоуз. Кастомный UI на фоны, кнопки, диалоги
+ * Дагер хилт как DI
+ */
+
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -10,9 +15,7 @@ import androidx.activity.viewModels
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.pavlov.nearWarSecrets.data.model.NavDestinations
 import com.pavlov.nearWarSecrets.navigation.NavGraph
 import com.pavlov.nearWarSecrets.theme.MyTheme
 import com.pavlov.nearWarSecrets.ui.Images.ImagesViewModel
@@ -42,7 +45,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        // Обновляем intent и перенастраиваем компоновку
         setContent {
             MyTheme {
                 val navController = rememberNavController()
@@ -64,9 +66,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Function to hide system UI (status bar and navigation bar).
-     */
     private fun hideSystemUI() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(

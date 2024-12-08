@@ -156,6 +156,4 @@ class KeyInputViewModel @Inject constructor(
         apkm.putBoolean(APK.KEY_USE_THE_ENCRYPTION_K, true)
         _navigateToMain.value = true
     }
-
-    // Дополнительные методы из оригинального кода
 }

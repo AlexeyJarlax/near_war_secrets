@@ -73,10 +73,10 @@ fun CustomOutlinedTextField(
             visualTransformation = transformation,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
-                imeAction = ImeAction.Done // Устанавливаем действие "Галочка"
+                imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = { keyboardActions() } // Вызываем переданную функцию
+                onDone = { keyboardActions() }
             ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = backgroundColor,

@@ -1,7 +1,5 @@
 package com.pavlov.nearWarSecrets.data.model
 
-// маршруты для навигации
-
 object NavDestinations {
     const val IMAGES = "images_together"
     const val LOADER = "item_loader"

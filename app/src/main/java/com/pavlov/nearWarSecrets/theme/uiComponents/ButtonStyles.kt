@@ -107,6 +107,8 @@ else
 context.getString(R.string.cam_bat_start),
 icon = Icons.Default.InsertPhoto
 )
+
+ не желательно передавать modifier
  */
 
 @Composable

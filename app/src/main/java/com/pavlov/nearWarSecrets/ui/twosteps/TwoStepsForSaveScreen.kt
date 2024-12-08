@@ -1,20 +1,15 @@
 package com.pavlov.nearWarSecrets.ui.twosteps
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.nearWarSecrets.R
-import com.pavlov.nearWarSecrets.theme.My5
-import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MatrixBackground
 
@@ -29,20 +24,21 @@ fun TwoStepsForSaveScreen(
     val navigateToSetPassword by viewModel.navigateToSetPassword.collectAsState()
     val navigateToMain by viewModel.navigateToMain.collectAsState()
     val navigateToKeyInput by viewModel.navigateToKeyInput.collectAsState()
+    val context = LocalContext.current
 
-    LaunchedEffect(navigateToSetPassword) { //поставить пароль на вход
+    LaunchedEffect(navigateToSetPassword) {
         if (navigateToSetPassword) {
             onNavigateToSetPassword()
         }
     }
 
-    LaunchedEffect(navigateToMain) { //ITEM_LOADER
+    LaunchedEffect(navigateToMain) {
         if (navigateToMain) {
             onNavigateToMain()
         }
     }
 
-    LaunchedEffect(navigateToKeyInput) { // ключ шифрования
+    LaunchedEffect(navigateToKeyInput) {
         if (navigateToKeyInput) {
             onNavigateToKeyInput()
         }
@@ -61,13 +57,13 @@ fun TwoStepsForSaveScreen(
                 ) {
                     when (step) {
                         0 -> {
-                            Text("ПОЧТИ ВОЕННАЯ ТАЙНА\n\n" +
-                                    "Приложение для секретной переписки позволяет:\n" +
-                                    "- Отправить зашифрованное сообщение;\n" +
-                                    "- Отправить зашифрованное изображение;\n" +
-                                    "- Скрыть текст внутри изображения или например мемчика;\n" +
-                                    "- Скрыть одно фото внутри другого;\n" +
-                                    "- Запрятать архив с любым количеством файлов внутри любого изображения.\n")
+                            Text(
+                                text = context.getString(R.string.new_about_app),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.body1,
+                                modifier = Modifier
+                                    .padding(20.dp)
+                            )
                             CustomButtonOne(
                                 onClick = { viewModel.onNextButtonClicked() },
                                 text = "Продолжить",
