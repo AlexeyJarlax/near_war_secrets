@@ -13,7 +13,7 @@ plugins {
 }
 
 android {
-    namespace = "com.pavlov.nearWarSecrets"
+    namespace = "com.pavlov.MyShadowGallery"
     compileSdk = 35
 
     buildFeatures {
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.pavlov.nearWarSecrets"
+        applicationId = "com.pavlov.MyShadowGallery"
         resourceConfigurations += setOf("ru", "en", "zh", "es")
         minSdk = 29
         targetSdk = 35
