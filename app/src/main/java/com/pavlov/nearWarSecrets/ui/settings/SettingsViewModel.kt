@@ -26,29 +26,32 @@ class SettingsViewModel @Inject constructor(
 
     private var clickCount = 0
 
-    // Переключение личных данных
-    fun togglePersonalData() {
-        clickCount++
-        _personalDataText.value = if (clickCount % 2 == 0) {
-            "Sensitive Info"
-        } else {
-            "Personal Data"
-        }
-    }
-
     // Очистка хранилища
     fun clearStorage() {
         viewModelScope.launch {
+            try {
             apkm.clearStorage(context)
+            ToastExt.show("Хранилище отчищено!")
+            } catch (e: Exception) {
+                ToastExt.show("Ошибка при отчистке хранилища")
+            }
         }
     }
 
     // Сброс настроек
     fun resetSettings() {
         viewModelScope.launch {
-            apkm.clearPreferences(context)
-            apkm.clearStorage(context)
-            resetState()
+            try {
+                apkm.clearPreferences(context)
+                apkm.clearEncryptedPreferences(context)
+                apkm.clearStorage(context)
+                context.cacheDir.deleteRecursively()
+                resetState()
+                ToastExt.show("Настройки сброшены успешно!")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ToastExt.show("Ошибка при сбросе настроек.")
+            }
         }
     }
 

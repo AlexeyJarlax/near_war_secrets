@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ fun TwoStepsForSaveScreen(
     val navigateToSetPassword by viewModel.navigateToSetPassword.collectAsState()
     val navigateToMain by viewModel.navigateToMain.collectAsState()
     val navigateToKeyInput by viewModel.navigateToKeyInput.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(navigateToSetPassword) { //поставить пароль на вход
         if (navigateToSetPassword) {
@@ -61,13 +63,12 @@ fun TwoStepsForSaveScreen(
                 ) {
                     when (step) {
                         0 -> {
-                            Text("ПОЧТИ ВОЕННАЯ ТАЙНА\n\n" +
-                                    "Приложение для секретной переписки позволяет:\n" +
-                                    "- Отправить зашифрованное сообщение;\n" +
-                                    "- Отправить зашифрованное изображение;\n" +
-                                    "- Скрыть текст внутри изображения или например мемчика;\n" +
-                                    "- Скрыть одно фото внутри другого;\n" +
-                                    "- Запрятать архив с любым количеством файлов внутри любого изображения.\n")
+                            Text(
+                                text = context.getString(R.string.new_about_app),
+                                style = MaterialTheme.typography.body1, // Используйте подходящий стиль
+                                modifier = Modifier
+                                    .padding(20.dp)
+                            )
                             CustomButtonOne(
                                 onClick = { viewModel.onNextButtonClicked() },
                                 text = "Продолжить",

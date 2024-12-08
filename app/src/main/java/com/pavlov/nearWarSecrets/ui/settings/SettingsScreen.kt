@@ -83,24 +83,6 @@ fun SettingsScreen(
                         icon = Icons.Default.Language,
                     )
 
-                    // Кнопка "О приложении"
-//                    CustomButtonOne(
-//                        onClick = onAboutClicked,
-//                        text = stringResource(R.string.about_the_app),
-//                    textColor = My7,
-//                    iconColor = My7,
-//                        icon = Icons.Default.AppRegistration,
-//                    )
-
-                    // Кнопка "Личные данные"
-                    CustomButtonOne(
-                        onClick = { viewModel.togglePersonalData() },
-                        textColor = My7,
-                        iconColor = My7,
-                        text = personalDataText,
-                        icon = Icons.Default.PersonOff,
-                    )
-
                     // Кнопка "Настройки безопасности"
                     CustomButtonOne(
                         onClick = onSecuritySettingsClicked,

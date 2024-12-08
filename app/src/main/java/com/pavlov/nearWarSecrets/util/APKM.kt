@@ -254,6 +254,23 @@ class APKM @Inject constructor(
             return ""
         }
     }
+
+    fun clearEncryptedPreferences(context: Context) {
+        val masterKeyAlias = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        val encryptedSharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            context,
+            APK.MY_SECRETS_PREFS_NAME,
+            masterKeyAlias,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        // Удаляем все данные
+        encryptedSharedPreferences.edit().clear().apply()
+    }
 }
 
 
