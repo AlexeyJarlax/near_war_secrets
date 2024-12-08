@@ -29,7 +29,7 @@ fun CustomCircularProgressIndicator() {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.size(110.dp),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(

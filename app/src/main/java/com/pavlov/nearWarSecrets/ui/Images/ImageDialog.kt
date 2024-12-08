@@ -3,7 +3,10 @@ package com.pavlov.nearWarSecrets.ui.Images
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -17,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +33,9 @@ import com.pavlov.nearWarSecrets.theme.My7
 import com.pavlov.nearWarSecrets.theme.uiComponents.CustomButtonOne
 import com.pavlov.nearWarSecrets.theme.uiComponents.MyStyledDialogWithTitle
 import com.pavlov.nearWarSecrets.ui.Images.loaded.MemeSelectionDialog
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
 
@@ -71,9 +78,34 @@ fun ImageDialog(
 
     val encryptionProgress by viewModel.encryptionProgress.collectAsState()
 
+    // Создаём канал для очереди фраз
+    val progressQueue = remember { Channel<String>(Channel.UNLIMITED) }
+
+    // Список для отображения фраз
+    val displayProgress = remember { mutableStateListOf<String>() }
+
+    // Запускаем обработчик очереди
+    LaunchedEffect(Unit) {
+        for (step in progressQueue) {
+            if (!displayProgress.contains(step)) { // Проверка на наличие фразы в списке
+                displayProgress.add(step)
+            }
+            delay(1000L) // Задержка 1 секунда между фразами
+        }
+    }
+
+    // Отправляем новые фразы в очередь
+    LaunchedEffect(encryptionProgress) {
+        encryptionProgress.forEach { step ->
+            progressQueue.send(step)
+        }
+    }
+
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp) // Добавляем внутренние отступы
         ) {
             Text(text = name, style = MaterialTheme.typography.h6, color = Color.White)
             Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
@@ -83,11 +115,12 @@ fun ImageDialog(
                 uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .height(200.dp) // Задаём фиксированную высоту для изображения
                     .clip(RoundedCornerShape(8.dp))
             )
 
             Spacer(modifier = Modifier.height(8.dp))
+
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -176,10 +209,11 @@ fun ImageDialog(
             gap = 0,
             content = {
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp), // Добавляем внутренние отступы
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
                     CustomButtonOne(
                         onClick = {
                             val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
@@ -262,7 +296,6 @@ fun ImageDialog(
         )
     }
 
-
     if (isProcessing) { // Диалог загрузки с описанием процесса шифрования
 
         MyStyledDialog(onDismissRequest = {}) {
@@ -274,13 +307,18 @@ fun ImageDialog(
                 Text(text = "Обработка шифрования", color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Список фраз с прокруткой
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 200.dp)
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(8.dp)
+                        .background(Color(0xFF1E1E1E))
+                        .clip(RoundedCornerShape(8.dp))
                         .padding(8.dp)
                 ) {
-                    encryptionProgress.forEach { step ->
+                    displayProgress.forEach { step ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(vertical = 2.dp)
@@ -296,6 +334,10 @@ fun ImageDialog(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Индикатор прогресса
                 CustomCircularProgressIndicator()
             }
         }

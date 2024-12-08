@@ -11,11 +11,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlin.random.Random
 
-// Настройки анимации и символов
 object MatrixAnimationSettings {
     val symbols = listOf(
         'ア', 'ィ', 'イ', 'ゥ', 'ウ', 'ェ', 'エ', 'ォ', 'オ', 'カ', 'ガ', 'キ', 'ギ', 'ク', 'グ', 'ケ', 'ゲ', 'コ', 'ゴ',
@@ -24,161 +23,128 @@ object MatrixAnimationSettings {
         'ホ', 'ボ', 'ポ', 'マ', 'ミ', 'ム', 'メ', 'モ', 'ャ', 'ヤ', 'ュ', 'ユ', 'ョ', 'ヨ', 'ラ', 'リ', 'ル', 'レ', 'ロ',
         'ヮ', 'ワ', 'ヰ', 'ヱ', 'ヲ', 'ン', 'ヴ', 'ヵ', 'ヶ', 'ヷ', 'ヸ', 'ヹ', 'ヺ', '・', 'ー', 'ヽ', 'ヾ'
     )
-    const val rows = 35            // Количество колонок
-    const val maxVisibleSymbols = 10
-    const val speed = 6f           // Скорость движения символов вниз
+    const val rows = 18
     const val fontSize = 14
-    // Диапазон задержки для старта каждой колонки
-    val columnStartDelayRange = 500L..12000L
-    // Отступ между символами
-    val symbolPadding = 10.dp
-    // Скорость уменьшения альфы при затухании символа
-    const val fadeSpeed = 0.05f
+    val symbolPadding = 1.dp
+    val columnStartDelayRange = 50L..20000L
+    const val updateInterval = 250L // Интервал обновления (мс)
+    const val fadeSpeed = 0.05f     // Скорость затухания альфы за "тик"
 }
 
-// Класс символа
 data class MatrixSymbol(
     val symbol: Char,
-    val alpha: Float,
-    val xOffset: Float,
-    val yOffset: Float
+    val yPos: Float,
+    val xPos: Float,
+    val alpha: Float
 )
 
 @Composable
 fun MatrixBackground() {
     val configuration = LocalConfiguration.current
-    val screenWidthDp = configuration.screenWidthDp
-    val screenHeightDp = configuration.screenHeightDp
     val density = LocalDensity.current
-    val screenWidthPx = with(density) { screenWidthDp.dp.toPx() }
-    val screenHeightPx = with(density) { screenHeightDp.dp.toPx() }
+    val screenWidthPx = with(density) { configuration.screenWidthDp.dp.toPx() }
+    val screenHeightPx = with(density) { configuration.screenHeightDp.dp.toPx() }
 
-    // Рассчитываем размер шрифта и вертикальный шаг между символами
-    val textPaint = android.graphics.Paint().apply {
-        textSize = with(density) { MatrixAnimationSettings.fontSize.sp.toPx() }
-    }
+    val textSizePx = with(density) { MatrixAnimationSettings.fontSize.sp.toPx() }
     val symbolPaddingPx = with(density) { MatrixAnimationSettings.symbolPadding.toPx() }
-    val verticalStep = textPaint.textSize + symbolPaddingPx
+    val verticalStep = textSizePx + symbolPaddingPx
 
-    // Генерация состояний для колонок и их случайные задержки
-    val columnOffsets = remember {
-        List(MatrixAnimationSettings.rows) {
-            Random.nextFloat() * screenWidthPx
+    val paint = remember {
+        android.graphics.Paint().apply {
+            isAntiAlias = true
         }
     }
+    paint.textSize = textSizePx
+
+    // Чтобы символы не накладывались друг на друга по горизонтали,
+    // используем дискретные позиции. Возьмем шаг по горизонтали кратный размеру символа.
+    val horizontalSpacing = textSizePx * 1.5f // коэффициент, чтобы символы не соприкасались
+    val maxColumnsFit = (screenWidthPx / horizontalSpacing).toInt()
+
+    // Если на экране колонок больше, чем можно разместить без наложения,
+    // можно либо уменьшить число колонок, либо уменьшить spacing.
+    val columnsCount = MatrixAnimationSettings.rows
+    val actualColumnsCount = if (columnsCount <= maxColumnsFit) columnsCount else maxColumnsFit
+
+    // Генерируем уникальные позиции (слоты) для колонок
+    val availableSlots = (0 until maxColumnsFit).toList().shuffled().take(actualColumnsCount)
+
+    // Если columnsCount > actualColumnsCount, часть колонок не поместится корректно,
+    // но предположим, что rows <= maxColumnsFit для данной конфигурации экрана.
+    // Распределяем колонки по выбранным слотам
+    val columnOffsets = remember {
+        availableSlots.map { slotIndex ->
+            slotIndex * horizontalSpacing
+        }
+    }
+
+    // Задержки для каждой колонки (можно делать меньше колонок, если columnsCount > actualColumnsCount)
     val columnDelays = remember {
-        List(MatrixAnimationSettings.rows) {
+        List(actualColumnsCount) {
             Random.nextLong(MatrixAnimationSettings.columnStartDelayRange.first, MatrixAnimationSettings.columnStartDelayRange.last)
         }
     }
 
+    // Состояния колонок
     val columnsState = remember {
-        columnOffsets.mapIndexed { index, startX ->
-            generateColumnSymbols(index, startX, verticalStep).toMutableStateList()
+        columnOffsets.map { xPos ->
+            mutableStateListOf<MatrixSymbol>()
         }.toMutableStateList()
     }
 
-    // Для каждой колонки запускаем отдельный LaunchedEffect, который ждёт задержку и начинает обновлять
+    val columnHeights = remember {
+        MutableList(actualColumnsCount) { 0 }
+    }
+
+    // Запускаем корутины для каждой колонки
     columnsState.forEachIndexed { columnIndex, column ->
         LaunchedEffect(columnIndex) {
-            // Ждём индивидуальную задержку для данной колонки
-            delay(columnDelays[columnIndex])
+            delay(columnDelays[columnIndex]) // индивидуальная задержка старта
             while (isActive) {
-                withFrameNanos {
-                    updateColumnSymbols(column, screenHeightPx)
-                }
+                val nextIndex = columnHeights[columnIndex] + 1
+                val yPos = nextIndex * verticalStep
+                val newSymbolChar = MatrixAnimationSettings.symbols.random()
+                column.add(
+                    MatrixSymbol(
+                        symbol = newSymbolChar,
+                        yPos = yPos,
+                        xPos = columnOffsets[columnIndex],
+                        alpha = 1f
+                    )
+                )
+                columnHeights[columnIndex] = nextIndex
+
+                // Обновляем альфы всех символов
+                val updated = column.mapNotNull { sym ->
+                    val newAlpha = sym.alpha - MatrixAnimationSettings.fadeSpeed
+                    if (newAlpha > 0f) sym.copy(alpha = newAlpha) else null
+                }.toMutableList()
+
+                column.clear()
+                column.addAll(updated)
+
+                delay(MatrixAnimationSettings.updateInterval)
             }
         }
     }
 
     Canvas(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-        val paint = android.graphics.Paint().apply {
-            color = android.graphics.Color.GREEN
-            textSize = MatrixAnimationSettings.fontSize.sp.toPx()
-            isAntiAlias = true
-        }
-
-        // Отрисовка символов
         columnsState.forEach { columnSymbols ->
-            columnSymbols.forEach { symbol ->
-                if (symbol.alpha > 0f) {
-                    paint.alpha = (symbol.alpha * 255).coerceIn(0f, 255f).toInt()
-                    drawContext.canvas.nativeCanvas.drawText(
-                        symbol.symbol.toString(),
-                        symbol.xOffset,
-                        symbol.yOffset,
-                        paint
-                    )
-                }
+            for (symbol in columnSymbols) {
+                val alphaInt = (symbol.alpha * 255).toInt().coerceIn(0,255)
+                paint.color = android.graphics.Color.argb(
+                    alphaInt,
+                    0,
+                    255,
+                    0
+                )
+                drawContext.canvas.nativeCanvas.drawText(
+                    symbol.symbol.toString(),
+                    symbol.xPos,
+                    symbol.yPos,
+                    paint
+                )
             }
         }
-    }
-}
-
-// Генерация символов для одной колонки с учетом verticalStep
-fun generateColumnSymbols(
-    columnIndex: Int,
-    startX: Float,
-    verticalStep: Float
-): MutableList<MatrixSymbol> {
-    val list = mutableListOf<MatrixSymbol>()
-    repeat(MatrixAnimationSettings.maxVisibleSymbols) { i ->
-        list.add(
-            MatrixSymbol(
-                symbol = MatrixAnimationSettings.symbols.random(),
-                alpha = 0f,
-                xOffset = startX,
-                yOffset = -(i * verticalStep)
-            )
-        )
-    }
-    return list
-}
-
-// Обновляем символы одной колонки с учетом fadeSpeed
-fun updateColumnSymbols(
-    columnSymbols: MutableList<MatrixSymbol>,
-    screenHeight: Float
-) {
-    val newList = mutableListOf<MatrixSymbol>()
-
-    for (symbol in columnSymbols) {
-        var y = symbol.yOffset + MatrixAnimationSettings.speed
-        var a = symbol.alpha
-        var s = symbol.symbol
-
-        val normalizedPos = y / screenHeight
-
-        a = when {
-            normalizedPos < 0f -> {
-                0f
-            }
-            normalizedPos in 0f..0.3f -> {
-                (normalizedPos / 0.3f).coerceIn(0f, 1f)
-            }
-            normalizedPos in 0.3f..0.7f -> {
-                1f
-            }
-            else -> {
-                // Затухание с использованием fadeSpeed
-                val fadeFraction = ((normalizedPos - 0.7f) / 0.3f).coerceAtLeast(0f)
-                val alphaWithoutFadeSpeed = (1 - fadeFraction).coerceIn(0f,1f)
-                (alphaWithoutFadeSpeed - MatrixAnimationSettings.fadeSpeed).coerceAtLeast(0f)
-            }
-        }
-
-        // Если символ вышел за нижнюю границу или его альфа <= 0f, перезапускаем символ сверху
-        if (y > screenHeight || a <= 0f) {
-            y = Random.nextFloat() * (-100f)
-            s = MatrixAnimationSettings.symbols.random()
-            a = 0f
-        }
-
-        newList.add(symbol.copy(symbol = s, alpha = a, yOffset = y))
-    }
-
-    // Обновляем список символов, чтобы Compose отреагировал на изменение состояния
-    for (i in columnSymbols.indices) {
-        columnSymbols[i] = newList[i]
     }
 }
