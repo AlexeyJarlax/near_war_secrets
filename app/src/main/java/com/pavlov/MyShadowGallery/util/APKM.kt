@@ -2,6 +2,7 @@ package com.pavlov.MyShadowGallery.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.Keep
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -9,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
 // ------------------------------------------------------------------------------------ гетеры и сетеры
+@Keep
 class APKM @Inject constructor(
     @ApplicationContext private val context: Context
 ) {

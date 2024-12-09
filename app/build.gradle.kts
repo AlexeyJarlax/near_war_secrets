@@ -38,14 +38,23 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false  // Выключить ProGuard
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            isMinifyEnabled = false
         }
     }
 
+
     bundle {
-        abi {
+        abi {// Оптимизация для разных ABI (процессорных архитектур)
             enableSplit = true
         }
     }
@@ -126,7 +135,7 @@ dependencies {
     implementation (libs.androidx.runtime)
 
     // Compose навигация
-    implementation ("androidx.navigation:navigation-compose:2.8.4")
+    implementation (libs.androidx.navigation.compose)
 
     // графическая обработка (более современное решение по загрузке пикч вместо Glide или Picasso)
     implementation(libs.coil.compose)
@@ -135,14 +144,13 @@ dependencies {
     implementation (libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material.icons.extended)
-    implementation ("androidx.compose.material:material-icons-extended:1.4.3")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("androidx.camera:camera-camera2:1.4.0")
-    implementation("androidx.camera:camera-lifecycle:1.4.0")
-    implementation("androidx.camera:camera-view:1.4.0")
+    implementation(libs.glide)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
 
     // шифрование
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation (libs.androidx.security.crypto)
 
     // корутин
     implementation(libs.kotlinx.coroutines.android)
@@ -153,7 +161,7 @@ dependencies {
 
     // Требуемые обфускатором R8:
     implementation(libs.bcprov.jdk15on)
-    implementation("org.conscrypt:conscrypt-android:2.5.2")
+    implementation(libs.conscrypt.android)
 
     // тестирование
     testImplementation(libs.junit)
@@ -171,5 +179,17 @@ dependencies {
     implementation (libs.androidx.datastore.preferences)
 
     //сдвоенный экран pager со смахиванием
-    implementation ("com.google.accompanist:accompanist-pager:0.30.1")
+    implementation (libs.accompanist.pager)
+//    implementation("androidx.compose.foundation:foundation:1.4.3")
+
+    // Google API Client
+//    implementation (libs.google.api.client)
+
+    // Joda-Time
+    implementation (libs.joda.time)
+
+    // Error Prone Annotations
+    implementation (libs.error.prone.annotations)
+
+    implementation (libs.tink.android)
 }

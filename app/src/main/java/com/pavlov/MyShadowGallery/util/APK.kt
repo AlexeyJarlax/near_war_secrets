@@ -1,7 +1,9 @@
 package com.pavlov.MyShadowGallery.util
 
-object APK { // AppPreferencesKey Internal - доступно только в модуле
+import androidx.annotation.Keep
 
+@Keep
+object APK { // AppPreferencesKey Internal - доступно только в модуле
 
     // хранилища SharedPreferences
     const val PREFS_NAME = "my_prefs_new" // открытое хранилище
