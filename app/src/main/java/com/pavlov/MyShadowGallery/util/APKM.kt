@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
@@ -82,19 +81,6 @@ class APKM @Inject constructor(
         editor.remove(key)
         editor.apply()
     }// appPreferencesMethods.delStringFromSharedPreferences(AppPreferencesKeys.KEY_HISTORY_LIST)
-
-    // -------------------------------------------------------------- json Object гетеры и сетеры
-    inline fun <reified T> getObjectFromSharedPreferences(key: String): T? {
-        val json = sharedPreferences.getString(key, null)
-        return Gson().fromJson(json, T::class.java)
-    }// appPreferencesMethods.getObjectFromSharedPreferences<String>(AppPreferencesKeys.KEY_HISTORY_LIST)
-
-    inline fun <reified T> saveObjectToSharedPreferences(key: String, value: T) {
-        val json = Gson().toJson(value)
-        val editor = sharedPreferences.edit()
-        editor.putString(key, json)
-        editor.apply()
-    }// appPreferencesMethods.saveObjectToSharedPreferences(AppPreferencesKeys.KEY_HISTORY_LIST, jsonString)
 
 // удаляется объект как простая стринга
 

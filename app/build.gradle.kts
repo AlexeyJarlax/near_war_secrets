@@ -31,8 +31,8 @@ android {
         resourceConfigurations += setOf("ru", "en", "zh", "es")
         minSdk = 29
         targetSdk = 35
-        versionCode = 60
-        versionName = "1.60"
+        versionCode = 62
+        versionName = "1.62"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -103,11 +103,6 @@ dependencies {
     implementation(libs.androidx.foundation.layout.android)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
 
-    // HTTP-клиент
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.okhttp)
-
     // mailto: URI
     implementation(libs.email.intent.builder)
 
@@ -164,10 +159,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
 
-    // поиск текущего расположения юзера
-    implementation (libs.play.services.location)
-    implementation (libs.kotlinx.coroutines.play.services)
-
     // запрос разрешений
     implementation (libs.accompanist.permissions)
 
@@ -178,9 +169,6 @@ dependencies {
 
     // работа со временем
     implementation (libs.androidx.datastore.preferences)
-
-    // анимация как в матрице
-//    import ("androidx.compose.ui.graphics.drawscope.withFrameNanos")
 
     //сдвоенный экран pager со смахиванием
     implementation ("com.google.accompanist:accompanist-pager:0.30.1")
