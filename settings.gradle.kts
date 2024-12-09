@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "nearWarSecrets"
+rootProject.name = "MyShadowGallery"
 include(":app")

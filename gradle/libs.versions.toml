@@ -4,9 +4,16 @@ accompanistZoomable = "1"
 accompanistZoomableVersion = "<latest-version>"
 agp = "8.7.2"
 androidxMaterial3 = "1.2.0-alpha04"
+cameraViewVersion = "1.4.0"
+conscryptAndroidVersion = "2.5.2"
 datastorePreferencesVersion = "1.1.1"
 desugar_jdk_libs = "2.0.3"
+error_prone_annotations = "2.10.0"
+error_prone_annotationsVersion = "2.27.0"
 foundationVersion = "1.0.5"
+glideVersion = "4.16.0"
+googleApiClientVersion = "1.34.2"
+jodaTimeVersion = "2.10.13"
 kotlin = "1.9.24"
 espressoCore = "3.6.1"
 kotlinxCoroutinesPlayServices = "1.7.3"
@@ -15,6 +22,7 @@ constraintlayout = "2.2.0"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 material3Version = "1.3.1"
+materialIconsExtendedVersion = "1.4.3"
 materialVersion = "1.5.3"
 navigationFragmentKtx = "2.8.4"
 navigationUiKtx = "2.8.4"
@@ -67,7 +75,10 @@ roomRuntimeVersion = "2.6.1"
 runtime = "1.0.5"
 runtimeSaveableVersion = "1.7.3"
 runtimeVersion = "1.7.3"
+securityCrypto = "1.1.0"
+securityCryptoVersion = "1.1.0-alpha06"
 timberVersion = "5.0.1"
+tinkAndroidVersion = "1.8.0"
 ui = "1.6.8"
 uiTooling = "1.0.5"
 uiToolingVersion = "1.7.5"
@@ -78,22 +89,36 @@ uiVersion = "1.0.5"
 foundationLayoutAndroidVersion = "1.7.2"
 
 [libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPermissionsVersion" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
 accompanist-zoomable = { module = "com.google.accompanist:accompanist-zoomable", version.ref = "accompanistZoomableVersion" }
 accompanist-zoomable-v1 = { module = "com.google.accompanist:accompanist-zoomable", version.ref = "accompanistZoomable" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraViewVersion" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraViewVersion" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraViewVersion" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-foundation-v105 = { module = "androidx.compose.foundation:foundation", version.ref = "foundationVersion" }
+androidx-material-icons-extended-v143 = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtendedVersion" }
 androidx-material-v153 = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-material3-v120alpha04 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationFragmentKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtxVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntimeVersion" }
 androidx-runtime-v105 = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCryptoVersion" }
+androidx-security-crypto-v110 = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 androidx-ui-tooling-v105 = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 androidx-ui-v105 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
+conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscryptAndroidVersion" }
 desugar_jdk_libs-v203 = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+error_prone_annotations = { module = "com.google.errorprone:error_prone_annotations", version.ref = "error_prone_annotationsVersion" }
+error_prone_annotations-v2100 = { module = "com.google.errorprone:error_prone_annotations", version.ref = "error_prone_annotations" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "googleApiClientVersion" }
+joda-time = { module = "joda-time:joda-time", version.ref = "jodaTimeVersion" }
 kotlinx-coroutines-play-services-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
@@ -163,6 +188,7 @@ runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedat
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroidVersion" }
 androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroidVersion" }
+tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tinkAndroidVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

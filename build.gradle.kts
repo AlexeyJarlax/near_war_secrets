@@ -25,8 +25,8 @@ buildscript {
     }
 
     dependencies {
-//        classpath(libs.gradle.v85)
-//        classpath(libs.google.services)
-//        classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.gradle.v85)
+        classpath(libs.google.services)
+        classpath(libs.hilt.android.gradle.plugin)
     }
 }
