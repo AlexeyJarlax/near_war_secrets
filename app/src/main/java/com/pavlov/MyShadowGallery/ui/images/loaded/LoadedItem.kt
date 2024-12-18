@@ -1,9 +1,14 @@
-package com.pavlov.MyShadowGallery.ui.Images.shared
+package com.pavlov.MyShadowGallery.ui.images.loaded
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -17,18 +22,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.pavlov.MyShadowGallery.ui.Images.ImagesViewModel
-import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
+import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 import java.io.File
 
 @Composable
-fun SharedItem(
+fun LoadedItem(
     fileName: String,
     viewModel: ImagesViewModel,
     onImageClick: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val imageFile = File(context.filesDir, "$RECEIVED_FROM_OUTSIDE/$fileName")
+    val imageFile = File(context.filesDir, "$UPLOADED_BY_ME/$fileName")
     val date = viewModel.getPhotoDate(fileName)
     val name = viewModel.getFileNameWithoutExtension(fileName)
     val painter = rememberAsyncImagePainter(model = imageFile)
@@ -50,9 +55,10 @@ fun SharedItem(
         ) {
             Image(
                 painter = painter,
-                contentDescription = "Shared Image",
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
             )
         }
         Column(

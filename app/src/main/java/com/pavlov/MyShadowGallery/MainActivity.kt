@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.pavlov.MyShadowGallery.navigation.NavGraph
 import com.pavlov.MyShadowGallery.theme.MyTheme
-import com.pavlov.MyShadowGallery.ui.Images.ImagesViewModel
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

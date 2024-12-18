@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.Images
+package com.pavlov.MyShadowGallery.ui.images
 
 import android.content.Intent
 import android.net.Uri
@@ -31,7 +31,7 @@ import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
-import com.pavlov.MyShadowGallery.ui.Images.loaded.MemeSelectionDialog
+import com.pavlov.MyShadowGallery.ui.images.loaded.MemeSelectionDialog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 

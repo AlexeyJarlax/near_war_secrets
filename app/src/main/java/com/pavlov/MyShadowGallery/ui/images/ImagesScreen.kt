@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.Images
+package com.pavlov.MyShadowGallery.ui.images
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ImagesScreen(
@@ -31,7 +30,7 @@ fun ImagesScreen(
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    val extractedImages by viewModel.receivedfromoutside.collectAsState()
+    val receivedImages by viewModel.receivedFromOutside.collectAsState()
     val tempImages by viewModel.tempImages.collectAsState()
 
     LaunchedEffect(tempImages) {

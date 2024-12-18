@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.Images.loaded
+package com.pavlov.MyShadowGallery.ui.images.loaded
 
 import android.graphics.BitmapFactory
 import com.pavlov.MyShadowGallery.R

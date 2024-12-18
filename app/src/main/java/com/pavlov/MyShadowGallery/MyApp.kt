@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery;
+package com.pavlov.MyShadowGallery
 
 import android.app.Application
 import com.pavlov.MyShadowGallery.util.ToastExt
@@ -19,5 +19,3 @@ class MyApp : Application() {
         }
     }
 }
-
-

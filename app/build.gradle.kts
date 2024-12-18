@@ -1,13 +1,8 @@
-import org.gradle.kotlin.dsl.android
-import org.gradle.kotlin.dsl.hilt
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-    id("com.google.devtools.ksp")
+    id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -16,16 +11,6 @@ android {
     namespace = "com.pavlov.MyShadowGallery"
     compileSdk = 35
 
-    buildFeatures {
-        viewBinding = true
-    }
-
-    bundle {
-        language {
-            enableSplit = false
-        }
-    }
-
     defaultConfig {
         applicationId = "com.pavlov.MyShadowGallery"
         resourceConfigurations += setOf("ru", "en", "zh", "es")
@@ -33,7 +18,7 @@ android {
         targetSdk = 35
         versionCode = 62
         versionName = "1.62"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.pavlov.MyShadowGallery.testing.HiltTestRunner"
     }
 
     buildTypes {
@@ -52,13 +37,6 @@ android {
         }
     }
 
-
-    bundle {
-        abi {// Оптимизация для разных ABI (процессорных архитектур)
-            enableSplit = true
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -72,10 +50,9 @@ android {
     }
 
     buildFeatures {
-        buildConfig = true
+        compose = true
         viewBinding = true
         dataBinding = true
-        compose = true
     }
 
     composeOptions {
@@ -85,6 +62,12 @@ android {
     packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 
@@ -98,22 +81,12 @@ android {
     }
 }
 
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-}
-
 dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.foundation.android)
-    implementation(libs.androidx.foundation.android)
-    implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.foundation.layout.android)
-    coreLibraryDesugaring (libs.desugar.jdk.libs)
-
-    // mailto: URI
-    implementation(libs.email.intent.builder)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     // Dagger Hilt
     implementation(libs.hilt.android)
@@ -130,18 +103,18 @@ dependencies {
     implementation(libs.maps.compose.v272)
     implementation(libs.androidx.foundation)
     implementation(libs.google.accompanist.flowlayout)
-    implementation (libs.androidx.ui.tooling.preview)
-    debugImplementation (libs.androidx.ui.tooling)
-    implementation (libs.androidx.runtime)
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.runtime)
 
     // Compose навигация
-    implementation (libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
 
-    // графическая обработка (более современное решение по загрузке пикч вместо Glide или Picasso)
+    // Coil для загрузки изображений
     implementation(libs.coil.compose)
 
-    // визуал material
-    implementation (libs.androidx.material3)
+    // Material Design
+    implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.glide)
@@ -149,47 +122,42 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
 
-    // шифрование
-    implementation (libs.androidx.security.crypto)
+    // Шифрование
+    implementation(libs.androidx.security.crypto)
 
-    // корутин
+    // Корутины
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.peko)
 
-    //логи Тимбер
+    // Логирование с Timber
     implementation(libs.timber)
 
-    // Требуемые обфускатором R8:
+    // Обфускатор R8
     implementation(libs.bcprov.jdk15on)
     implementation(libs.conscrypt.android)
 
-    // тестирование
+    // Основные тестовые зависимости
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
 
-    // запрос разрешений
-    implementation (libs.accompanist.permissions)
+    // **ДОБАВЬТЕ СЮДА**
+    // Зависимость на AndroidJUnitRunner
+    androidTestImplementation("androidx.test:runner:1.5.2")
+
+    // Разрешения
+    implementation(libs.accompanist.permissions)
 
     // Room
-    implementation (libs.androidx.room.runtime)
-    ksp (libs.androidx.room.compiler)
-    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
-    // работа со временем
-    implementation (libs.androidx.datastore.preferences)
+    // Работа со временем
+    implementation(libs.androidx.datastore.preferences)
 
-    //сдвоенный экран pager со смахиванием
-    implementation (libs.accompanist.pager)
-//    implementation("androidx.compose.foundation:foundation:1.4.3")
+    // Pager
+    implementation(libs.accompanist.pager)
 
-    // Google API Client
-//    implementation (libs.google.api.client)
-
-    // Joda-Time
-    implementation (libs.joda.time)
-
-    // Error Prone Annotations
-    implementation (libs.error.prone.annotations)
-
-    implementation (libs.tink.android)
+    // Core Library Desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
