@@ -95,10 +95,10 @@ class ImageRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteImage(fileName: String, directoryName: String) {
+    suspend fun deleteImage(uri: Uri) {
         try {
-            val file = File(context.filesDir, "$directoryName/$fileName")
-            if (file.exists()) {
+            val file = uriToFile(uri)
+            if (file != null && file.exists()) {
                 val deleted = file.delete()
                 if (deleted) {
                     Timber.d("Файл удалён: ${file.absolutePath}")
@@ -107,10 +107,10 @@ class ImageRepository @Inject constructor(
                     Timber.e("Не удалось удалить файл: ${file.absolutePath}")
                 }
             } else {
-                Timber.e("Файл не найден для удаления: ${file.absolutePath}")
+                Timber.e("Файл не найден для удаления: $uri")
             }
         } catch (e: Exception) {
-            Timber.e(e, "Ошибка при удалении файла: $fileName")
+            Timber.e(e, "Ошибка при удалении файла: $uri")
         }
     }
 

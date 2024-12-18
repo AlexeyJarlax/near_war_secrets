@@ -83,7 +83,6 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
         fun closeShareDialogWithMemoryWash() {
             selectedUri?.let { uri ->
                 viewModel.setAnImageWasSharedWithUsNow(false)
-                viewModel.removeExtractedImage(uri)
                 viewModel.deletePhoto(uri)
                 viewModel.clearSelectedUri()
             }

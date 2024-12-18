@@ -1,6 +1,5 @@
 package com.pavlov.MyShadowGallery.ui.images
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -13,7 +12,6 @@ import com.pavlov.MyShadowGallery.domain.usecase.SteganographyUseCase
 import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -105,12 +103,17 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun deletePhoto(fileName: String, directoryName: String) {
-        Timber.tag(TAG).d("Удаление фотографии: $fileName из $directoryName")
+    fun deletePhoto(uri: Uri) {
+        Timber.tag(TAG).d("Удаление фотографии: $uri")
         viewModelScope.launch(Dispatchers.IO) {
-            _isLoading.value = true
-            imageRepository.deleteImage(fileName, directoryName)
-            _isLoading.value = false
+            try {
+                _isLoading.value = true
+                imageRepository.deleteImage(uri)
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e, "Ошибка при удалении файла: $uri")
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
@@ -243,24 +246,16 @@ class ImagesViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                 if (bitmap != null) {
-                    if (steganographyUseCase.hasMarker(bitmap)) {
-                        Timber.tag(TAG).d("Маркер обнаружен. Извлечение скрытого изображения.")
-                        val hiddenImageUri = steganographyUseCase.extractOriginalImage(uri)
-                        if (hiddenImageUri != null) {
-                            Timber.tag(TAG).d("Скрытое изображение извлечено: $hiddenImageUri")
-                            withContext(Dispatchers.Main) {
-                                onExtractionResult(hiddenImageUri)
-                            }
-                        } else {
-                            Timber.tag(TAG).e("Не удалось извлечь скрытое изображение.")
-                            withContext(Dispatchers.Main) {
-                                onExtractionResult(null)
-                            }
+                    val hiddenImageUri = steganographyUseCase.extractOriginalImage(uri)
+                    if (hiddenImageUri != null) {
+                        Timber.tag(TAG).d("Скрытое изображение извлечено: $hiddenImageUri")
+                        withContext(Dispatchers.Main) {
+                            onExtractionResult(hiddenImageUri)
                         }
                     } else {
-                        Timber.tag(TAG).d("Маркер не обнаружен. Обработка как обычного изображения.")
+                        Timber.tag(TAG).d("Скрытое изображение не найдено. Обработка как обычного изображения.")
                         withContext(Dispatchers.Main) {
-                            onExtractionResult(null)
+                            onExtractionResult(uri)
                         }
                     }
                 } else {
@@ -270,7 +265,6 @@ class ImagesViewModel @Inject constructor(
                     }
                 }
                 imageRepository.loadAllImages()
-                removeExtractedImage(uri)
                 imageRepository.clearTempImages()
             }
         } catch (e: Exception) {
@@ -377,61 +371,7 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun deletePhoto(uri: Uri) {
-        Timber.tag(TAG).d("Удаление фотографии: $uri")
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _isLoading.value = true
-                val file = imageRepository.uriToFile(uri)
-                if (file != null && file.exists()) {
-                    val deleted = file.delete()
-                    if (deleted) {
-                        Timber.tag(TAG).d("Файл удалён: ${file.absolutePath}")
-                    } else {
-                        Timber.tag(TAG).e("Не удалось удалить файл: ${file.absolutePath}")
-                    }
-                } else {
-                    Timber.tag(TAG).e("Файл не найден для удаления: $uri")
-                }
-            } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "Ошибка при удалении файла: $uri")
-            } finally {
-                val file = imageRepository.uriToFile(uri)
-                if (file != null) {
-                    when (file.parentFile?.name) {
-                        RECEIVED_FROM_OUTSIDE -> imageRepository.loadImages(RECEIVED_FROM_OUTSIDE, imageRepository.receivedFromOutside as MutableStateFlow<List<String>>)
-                        UPLOADED_BY_ME -> imageRepository.loadImages(UPLOADED_BY_ME, imageRepository.uploadedByMe as MutableStateFlow<List<String>>)
-                    }
-                }
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun removeExtractedImage(uri: Uri) {
-        Timber.tag(TAG).d("Удаление временного изображения: $uri")
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val file = imageRepository.uriToFile(uri)
-                if (file != null && file.exists()) {
-                    val deleted = file.delete()
-                    if (deleted) {
-                        Timber.tag(TAG).d("Временное изображение удалено: ${file.absolutePath}")
-                    } else {
-                        Timber.tag(TAG).e("Не удалось удалить временное изображение: ${file.absolutePath}")
-                    }
-                } else {
-                    Timber.tag(TAG).e("Файл не найден для удаления: $uri")
-                }
-            } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "Ошибка при удалении временного изображения: $uri")
-            } finally {
-                imageRepository.loadImages("TEMP_IMAGES", imageRepository.tempImages as MutableStateFlow<List<String>>)
-            }
-        }
-    }
-
-    // делегаты image репозитория
+    // Делегаты ImageRepository
 
     fun clearTempImages() {
         Timber.tag(TAG).d("Очистка всех временных изображений")
@@ -469,4 +409,3 @@ class ImagesViewModel @Inject constructor(
         const val REQUEST_PERMISSION_CODE = 1001
     }
 }
-

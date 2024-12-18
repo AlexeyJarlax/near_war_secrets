@@ -17,16 +17,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
@@ -323,7 +322,7 @@ fun ImageDialog(
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Cable,
+                                imageVector = Icons.Default.Share, // Изменена иконка на более подходящую
                                 contentDescription = null,
                                 tint = My3,
                                 modifier = Modifier.size(16.dp)

@@ -17,19 +17,4 @@ class SteganographyUseCase @Inject constructor(
     suspend fun extractOriginalImage(memeUri: Uri): Uri? {
         return steganographyRepository.extractOriginalFromMeme(memeUri)
     }
-
-    fun hasMarker(bitmap: Bitmap): Boolean {
-        var extractedCode = 0
-        for (i in 0 until SteganographyRepository.SteganographyConstants.HEADER_SIZE) {
-            if (i >= bitmap.width * bitmap.height) {
-                return false
-            }
-            val x = i % bitmap.width
-            val y = i / bitmap.width
-            val pixel = bitmap.getPixel(x, y)
-            val headerBits = pixel and 0xF
-            extractedCode = (extractedCode shl 4) or headerBits
-        }
-        return extractedCode == SteganographyRepository.SteganographyConstants.HEADER_CODE
-    }
 }
