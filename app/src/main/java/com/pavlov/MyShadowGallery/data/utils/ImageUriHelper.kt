@@ -3,6 +3,9 @@ package com.pavlov.MyShadowGallery.data.utils
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
+import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
+import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import java.io.File
@@ -17,9 +20,9 @@ class ImageUriHelper @Inject constructor(
     fun getFileUri(fileName: String): Uri? {
         Timber.d("Получение URI для файла: $fileName")
         val directories = listOf(
-            "UPLOADED_BY_ME",
-            "RECEIVED_FROM_OUTSIDE",
-            "TEMP_IMAGES"
+            UPLOADED_BY_ME,
+            RECEIVED_FROM_OUTSIDE,
+            TEMP_IMAGES
         )
 
         for (dirName in directories) {

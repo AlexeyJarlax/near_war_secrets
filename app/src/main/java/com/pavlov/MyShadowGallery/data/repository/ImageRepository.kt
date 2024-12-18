@@ -5,6 +5,9 @@ import android.net.Uri
 import com.pavlov.MyShadowGallery.data.utils.ImageUriHelper
 import com.pavlov.MyShadowGallery.file.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.APK
+import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
+import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 import com.pavlov.MyShadowGallery.util.APKM
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,9 +58,9 @@ class ImageRepository @Inject constructor(
     }
 
     suspend fun loadAllImages() {
-        loadImages("TEMP_IMAGES", _tempImages)
-        loadImages("RECEIVED_FROM_OUTSIDE", _receivedFromOutside)
-        loadImages("UPLOADED_BY_ME", _uploadedByMe)
+        loadImages(TEMP_IMAGES, _tempImages)
+        loadImages(RECEIVED_FROM_OUTSIDE, _receivedFromOutside)
+        loadImages(UPLOADED_BY_ME, _uploadedByMe)
     }
 
     suspend fun addImage(uri: Uri, directoryName: String, fileName: String) {
@@ -121,7 +124,7 @@ class ImageRepository @Inject constructor(
 
     suspend fun clearTempImages() {
         try {
-            val tempDir = File(context.filesDir, "TEMP_IMAGES")
+            val tempDir = File(context.filesDir, TEMP_IMAGES)
             if (tempDir.exists()) {
                 tempDir.listFiles()?.forEach { file ->
                     try {
@@ -144,16 +147,36 @@ class ImageRepository @Inject constructor(
 
     fun getPhotoDate(fileName: String): String {
         Timber.d("Получение даты для файла: $fileName")
-        val photoListDir = File(context.filesDir, "UPLOADED_BY_ME")
-        val file = File(photoListDir, fileName)
-        return if (file.exists()) {
+
+        // Попытка найти в UPLOADED_BY_ME
+        var directory = File(context.filesDir, UPLOADED_BY_ME)
+        var file = File(directory, fileName)
+        if (file.exists()) {
             val date = java.util.Date(file.lastModified())
             Timber.d("Дата файла $fileName: $date")
-            date.toString()
-        } else {
-            Timber.e("Файл не найден для получения даты: ${file.absolutePath}")
-            "Неизвестно"
+            return date.toString()
         }
+
+        // Попытка найти в TEMP_IMAGES
+        directory = File(context.filesDir, TEMP_IMAGES)
+        file = File(directory, fileName)
+        if (file.exists()) {
+            val date = java.util.Date(file.lastModified())
+            Timber.d("Дата файла $fileName в $TEMP_IMAGES: $date")
+            return date.toString()
+        }
+
+        // Попытка найти в RECEIVED_FROM_OUTSIDE
+        directory = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
+        file = File(directory, fileName)
+        if (file.exists()) {
+            val date = java.util.Date(file.lastModified())
+            Timber.d("Дата файла $fileName в $RECEIVED_FROM_OUTSIDE: $date")
+            return date.toString()
+        }
+
+        Timber.e("Файл не найден для получения даты: ${file.absolutePath}")
+        return "Неизвестно"
     }
 
     fun getFileName(): String {

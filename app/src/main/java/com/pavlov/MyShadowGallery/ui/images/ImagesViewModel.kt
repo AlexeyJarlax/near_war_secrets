@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlov.MyShadowGallery.data.repository.ImageRepository
 import com.pavlov.MyShadowGallery.domain.usecase.SteganographyUseCase
+import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -98,7 +100,7 @@ class ImagesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
             val fileName = "uploaded_${System.currentTimeMillis()}.jpg"
-            imageRepository.addImage(uri, "UPLOADED_BY_ME", fileName)
+            imageRepository.addImage(uri, UPLOADED_BY_ME, fileName)
             _isLoading.value = false
         }
     }
@@ -202,7 +204,7 @@ class ImagesViewModel @Inject constructor(
     }
 
     fun saveSharedImage(uri: Uri, onExtractionResult: (Uri?) -> Unit) {
-        val whereTo = "RECEIVED_FROM_OUTSIDE"
+        val whereTo = RECEIVED_FROM_OUTSIDE
         Timber.tag(TAG).d("Сохранение временного изображения: $uri в $whereTo")
         try {
             val savedDir = File(imageRepository.context.filesDir, whereTo)
@@ -397,8 +399,8 @@ class ImagesViewModel @Inject constructor(
                 val file = imageRepository.uriToFile(uri)
                 if (file != null) {
                     when (file.parentFile?.name) {
-                        "RECEIVED_FROM_OUTSIDE" -> imageRepository.loadImages("RECEIVED_FROM_OUTSIDE", imageRepository.receivedFromOutside as MutableStateFlow<List<String>>)
-                        "UPLOADED_BY_ME" -> imageRepository.loadImages("UPLOADED_BY_ME", imageRepository.uploadedByMe as MutableStateFlow<List<String>>)
+                        RECEIVED_FROM_OUTSIDE -> imageRepository.loadImages(RECEIVED_FROM_OUTSIDE, imageRepository.receivedFromOutside as MutableStateFlow<List<String>>)
+                        UPLOADED_BY_ME -> imageRepository.loadImages(UPLOADED_BY_ME, imageRepository.uploadedByMe as MutableStateFlow<List<String>>)
                     }
                 }
                 _isLoading.value = false

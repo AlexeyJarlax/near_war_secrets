@@ -38,7 +38,7 @@ class ImageRepositoryTest {
     fun `addImage should save image and update flows`() = runTest {
         // Подготовка
         val testUri = mockk<Uri>(relaxed = true)
-        val directoryName = "UPLOADED_BY_ME"
+        val directoryName = "uploadedbyme"
         val fileName = "test_image.jpg"
 
         val file = mockk<File>(relaxed = true)

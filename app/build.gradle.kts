@@ -11,6 +11,16 @@ android {
     namespace = "com.pavlov.MyShadowGallery"
     compileSdk = 35
 
+    buildFeatures {
+        viewBinding = true
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     defaultConfig {
         applicationId = "com.pavlov.MyShadowGallery"
         resourceConfigurations += setOf("ru", "en", "zh", "es")
@@ -44,12 +54,19 @@ android {
         encoding = "UTF-8"
     }
 
+    bundle {
+        abi {// Оптимизация для разных ABI (процессорных архитектур)
+            enableSplit = true
+        }
+    }
+
     kotlinOptions {
         jvmTarget = "17"
         languageVersion = "1.9"
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
         viewBinding = true
         dataBinding = true
@@ -94,6 +111,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.hilt.navigation.compose.v100)
 
+    // mailto: URI
+    implementation(libs.email.intent.builder)
+
     // Jetpack Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.activity.compose)
@@ -107,7 +127,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.runtime)
 
-    // Compose навигация
+    // Compose + навигация
     implementation(libs.androidx.navigation.compose)
 
     // Coil для загрузки изображений
@@ -136,12 +156,9 @@ dependencies {
     implementation(libs.bcprov.jdk15on)
     implementation(libs.conscrypt.android)
 
-    // Основные тестовые зависимости
+    // тестовые зависимости (файлы тестов лежат в src/androidTest)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-
-    // **ДОБАВЬТЕ СЮДА**
-    // Зависимость на AndroidJUnitRunner
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     // Разрешения

@@ -45,7 +45,7 @@ class ImagesViewModelTest {
     fun `addPhoto should call imageRepository addImage`() = runTest {
         // Подготовка
         val testUri = mockk<Uri>(relaxed = true)
-        val directoryName = "UPLOADED_BY_ME"
+        val directoryName = "uploadedbyme"
         val fileName = "test_image.jpg"
 
         every { imageRepository.addImage(testUri, directoryName, any()) } just Runs
@@ -64,7 +64,7 @@ class ImagesViewModelTest {
     fun `deletePhoto should call imageRepository deleteImage`() = runTest {
         // Подготовка
         val fileName = "test_image.jpg"
-        val directoryName = "UPLOADED_BY_ME"
+        val directoryName = "uploadedbyme"
 
         every { imageRepository.deleteImage(fileName, directoryName) } just Runs
 
