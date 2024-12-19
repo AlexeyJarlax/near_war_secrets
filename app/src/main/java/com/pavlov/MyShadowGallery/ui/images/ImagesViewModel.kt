@@ -4,12 +4,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.camera.core.CameraSelector
-import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pavlov.MyShadowGallery.data.repository.ImageRepository
+import com.pavlov.MyShadowGallery.data.repository.StegoEvent
 import com.pavlov.MyShadowGallery.domain.usecase.SteganographyUseCase
 import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
+import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
 import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -97,8 +97,7 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("Добавление фотографии: $uri")
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
-            val fileName = "uploaded_${System.currentTimeMillis()}.jpg"
-            imageRepository.addImage(uri, UPLOADED_BY_ME, fileName)
+            imageRepository.addImage(uri, UPLOADED_BY_ME)
             _isLoading.value = false
         }
     }
@@ -121,7 +120,7 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("Добавление полученного изображения: $uri")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val tempDir = File(imageRepository.context.filesDir, "TEMP_IMAGES")
+                val tempDir = File(imageRepository.context.filesDir, TEMP_IMAGES)
                 if (!tempDir.exists()) {
                     val created = tempDir.mkdirs()
                     if (created) {
@@ -163,7 +162,7 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("Добавление нескольких полученных изображений: ${uris.size} шт.")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val tempDir = File(imageRepository.context.filesDir, "TEMP_IMAGES")
+                val tempDir = File(imageRepository.context.filesDir, TEMP_IMAGES)
                 if (!tempDir.exists()) {
                     val created = tempDir.mkdirs()
                     if (created) {
@@ -208,7 +207,7 @@ class ImagesViewModel @Inject constructor(
 
     fun saveSharedImage(uri: Uri, onExtractionResult: (Uri?) -> Unit) {
         val whereTo = RECEIVED_FROM_OUTSIDE
-        Timber.tag(TAG).d("Сохранение временного изображения: $uri в $whereTo")
+        Timber.tag(TAG).d("Сохранение изображения: $uri в $whereTo")
         try {
             val savedDir = File(imageRepository.context.filesDir, whereTo)
             if (!savedDir.exists()) {
@@ -227,7 +226,7 @@ class ImagesViewModel @Inject constructor(
                 return
             }
 
-            val fileName = imageRepository.getFileName()
+            val fileName = imageRepository.getFileName(RECEIVED_FROM_OUTSIDE)
             val file = File(savedDir, fileName)
             try {
                 file.outputStream().use { output ->
@@ -246,11 +245,54 @@ class ImagesViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                 if (bitmap != null) {
+                    steganographyUseCase.extractOriginalImage(uri)
+                        .onEach { event ->
+                            when (event) {
+                                is StegoEvent.Progress -> _encryptionProgress.value += event.message
+                                is StegoEvent.Error -> {
+                                    _encryptionProgress.value += "Ошибка: ${event.message}"
+                                }
+
+                                is StegoEvent.Success -> {
+                                    Timber.tag(TAG).d("Извлечённое изображение URI: ${event.uri}")
+                                    withContext(Dispatchers.Main) {
+                                        onExtractionResult(event.uri)
+                                    }
+                                }
+                            }
+                        }
+                        .catch { e ->
+                            Timber.tag(TAG).e(e, "Ошибка при извлечении изображения")
+                            _encryptionProgress.value += "Ошибка: ${e.message}"
+                            withContext(Dispatchers.Main) {
+                                onExtractionResult(null)
+                            }
+                        }
+                        .collect { event ->
+                            when (event) {
+                                is StegoEvent.Progress -> {
+
+                                }
+                                is StegoEvent.Error -> {
+                                    withContext(Dispatchers.Main) {
+                                        onExtractionResult(null)
+                                    }
+                                }
+
+                                is StegoEvent.Success -> {
+                                    // Уже обработано в onEach
+                                }
+                            }
+                        }
+
                     val hiddenImageUri = steganographyUseCase.extractOriginalImage(uri)
+                        .filterIsInstance<StegoEvent.Progress>()
+                        .lastOrNull()
+
                     if (hiddenImageUri != null) {
                         Timber.tag(TAG).d("Скрытое изображение извлечено: $hiddenImageUri")
                         withContext(Dispatchers.Main) {
-                            onExtractionResult(hiddenImageUri)
+                            onExtractionResult(hiddenImageUri as Uri?)
                         }
                     } else {
                         Timber.tag(TAG).d("Скрытое изображение не найдено. Обработка как обычного изображения.")
@@ -282,28 +324,28 @@ class ImagesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _encryptionProgress.value = emptyList()
-                _encryptionProgress.value = _encryptionProgress.value + "Сброс прогресса..."
-                _encryptionProgress.value = _encryptionProgress.value + "Загрузка оригинального изображения..."
+                _encryptionProgress.value += "Сброс прогресса..."
+                emitProgress("Загрузка оригинального изображения...")
                 val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
                 if (originalBitmap == null) {
-                    Timber.tag(TAG).e("Не удалось декодировать оригинальное изображение из файла: ${originalImageFile.absolutePath}")
+                    emitError("Не удалось декодировать оригинальное изображение из файла: ${originalImageFile.absolutePath}")
                     withContext(Dispatchers.Main) {
                         onResult(null)
                     }
                     return@launch
                 }
 
-                _encryptionProgress.value = _encryptionProgress.value + "Загрузка изображения оболочки..."
+                emitProgress("Загрузка изображения оболочки...")
                 val memeBitmap = BitmapFactory.decodeResource(imageRepository.context.resources, memeResId)
                 if (memeBitmap == null) {
-                    Timber.tag(TAG).e("Не удалось декодировать ресурс мем: $memeResId")
+                    emitError("Не удалось декодировать ресурс мем: $memeResId")
                     withContext(Dispatchers.Main) {
                         onResult(null)
                     }
                     return@launch
                 }
 
-                _encryptionProgress.value = _encryptionProgress.value + "Подгонка размеров изображений..."
+                emitProgress("Подгонка размеров изображений...")
                 val resizedOriginalBitmap =
                     if (originalBitmap.width > memeBitmap.width || originalBitmap.height > memeBitmap.height) {
                         Bitmap.createScaledBitmap(
@@ -318,52 +360,39 @@ class ImagesViewModel @Inject constructor(
 
                 Timber.tag(TAG).d("Изменённый размер оригинального изображения: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
 
-                _encryptionProgress.value = _encryptionProgress.value + "Процесс шифрования..."
-                val encodedBitmap = steganographyUseCase.hideImage(memeBitmap, resizedOriginalBitmap)
-                if (encodedBitmap == null) {
-                    Timber.tag(TAG).e("Не удалось закодировать изображение")
-                    withContext(Dispatchers.Main) {
-                        onResult(null)
+                emitProgress("Процесс шифрования...")
+                steganographyUseCase.hideImage(
+                    memeBitmap,
+                    resizedOriginalBitmap
+                )
+                    .onEach { event ->
+                        when (event) {
+                            is StegoEvent.Progress -> _encryptionProgress.value += event.message
+                            is StegoEvent.Error -> {
+                                _encryptionProgress.value += "Ошибка: ${event.message}"
+                                withContext(Dispatchers.Main) {
+                                    onResult(null)
+                                }
+                            }
+                            is StegoEvent.Success -> {
+                                Timber.tag(TAG).d("Закодированное изображение URI: ${event.uri}")
+                                withContext(Dispatchers.Main) {
+                                    onResult(event.uri)
+                                }
+                            }
+                        }
                     }
-                    return@launch
-                }
-
-                Timber.tag(TAG).d("Закодированное изображение размером: ${encodedBitmap.width}x${encodedBitmap.height}")
-
-                _encryptionProgress.value = _encryptionProgress.value + "Сохранение закодированного изображения..."
-                val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.png"
-                val destinationFile = File(imageRepository.context.cacheDir, fileName)
-                val outputStream = FileOutputStream(destinationFile)
-                encodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                outputStream.flush()
-                outputStream.close()
-
-                Timber.tag(TAG).d("Закодированное изображение сохранено: ${destinationFile.absolutePath}")
-
-                _encryptionProgress.value = _encryptionProgress.value + "Генерация URI"
-                val uri = try {
-                    FileProvider.getUriForFile(
-                        imageRepository.context,
-                        "${imageRepository.context.packageName}.fileprovider",
-                        destinationFile
-                    )
-                } catch (e: Exception) {
-                    Timber.tag(TAG).e(e, "Ошибка при получении URI для файла: ${destinationFile.absolutePath}")
-                    null
-                }
-
-                if (uri != null) {
-                    Timber.tag(TAG).d("Сгенерирован URI для закодированного изображения: $uri")
-                } else {
-                    Timber.tag(TAG).e("Не удалось сгенерировать URI для закодированного изображения")
-                }
-
-                withContext(Dispatchers.Main) {
-                    onResult(uri)
-                }
-
+                    .catch { e ->
+                        Timber.tag(TAG).e(e, "Ошибка при шифровании изображения")
+                        emitError("Ошибка при шифровании: ${e.message}")
+                        withContext(Dispatchers.Main) {
+                            onResult(null)
+                        }
+                    }
+                    .collect()
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "Ошибка во время стеганографии для файла: ${originalImageFile.absolutePath}")
+                emitError("Ошибка во время стеганографии: ${e.message}")
                 withContext(Dispatchers.Main) {
                     onResult(null)
                 }
@@ -371,7 +400,16 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    // Делегаты ImageRepository
+    // Функции для эмиссии прогресса и ошибок
+    private fun emitProgress(message: String) {
+        _encryptionProgress.value = _encryptionProgress.value + message
+    }
+
+    private fun emitError(message: String) {
+        _encryptionProgress.value = _encryptionProgress.value + "Ошибка: $message"
+    }
+
+    /** Делегаты ImageRepository */
 
     fun clearTempImages() {
         Timber.tag(TAG).d("Очистка всех временных изображений")
@@ -388,8 +426,8 @@ class ImagesViewModel @Inject constructor(
         return imageRepository.getPhotoDate(fileName)
     }
 
-    fun getFileName(): String {
-        return imageRepository.getFileName()
+    fun getFileName(directoryName: String): String {
+        return imageRepository.getFileName(directoryName)
     }
 
     fun getFileNameWithoutExtension(fileName: String): String {

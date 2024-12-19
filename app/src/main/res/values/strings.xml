@@ -229,7 +229,7 @@ AES (Advanced Encryption Standard).
     <string name="whith_encryption">С шифрованием</string>
     <string name="save">Сохранить</string>
     <string name="file_path">расположение</string>
-    <string name="directory_empty">Содержание отсутствует</string>
+    <string name="directory_empty">Другое содержимое отсутствует</string>
     <string name="confirm">Подтвердите действие</string>
     <string name="new_about_app">ПОЧТИ ВОЕННАЯ ТАЙНА\n\nПриложение для секретной переписки позволяет:\n\n- Отправить зашифрованное сообщение;\n- Отправить зашифрованное изображение;\n- Скрыть текст внутри изображения или например мемчика;\n- Скрыть одно фото внутри другого;\n- Запрятать архив с любым количеством файлов внутри любого изображения.\n</string>
 </resources>

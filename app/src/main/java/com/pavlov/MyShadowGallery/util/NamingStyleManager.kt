@@ -1,10 +1,11 @@
-package com.pavlov.MyShadowGallery.file
+package com.pavlov.MyShadowGallery.util
+
+/**  Генерация уникального имени файла  */
 
 import android.content.Context
-import com.pavlov.MyShadowGallery.util.APK
-import com.pavlov.MyShadowGallery.util.APKM
 import timber.log.Timber
 import java.io.File
+import java.util.Locale
 
 class NamingStyleManager(private val context: Context) {
 
@@ -12,75 +13,81 @@ class NamingStyleManager(private val context: Context) {
     private val nouns: List<String>
 
     init {
-        val namingStyle = APKM(context).getInt(
-            APK.FILE_NAME_KEY
-        )
+        val locale: Locale = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            context.resources.configuration.locales.get(0)
+        } else {
+            @Suppress("DEPRECATION")
+            context.resources.configuration.locale
+        }
 
-        when (namingStyle) {
-            0 -> {
+        when (locale.language) {
+            "ru" -> {
                 adjectives = NameUtil.adjectives
                 nouns = NameUtil.nouns
+                Timber.d("=== Используются русские имена.")
             }
-            1 -> {
+            "en" -> {
                 adjectives = EnglishNameUtil.adjectives
                 nouns = EnglishNameUtil.nouns
+                Timber.d("=== Используются английские имена.")
             }
-            2 -> {
-                adjectives = ChineseNameUtil.adjectives
-                nouns = ChineseNameUtil.nouns
-            }
-            3 -> {
+            "es" -> {
                 adjectives = SpanishNameUtil.adjectives
                 nouns = SpanishNameUtil.nouns
+                Timber.d("=== Используются испанские имена.")
             }
-            4 -> {
-                adjectives = AllegedlySistemNameUtil.adjectives
-                nouns = AllegedlySistemNameUtil.nouns
+            "zh" -> {
+                adjectives = ChineseNameUtil.adjectives
+                nouns = ChineseNameUtil.nouns
+                Timber.d("=== Используются китайские имена.")
             }
+
             else -> {
-                adjectives = emptyList()
-                nouns = emptyList()
+                // Используем английские имена по умолчанию
+                adjectives = EnglishNameUtil.adjectives
+                nouns = EnglishNameUtil.nouns
+                Timber.d("=== Язык не поддерживается. Используются английские имена по умолчанию.")
             }
         }
     }
 
-fun generateFileName(isEncrypted: Boolean, folder: File): String {
-    if (adjectives.isEmpty() || nouns.isEmpty()) {
-        Timber.tag("=== FileNameGeneration")
-            .d("=== Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
-        return "FallbackFileName.unknown"
-    }
-
-    val randomName = "${adjectives.random()}_${nouns.random()}"
-    var fileName = "${randomName}.unknown"
-
-    if (isEncrypted) {
-        fileName = "${fileName.substringBeforeLast(".")}.k"
-    } else {
-        fileName = "${fileName.substringBeforeLast(".")}.o"
-    }
-
-    if (folder.exists() || folder.mkdirs()) {
-        var counter = 1
-        var file = File(folder, fileName)
-
-        Timber.tag("=== FileNameGeneration").d("=== Generated FileName: $fileName")
-
-        while (file.exists()) {
-            fileName = "${randomName}_$counter"
-            if (isEncrypted) {
-                fileName = "${fileName}.k"
-            } else {
-                fileName = "${fileName}.o"
-            }
-            file = File(folder, fileName)
-            counter++
-
-            Timber.tag("=== FileNameGeneration").d("=== Conflict! New FileName: $fileName")
+    fun generateFileName(isEncrypted: Boolean, folder: File): String {
+        if (adjectives.isEmpty() || nouns.isEmpty()) {
+            Timber.tag("=== FileNameGeneration")
+                .d("=== Empty arrays: adjectives=${adjectives.isEmpty()}, nouns=${nouns.isEmpty()}")
+            return "FallbackFileName.unknown"
         }
+
+        val randomName = "${adjectives.random()}_${nouns.random()}"
+        var fileName = "${randomName}.unknown"
+
+        if (isEncrypted) {
+            fileName = "${fileName.substringBeforeLast(".")}.k"
+        } else {
+            fileName = "${fileName.substringBeforeLast(".")}.o"
+        }
+
+        if (folder.exists() || folder.mkdirs()) {
+            var counter = 1
+            var file = File(folder, fileName)
+
+            Timber.tag("=== FileNameGeneration").d("=== Generated FileName: $fileName")
+
+            while (file.exists()) {
+                fileName = "${randomName}_$counter"
+                if (isEncrypted) {
+                    fileName = "${fileName}.k"
+                } else {
+                    fileName = "${fileName}.o"
+                }
+                file = File(folder, fileName)
+                counter++
+
+                Timber.tag("=== FileNameGeneration").d("=== Conflict! New FileName: $fileName")
+            }
+        }
+        return applyNamingOption(fileName)
     }
-    return applyNamingOption(fileName)
-}
 
     private fun applyNamingOption(fileName: String): String {
         return fileName
@@ -165,7 +172,7 @@ object AllegedlySistemNameUtil {
         "URL", "HTML", "CSS", "JavaScript", "API", "GUI", "IDE", "cd", "ef", "gh", "ij", "kl", "mn",
         "op", "qr", "st", "uv", "wx", "yz", "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx",
         "mnop", "qrstu", "vwxyz", "Central", "Processing", "Graphics", "Operative", "Read-Only",
-        "Basic", "Input/Output", "Operating", "Hard", "Solid", "Universal", "Local", "Wide",
+        "Basic", "Input", "Operating", "Hard", "Solid", "Universal", "Local", "Wide",
         "Internet", "Service", "Virtual", "Uniform", "Hypertext", "Cascading", "Programming",
         "Application", "Interface", "Graphical", "Integrated", "Development"
     )
@@ -179,6 +186,6 @@ object AllegedlySistemNameUtil {
         "yza", "bcd", "efg", "hij", "klm", "nop", "qrs", "tuv", "wxy", "zab", "cde", "fgh", "ijkl",
         "IoE", "BIOS", "CMOS", "HTML5", "CLI", "WPA", "WEP", "URL", "LAN",
         "WAN", "MAN", "RAM", "CPU", "GPU", "DNS", "GUI", "SSL", "OSI",
-        "SMTP", "POP3", "IMAP", "HTTP", "HTTPS", "TCP/IP", "API", "SDK"
+        "SMTP", "POP3", "IMAP", "HTTP", "HTTPS", "TCP-IP", "API", "SDK"
     )
 }

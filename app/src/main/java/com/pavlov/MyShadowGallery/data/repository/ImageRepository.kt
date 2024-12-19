@@ -3,7 +3,7 @@ package com.pavlov.MyShadowGallery.data.repository
 import android.content.Context
 import android.net.Uri
 import com.pavlov.MyShadowGallery.data.utils.ImageUriHelper
-import com.pavlov.MyShadowGallery.file.NamingStyleManager
+import com.pavlov.MyShadowGallery.util.NamingStyleManager
 import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
@@ -16,6 +16,9 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class ImageRepository @Inject constructor(
@@ -63,7 +66,7 @@ class ImageRepository @Inject constructor(
         loadImages(UPLOADED_BY_ME, _uploadedByMe)
     }
 
-    suspend fun addImage(uri: Uri, directoryName: String, fileName: String) {
+    suspend fun addImage(uri: Uri, directoryName: String) {
         try {
             val dir = File(context.filesDir, directoryName)
             if (!dir.exists()) {
@@ -76,6 +79,7 @@ class ImageRepository @Inject constructor(
                 }
             }
 
+            val fileName = getFileName(directoryName)
             val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
             if (inputStream == null) {
                 Timber.e("Не удалось открыть InputStream для URI: $uri")
@@ -147,44 +151,46 @@ class ImageRepository @Inject constructor(
 
     fun getPhotoDate(fileName: String): String {
         Timber.d("Получение даты для файла: $fileName")
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale("ru"))
 
-        // Попытка найти в UPLOADED_BY_ME
+        // UPLOADED_BY_ME
         var directory = File(context.filesDir, UPLOADED_BY_ME)
         var file = File(directory, fileName)
         if (file.exists()) {
-            val date = java.util.Date(file.lastModified())
-            Timber.d("Дата файла $fileName: $date")
-            return date.toString()
+            val date = Date(file.lastModified())
+            val formattedDate = dateFormat.format(date)
+            Timber.d("Дата файла $fileName: $formattedDate")
+            return formattedDate
         }
 
-        // Попытка найти в TEMP_IMAGES
+        // TEMP_IMAGES
         directory = File(context.filesDir, TEMP_IMAGES)
         file = File(directory, fileName)
         if (file.exists()) {
-            val date = java.util.Date(file.lastModified())
-            Timber.d("Дата файла $fileName в $TEMP_IMAGES: $date")
-            return date.toString()
+            val date = Date(file.lastModified())
+            val formattedDate = dateFormat.format(date)
+            Timber.d("Дата файла $fileName в $TEMP_IMAGES: $formattedDate")
+            return formattedDate
         }
 
-        // Попытка найти в RECEIVED_FROM_OUTSIDE
+        // RECEIVED_FROM_OUTSIDE
         directory = File(context.filesDir, RECEIVED_FROM_OUTSIDE)
         file = File(directory, fileName)
         if (file.exists()) {
-            val date = java.util.Date(file.lastModified())
-            Timber.d("Дата файла $fileName в $RECEIVED_FROM_OUTSIDE: $date")
-            return date.toString()
+            val date = Date(file.lastModified())
+            val formattedDate = dateFormat.format(date)
+            Timber.d("Дата файла $fileName в $RECEIVED_FROM_OUTSIDE: $formattedDate")
+            return formattedDate
         }
 
         Timber.e("Файл не найден для получения даты: ${file.absolutePath}")
         return "Неизвестно"
     }
 
-    fun getFileName(): String {
-        val folder = context.filesDir
-        val existOrNot = apkManager.getBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
-        val fileName = NamingStyleManager(context).generateFileName(existOrNot, folder)
-        Timber.tag(TAG).d("=== Сгенерировано имя файла: $fileName")
-        return fileName
+    fun getFileName(directoryName: String): String {
+        val folder = File(context.filesDir, directoryName)
+        val isEncrypted = apkManager.getBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
+        return NamingStyleManager(context).generateFileName(isEncrypted, folder)
     }
 
     fun getFileNameWithoutExtension(fileName: String): String {

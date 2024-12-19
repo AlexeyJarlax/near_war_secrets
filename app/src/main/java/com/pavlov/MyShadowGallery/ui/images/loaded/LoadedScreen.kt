@@ -52,6 +52,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.pavlov.MyShadowGallery.theme.uiComponents.MatrixBackground
 import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
+import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -124,7 +125,8 @@ fun LoadedScreen(
                         ) {
                             CustomButtonOne(
                                 onClick = {
-                                    val fileName = viewModel.getFileName()
+                                    val directoryName = UPLOADED_BY_ME
+                                    val fileName = viewModel.getFileName(directoryName)
                                     val photoListDir = File(context.filesDir, TEMP_IMAGES)
                                     if (!photoListDir.exists()) {
                                         photoListDir.mkdirs()
