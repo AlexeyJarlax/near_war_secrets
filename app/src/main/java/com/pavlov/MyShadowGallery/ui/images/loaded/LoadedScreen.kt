@@ -1,5 +1,6 @@
-package com.pavlov.MyShadowGallery.ui.Images.loaded
+package com.pavlov.MyShadowGallery.ui.images.loaded
 
+import androidx.compose.foundation.lazy.grid.items
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,9 +16,6 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -32,6 +30,8 @@ import androidx.core.net.toUri
 import com.pavlov.MyShadowGallery.util.ToastExt
 import java.io.File
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
@@ -46,12 +46,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
-import com.pavlov.MyShadowGallery.ui.Images.ImageDialog
-import com.pavlov.MyShadowGallery.ui.Images.ImagesViewModel
+import com.pavlov.MyShadowGallery.ui.images.ImageDialog
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.pavlov.MyShadowGallery.theme.uiComponents.MatrixBackground
 import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
+import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,7 +60,7 @@ fun LoadedScreen(
     viewModel: ImagesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val uploadedbyme by viewModel.uploadedbyme.collectAsState()
+    val uploadedbyme by viewModel.uploadedByMe.collectAsState()
     var showImageDialog by remember { mutableStateOf(false) }
     val showSaveDialog by viewModel.showSaveDialog.collectAsState()
     val selectedUri by viewModel.selectedUri.collectAsState()
@@ -124,7 +125,8 @@ fun LoadedScreen(
                         ) {
                             CustomButtonOne(
                                 onClick = {
-                                    val fileName = viewModel.getFileName()
+                                    val directoryName = UPLOADED_BY_ME
+                                    val fileName = viewModel.getFileName(directoryName)
                                     val photoListDir = File(context.filesDir, TEMP_IMAGES)
                                     if (!photoListDir.exists()) {
                                         photoListDir.mkdirs()

@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.Images
+package com.pavlov.MyShadowGallery.ui.images
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTransformGestures

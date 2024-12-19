@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.Images
+package com.pavlov.MyShadowGallery.ui.images
 
 import android.content.Intent
 import android.net.Uri
@@ -17,21 +17,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Cable
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
-import com.pavlov.MyShadowGallery.ui.Images.loaded.MemeSelectionDialog
+import com.pavlov.MyShadowGallery.ui.images.loaded.MemeSelectionDialog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 
@@ -73,27 +73,20 @@ fun ImageDialog(
     var showMemeSelection by remember { mutableStateOf(false) }
     var isProcessing by remember { mutableStateOf(false) }
     var hiddenImageUri by remember { mutableStateOf<Uri?>(null) }
-
     val encryptionProgress by viewModel.encryptionProgress.collectAsState()
-
-    // Создаём канал для очереди фраз
     val progressQueue = remember { Channel<String>(Channel.UNLIMITED) }
-
-    // Список для отображения фраз
     val displayProgress = remember { mutableStateListOf<String>() }
 
-    // Запускаем обработчик очереди
     LaunchedEffect(Unit) {
         for (step in progressQueue) {
-            if (!displayProgress.contains(step)) { // Проверка на наличие фразы в списке
+            if (!displayProgress.contains(step)) {
                 displayProgress.add(step)
             }
-            delay(1000L) // Задержка 1 секунда между фразами
+            delay(500L)
         }
     }
 
-    // Отправляем новые фразы в очередь
-    LaunchedEffect(encryptionProgress) {
+    LaunchedEffect(encryptionProgress) { // тут фразы в очереди уведомлений процесса загрузки-шифрования, которые видит юзер
         encryptionProgress.forEach { step ->
             progressQueue.send(step)
         }
@@ -103,7 +96,7 @@ fun ImageDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp) // Добавляем внутренние отступы
+                .padding(16.dp)
         ) {
             Text(text = name, style = MaterialTheme.typography.h6)
             Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
@@ -194,8 +187,7 @@ fun ImageDialog(
         }
     }
 
-    // Диалог выбора способа поделиться
-    if (showShareOptions) {
+    if (showShareOptions) {    // Диалог выбора способа поделиться
         MyStyledDialogWithTitle(
             onDismissRequest = { showShareOptions = false },
             title = {
@@ -209,7 +201,7 @@ fun ImageDialog(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp), // Добавляем внутренние отступы
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CustomButtonOne(
@@ -306,7 +298,6 @@ fun ImageDialog(
                 Text(text = "Обработка шифрования", color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Список фраз с прокруткой
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -323,13 +314,16 @@ fun ImageDialog(
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Cable,
+                                imageVector = Icons.Default.Error,
                                 contentDescription = null,
-                                tint = My3,
+                                tint = if (step.startsWith("Ошибка")) Color.Red else My3,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = step, color = My3)
+                            Text(
+                                text = step,
+                                color = if (step.startsWith("Ошибка")) Color.Red else My3
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(28.dp))

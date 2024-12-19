@@ -46,7 +46,7 @@ fun StorageLogScreen(navController: NavController) {
                     val lastModified = file.lastModified()
                     val fileSizeInBytes = file.length()
 
-                    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+                    val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale("ru"))
                     val formattedDate = dateFormat.format(Date(lastModified))
 
                     val fileSizeInMegabytes = fileSizeInBytes.toDouble() / (1024 * 1024)

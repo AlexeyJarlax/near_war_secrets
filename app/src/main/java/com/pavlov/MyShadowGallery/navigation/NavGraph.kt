@@ -14,10 +14,10 @@ import androidx.navigation.compose.composable
 import com.pavlov.MyShadowGallery.data.model.NavDestinations
 import com.pavlov.MyShadowGallery.ui.about.AboutScreen
 import com.pavlov.MyShadowGallery.ui.auth.AuthScreen
-import com.pavlov.MyShadowGallery.ui.Images.shared.SharedScreen
-import com.pavlov.MyShadowGallery.ui.Images.ImagesScreen
-import com.pavlov.MyShadowGallery.ui.Images.loaded.LoadedScreen
-import com.pavlov.MyShadowGallery.ui.Images.ImagesViewModel
+import com.pavlov.MyShadowGallery.ui.images.shared.SharedScreen
+import com.pavlov.MyShadowGallery.ui.images.ImagesScreen
+import com.pavlov.MyShadowGallery.ui.images.loaded.LoadedScreen
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import com.pavlov.MyShadowGallery.ui.keyinput.KeyInputScreen
 import com.pavlov.MyShadowGallery.ui.setpassword.SetPasswordScreen
 import com.pavlov.MyShadowGallery.ui.settings.SettingsScreen
