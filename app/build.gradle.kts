@@ -26,8 +26,8 @@ android {
         resourceConfigurations += setOf("ru", "en", "zh", "es")
         minSdk = 29
         targetSdk = 35
-        versionCode = 65
-        versionName = "1.65"
+        versionCode = 66
+        versionName = "1.66"
         testInstrumentationRunner = "com.pavlov.MyShadowGallery.testing.HiltTestRunner"
     }
 

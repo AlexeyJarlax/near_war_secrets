@@ -7,7 +7,7 @@
       </SelectionState>
       <SelectionState runConfigName="MyShadowGallery.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-12-08T18:27:20.509100300Z">
+        <DropdownSelection timestamp="2024-12-23T15:07:44.174408200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=f49bc959" />
