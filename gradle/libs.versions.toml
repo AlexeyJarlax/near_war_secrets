@@ -1,5 +1,8 @@
 [versions]
+coreTestingVersion = "2.2.0"
 junit = "4.13.2"
+kotlinxCoroutinesTest = "1.10.1"
+mockitoMockitoCore = "5.2.0"
 mockk = "1.13.4"
 coroutines = "1.6.4"
 mockito = "4.8.0"
@@ -24,7 +27,7 @@ jodaTimeVersion = "2.10.13"
 kotlin = "1.9.24"
 espressoCore = "3.6.1"
 kotlinxCoroutinesPlayServices = "1.7.3"
-kotlinxCoroutinesTestVersion = "1.8.1"
+kotlinxCoroutinesTestVersion = "1.9.0"
 material = "1.12.0"
 constraintlayout = "2.2.0"
 lifecycleLivedataKtx = "2.8.7"
@@ -34,6 +37,7 @@ materialIconsExtendedVersion = "1.4.3"
 materialVersion = "1.5.3"
 mockitoCoreVersion = "4.8.0"
 mockitoKotlinVersion = "4.0.0"
+mockkMockk = "1.13.5"
 mockkVersion = "1.13.11"
 navigationFragmentKtx = "2.8.4"
 navigationUiKtx = "2.8.4"
@@ -81,6 +85,7 @@ retrofit = "2.9.0"
 roomCompilerVersion = "2.6.1"
 roomKtxVersion = "2.6.1"
 roomRuntimeVersion = "2.6.1"
+runnerVersion = "1.6.2"
 runtime = "1.0.5"
 runtimeSaveableVersion = "1.7.3"
 runtimeVersion = "1.7.3"
@@ -98,7 +103,12 @@ uiVersion = "1.0.5"
 foundationLayoutAndroidVersion = "1.7.2"
 
 [libraries]
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTestingVersion" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runnerVersion" }
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test-v1101 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockito-core-v520 = { module = "org.mockito:mockito-core", version.ref = "mockitoMockitoCore" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoMockitoCore" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 coroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 mockitoCore = { module = "org.mockito:mockito-core", version.ref = "mockito" }
@@ -189,6 +199,7 @@ kotlinx-coroutines-android-v180 = { module = "org.jetbrains.kotlinx:kotlinx-coro
 kotlinx-coroutines-core-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServicesVersion" }
 maps-compose-v272 = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+mockk-v1135 = { module = "io.mockk:mockk", version.ref = "mockkMockk" }
 navigation-compose = { module = "androidx.navigation:navigation-compose" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 peko = { module = "com.markodevcic:peko", version.ref = "peko" }
