@@ -156,10 +156,15 @@ dependencies {
     implementation(libs.bcprov.jdk15on)
     implementation(libs.conscrypt.android)
 
-    // тестовые зависимости (файлы тестов лежат в src/androidTest)
+    // Test
+    testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation(libs.androidx.runner)
+    testImplementation (libs.mockk)
+    testImplementation (libs.androidx.core.testing)
+    testImplementation (libs.mockito.core.v520)
+    testImplementation (libs.mockito.inline)
 
     // Разрешения
     implementation(libs.accompanist.permissions)
