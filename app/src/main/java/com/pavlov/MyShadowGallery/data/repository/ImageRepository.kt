@@ -218,7 +218,13 @@ class ImageRepository @Inject constructor(
     fun getFileName(directoryName: String): String {
         val folder = File(context.filesDir, directoryName)
         val isEncrypted = apkManager.getBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
-        return NamingStyleManager(context).generateFileName(isEncrypted, folder)
+        return NamingStyleManager(context).generateFileName(isEncrypted, folder).let { name ->
+            if (!name.contains(".")) {
+                "$name.png" // если нет расширения
+            } else {
+                name
+            }
+        }
     }
 
     fun getFileNameWithoutExtension(fileName: String): String {

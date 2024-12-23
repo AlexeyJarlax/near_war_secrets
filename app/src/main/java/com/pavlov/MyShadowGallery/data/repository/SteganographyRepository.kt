@@ -34,8 +34,7 @@ class SteganographyRepository @Inject constructor(
     private val secretKey: SecretKey = generateSecretKey()
 
     private fun generateSecretKey(): SecretKey {
-        // Важно: В реальном приложении используйте безопасные методы хранения ключей
-        val keyBytes = "ThisIsASecretKeyForAES256Encryption!".toByteArray(Charsets.UTF_8)
+        val keyBytes = "hisIsASecretKeyForAES256Encrypti".toByteArray(Charsets.UTF_8) // временная заглушка
         return SecretKeySpec(keyBytes.copyOf(32), "AES") // 32 байта (256 бит)
     }
 

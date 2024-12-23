@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
@@ -314,7 +315,7 @@ fun ImageDialog(
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Error,
+                                imageVector = Icons.Default.Cable,
                                 contentDescription = null,
                                 tint = if (step.startsWith("Ошибка")) Color.Red else My3,
                                 modifier = Modifier.size(16.dp)

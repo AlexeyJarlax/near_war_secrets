@@ -51,6 +51,7 @@ class ImagesViewModel @Inject constructor(
     private val _encryptionProgress = MutableStateFlow<List<String>>(emptyList())
     val encryptionProgress: StateFlow<List<String>> = _encryptionProgress
 
+
     init {
         Timber.tag(TAG).d("Инициализация ImagesViewModel")
         loadAllImages()
@@ -216,6 +217,7 @@ class ImagesViewModel @Inject constructor(
                     Timber.tag(TAG).d("Директория $whereTo создана.")
                 } else {
                     Timber.tag(TAG).e("Не удалось создать директорию $whereTo.")
+                    return
                 }
             }
 
@@ -231,7 +233,7 @@ class ImagesViewModel @Inject constructor(
             try {
                 file.outputStream().use { output ->
                     inputStream.copyTo(output)
-                    _anImageWasSharedWithUsNow.value = false
+                    _anImageWasSharedWithUsNow.value = true // Устанавливаем флаг после успешного сохранения
                 }
                 Timber.tag(TAG).d("Изображение сохранено: ${file.absolutePath}")
             } catch (e: Exception) {
@@ -251,8 +253,10 @@ class ImagesViewModel @Inject constructor(
                                 is StegoEvent.Progress -> _encryptionProgress.value += event.message
                                 is StegoEvent.Error -> {
                                     _encryptionProgress.value += "Ошибка: ${event.message}"
+                                    withContext(Dispatchers.Main) {
+                                        onExtractionResult(null)
+                                    }
                                 }
-
                                 is StegoEvent.Success -> {
                                     Timber.tag(TAG).d("Извлечённое изображение URI: ${event.uri}")
                                     withContext(Dispatchers.Main) {
@@ -268,38 +272,7 @@ class ImagesViewModel @Inject constructor(
                                 onExtractionResult(null)
                             }
                         }
-                        .collect { event ->
-                            when (event) {
-                                is StegoEvent.Progress -> {
-
-                                }
-                                is StegoEvent.Error -> {
-                                    withContext(Dispatchers.Main) {
-                                        onExtractionResult(null)
-                                    }
-                                }
-
-                                is StegoEvent.Success -> {
-                                    // Уже обработано в onEach
-                                }
-                            }
-                        }
-
-                    val hiddenImageUri = steganographyUseCase.extractOriginalImage(uri)
-                        .filterIsInstance<StegoEvent.Progress>()
-                        .lastOrNull()
-
-                    if (hiddenImageUri != null) {
-                        Timber.tag(TAG).d("Скрытое изображение извлечено: $hiddenImageUri")
-                        withContext(Dispatchers.Main) {
-                            onExtractionResult(hiddenImageUri as Uri?)
-                        }
-                    } else {
-                        Timber.tag(TAG).d("Скрытое изображение не найдено. Обработка как обычного изображения.")
-                        withContext(Dispatchers.Main) {
-                            onExtractionResult(uri)
-                        }
-                    }
+                        .collect()
                 } else {
                     Timber.tag(TAG).e("Не удалось декодировать Bitmap из файла: ${file.absolutePath}")
                     withContext(Dispatchers.Main) {
