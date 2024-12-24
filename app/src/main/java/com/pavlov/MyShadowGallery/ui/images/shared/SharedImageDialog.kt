@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,10 +38,10 @@ import com.pavlov.MyShadowGallery.ui.images.loaded.MemeSelectionDialog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 
-/** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
+/** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ПОЛУЧЕННОЕ ИЗ ВНЕ */
 
 @Composable
-fun ImageDialog(
+fun SharedImageDialog(
     memeUri: Uri,
     extractedUri: Uri?,
     viewModel: ImagesViewModel,
@@ -107,35 +108,13 @@ fun ImageDialog(
             Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Отображение оболочки
-                Text(text = "Оболочка", style = MaterialTheme.typography.subtitle1)
-                ZoomableImage(
-                    uri = memeUri,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Отображение извлечённого изображения
-                Text(text = "Извлечённое изображение", style = MaterialTheme.typography.subtitle1)
-                if (extractedUri != null) {
-                    ZoomableImage(
-                        uri = extractedUri,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                } else {
-                    Text(text = "Изображение не найдено", color = Color.Red)
-                }
-            }
+            ZoomableImage(
+                uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 

@@ -209,33 +209,31 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun saveBothImages(memeUri: Uri, extractedUri: Uri?, onSaveComplete: () -> Unit) {
+    fun saveBothImages(memeUri: Uri, onSaveComplete: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // Сохранение мем-изображения
                 imageRepository.addImage(memeUri, APK.RECEIVED_FROM_OUTSIDE)
-
-                // Сохранение извлечённого изображения, если оно есть
-                if (extractedUri != null) {
-                    imageRepository.addImage(extractedUri, APK.RECEIVED_FROM_OUTSIDE)
-                }
-
-                // Извлечение оригинального изображения из мем-изображения
                 steganographyUseCase.extractOriginalImage(memeUri)
                     .collect { event ->
                         when (event) {
                             is StegoEvent.Progress -> {
-                                // Обработка прогресса
                                 Timber.tag(TAG).d("Progress: ${event.message}")
+                                withContext(Dispatchers.Main) {
+                                    _steganographyProgress.value = _steganographyProgress.value + event.message
+                                }
                             }
                             is StegoEvent.Error -> {
-                                // Обработка ошибки
                                 Timber.tag(TAG).e("Error: ${event.message}")
+                                withContext(Dispatchers.Main) {
+                                    _steganographyProgress.value = _steganographyProgress.value + "Ошибка: ${event.message}"
+                                }
                             }
                             is StegoEvent.Success -> {
-                                // Успешное извлечение
                                 Timber.tag(TAG).d("Extracted Image URI: ${event.uri}")
-                                // Сохранение URI извлечённого изображения
+                                withContext(Dispatchers.Main) {
+                                    _extractedUri.value = event.uri
+                                    _steganographyProgress.value = _steganographyProgress.value + "Извлечение завершено"
+                                }
                                 event.uri?.let {
                                     imageRepository.addImage(it, APK.RECEIVED_FROM_OUTSIDE)
                                 }
@@ -243,15 +241,15 @@ class ImagesViewModel @Inject constructor(
                         }
                     }
 
-                // Удаление временных изображений перенесено
-                // imageRepository.clearTempImages() // Удалено
-
-                // Уведомление о завершении сохранения
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {  // Уведомление о завершении сохранения
                     onSaveComplete()
                 }
             } catch (e: Exception) {
                 Timber.tag(TAG).e(e, "Ошибка при сохранении обоих изображений")
+                withContext(Dispatchers.Main) {
+                    _steganographyProgress.value = _steganographyProgress.value + "Ошибка при сохранении: ${e.message}"
+                    onSaveComplete()
+                }
             }
         }
     }

@@ -125,7 +125,7 @@ class SteganographyRepository @Inject constructor(
             Timber.tag(TAG).e(e, "Ошибка в методе hideImageInMeme")
             emit(StegoEvent.Error("Ошибка при скрытии изображения: ${e.message}"))
         }
-    }.flowOn(Dispatchers.Default) // Установка контекста эмиссии на Dispatchers.Default
+    }.flowOn(Dispatchers.Default)
 
     suspend fun extractOriginalFromMeme(
         memeUri: Uri

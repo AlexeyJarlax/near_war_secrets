@@ -286,7 +286,7 @@ fun LoadedScreen(
                     )
                 }
                 if (isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CircularProgressIndicator()
                 }
 
                 /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
