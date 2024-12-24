@@ -46,7 +46,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
-import com.pavlov.MyShadowGallery.ui.images.ImageDialog
 import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable

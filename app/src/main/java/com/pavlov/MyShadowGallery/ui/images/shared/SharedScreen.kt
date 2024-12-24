@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import com.pavlov.MyShadowGallery.theme.uiComponents.MatrixBackground
-import com.pavlov.MyShadowGallery.ui.images.ImageDialog
 import com.pavlov.MyShadowGallery.util.ToastExt
 import timber.log.Timber
 
@@ -154,7 +153,6 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                         ToastExt.show("Сохранены оба изображения")
                         viewModel.setAnImageWasSharedWithUsNow(false)
                         viewModel.clearSelectedUri()
-                        // viewModel.clearTempImages() // Удалено
                     }
                 }
             )

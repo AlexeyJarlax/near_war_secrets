@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.images
+package com.pavlov.MyShadowGallery.ui.images.shared
 
 import android.content.Intent
 import android.net.Uri
@@ -22,7 +22,6 @@ import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndic
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Cable
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
 import androidx.compose.material3.Text
@@ -32,6 +31,8 @@ import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
+import com.pavlov.MyShadowGallery.ui.images.ZoomableImage
 import com.pavlov.MyShadowGallery.ui.images.loaded.MemeSelectionDialog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -150,7 +151,6 @@ fun ImageDialog(
                         CustomButtonOne(
                             onClick = {
                                 onSave?.invoke()
-//                                onDismiss()
                             },
                             text = "Сохранить",
                             textColor = My7,

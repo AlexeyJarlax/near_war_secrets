@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
     private fun hideSystemUI() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(
-                android.view.WindowInsets.Type.statusBars() or
+//                android.view.WindowInsets.Type.statusBars() or
                         android.view.WindowInsets.Type.navigationBars()
             )
         } else {
