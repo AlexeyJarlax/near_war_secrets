@@ -1,11 +1,14 @@
 package com.pavlov.MyShadowGallery.ui.images.shared
 
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,11 +17,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Cable
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import com.pavlov.MyShadowGallery.theme.My3
+import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.MyShadowGallery.theme.uiComponents.MatrixBackground
-import com.pavlov.MyShadowGallery.ui.images.ImageDialog
+import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialog
 import com.pavlov.MyShadowGallery.util.ToastExt
 import timber.log.Timber
 
@@ -29,6 +34,8 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
     val tempImages by viewModel.tempImages.collectAsState()
     var showImageDialog by remember { mutableStateOf(false) }
     val selectedUri by viewModel.selectedUri.collectAsState()
+    val extractedUri by viewModel.extractedUri.collectAsState() // Получаем извлечённый URI
+    val steganographyProgress by viewModel.steganographyProgress.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
@@ -85,58 +92,74 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                 viewModel.setAnImageWasSharedWithUsNow(false)
                 viewModel.deletePhoto(uri)
                 viewModel.clearSelectedUri()
+                viewModel.clearExtractedUri()
             }
-            viewModel.clearTempImages()
             showImageDialog = false
         }
 
-        // Обработка диалога для новых изображений, полученных через "Поделиться"
+        /** ----------- Обработка диалога для новых изображений, полученных через "Поделиться" ---------------*/
         if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(2.dp)
-            ) {
-                ImageDialog(
-                    uri = selectedUri!!,
-                    viewModel = viewModel,
-                    onDismiss = {
-                        closeShareDialogWithMemoryWash()
-                    },
-                    onDelete = {
-                        closeShareDialogWithMemoryWash()
-                    },
-                    isItNew = true,
-                    onSave = {
-                        viewModel.saveSharedImage(selectedUri!!) { hiddenImageUri ->
-                            if (hiddenImageUri != null) {
-                                ToastExt.show("Сохранено скрытое изображение")
-                            } else {
-                                ToastExt.show("Сохранено обычное изображение")
+            LaunchedEffect(selectedUri) {
+                viewModel.saveBothImages(selectedUri!!) {
+                    ToastExt.show("Сохранено успешно")
+                    closeShareDialogWithMemoryWash()
+                }
+            }
+            if (steganographyProgress.isNotEmpty()) {
+                MyStyledDialog(onDismissRequest = {}) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .background(Color.Transparent),
+                    ) {
+                        androidx.compose.material3.Text(
+                            text = "Дешифрование...",
+                            color = My3
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState())
+                                .padding(8.dp)
+                                .background(Color.Transparent)
+                                .clip(RoundedCornerShape(8.dp))
+                                .padding(8.dp)
+                        ) {
+                            steganographyProgress.forEach { step ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(vertical = 2.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Cable,
+                                        contentDescription = null,
+                                        tint = My3,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    androidx.compose.material3.Text(
+                                        text = step,
+                                        color = My3
+                                    )
+                                }
                             }
-                            viewModel.setAnImageWasSharedWithUsNow(false)
-                            viewModel.clearSelectedUri()
-                            viewModel.clearTempImages()
+                            Spacer(modifier = Modifier.height(28.dp))
+                            CustomCircularProgressIndicator()
                         }
                     }
-                )
-                Icon( // индикатор диалога, с которым поделились
-                    imageVector = Icons.Default.IosShare,
-                    contentDescription = "Этим изображением поделились",
-                    tint = Color.Green,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .align(Alignment.TopEnd)
-                        .padding(top = 2.dp)
-                        .graphicsLayer(rotationZ = -90f)
-                )
+                }
             }
         }
 
-        // Обработка диалога для уже сохраненных изображений
+        /** ------------------- Обработка диалога для уже сохраненных изображений -----------------------*/
         if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) {
-            ImageDialog(
-                uri = selectedUri!!,
+            SharedImageDialog(
+                memeUri = selectedUri!!,
+                extractedUri = extractedUri,
                 viewModel = viewModel,
                 onDismiss = {
                     viewModel.clearSelectedUri()
@@ -149,7 +172,13 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     showImageDialog = false
                     viewModel.clearTempImages()
                 },
-                onSave = {}
+                onSave = {
+                    viewModel.saveBothImages(selectedUri!!, onSaveComplete = {
+                        ToastExt.show("Сохранены оба изображения")
+                        viewModel.setAnImageWasSharedWithUsNow(false)
+                        viewModel.clearSelectedUri()
+                    })
+                }
             )
         }
     }

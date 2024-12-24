@@ -15,13 +15,14 @@ import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ImageRepository @Inject constructor(
     @ApplicationContext val context: Context,
     private val imageUriHelper: ImageUriHelper
@@ -67,65 +68,65 @@ class ImageRepository @Inject constructor(
         loadImages(UPLOADED_BY_ME, _uploadedByMe)
     }
 
-    suspend fun addImage(uri: Uri, directoryName: String) {
-        try {
-            val dir = File(context.filesDir, directoryName)
-            if (!dir.exists()) {
-                val created = dir.mkdirs()
-                if (created) {
-                    Timber.d("Директория $directoryName создана.")
-                } else {
-                    Timber.e("Не удалось создать директорию $directoryName.")
-                    return
-                }
-            }
-
-            val fileName = getFileName(directoryName)
-            val file = File(dir, fileName)
 
 /** ловлю на добавлении пикчи: FileNotFoundException или open failed: ENOENT, полагаю contentResolver.openInputStream(uri) вызывается в тот момент,
  * когда файл ещё не готов или камера не успела завершить работу с ним. Делаю несколько повторных попыток открыть InputStream с ретрай.
  * */
-            var tries = 0
-            val maxTries = 3
-            var inputStream: InputStream? = null
 
-            while (tries < maxTries) {
-                tries++
-                try {
-                    inputStream = context.contentResolver.openInputStream(uri)
-                    if (inputStream != null) {
-                        break
-                    } else {
-                        Timber.e("Не удалось открыть InputStream для URI: $uri, попытка $tries")
-                    }
-                } catch (e: FileNotFoundException) {
-                    Timber.e(e, "FileNotFoundException при открытии URI: $uri, попытка $tries")
-                }
-
-                if (tries < maxTries) {
-                    kotlinx.coroutines.delay(400)
-                }
+suspend fun addImage(uri: Uri, directoryName: String): Uri? {
+    try {
+        val dir = File(context.filesDir, directoryName)
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Timber.e("Не удалось создать директорию $directoryName")
+                return null
             }
-
-            if (inputStream == null) {
-                Timber.e("Не удалось открыть InputStream для URI: $uri после $tries попыток.")
-                return
-            }
-
-            inputStream.use { ist ->
-                file.outputStream().use { ost ->
-                    ist.copyTo(ost)
-                }
-            }
-
-            Timber.d("Изображение сохранено: ${file.absolutePath}")
-            loadAllImages()
-
-        } catch (e: Exception) {
-            Timber.e(e, "Ошибка при добавлении изображения: $uri")
         }
+
+        val fileName = getFileName(directoryName)
+        val file = File(dir, fileName)
+
+        var tries = 0
+        val maxTries = 3
+        var inputStream: InputStream? = null
+
+        while (tries < maxTries) {
+            tries++
+            try {
+                inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    break
+                } else {
+                    Timber.e("Не удалось открыть InputStream для URI: $uri, попытка $tries")
+                }
+            } catch (e: FileNotFoundException) {
+                Timber.e(e, "FileNotFoundException при открытии URI: $uri, попытка $tries")
+            }
+
+            if (tries < maxTries) {
+                kotlinx.coroutines.delay(400)
+            }
+        }
+
+        if (inputStream == null) {
+            Timber.e("Не удалось открыть InputStream для URI: $uri после $tries попыток.")
+            return null
+        }
+
+        inputStream.use { ist ->
+            file.outputStream().use { ost ->
+                ist.copyTo(ost)
+            }
+        }
+
+        Timber.d("Изображение сохранено: ${file.absolutePath}")
+        loadAllImages()
+        return getFileUri(fileName)
+    } catch (e: Exception) {
+        Timber.e(e, "Ошибка при добавлении изображения: $uri")
+        return null
     }
+}
 
     suspend fun deleteImage(uri: Uri) {
         try {
@@ -218,7 +219,13 @@ class ImageRepository @Inject constructor(
     fun getFileName(directoryName: String): String {
         val folder = File(context.filesDir, directoryName)
         val isEncrypted = apkManager.getBoolean(APK.KEY_USE_THE_ENCRYPTION_K, false)
-        return NamingStyleManager(context).generateFileName(isEncrypted, folder)
+        return NamingStyleManager(context).generateFileName(isEncrypted, folder).let { name ->
+            if (!name.contains(".")) {
+                "$name.png" // если нет расширения
+            } else {
+                name
+            }
+        }
     }
 
     fun getFileNameWithoutExtension(fileName: String): String {

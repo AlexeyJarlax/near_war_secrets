@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.pavlov.MyShadowGallery.data.repository.ImageRepository
 import com.pavlov.MyShadowGallery.data.repository.StegoEvent
 import com.pavlov.MyShadowGallery.domain.usecase.SteganographyUseCase
+import com.pavlov.MyShadowGallery.util.APK
 import com.pavlov.MyShadowGallery.util.APK.RECEIVED_FROM_OUTSIDE
 import com.pavlov.MyShadowGallery.util.APK.TEMP_IMAGES
 import com.pavlov.MyShadowGallery.util.APK.UPLOADED_BY_ME
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImagesViewModel @Inject constructor(
-    private val imageRepository: ImageRepository,
+    val imageRepository: ImageRepository,
     private val steganographyUseCase: SteganographyUseCase,
 ) : ViewModel() {
 
@@ -48,8 +49,11 @@ class ImagesViewModel @Inject constructor(
     private val _selectedUri = MutableStateFlow<Uri?>(null)
     val selectedUri: StateFlow<Uri?> get() = _selectedUri
 
-    private val _encryptionProgress = MutableStateFlow<List<String>>(emptyList())
-    val encryptionProgress: StateFlow<List<String>> = _encryptionProgress
+    private val _steganographyProgress = MutableStateFlow<List<String>>(emptyList())
+    val steganographyProgress: StateFlow<List<String>> = _steganographyProgress
+
+    private val _extractedUri = MutableStateFlow<Uri?>(null)
+    val extractedUri: StateFlow<Uri?> get() = _extractedUri
 
     init {
         Timber.tag(TAG).d("Инициализация ImagesViewModel")
@@ -205,113 +209,48 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun saveSharedImage(uri: Uri, onExtractionResult: (Uri?) -> Unit) {
-        val whereTo = RECEIVED_FROM_OUTSIDE
-        Timber.tag(TAG).d("Сохранение изображения: $uri в $whereTo")
-        try {
-            val savedDir = File(imageRepository.context.filesDir, whereTo)
-            if (!savedDir.exists()) {
-                val created = savedDir.mkdirs()
-                if (created) {
-                    Timber.tag(TAG).d("Директория $whereTo создана.")
-                } else {
-                    Timber.tag(TAG).e("Не удалось создать директорию $whereTo.")
-                }
-            }
-
-            val inputStream = imageRepository.context.contentResolver.openInputStream(uri)
-            if (inputStream == null) {
-                Timber.tag(TAG).e("Не удалось открыть InputStream для URI: $uri")
-                onExtractionResult(null)
-                return
-            }
-
-            val fileName = imageRepository.getFileName(RECEIVED_FROM_OUTSIDE)
-            val file = File(savedDir, fileName)
+    fun saveBothImages(memeUri: Uri, onSaveComplete: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                file.outputStream().use { output ->
-                    inputStream.copyTo(output)
-                    _anImageWasSharedWithUsNow.value = false
+                imageRepository.addImage(memeUri, APK.RECEIVED_FROM_OUTSIDE)
+                steganographyUseCase.extractOriginalImage(memeUri)
+                    .collect { event ->
+                        when (event) {
+                            is StegoEvent.Progress -> {
+                                Timber.tag(TAG).d("Progress: ${event.message}")
+                                withContext(Dispatchers.Main) {
+                                    _steganographyProgress.value = _steganographyProgress.value + event.message
+                                }
+                            }
+                            is StegoEvent.Error -> {
+                                Timber.tag(TAG).e("Error: ${event.message}")
+                                withContext(Dispatchers.Main) {
+                                    _steganographyProgress.value = _steganographyProgress.value + "Ошибка: ${event.message}"
+                                }
+                            }
+                            is StegoEvent.Success -> {
+                                Timber.tag(TAG).d("Extracted Image URI: ${event.uri}")
+                                withContext(Dispatchers.Main) {
+                                    _extractedUri.value = event.uri
+                                    _steganographyProgress.value = _steganographyProgress.value + "Извлечение завершено"
+                                }
+                                event.uri?.let {
+                                    imageRepository.addImage(it, APK.RECEIVED_FROM_OUTSIDE)
+                                }
+                            }
+                        }
+                    }
+
+                withContext(Dispatchers.Main) {  // Уведомление о завершении сохранения
+                    onSaveComplete()
                 }
-                Timber.tag(TAG).d("Изображение сохранено: ${file.absolutePath}")
             } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "Ошибка при копировании данных в файл: ${file.absolutePath}")
-                onExtractionResult(null)
-                return
-            } finally {
-                inputStream.close()
-            }
-
-            viewModelScope.launch(Dispatchers.IO) {
-                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                if (bitmap != null) {
-                    steganographyUseCase.extractOriginalImage(uri)
-                        .onEach { event ->
-                            when (event) {
-                                is StegoEvent.Progress -> _encryptionProgress.value += event.message
-                                is StegoEvent.Error -> {
-                                    _encryptionProgress.value += "Ошибка: ${event.message}"
-                                }
-
-                                is StegoEvent.Success -> {
-                                    Timber.tag(TAG).d("Извлечённое изображение URI: ${event.uri}")
-                                    withContext(Dispatchers.Main) {
-                                        onExtractionResult(event.uri)
-                                    }
-                                }
-                            }
-                        }
-                        .catch { e ->
-                            Timber.tag(TAG).e(e, "Ошибка при извлечении изображения")
-                            _encryptionProgress.value += "Ошибка: ${e.message}"
-                            withContext(Dispatchers.Main) {
-                                onExtractionResult(null)
-                            }
-                        }
-                        .collect { event ->
-                            when (event) {
-                                is StegoEvent.Progress -> {
-
-                                }
-                                is StegoEvent.Error -> {
-                                    withContext(Dispatchers.Main) {
-                                        onExtractionResult(null)
-                                    }
-                                }
-
-                                is StegoEvent.Success -> {
-                                    // Уже обработано в onEach
-                                }
-                            }
-                        }
-
-                    val hiddenImageUri = steganographyUseCase.extractOriginalImage(uri)
-                        .filterIsInstance<StegoEvent.Progress>()
-                        .lastOrNull()
-
-                    if (hiddenImageUri != null) {
-                        Timber.tag(TAG).d("Скрытое изображение извлечено: $hiddenImageUri")
-                        withContext(Dispatchers.Main) {
-                            onExtractionResult(hiddenImageUri as Uri?)
-                        }
-                    } else {
-                        Timber.tag(TAG).d("Скрытое изображение не найдено. Обработка как обычного изображения.")
-                        withContext(Dispatchers.Main) {
-                            onExtractionResult(uri)
-                        }
-                    }
-                } else {
-                    Timber.tag(TAG).e("Не удалось декодировать Bitmap из файла: ${file.absolutePath}")
-                    withContext(Dispatchers.Main) {
-                        onExtractionResult(null)
-                    }
+                Timber.tag(TAG).e(e, "Ошибка при сохранении обоих изображений")
+                withContext(Dispatchers.Main) {
+                    _steganographyProgress.value = _steganographyProgress.value + "Ошибка при сохранении: ${e.message}"
+                    onSaveComplete()
                 }
-                imageRepository.loadAllImages()
-                imageRepository.clearTempImages()
             }
-        } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "Ошибка при сохранении изображения: $uri")
-            onExtractionResult(null)
         }
     }
 
@@ -323,8 +262,8 @@ class ImagesViewModel @Inject constructor(
         Timber.tag(TAG).d("Начало стеганографии для файла: ${originalImageFile.absolutePath} с memeResId: $memeResId")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _encryptionProgress.value = emptyList()
-                _encryptionProgress.value += "Сброс прогресса..."
+                _steganographyProgress.value = emptyList()
+                emitProgress("Сброс прогресса...")
                 emitProgress("Загрузка оригинального изображения...")
                 val originalBitmap = BitmapFactory.decodeFile(originalImageFile.absolutePath)
                 if (originalBitmap == null) {
@@ -360,16 +299,16 @@ class ImagesViewModel @Inject constructor(
 
                 Timber.tag(TAG).d("Изменённый размер оригинального изображения: ${resizedOriginalBitmap.width}x${resizedOriginalBitmap.height}")
 
-                emitProgress("Процесс шифрования...")
+                emitProgress("Процесс скрытия данных...")
                 steganographyUseCase.hideImage(
                     memeBitmap,
                     resizedOriginalBitmap
                 )
                     .onEach { event ->
                         when (event) {
-                            is StegoEvent.Progress -> _encryptionProgress.value += event.message
+                            is StegoEvent.Progress -> _steganographyProgress.value += event.message
                             is StegoEvent.Error -> {
-                                _encryptionProgress.value += "Ошибка: ${event.message}"
+                                _steganographyProgress.value += "Ошибка: ${event.message}"
                                 withContext(Dispatchers.Main) {
                                     onResult(null)
                                 }
@@ -383,8 +322,8 @@ class ImagesViewModel @Inject constructor(
                         }
                     }
                     .catch { e ->
-                        Timber.tag(TAG).e(e, "Ошибка при шифровании изображения")
-                        emitError("Ошибка при шифровании: ${e.message}")
+                        Timber.tag(TAG).e(e, "Ошибка при скрытии данных в изображении")
+                        emitError("Ошибка при скрытии данных: ${e.message}")
                         withContext(Dispatchers.Main) {
                             onResult(null)
                         }
@@ -402,11 +341,16 @@ class ImagesViewModel @Inject constructor(
 
     // Функции для эмиссии прогресса и ошибок
     private fun emitProgress(message: String) {
-        _encryptionProgress.value = _encryptionProgress.value + message
+        _steganographyProgress.value = _steganographyProgress.value + message
     }
 
     private fun emitError(message: String) {
-        _encryptionProgress.value = _encryptionProgress.value + "Ошибка: $message"
+        _steganographyProgress.value = _steganographyProgress.value + "Ошибка: $message"
+    }
+
+    fun clearExtractedUri() {
+        _extractedUri.value = null
+        Timber.tag(TAG).d("extractedUri очищен")
     }
 
     /** Делегаты ImageRepository */

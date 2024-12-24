@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.images
+package com.pavlov.MyShadowGallery.ui.images.loaded
 
 import android.content.Intent
 import android.net.Uri
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialog
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material.icons.filled.InsertPhoto
@@ -31,16 +32,17 @@ import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
-import com.pavlov.MyShadowGallery.ui.images.loaded.MemeSelectionDialog
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
+import com.pavlov.MyShadowGallery.ui.images.ZoomableImage
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.graphics.vector.ImageVector
 
-/** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
+/** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
 
 @Composable
-fun ImageDialog(
+fun LoadedImageDialog (
     uri: Uri,
-    viewModel: ImagesViewModel,
+    viewModel: ImagesViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
     isItNew: Boolean = false,
@@ -73,24 +75,9 @@ fun ImageDialog(
     var showMemeSelection by remember { mutableStateOf(false) }
     var isProcessing by remember { mutableStateOf(false) }
     var hiddenImageUri by remember { mutableStateOf<Uri?>(null) }
-    val encryptionProgress by viewModel.encryptionProgress.collectAsState()
-    val progressQueue = remember { Channel<String>(Channel.UNLIMITED) }
-    val displayProgress = remember { mutableStateListOf<String>() }
 
-    LaunchedEffect(Unit) {
-        for (step in progressQueue) {
-            if (!displayProgress.contains(step)) {
-                displayProgress.add(step)
-            }
-            delay(500L)
-        }
-    }
-
-    LaunchedEffect(encryptionProgress) { // тут фразы в очереди уведомлений процесса загрузки-шифрования, которые видит юзер
-        encryptionProgress.forEach { step ->
-            progressQueue.send(step)
-        }
-    }
+    // Наблюдаем за списком прогресса из ViewModel
+    val steganographyProgress by viewModel.steganographyProgress.collectAsState()
 
     MyStyledDialog(onDismissRequest = onDismiss) {
         Column(
@@ -103,7 +90,7 @@ fun ImageDialog(
             Spacer(modifier = Modifier.height(8.dp))
 
             ZoomableImage(
-                uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
+                uri = hiddenImageUri ?: actualUri,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -206,7 +193,7 @@ fun ImageDialog(
                 ) {
                     CustomButtonOne(
                         onClick = {
-                            val shareUri = if (hiddenImageUri != null) hiddenImageUri else actualUri
+                            val shareUri = hiddenImageUri ?: actualUri
                             if (shareUri != null) {
                                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                     type = "image/jpeg"
@@ -257,6 +244,7 @@ fun ImageDialog(
                     onResult = { uri ->
                         isProcessing = false
                         if (uri != null) {
+                            hiddenImageUri = uri
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "image/jpeg"
                                 putExtra(Intent.EXTRA_STREAM, uri)
@@ -287,7 +275,6 @@ fun ImageDialog(
     }
 
     if (isProcessing) { // Диалог загрузки с описанием процесса шифрования
-
         MyStyledDialog(onDismissRequest = {}) {
             Column(
                 modifier = Modifier
@@ -308,21 +295,23 @@ fun ImageDialog(
                         .clip(RoundedCornerShape(8.dp))
                         .padding(8.dp)
                 ) {
-                    displayProgress.forEach { step ->
+                    steganographyProgress.forEach { step ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
+                            val icon: ImageVector = if (step.startsWith("Ошибка")) Icons.Default.Error else Icons.Default.Cable
+                            val tint: Color = if (step.startsWith("Ошибка")) Color.Red else My3
                             Icon(
-                                imageVector = Icons.Default.Error,
+                                imageVector = icon,
                                 contentDescription = null,
-                                tint = if (step.startsWith("Ошибка")) Color.Red else My3,
+                                tint = tint,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = step,
-                                color = if (step.startsWith("Ошибка")) Color.Red else My3
+                                color = tint
                             )
                         }
                     }

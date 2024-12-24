@@ -46,7 +46,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
-import com.pavlov.MyShadowGallery.ui.images.ImageDialog
 import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -287,13 +286,13 @@ fun LoadedScreen(
                     )
                 }
                 if (isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CircularProgressIndicator()
                 }
 
                 /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
 
                 if (showSaveDialog && selectedUri != null) {
-                    ImageDialog( // клик по snapshot
+                    LoadedImageDialog( // клик по snapshot
                         uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = {
@@ -311,12 +310,11 @@ fun LoadedScreen(
                             viewModel.addPhoto(selectedUri!!)
                             viewModel.clearSelectedUri()
                         }
-
                     )
                 }
 
                 if (showImageDialog && selectedUri != null) {
-                    ImageDialog( // клик по фоткам в списке сохраненных
+                    LoadedImageDialog( // клик по фоткам в списке сохраненных
                         uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = {

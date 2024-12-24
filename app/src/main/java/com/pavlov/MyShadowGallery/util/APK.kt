@@ -5,12 +5,19 @@ import androidx.annotation.Keep
 @Keep
 object APK { // AppPreferencesKey Internal - доступно только в модуле
 
+    // файловое
+    const val TEMP_IMAGES = "tempimages" // ВРЕМЕННЫЕ ИЗОБРАЖЕНИЯ
+    const val UPLOADED_BY_ME = "uploadedbyme" // ПРИМЕНИТЕЛЬНО К СВОИМ ПИКЧАМ, ЗАГРУЖЕННЫМ ПОЛЬЗОВАТЕЛЕМ
+    const val RECEIVED_FROM_OUTSIDE = "receivedfromoutside" // ПРИМЕНИТЕЛЬНО К ТОМУ, ЧЕМ С НИМ ПОДЕЛИЛИСЬ ДРУГИЕ
+
     // хранилища SharedPreferences
-    const val PREFS_NAME = "my_prefs_new" // открытое хранилище
-    const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs_new" // защищенное хранилище
+    const val PREFS_NAME = "my_prefs_new2" // открытое хранилище
+    const val MY_SECRETS_PREFS_NAME = "secret_shared_prefs_new2" // защищенное хранилище
+
+
 
     // SharedPreferences
-    const val KEY_FIRST_RUN = "first_app_run_new" // первый запуск ?
+    const val KEY_FIRST_RUN = "first_app_run_new1" // первый запуск ?
     const val KEY_HISTORY_LIST = "key_for_history_list_new"
     const val DEFAULT_KEY = "default_key_new"
     const val KEY_EXIST_OF_PASSWORD = "parolchik_new"
@@ -36,9 +43,6 @@ object APK { // AppPreferencesKey Internal - доступно только в м
     const val DEFAULT_PREVIEW_SIZE = 30
     const val DEFAULT_MIMIC_PASS: String = "000"
     const val REGEX = "[a-zA-Z0-9.,!?@#\$%^&*()_+-=:;<>{}\\[\\]\"'\\\\/]+"
-    const val TEMP_IMAGES = "tempimages" // ВРЕМЕННЫЕ ИЗОБРАЖЕНИЯ
-    const val UPLOADED_BY_ME = "uploadedbyme" // ПРИМЕНИТЕЛЬНО К СВОИМ ПИКЧАМ, ЗАГРУЖЕННЫМ ПОЛЬЗОВАТЕЛЕМ
-    const val RECEIVED_FROM_OUTSIDE = "receivedfromoutside" // ПРИМЕНИТЕЛЬНО К ТОМУ, ЧЕМ С НИМ ПОДЕЛИЛИСЬ ДРУГИЕ
     const val MARKER_COLOR = 0xFFFF0000.toInt() // Чисто красный цвет
     const val MARKER_SIZE = 10 // Размер маркера 10x10 пикселей
 
