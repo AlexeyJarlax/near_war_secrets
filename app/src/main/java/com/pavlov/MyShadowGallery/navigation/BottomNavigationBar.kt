@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.pavlov.MyShadowGallery.R
@@ -25,23 +26,23 @@ import com.pavlov.MyShadowGallery.data.model.NavDestinations
 fun BottomNavigationBar(navController: NavHostController, activity: Activity) {
     val items = listOf(
         BottomNavItem(
-            "Фото",
+            stringResource(id = R.string.photo),
             NavDestinations.IMAGES,
             icon = IconType.VectorIcon(Icons.Default.Image)
         ),
         BottomNavItem(
-            "Журнал",
+            stringResource(id = R.string.log),
             NavDestinations.STORAGE_LOG,
             icon = IconType.VectorIcon(Icons.Default.Storage)
         ),
         BottomNavItem(
-            "Опции",
+            stringResource(id = R.string.option),
             NavDestinations.SETTINGS,
             icon = IconType.VectorIcon(Icons.Default.Settings)
         ),
         BottomNavItem("FAQ", NavDestinations.ABOUT, icon = IconType.VectorIcon(Icons.Default.Info)),
         BottomNavItem(
-            "Выход",
+            stringResource(id = R.string.exit),
             NavDestinations.EXIT,
             icon = IconType.ResourceIcon(R.drawable.door_open_30dp)
         )

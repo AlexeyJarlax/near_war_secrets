@@ -3,6 +3,7 @@ package com.pavlov.MyShadowGallery.ui.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.util.APKM
 import com.pavlov.MyShadowGallery.util.ToastExt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,7 @@ class SettingsViewModel @Inject constructor(
     private val apkm: APKM
 ) : ViewModel() {
 
-    private val _personalDataText = MutableStateFlow("Personal Data")
+    private val _personalDataText = MutableStateFlow(context.getString(R.string.personal_data))
     val personalDataText: StateFlow<String> = _personalDataText
 
     private val _language = MutableStateFlow("en") // Значение по умолчанию
@@ -29,10 +30,10 @@ class SettingsViewModel @Inject constructor(
     fun clearStorage() {
         viewModelScope.launch {
             try {
-            apkm.clearStorage(context)
-            ToastExt.show("Хранилище отчищено!")
+                apkm.clearStorage(context)
+                ToastExt.show(context.getString(R.string.storage_cleared))
             } catch (e: Exception) {
-                ToastExt.show("Ошибка при отчистке хранилища")
+                ToastExt.show(context.getString(R.string.storage_clear_error))
             }
         }
     }
@@ -45,22 +46,22 @@ class SettingsViewModel @Inject constructor(
                 apkm.clearStorage(context)
                 context.cacheDir.deleteRecursively()
                 resetState()
-                ToastExt.show("Настройки сброшены успешно!")
+                ToastExt.show(context.getString(R.string.settings_reset_success))
             } catch (e: Exception) {
                 e.printStackTrace()
-                ToastExt.show("Ошибка при сбросе настроек.")
+                ToastExt.show(context.getString(R.string.settings_reset_error))
             }
         }
     }
 
     private fun resetState() {
-        _personalDataText.value = "Personal Data"
+        _personalDataText.value = context.getString(R.string.personal_data)
         _language.value = "en" // Сброс языка на английский
     }
 
     fun setLanguage(languageCode: String) {
         viewModelScope.launch {
-            ToastExt.show("Язык поменяется при следующем запуске")
+            ToastExt.show(context.getString(R.string.language_change_notice))
             _language.value = languageCode
         }
     }

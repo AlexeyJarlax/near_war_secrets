@@ -1,5 +1,6 @@
 package com.pavlov.MyShadowGallery.ui.images
 
+import com.pavlov.MyShadowGallery.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalPagerApi::class)
@@ -76,8 +78,8 @@ fun ImagesScreen(
                         )
                     }
                 }
-                createTab("Загруженные мной", 0)
-                createTab("Полученные извне", 1)
+                createTab(stringResource(id = R.string.uploaded_by_me), 0)
+                createTab(stringResource(id = R.string.received_from_outside), 1)
             }
 
             HorizontalPager(

@@ -1,5 +1,7 @@
 package com.pavlov.MyShadowGallery.ui.setpassword
 
+import com.pavlov.MyShadowGallery.R
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -8,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.theme.My4
 import com.pavlov.MyShadowGallery.theme.My5
 import com.pavlov.MyShadowGallery.theme.My7
@@ -24,43 +25,44 @@ fun SetPasswordScreen(
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Scaffold(
         content = { padding ->
-            Box(modifier = Modifier.fillMaxSize()) {
-                MatrixBackground(255)
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            MatrixBackground(255)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
 
-                    CustomOutlinedTextField(
-                        value = newPassword,
-                        onValueChange = { newPassword = it },
-                        label = "Новый пароль",
-                        placeholder = "Введите новый пароль тут",
-                        backgroundColor = My4,
-                        isPassword = false,
-                        keyboardActions = { ImeAction.Done }
-                    )
+                                CustomOutlinedTextField(
+                                    value = newPassword,
+                                    onValueChange = { newPassword = it },
+                                    label = stringResource(R.string.new_password),
+                                    placeholder = stringResource(R.string.enter_new_password_placeholder),
+                                    backgroundColor = My4,
+                                    isPassword = true, // Предполагается, что поле пароля скрывает ввод
+                                    keyboardActions = { ImeAction.Done }
+                                )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     CustomOutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
-                        label = "Проверка ввода",
-                        placeholder = "Подтвердите новый пароль тут",
+                        label = stringResource(R.string.confirm_password),
+                        placeholder = stringResource(R.string.confirm_new_password_placeholder),
                         backgroundColor = My4,
-                        isPassword = false,
+                        isPassword = true, // Предполагается, что поле пароля скрывает ввод
                         keyboardActions = {
                             if (newPassword == confirmPassword) {
                                 viewModel.savePassword(newPassword)
                                 onPasswordSet()
                             } else {
-                                message = "Пароли не совпадают"
+                                message = context.getString(R.string.passwords_do_not_match)
                             }
                         }
                     )
@@ -72,10 +74,10 @@ fun SetPasswordScreen(
                                 viewModel.savePassword(newPassword)
                                 onPasswordSet()
                             } else {
-                                message = "Пароли не совпадают"
+                                message = context.getString(R.string.passwords_do_not_match)
                             }
                         },
-                        text = stringResource(com.pavlov.MyShadowGallery.R.string.enter),
+                        text = stringResource(R.string.enter),
                         textColor = if (confirmPassword.isEmpty()) My5 else My7,
                         iconColor = if (confirmPassword.isEmpty()) My5 else My7,
                         icon = R.drawable.login_30dp
@@ -89,3 +91,4 @@ fun SetPasswordScreen(
         }
     )
 }
+
