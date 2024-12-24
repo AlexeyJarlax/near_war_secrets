@@ -29,6 +29,7 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
     val tempImages by viewModel.tempImages.collectAsState()
     var showImageDialog by remember { mutableStateOf(false) }
     val selectedUri by viewModel.selectedUri.collectAsState()
+    val extractedUri by viewModel.extractedUri.collectAsState() // Получаем извлечённый URI
 
     Box(modifier = Modifier.fillMaxSize()) {
         MatrixBackground()
@@ -85,8 +86,9 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                 viewModel.setAnImageWasSharedWithUsNow(false)
                 viewModel.deletePhoto(uri)
                 viewModel.clearSelectedUri()
+                viewModel.clearExtractedUri() // Очистка извлечённого URI
             }
-            viewModel.clearTempImages()
+            // viewModel.clearTempImages() // Удалено
             showImageDialog = false
         }
 
@@ -98,7 +100,8 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     .padding(2.dp)
             ) {
                 ImageDialog(
-                    uri = selectedUri!!,
+                    memeUri = selectedUri!!,
+                    extractedUri = extractedUri,
                     viewModel = viewModel,
                     onDismiss = {
                         closeShareDialogWithMemoryWash()
@@ -108,15 +111,11 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     },
                     isItNew = true,
                     onSave = {
-                        viewModel.saveSharedImage(selectedUri!!) { hiddenImageUri ->
-                            if (hiddenImageUri != null) {
-                                ToastExt.show("Сохранено скрытое изображение")
-                            } else {
-                                ToastExt.show("Сохранено обычное изображение")
-                            }
+                        viewModel.saveBothImages(selectedUri!!, extractedUri) {
+                            ToastExt.show("Сохранены оба изображения")
                             viewModel.setAnImageWasSharedWithUsNow(false)
                             viewModel.clearSelectedUri()
-                            viewModel.clearTempImages()
+                            closeShareDialogWithMemoryWash()
                         }
                     }
                 )
@@ -136,7 +135,8 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
         // Обработка диалога для уже сохраненных изображений
         if (showImageDialog && selectedUri != null && !anImageWasSharedWithUsNow) {
             ImageDialog(
-                uri = selectedUri!!,
+                memeUri = selectedUri!!,
+                extractedUri = extractedUri, // Передаём извлечённый URI
                 viewModel = viewModel,
                 onDismiss = {
                     viewModel.clearSelectedUri()
@@ -149,7 +149,14 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     showImageDialog = false
                     viewModel.clearTempImages()
                 },
-                onSave = {}
+                onSave = {
+                    viewModel.saveBothImages(selectedUri!!, extractedUri) {
+                        ToastExt.show("Сохранены оба изображения")
+                        viewModel.setAnImageWasSharedWithUsNow(false)
+                        viewModel.clearSelectedUri()
+                        // viewModel.clearTempImages() // Удалено
+                    }
+                }
             )
         }
     }

@@ -1,7 +1,5 @@
 package com.pavlov.MyShadowGallery.data.repository
 
-/** методы шифрования и дешифрования */
-
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,65 +10,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.security.SecureRandom
-import javax.crypto.Cipher
-import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
-import javax.inject.Inject
 import java.util.BitSet
+import javax.inject.Inject
 
 class SteganographyRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext val context: Context
 ) {
 
     private val TAG = "SteganographyRepository"
-
-    private val secretKey: SecretKey = generateSecretKey()
-
-    private fun generateSecretKey(): SecretKey {
-        val keyBytes = "hisIsASecretKeyForAES256Encrypti".toByteArray(Charsets.UTF_8) // временная заглушка
-        return SecretKeySpec(keyBytes.copyOf(32), "AES") // 32 байта (256 бит)
-    }
-
-    private fun encrypt(data: ByteArray): ByteArray? {
-        return try {
-            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-            val ivBytes = ByteArray(16)
-            SecureRandom().nextBytes(ivBytes)
-            val ivSpec = IvParameterSpec(ivBytes)
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec)
-            val encrypted = cipher.doFinal(data)
-            // Предваряем зашифрованные данные IV для последующей дешифровки
-            ivBytes + encrypted
-        } catch (e: Exception) {
-            Timber.e(e, "Ошибка при шифровании данных")
-            null
-        }
-    }
-
-    private fun decrypt(data: ByteArray): ByteArray? {
-        return try {
-            if (data.size < 16) {
-                Timber.e("Данные слишком короткие для IV")
-                return null
-            }
-            val ivBytes = data.copyOfRange(0, 16)
-            val encryptedBytes = data.copyOfRange(16, data.size)
-            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-            val ivSpec = IvParameterSpec(ivBytes)
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-            cipher.doFinal(encryptedBytes)
-        } catch (e: Exception) {
-            Timber.e(e, "Ошибка при дешифровании данных")
-            null
-        }
-    }
 
     suspend fun hideImageInMeme(
         memeBitmap: Bitmap,
@@ -83,29 +34,21 @@ class SteganographyRepository @Inject constructor(
             emit(StegoEvent.Progress("Конвертация оригинального изображения в байтовый массив"))
             val byteArray = bitmapToByteArray(originalBitmap)
 
-            // Шаг 2: Шифруем байтовый массив с использованием AES-256
-            emit(StegoEvent.Progress("Шифрование данных изображения"))
-            val encryptedBytes = encrypt(byteArray)
-            if (encryptedBytes == null) {
-                emit(StegoEvent.Error("Не удалось зашифровать данные изображения"))
-                return@flow
-            }
-
-            // Шаг 3: Подготавливаем заголовок
+            // Шаг 2: Подготавливаем заголовок
             emit(StegoEvent.Progress("Подготовка заголовка"))
-            val dataLength = encryptedBytes.size * 8 // длина в битах
+            val dataLength = byteArray.size * 8 // длина в битах
             val headerBytes = ByteArray(4)
             headerBytes[0] = (dataLength shr 24).toByte()
             headerBytes[1] = (dataLength shr 16).toByte()
             headerBytes[2] = (dataLength shr 8).toByte()
             headerBytes[3] = (dataLength).toByte()
-            val totalData = headerBytes + encryptedBytes
+            val totalData = headerBytes + byteArray
 
-            // Шаг 4: Конвертируем totalData в BitSet
+            // Шаг 3: Конвертируем totalData в BitSet
             emit(StegoEvent.Progress("Конвертация данных в биты"))
             val dataBitSet = byteArrayToBitSet(totalData)
 
-            // Шаг 5: Встраиваем dataBits в memeBitmap
+            // Шаг 4: Встраиваем dataBits в memeBitmap
             emit(StegoEvent.Progress("Встраивание данных в мем изображение"))
             val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
             val memeWidth = memeBitmap.width
@@ -198,16 +141,13 @@ class SteganographyRepository @Inject constructor(
                 return@flow
             }
 
-            // Шаг 1: Извлечение заголовка (4 байта)
-            emit(StegoEvent.Progress("Извлечение заголовка данных"))
-            val headerBits = BitSet(32)
+            // Шаг 1: Извлечение всех битов из изображения
+            emit(StegoEvent.Progress("Извлечение всех битов из мем изображения"))
+            val allBits = BitSet(memeBitmap.width * memeBitmap.height * BITS_PER_PIXEL)
             var bitIndex = 0
 
             for (y in 0 until memeBitmap.height) {
                 for (x in 0 until memeBitmap.width) {
-                    if (bitIndex >= 32) { // 32 бит для заголовка
-                        break
-                    }
                     val pixel = memeBitmap.getPixel(x, y)
 
                     // Извлечение последних 4 бит каждого цветового канала
@@ -215,27 +155,22 @@ class SteganographyRepository @Inject constructor(
                     val green = (pixel shr 8) and 0x0F
                     val blue = pixel and 0x0F
 
-                    // Конвертация в биты
-                    for (i in 3 downTo 0) { // 4 бита на канал
-                        headerBits.set(bitIndex++, (red shr i) and 1 == 1)
+                    // Установка битов в BitSet
+                    for (i in 3 downTo 0) {
+                        allBits.set(bitIndex++, (red shr i) and 1 == 1)
                     }
                     for (i in 3 downTo 0) {
-                        headerBits.set(bitIndex++, (green shr i) and 1 == 1)
+                        allBits.set(bitIndex++, (green shr i) and 1 == 1)
                     }
                     for (i in 3 downTo 0) {
-                        headerBits.set(bitIndex++, (blue shr i) and 1 == 1)
+                        allBits.set(bitIndex++, (blue shr i) and 1 == 1)
                     }
-
-                    if (bitIndex >= 32) break
                 }
             }
 
-            if (headerBits.length() < 32) {
-                emit(StegoEvent.Error("Малое количество бит в заголовке"))
-                return@flow
-            }
-
-            // Конвертация заголовочных бит в байты
+            // Шаг 2: Извлечение заголовка (первые 32 бита)
+            emit(StegoEvent.Progress("Извлечение заголовка данных"))
+            val headerBits = allBits.get(0, 32)
             val headerBytes = ByteArray(4)
             for (i in 0 until 4) { // 4 байта
                 var byte = 0
@@ -252,67 +187,28 @@ class SteganographyRepository @Inject constructor(
                             ((headerBytes[2].toInt() and 0xFF) shl 8) or
                             (headerBytes[3].toInt() and 0xFF)
                     )
-
             emit(StegoEvent.Progress("Длина данных: $dataLength бит"))
 
-            // Шаг 2: Извлечение данных
+            // Шаг 3: Извлечение данных
             emit(StegoEvent.Progress("Извлечение данных из мем изображения"))
             val dataBitsToExtract = dataLength
             val dataBitSet = BitSet(dataBitsToExtract)
-            bitIndex = 32 // После заголовка
-
-            for (y in 0 until memeBitmap.height) {
-                for (x in 0 until memeBitmap.width) {
-                    // Пропускаем пиксели заголовка
-                    val pixelIndex = y * memeBitmap.width + x
-                    val bitsPerPixel = BITS_PER_PIXEL
-                    if (pixelIndex * bitsPerPixel < bitIndex) {
-                        continue
-                    }
-
-                    if (dataBitSet.length() >= dataBitsToExtract) {
-                        break
-                    }
-
-                    val pixel = memeBitmap.getPixel(x, y)
-
-                    // Извлечение последних 4 бит каждого цветового канала
-                    val red = (pixel shr 16) and 0x0F
-                    val green = (pixel shr 8) and 0x0F
-                    val blue = pixel and 0x0F
-
-                    // Конвертация в биты
-                    for (i in 3 downTo 0) {
-                        if (dataBitSet.length() < dataBitsToExtract) {
-                            dataBitSet.set(dataBitSet.length(), (red shr i) and 1 == 1)
-                        }
-                    }
-                    for (i in 3 downTo 0) {
-                        if (dataBitSet.length() < dataBitsToExtract) {
-                            dataBitSet.set(dataBitSet.length(), (green shr i) and 1 == 1)
-                        }
-                    }
-                    for (i in 3 downTo 0) {
-                        if (dataBitSet.length() < dataBitsToExtract) {
-                            dataBitSet.set(dataBitSet.length(), (blue shr i) and 1 == 1)
-                        }
-                    }
+            for (i in 0 until dataBitsToExtract) {
+                if (32 + i >= allBits.length()) {
+                    emit(StegoEvent.Error("Недостаточно бит для данных"))
+                    return@flow
                 }
+                dataBitSet.set(i, allBits.get(32 + i))
             }
 
-            if (dataBitSet.length() < dataBitsToExtract) {
-                emit(StegoEvent.Error("Недостаточно бит для данных"))
-                return@flow
-            }
-
-            // Конвертация битов в байты
+            // Шаг 4: Конвертация битов в байты
             emit(StegoEvent.Progress("Конвертация битов в байты"))
             val dataBytes = ByteArray((dataLength + 7) / 8) // Округление вверх
             for (i in dataBytes.indices) {
                 var byte = 0
                 for (bit in 0 until 8) {
                     val bitPosition = i * 8 + bit
-                    if (bitPosition < dataBitsToExtract) {
+                    if (bitPosition < dataLength) {
                         byte = (byte shl 1) or (if (dataBitSet.get(bitPosition)) 1 else 0)
                     } else {
                         byte = (byte shl 1)
@@ -321,18 +217,9 @@ class SteganographyRepository @Inject constructor(
                 dataBytes[i] = byte.toByte()
             }
 
-            // Шаг 3: Дешифрование данных
-            emit(StegoEvent.Progress("Дешифрование данных"))
-            val decryptedBytes = decrypt(dataBytes)
-            if (decryptedBytes == null) {
-                emit(StegoEvent.Error("Не удалось дешифровать данные"))
-                return@flow
-            }
-
-            // Шаг 4: Конвертация дешифрованных байтов в Bitmap
+            // Шаг 5: Конвертация байтов в Bitmap
             emit(StegoEvent.Progress("Преобразование байтов в изображение"))
-            val originalBitmap = byteArrayToBitmap(decryptedBytes)
-
+            val originalBitmap = byteArrayToBitmap(dataBytes)
             if (originalBitmap == null) {
                 emit(StegoEvent.Error("Не удалось преобразовать байты в Bitmap"))
                 return@flow

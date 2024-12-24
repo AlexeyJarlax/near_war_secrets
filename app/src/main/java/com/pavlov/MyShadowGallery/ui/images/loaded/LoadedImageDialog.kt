@@ -1,4 +1,4 @@
-package com.pavlov.MyShadowGallery.ui.images
+package com.pavlov.MyShadowGallery.ui.images.loaded
 
 import android.content.Intent
 import android.net.Uri
@@ -32,6 +32,8 @@ import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.My7
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
+import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
+import com.pavlov.MyShadowGallery.ui.images.ZoomableImage
 import com.pavlov.MyShadowGallery.ui.images.loaded.MemeSelectionDialog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -39,9 +41,8 @@ import kotlinx.coroutines.delay
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ВСЕ ВАРИАНТЫ ОТКРЫТИЯ ИЗОБРАЖЕНИЙ: ПОЛУЧЕННОЕ ВНЕШНЕ ИЛИ ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
 
 @Composable
-fun ImageDialog(
-    memeUri: Uri,
-    extractedUri: Uri?,
+fun LoadedImageDialog (
+    uri: Uri,
     viewModel: ImagesViewModel,
     onDismiss: () -> Unit,
     onDelete: () -> Unit,
@@ -49,20 +50,11 @@ fun ImageDialog(
     onSave: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
-    val actualImageFile = viewModel.uriToFile(memeUri)
-    val extractedImageFile = if (extractedUri != null) viewModel.uriToFile(extractedUri) else null
+    val actualImageFile = viewModel.uriToFile(uri)
 
     if (actualImageFile == null || !actualImageFile.exists()) {
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
-            onDismiss()
-        }
-        return
-    }
-
-    if (extractedUri != null && (extractedImageFile == null || !extractedImageFile.exists())) {
-        LaunchedEffect(Unit) {
-            Toast.makeText(context, "Извлечённое изображение не найдено", Toast.LENGTH_SHORT).show()
             onDismiss()
         }
         return
@@ -106,35 +98,13 @@ fun ImageDialog(
             Text(text = date, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
             Spacer(modifier = Modifier.height(8.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Отображение оболочки
-                Text(text = "Оболочка", style = MaterialTheme.typography.subtitle1)
-                ZoomableImage(
-                    uri = memeUri,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Отображение извлечённого изображения
-                Text(text = "Извлечённое изображение", style = MaterialTheme.typography.subtitle1)
-                if (extractedUri != null) {
-                    ZoomableImage(
-                        uri = extractedUri,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                } else {
-                    Text(text = "Изображение не найдено", color = Color.Red)
-                }
-            }
+            ZoomableImage(
+                uri = if (hiddenImageUri != null) hiddenImageUri else actualUri,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -150,7 +120,7 @@ fun ImageDialog(
                         CustomButtonOne(
                             onClick = {
                                 onSave?.invoke()
-//                                onDismiss()
+                                onDismiss()
                             },
                             text = "Сохранить",
                             textColor = My7,
@@ -312,7 +282,8 @@ fun ImageDialog(
         )
     }
 
-    if (isProcessing) {
+    if (isProcessing) { // Диалог загрузки с описанием процесса шифрования
+
         MyStyledDialog(onDismissRequest = {}) {
             Column(
                 modifier = Modifier

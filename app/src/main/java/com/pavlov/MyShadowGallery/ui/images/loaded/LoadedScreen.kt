@@ -293,7 +293,7 @@ fun LoadedScreen(
                 /** ----------------------------------------ВЫЗОВЫ ДИАЛОГОВЫХ ОКОН --------------------------------------------------------------------*/
 
                 if (showSaveDialog && selectedUri != null) {
-                    ImageDialog( // клик по snapshot
+                    LoadedImageDialog( // клик по snapshot
                         uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = {
@@ -311,12 +311,11 @@ fun LoadedScreen(
                             viewModel.addPhoto(selectedUri!!)
                             viewModel.clearSelectedUri()
                         }
-
                     )
                 }
 
                 if (showImageDialog && selectedUri != null) {
-                    ImageDialog( // клик по фоткам в списке сохраненных
+                    LoadedImageDialog( // клик по фоткам в списке сохраненных
                         uri = selectedUri!!,
                         viewModel = viewModel,
                         onDismiss = {
