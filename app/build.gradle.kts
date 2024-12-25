@@ -1,10 +1,10 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -13,11 +13,17 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
+        dataBinding = true
+        buildConfig = true
     }
 
     bundle {
         language {
             enableSplit = false
+        }
+        abi {
+            enableSplit = true
         }
     }
 
@@ -26,8 +32,8 @@ android {
         resourceConfigurations += setOf("ru", "en", "zh", "es")
         minSdk = 29
         targetSdk = 35
-        versionCode = 66
-        versionName = "1.66"
+        versionCode = 67
+        versionName = "1.67"
         testInstrumentationRunner = "com.pavlov.MyShadowGallery.testing.HiltTestRunner"
     }
 
@@ -54,22 +60,9 @@ android {
         encoding = "UTF-8"
     }
 
-    bundle {
-        abi {// Оптимизация для разных ABI (процессорных архитектур)
-            enableSplit = true
-        }
-    }
-
     kotlinOptions {
         jvmTarget = "17"
         languageVersion = "1.9"
-    }
-
-    buildFeatures {
-        buildConfig = true
-        compose = true
-        viewBinding = true
-        dataBinding = true
     }
 
     composeOptions {
@@ -91,11 +84,6 @@ android {
     hilt {
         enableAggregatingTask = true
     }
-
-    kapt {
-        correctErrorTypes = true
-        includeCompileClasspath = false
-    }
 }
 
 dependencies {
@@ -107,7 +95,7 @@ dependencies {
 
     // Dagger Hilt
     implementation(libs.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.hilt.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.hilt.navigation.compose.v100)
 
@@ -157,21 +145,21 @@ dependencies {
     implementation(libs.conscrypt.android)
 
     // Test
-    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.runner)
-    testImplementation (libs.mockk)
-    testImplementation (libs.androidx.core.testing)
-    testImplementation (libs.mockito.core.v520)
-    testImplementation (libs.mockito.inline)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.mockito.core.v520)
+    testImplementation(libs.mockito.inline)
 
     // Разрешения
     implementation(libs.accompanist.permissions)
 
     // Room
     implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
     // Работа со временем
