@@ -241,7 +241,7 @@ fun LoadedScreen(
                 /** ----------------------------------------СПИСОК ФОТО или заглушка -----------------------------------------------------------*/
                 if (uploadedbyme.isEmpty()) {
                     Text(
-                        text = "Нет добавленных изображений",
+                        text = context.getString(R.string.no_added_images),
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
@@ -262,7 +262,8 @@ fun LoadedScreen(
                                         viewModel.setSelectedUri(uri)
                                         showImageDialog = true
                                     } else {
-                                        ToastExt.show("Не удалось получить URI для файла: $clickedFileName")
+                                        val toastString = context.getString(R.string.error_url)
+                                        ToastExt.show("$toastString: $clickedFileName")
                                     }
                                 }
                             )

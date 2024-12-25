@@ -20,6 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.theme.My3
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomCircularProgressIndicator
 import com.pavlov.MyShadowGallery.theme.uiComponents.MatrixBackground
@@ -29,6 +32,8 @@ import timber.log.Timber
 
 @Composable
 fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
+
+    val context = LocalContext.current
     val anImageWasSharedWithUsNow by viewModel.anImageWasSharedWithUsNow.collectAsState()
     val receivedfromoutside by viewModel.receivedFromOutside.collectAsState()
     val tempImages by viewModel.tempImages.collectAsState()
@@ -54,7 +59,7 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Нет сохранённых изображений"
+                        text = stringResource(R.string.shared_screen_no_images)
                     )
                 }
             } else {
@@ -76,7 +81,8 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                                     viewModel.setSelectedUri(uri)
                                     showImageDialog = true
                                 } else {
-                                    ToastExt.show("Не удалось получить URI для файла: $clickedFileName")
+                                    val toastString = context.getString(R.string.shared_screen_error)
+                                    ToastExt.show("$toastString: $clickedFileName")
                                 }
                             }
                         )
@@ -101,7 +107,7 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
         if (showImageDialog && selectedUri != null && anImageWasSharedWithUsNow) {
             LaunchedEffect(selectedUri) {
                 viewModel.saveBothImages(selectedUri!!) {
-                    ToastExt.show("Сохранено успешно")
+                    ToastExt.show(context.getString(R.string.shared_screen_save_success))
                     closeShareDialogWithMemoryWash()
                 }
             }
@@ -113,8 +119,8 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                             .padding(16.dp)
                             .background(Color.Transparent),
                     ) {
-                        androidx.compose.material3.Text(
-                            text = "Дешифрование...",
+                        Text(
+                            text = stringResource(R.string.shared_screen_encryption_processing),
                             color = My3
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -141,7 +147,7 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                                         modifier = Modifier.size(16.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    androidx.compose.material3.Text(
+                                    Text(
                                         text = step,
                                         color = My3
                                     )
@@ -174,7 +180,7 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                 },
                 onSave = {
                     viewModel.saveBothImages(selectedUri!!, onSaveComplete = {
-                        ToastExt.show("Сохранены оба изображения")
+                        ToastExt.show(context.getString(R.string.shared_screen_save_both_images))
                         viewModel.setAnImageWasSharedWithUsNow(false)
                         viewModel.clearSelectedUri()
                     })
@@ -192,7 +198,8 @@ fun SharedScreen(viewModel: ImagesViewModel = hiltViewModel()) {
                 viewModel.setSelectedUri(uri)
                 showImageDialog = true
             } else {
-                ToastExt.show("Не удалось получить URI для файла: $latestTempImage")
+                val toastString = context.getString(R.string.shared_screen_error)
+                ToastExt.show("$toastString: $latestTempImage")
             }
         }
     }

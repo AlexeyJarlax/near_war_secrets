@@ -1,5 +1,6 @@
 package com.pavlov.MyShadowGallery.data.repository
 
+import com.pavlov.MyShadowGallery.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -27,15 +28,15 @@ class SteganographyRepository @Inject constructor(
         memeBitmap: Bitmap,
         originalBitmap: Bitmap
     ): Flow<StegoEvent> = flow {
-        emit(StegoEvent.Progress("Начало скрытия изображения в мем"))
+        emit(StegoEvent.Progress(context.getString(R.string.stego_start_hiding)))
 
         try {
             // Шаг 1: Конвертируем originalBitmap в байтовый массив
-            emit(StegoEvent.Progress("Конвертация оригинального изображения в байтовый массив"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_convert_original)))
             val byteArray = bitmapToByteArray(originalBitmap)
 
             // Шаг 2: Подготавливаем заголовок
-            emit(StegoEvent.Progress("Подготовка заголовка"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_prepare_header)))
             val dataLength = byteArray.size * 8 // длина в битах
             val headerBytes = ByteArray(4)
             headerBytes[0] = (dataLength shr 24).toByte()
@@ -45,11 +46,11 @@ class SteganographyRepository @Inject constructor(
             val totalData = headerBytes + byteArray
 
             // Шаг 3: Конвертируем totalData в BitSet
-            emit(StegoEvent.Progress("Конвертация данных в биты"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_convert_bits)))
             val dataBitSet = byteArrayToBitSet(totalData)
 
             // Шаг 4: Встраиваем dataBits в memeBitmap
-            emit(StegoEvent.Progress("Встраивание данных в мем изображение"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_embed_data)))
             val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
             val memeWidth = memeBitmap.width
             val memeHeight = memeBitmap.height
@@ -58,7 +59,7 @@ class SteganographyRepository @Inject constructor(
             // Проверяем, достаточно ли места для встраивания данных
             val availableBits = totalPixels * BITS_PER_PIXEL
             if (dataBitSet.length() > availableBits) {
-                emit(StegoEvent.Error("Мем изображение слишком маленькое для скрытия данных"))
+                emit(StegoEvent.Error(context.getString(R.string.stego_meme_too_small)))
                 return@flow
             }
 
@@ -90,8 +91,8 @@ class SteganographyRepository @Inject constructor(
                 }
             }
 
-            emit(StegoEvent.Progress("Скрытие изображения завершено"))
-            emit(StegoEvent.Progress("Сохранение закодированного изображения..."))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_hiding_completed)))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_saving_image)))
 
             val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.png"
             val destinationFile = File(context.cacheDir, fileName)
@@ -100,9 +101,9 @@ class SteganographyRepository @Inject constructor(
             outputStream.flush()
             outputStream.close()
 
-            emit(StegoEvent.Progress("Закодированное изображение сохранено: ${destinationFile.absolutePath}"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_image_saved, destinationFile.absolutePath)))
 
-            emit(StegoEvent.Progress("Генерация URI"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_generating_uri)))
             val uri = try {
                 FileProvider.getUriForFile(
                     context,
@@ -110,8 +111,8 @@ class SteganographyRepository @Inject constructor(
                     destinationFile
                 )
             } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "Ошибка при получении URI для файла: ${destinationFile.absolutePath}")
-                emit(StegoEvent.Error("Ошибка при получении URI для файла: ${destinationFile.absolutePath}"))
+                Timber.tag(TAG).e(e, context.getString(R.string.stego_uri_error, destinationFile.absolutePath))
+                emit(StegoEvent.Error(context.getString(R.string.stego_uri_error, destinationFile.absolutePath)))
                 null
             }
 
@@ -119,11 +120,11 @@ class SteganographyRepository @Inject constructor(
                 Timber.tag(TAG).d("Сгенерирован URI для закодированного изображения: $uri")
                 emit(StegoEvent.Success(uri))
             } else {
-                emit(StegoEvent.Error("Не удалось сгенерировать URI для файла: ${destinationFile.absolutePath}"))
+                emit(StegoEvent.Error(context.getString(R.string.stego_uri_failed, destinationFile.absolutePath)))
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Ошибка в методе hideImageInMeme")
-            emit(StegoEvent.Error("Ошибка при скрытии изображения: ${e.message}"))
+            emit(StegoEvent.Error(context.getString(R.string.stego_hide_error, e.message ?: "Неизвестная ошибка")))
         }
     }.flowOn(Dispatchers.Default)
 
@@ -131,18 +132,18 @@ class SteganographyRepository @Inject constructor(
         memeUri: Uri
     ): Flow<StegoEvent> = flow {
         try {
-            emit(StegoEvent.Progress("Открытие мем изображения из URI"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_opening_meme)))
             val inputStream = context.contentResolver.openInputStream(memeUri)
             val memeBitmap = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
 
             if (memeBitmap == null) {
-                emit(StegoEvent.Error("Не удалось декодировать мем из URI: $memeUri"))
+                emit(StegoEvent.Error(context.getString(R.string.stego_decode_error, memeUri)))
                 return@flow
             }
 
             // Шаг 1: Извлечение всех битов из изображения
-            emit(StegoEvent.Progress("Извлечение всех битов из мем изображения"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_extracting_bits)))
             val allBits = BitSet(memeBitmap.width * memeBitmap.height * BITS_PER_PIXEL)
             var bitIndex = 0
 
@@ -169,7 +170,7 @@ class SteganographyRepository @Inject constructor(
             }
 
             // Шаг 2: Извлечение заголовка (первые 32 бита)
-            emit(StegoEvent.Progress("Извлечение заголовка данных"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_extract_header)))
             val headerBits = allBits.get(0, 32)
             val headerBytes = ByteArray(4)
             for (i in 0 until 4) { // 4 байта
@@ -187,22 +188,22 @@ class SteganographyRepository @Inject constructor(
                             ((headerBytes[2].toInt() and 0xFF) shl 8) or
                             (headerBytes[3].toInt() and 0xFF)
                     )
-            emit(StegoEvent.Progress("Длина данных: $dataLength бит"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_data_length, dataLength)))
 
             // Шаг 3: Извлечение данных
-            emit(StegoEvent.Progress("Извлечение данных из мем изображения"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_extract_data)))
             val dataBitsToExtract = dataLength
             val dataBitSet = BitSet(dataBitsToExtract)
             for (i in 0 until dataBitsToExtract) {
                 if (32 + i >= allBits.length()) {
-                    emit(StegoEvent.Error("Недостаточно бит для данных"))
+                    emit(StegoEvent.Error(context.getString(R.string.stego_extract_error, "Недостаточно бит для данных")))
                     return@flow
                 }
                 dataBitSet.set(i, allBits.get(32 + i))
             }
 
             // Шаг 4: Конвертация битов в байты
-            emit(StegoEvent.Progress("Конвертация битов в байты"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_convert_bytes)))
             val dataBytes = ByteArray((dataLength + 7) / 8) // Округление вверх
             for (i in dataBytes.indices) {
                 var byte = 0
@@ -218,24 +219,24 @@ class SteganographyRepository @Inject constructor(
             }
 
             // Шаг 5: Конвертация байтов в Bitmap
-            emit(StegoEvent.Progress("Преобразование байтов в изображение"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_convert_to_bitmap)))
             val originalBitmap = byteArrayToBitmap(dataBytes)
             if (originalBitmap == null) {
-                emit(StegoEvent.Error("Не удалось преобразовать байты в Bitmap"))
+                emit(StegoEvent.Error(context.getString(R.string.stego_bitmap_conversion_failed)))
                 return@flow
             }
 
-            emit(StegoEvent.Progress("Извлечение изображения завершено"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_extraction_completed)))
             val extractedUri = writeBitmapToFile(originalBitmap)
             if (extractedUri != null) {
                 emit(StegoEvent.Success(extractedUri)) // Эмиссия Success события
             } else {
-                emit(StegoEvent.Error("Не удалось сохранить извлеченное изображение"))
+                emit(StegoEvent.Error(context.getString(R.string.stego_save_extracted_failed)))
             }
-            emit(StegoEvent.Progress("Генерация URI завершена"))
+            emit(StegoEvent.Progress(context.getString(R.string.stego_generate_uri_completed)))
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Ошибка при извлечении оригинального изображения из мема: $memeUri")
-            emit(StegoEvent.Error("Ошибка при извлечении изображения: ${e.message}"))
+            emit(StegoEvent.Error(context.getString(R.string.stego_extract_error, e.message ?: "Неизвестная ошибка")))
         }
     }.flowOn(Dispatchers.Default)
 

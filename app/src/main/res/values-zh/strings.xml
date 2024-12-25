@@ -1,166 +1,111 @@
 <resources>
-    <string name="app_name_1">NWS</string>
-    <string name="mimicry_app_name">MoodSound Galaxy</string>
-    <string name="app_name_in_main_page">NearWarSecrets</string>
-    <string name="disguise_btn">伪装</string>
-    <string name="search">搜索</string>
+    <string name="app_name_1">几乎是军事机密</string>
+    <string name="about_app">关于应用</string>
+    <string name="about_app_long1">适用于那些拥有秘密的人的应用程序...</string>
+    <string name="about_app_long3">数据存储特点：</string>
+    <string name="about_app_long5">加密系统的特点</string>
+    <string name="about_the_app">关于应用</string>
+    <string name="access_obtained">访问已获取</string>
+    <string name="add_key">添加新密钥</string>
+    <string name="add_password">请输入密码</string>
+    <string name="added">已添加: </string>
+    <string name="any_mistake">这里会显示错误消息，\n图标会根据\n错误的性质改变</string>
+    <string name="app_name_in_main_page">几乎是军事机密</string>
+    <string name="app_version_text">"\n应用版本: "</string>
+    <string name="attempts_left">剩余尝试次数: %d</string>
+    <string name="back">返回</string>
+    <string name="background_process">后台\n进程…</string>
     <string name="button_back">返回</string>
     <string name="button_item_loader">添加</string>
-    <string name="storage_log">存储日志</string>
     <string name="button_settings">设置</string>
-    <string name="dark_mod">深色主题</string>
-    <string name="share_the_app">分享应用</string>
-    <string name="write_to_support">联系支持</string>
-    <string name="user_agreement">用户协议</string>
-    <string name="share_app_text">我的影子画廊 - 一个用于存储受限制访问的加密图像的隐藏画廊：
-    https://play.google.com/store/apps/details?id=%1$s</string>
-    <string name="share_app_text2">文件已加密在我的影子画廊中。要查看，请向发送此消息的人请求密钥并使用解码器：
-    https://play.google.com/store/apps/details?id=%1$s</string>
-    <string name="share_app_title">分享应用</string>
-    <string name="support_email">mailto:a9633238@gmail.com</string>
-    <string name="support_email_subject">给此应用程序的开发人员的消息</string>
-    <string name="support_email_text">消息正文</string>
-    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
-    <string name="heading_search_history_list_view">搜索历史记录:</string>
-    <string name="todo">待办事项</string>
-    <string name="there_wil_be_media_library">在这里将有媒体库</string>
-    <string name="cam_bat_hide">隐藏\n摄像头</string>
-    <string name="cam_bat_start">启动\n摄像头</string>
-    <string name="cam_bat">摄像头</string>
-    <string name="snapshot">拍照\n</string>
-    <string name="galery">上传\n文件</string>
-    <string name="mountin_switch">视觉风格:\n猫图书馆 / 山脉</string>
-    <string name="sample">一二三</string>
-    <string name="about_app">关于应用</string>
-    <string name="about_app_long1">为那些有秘密的人设计的应用...</string>
-    <string name="about_app_long2">该应用程序以编码形式拍摄和存储照片。这些图像对于图库和其他应用程序不可见。
-    应用程序登录受密码保护，具有模拟功能，模拟为音乐应用程序。使用加密保存的图像即使从手机中提取文件也无法阅读，除非使用密钥。
-    安全概念：所有数据仅存储在用户设备上，不应用服务器存储用户图像、预览、密钥和密码的体系结构。然而，用户可以分享加密或解密后的图像。
-    接收其他用户的图像并使用相似的加密密钥解密。</string>
-    <string name="about_app_long3">数据存储特点：</string>
-    <string name="about_app_long4">- 预览存储在应用程序的内部目录中，扩展名为 .p，不进行加密。可以在设置中选择缩略图的像素缩放比例从 1x1 px 到 100x100 px。
-\n\n
-- 原始图像存储在应用程序的内部目录中。在使用加密时，文件将以 .kk 扩展名保存。如果用户选择不使用加密选项，文件将以 .o 扩展名保存。当用户共享已解密的图像时，
-    将创建一个以 .peekaboo 为扩展名的临时文件。在这种形式下，文件可以通过设备上的任何可用方式发送。一旦用户关闭此图像的查看窗口，解密的实例将从设备中删除。
-    换句话说，加密的图像仅以加密形式存储。用户可以通过设置菜单更改加密使用选项。
-\n\n
-- 加密密钥和密码以受保护的形式存储在设备上。出于安全考虑，无法恢复密钥和密码。如果您忘记登录应用程序的密码，最好的解决方案是卸载应用程序并重新安装。如果丢失加密密钥，
-    您可以在不重新安装应用程序的情况下创建另一个密钥，但使用旧密钥保存的图像将无法查看。可以通过设置菜单清除图像存储、更改密钥或密码。</string>
-    <string name="about_app_long5">加密系统的操作特点</string>
-
-    <string name="about_app_long6">该应用程序有三种加密系统模式:\n\n
-1. 无加密。保存文件无需输入加密密钥 - 文件以对其他应用程序和图库不可见的格式保存在设备上，但是
-        如果设备被入侵，黑客可能会提取和读取它们。获得来自设备的文件后，黑客可以读取其内容。\n\n
-2. 恒定加密密钥（推荐模式）。用户可以选择或生成加密密钥。密钥用于按照
-        高级加密标准对文件进行加密。文件以加密形式存储在设备上，即使黑客可以访问设备内存（或者获得了从
-        设备发送的加密文件），也无法在没有加密密钥的情况下读取内容。密钥以受保护的哈希函数形式存储在应用程序中。
-        用户可以在应用程序中创建和存储最多三个密钥。\n\n
-3. 变动加密密钥。如果用户勾选“不保存加密密钥”，则密钥不会存储在应用程序中，而是在每次登录时都会请求。密钥在应用程序打开时存在。
-        这是最高安全级别，但是，如果您忘记了旧密钥，则以前使用该密钥保存的文件将无法查看。您始终可以通过“设置”菜单更改安全选项。</string>
-    <string name="clearing_the_storage">清空存储</string>
-    <string name="key_input_clear">关闭会话时删除密钥 \n(每次登录都会要求输入密钥)</string>
-    <string name="preview_off">使用加密密钥</string>
-    <string name="nothing_was_found">未找到任何内容</string>
-    <string name="refresh">刷新</string>
-    <string name="any_mistake">这里将显示错误消息，\n图标将根据错误性质更改</string>
-    <string name="you_were_looking_for">你正在寻找</string>
+    <string name="cam_bat">相机</string>
+    <string name="cam_bat_hide">隐藏\n相机</string>
+    <string name="cam_bat_start">启动\n相机</string>
+    <string name="cancel">取消</string>
+    <string name="choose_encryption_key">选择密钥</string>
+    <string name="chuse_img">选择要发送的文件</string>
+    <string name="chuse_mem">选择一个表情包</string>
+    <string name="clear_storage">存储中的数据将被永久删除，确认吗？</string>
     <string name="clear_the_history">清除历史记录</string>
-    <string name="added">已添加: </string>
-    <string name="preview_scaling_factor">预览缩放因子(px):</string>
-    <string name="reset_settings_confirm">清除所有数据: 重置设置、密钥、密码、清空存储</string>
-    <string name="personal_data">个人数据</string>
-    <string name="disguise_it_as_a_music_player">伪装成音乐播放器</string>
-    <string name="language">语言/language/应用语言/idioma</string>
-    <string name="goAhead">继续!</string>
-    <string name="input">确认输入</string>
-    <string name="noinput">拒绝输入</string>
-    <string name="step00">我的影子画廊\n\n设置安全性，\n三个简单的步骤\n🔐️ 🕶️ 🔏</string>
-    <string name="step01_01">\n🔐️\n步骤 1\n使用密码登录应用程序？\n</string>
-    <string name="step01_02">\n🔐️\n步骤 1\n密码\n\n检测到以前保存的应用程序登录密码，是否要更改密码？</string>
-    <string name="step01_03">🗑️ 删除密码</string>
-    <string name="step02_00">\n🕶️\n步骤 2\n\n启用模拟\n音乐播放器模式？</string>
-    <string name="step02_01">\n要退出模拟模式，请在歌曲搜索字段中输入密码</string>
-    <string name="step02_02">\n要退出模拟模式，请在歌曲搜索字段中输入数字 000</string>
-    <string name="step02_03">我会记住的！</string>
-    <string name="step03_00">\n🔏\n步骤 3\n使用加密密钥？</string>
-    <string name="step03_01">图像加密🔏\n允许应用程序生成唯一的加密密钥，
-    或者创建自己的密钥。密钥用于使用高级加密标准进行文件加密。图像和密钥
-    以设备上安全的加密形式存储</string>
-    <string name="storage">存储</string>
-    <string name="key_byte_count_message">建议添加 (字节):</string>
-    <string name="encryption_key_set">加密密钥已设置</string>
-    <string name="encryption_mode_set_no_encryption">设置保存模式: 无加密</string>
-    <string name="encryption_key_not_set">未设置加密密钥</string>
-    <string name="create_encryption_key">创建加密密钥</string>
-    <string name="generate">生成</string>
-    <string name="helper_text_prefix">建议添加: %1$d 字节</string>
-    <string name="do_not_add_key">不使用加密密钥</string>
+    <string name="clearing_the_storage">清理存储</string>
+    <string name="confirm">确认操作</string>
+    <string name="confirm_clear_storage_title">按数字八以确认</string>
+    <string name="confirm_new_password_placeholder">在此确认新密码</string>
+    <string name="confirm_password">输入验证</string>
     <string name="constant_key">固定密钥</string>
-    <string name="variable_key">可变密钥</string>
-    <string name="old_key_button_text">在存储中发现以前保存的加密密钥。点击密钥名称将其设置为默认密钥。
-        点击“删除”按钮将删除密钥</string>
-
+    <string name="create_encryption_key">创建加密密钥</string>
+    <string name="dark_mod">深色主题</string>
+    <string name="dark_mode">夜间主题</string>
+    <string name="date">日期</string>
+    <string name="decripted_file">解密文件</string>
+    <string name="decripted_img">解密图像</string>
+    <string name="decrypting">正在解密…</string>
+    <string name="del_pass">🗑️ 删除密码</string>
+    <string name="del_password">密码已成功删除</string>
+    <string name="delit_one_keys">删除一个旧密钥</string>
     <string name="developers_page">开发者页面</string>
     <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
-    <string name="wait">请稍候...</string>
-    <string name="password">密码：</string>
-    <string name="invalid_character">无效字符</string>
-    <string name="repit_password">请再次输入密码</string>
-    <string name="wrong_password">密码不匹配，请重新输入</string>
-    <string name="save_password">密码已保存</string>
-    <string name="to_change_password">要更改密码，请输入旧密码和新密码</string>
-    <string name="del_password">密码已成功删除</string>
-    <string name="try_left">"剩余尝试次数："</string>
-    <string name="last_warning">！在最后一次尝试后将重置设置并清除存储！</string>
-    <string name="new_password">新密码</string>
-    <string name="old_password">旧密码</string>
-    <string name="access_obtained">已获得访问权限</string>
-    <string name="encryption_no">无加密保存</string>
-    <string name="download">下载中...</string>
-    <string name="share_the_img">分享图片</string>
-    <string name="encrepted_img">加密的图片</string>
-    <string name="decripted_img">解密的图片</string>
-    <string name="timber_img">缩略图</string>
-    <string name="chuse_img">选择要发送的文件</string>
-    <string name="encrypted_save">已保存加密文件：</string>
-    <string name="decrypting">正在解密...</string>
-    <string name="naming_options">文件命名选项</string>
-    <string name="language_option">选择应用程序语言</string>
-    <string name="naming_option">选择文件命名风格</string>
-    <string name="preview">预览</string>
-    <string name="encrypted_file">加密文件</string>
-    <string name="whithout_encryption">无加密</string>
-    <string name="decripted_file">解密文件</string>
-    <string name="unnown_tipe">未知类型</string>
+    <string name="directory_empty">没有其他内容</string>
+    <string name="disguise_btn">伪装</string>
+    <string name="disguise_it_as_a_music_player">伪装成音乐播放器</string>
+    <string name="do_not_add_key">不使用加密密钥</string>
+    <string name="do_not_save_key_in_sistem1">将加密密钥保存在系统中</string>
+    <string name="do_not_save_key_in_sistem2">(系统中最多可存储三个加密密钥)</string>
+    <string name="do_not_save_key_in_sistem3">(应用中的现有加密密钥将被删除，用户每次登录时需要输入密钥)</string>
     <string name="done">完成</string>
-    <string name="security_settings">安全设置</string>
-    <string name="sensitive_info">“敏感信息和个人数据可通过位于上方的“清除所有数据”按钮完全删除”</string>
-    <string name="send_to_app">文件已发送到应用程序。请登录应用程序进行处理。</string>
-    <string name="saving_option">文件来自其他应用：</string>
-    <string name="saving_option1">保存文件 "as is"\n\n</string>
-    <string name="saving_option2">加密并保存文件\n\n</string>
-    <string name="saving_option3">尝试解密文件\n\n</string>
-    <string name="saving_option5">删除文件</string>
+    <string name="download">下载中…</string>
+    <string name="encrepted_img">加密图像</string>
+    <string name="encrypted_file">加密文件</string>
+    <string name="encrypted_save">已保存加密文件：</string>
+    <string name="encryption_key_not_set">未设置加密密钥</string>
+    <string name="encryption_key_set">已设置加密密钥</string>
+    <string name="encryption_mode_set_no_encryption">设置保存模式：无加密</string>
+    <string name="encryption_no">已无加密保存</string>
+    <string name="enter">登录\n</string>
+    <string name="enter_encryption_key1">手动输入密钥</string>
+    <string name="enter_encryption_key2">手动输入密钥（解密成功后，文件将重新编码为默认密钥）</string>
+    <string name="enter_new_password_placeholder">在此输入新密码</string>
+    <string name="error">错误</string>
+    <string name="error_camera">相机访问错误</string>
+    <string name="error_connect">连接错误</string>
+    <string name="error_decode_meme">无法解码表情包资源: %1$d</string>
+    <string name="error_decode_original">无法从文件解码原始图像: %1$s</string>
+    <string name="error_decryption">解密错误</string>
+    <string name="error_del">删除文件时出错</string>
+    <string name="error_encryption">错误: 无法完成加密</string>
+    <string name="error_gallery">图库访问错误</string>
+    <string name="error_hide_data">错误: %1$s</string>
+    <string name="error_hide_data_detailed">隐藏数据时出错: %1$s</string>
+    <string name="error_hide_image">在图像中隐藏数据时出错</string>
+    <string name="error_key">密钥可能已更改</string>
+    <string name="error_save">保存错误</string>
+    <string name="error_serch">歌曲搜索不可用</string>
+    <string name="error_steganography">在隐写过程中出错: %1$s</string>
+    <string name="error_text_web">连接问题 \n\n 下载失败。请检查\n互联网连接</string>
+    <string name="error_url">"无法获取文件的URI"</string>
+    <string name="error0">未定义错误</string>
+    <string name="error400">400 - 请求错误</string>
+    <string name="error401">401 - 未授权请求</string>
+    <string name="error403">403 - 禁止的请求</string>
+    <string name="error404">404 - 未找到</string>
+    <string name="error500">500 - 服务器内部错误</string>
+    <string name="error503">503 - 服务暂时不可用</string>
+    <string name="exit">退出</string>
+    <string name="extracted_file_not_found">未找到提取图像</string>
     <string name="feature_in_development">功能开发中</string>
-    <string name="storage_log_activity">应用程序存储日志中的图像日志。\n
-                    预览以.p扩展名保存。\n加密文件以.kk扩展名保存\n
-                    未加密保存的文件 - 使用.o扩展名\n
-                    用户共享的解密文件在系统中存在一段时间，使用.peekaboo扩展名\n
-                    通过“共享”功能传递到应用程序的文件以.share扩展名存在于系统中\n\n
-                    ----------------\n\n</string>
-
-    <string name="how_does_is_work">如何运作</string>
-    <string name="how_to_share_picture">如何分享图片</string>
-    <string name="how_to_accept_picture">如何接收图片</string>
-    <string name="how_to_sett_secure">如何设置安全性</string>
-    <string name="how_to_add_picture">如何添加图片</string>
     <string name="file_from_web">接收的文件</string>
-    <string name="save_key">保存新密钥</string>
-    <string name="how_does_the_key_works">ℹ️ 密钥加密如何工作</string>
-    <string name="do_not_save_key_in_sistem1">在系统中保存加密密钥</string>
-    <string name="do_not_save_key_in_sistem2">(系统最多可存储三个加密密钥)</string>
-    <string name="key_name">密钥名称</string>
-    <string name="what_key_sistem_to_choose">ℹ️ 选择哪种加密系统</string>
+    <string name="file_name">文件名</string>
+    <string name="file_path">位置</string>
+    <string name="file_type">文件类型</string>
+    <string name="flip">翻转</string>
+    <string name="galery">上传\n文件</string>
+    <string name="generate">生成</string>
+    <string name="goAhead">前进！</string>
+    <string name="heading_search_history_list_view">搜索栏查询历史：</string>
+    <string name="helper_text_prefix">建议添加: %1$d 字节</string>
+    <string name="how_does_is_work">工作原理</string>
+    <string name="how_does_the_key_works">ℹ️ 加密密钥如何工作？</string>
+
     <string name="how_does_the_key_works_details">高级加密标准\n\n该应用程序的功能使用“高级加密标准(AES)”算法对图像进行加密。
         该算法使用对称密钥，并应用“AES”标准，以在传输或存储图像时提供安全性。\n\n
         总体过程：\n- 从应用程序创建和提取主密钥，用作创建加密密钥的基础；\n
@@ -171,39 +116,152 @@
         的情况。对于“SHA”，碰撞在理论上可能，但其出现需要大量的计算资源。\n- 应用程序的主密钥用作创建加密密钥的基础。
         为了将主密钥转换为固定长度并应用“SHA”。这确保无论原始主密钥的长度如何，都将得到哈希值
         固定长度，然后可以将其用作加密密钥。</string>
-    <string name="add_key">添加新密钥</string>
-    <string name="no_available_keys">没有可用的密钥</string>
-    <string name="delit_one_keys">删除一个旧密钥</string>
-    <string name="key_delited">密钥已删除</string>
-    <string name="do_not_save_key_in_sistem3">(应用程序将删除现有的加密密钥，用户每次登录应用程序时都需要输入密钥)</string>
-    <string name="save_key_on_session">在会话期间使用密钥</string>
-    <string name="choose_encryption_key">选择密钥</string>
-    <string name="enter_encryption_key1">手动输入密钥</string>
-    <string name="enter_encryption_key2">手动输入密钥（如果成功解密文件，将重新编码为默认密钥）</string>
-    <string name="clear_storage">数据将被永久删除</string>
-    <string name="confirm_clear_storage_title">按八确认</string>
-    <string name="key_d">%d文件使用此密钥加密</string>
-    <string name="made_by_key">%d由密钥加密</string>
-    <string name="app_version_text">"\n应用程序版本："</string>
-    <string name="no_key_found">未找到默认密钥</string>
-    <string name="background_process">后台\n进程...</string>
-    <string name="error_text_web">与网络的连接问题\n
-        \n下载失败。请检查\n
-        互联网连接</string>
-    <string name="error400">400 - 请求错误</string>
-    <string name="error401">401 - 未经授权的请求</string>
-    <string name="error403">403 - 禁止的请求</string>
-    <string name="error404">404 - 未找到</string>
-    <string name="error500">500 - 服务器内部错误</string>
-    <string name="error503">503 - 服务暂时不可用</string>
-    <string name="error0">未知错误</string>
-    <string name="error_encryption">错误：无法完成加密</string>
-    <string name="error_save">保存错误</string>
-    <string name="error_camera">访问相机错误</string>
-    <string name="error_decryption">解密错误</string>
-    <string name="error_key">可能密钥已更改</string>
-    <string name="error_del">删除文件时出错</string>
-    <string name="error_serch">歌曲搜索不可用</string>
-    <string name="error_connect">连接错误</string>
-    <string name="you_can_like">你可能喜欢...</string>
+
+        <string name="how_to_accept_picture">如何获取图片？</string>
+        <string name="how_to_add_picture">如何添加图片？</string>
+        <string name="how_to_sett_secure">如何设置安全性？</string>
+        <string name="how_to_share_picture">如何发送图片？</string>
+        <string name="input">确认输入</string>
+        <string name="invalid_character">无效字符</string>
+        <string name="key_byte_count_message">建议添加（字节）：</string>
+        <string name="key_d">使用此密钥加密了 %d 个文件</string>
+        <string name="key_delited">密钥已删除</string>
+        <string name="key_input_clear">会话关闭时删除密钥 \n（登录时将请求密钥）</string>
+        <string name="key_name">密钥名称</string>
+        <string name="language">语言/language/应用语言/idioma</string>
+        <string name="language_change_notice">语言将在下次启动时更改</string>
+        <string name="language_option">选择应用语言</string>
+        <string name="last_warning">! 在最后一次尝试后，设置将重置，存储将被清除！</string>
+        <string name="loaded_dialog_close">关闭</string>
+        <string name="loaded_dialog_delete">删除</string>
+        <string name="loaded_dialog_encrypt_meme">加密为表情包</string>
+        <string name="loaded_dialog_encryption_processing">正在处理加密</string>
+        <string name="loaded_dialog_file_not_found">文件未找到</string>
+        <string name="loaded_dialog_image_creation_failed">无法创建图像</string>
+        <string name="loaded_dialog_save">保存</string>
+        <string name="loaded_dialog_send">发送</string>
+        <string name="loaded_dialog_share_image">分享</string>
+        <string name="loaded_dialog_share_original">分享原图</string>
+        <string name="loaded_dialog_sharing_method">分享方式</string>
+        <string name="log">日志</string>
+        <string name="made_by_key">使用密钥加密了 %d 个</string>
+        <string name="mimicry_app_name">PVT</string>
+        <string name="naming_option">选择文件命名风格</string>
+        <string name="naming_options">文件名生成器</string>
+        <string name="new_about_app">几乎是军事机密\n\n一款用于秘密通信的应用程序允许您：\n\n- 发送加密消息；\n- 发送加密图像；\n- 在图像或例如表情包中隐藏文本；\n- 将一张照片隐藏在另一张照片中；\n- 将带有任意数量文件的压缩包隐藏在任何图像中。\n</string>
+        <string name="new_password">新密码</string>
+        <string name="no_added_images">未添加图片</string>
+        <string name="no_available_keys">可用密钥数量已耗尽</string>
+        <string name="no_key_found">未设置默认密钥</string>
+        <string name="noinput">拒绝输入</string>
+        <string name="nothing_was_found">未找到任何内容</string>
+        <string name="old_password">旧密码</string>
+        <string name="option">选项</string>
+        <string name="password">密码</string>
+        <string name="passwords_do_not_match">密码不匹配</string>
+        <string name="personal_data">个人数据</string>
+        <string name="photo">照片</string>
+        <string name="preview">预览</string>
+        <string name="preview_off">使用加密密钥</string>
+        <string name="preview_scaling_factor">预览缩放系数（像素）：</string>
+        <string name="progress_extraction_complete">提取完成</string>
+        <string name="progress_hide_data">隐藏数据过程…</string>
+        <string name="progress_load_meme">加载封装图像…</string>
+        <string name="progress_load_original">正在加载原始图像…</string>
+        <string name="progress_reset">重置进度…</string>
+        <string name="progress_resize_images">调整图像大小…</string>
+        <string name="received_from_outside">来自外部的接收</string>
+        <string name="refresh">刷新</string>
+        <string name="repit_password">请再次输入密码</string>
+        <string name="reset_settings">清除所有数据</string>
+        <string name="reset_settings_confirm">清除所有数据：个人数据、设置、密钥、密码、存储。确认吗？ </string>
+        <string name="resume">继续</string>
+        <string name="sample">一二三</string>
+        <string name="save">保存</string>
+        <string name="save_key">保存新密钥</string>
+        <string name="save_key_on_session">在会话期间使用密钥</string>
+        <string name="save_password">密码已保存</string>
+        <string name="saved">已保存</string>
+        <string name="saving_option">从另一个应用接收的文件：</string>
+        <string name="saving_option1">保存文件“原样”\n\n</string>
+        <string name="saving_option2">加密并保存文件\n\n</string>
+        <string name="saving_option3">尝试解密文件\n\n</string>
+        <string name="saving_option5">删除文件</string>
+        <string name="search">搜索</string>
+        <string name="security_settings">安全设置</string>
+        <string name="send_to_app">文件已发送到应用程序。请登录应用程序进行处理。</string>
+        <string name="sensitive_info">\"敏感信息和个人数据可以通过按上方的清除所有数据按钮完全删除\"</string>
+        <string name="set_password">设置登录应用程序的密码？</string>
+        <string name="settings_reset_error">重置设置时出错。</string>
+        <string name="settings_reset_success">设置已成功重置！</string>
+        <string name="settings_title">设置</string>
+        <string name="share_app_text">几乎是军事机密 - 用于存储受限访问的编码图像的隐藏画廊：\n https://play.google.com/store/apps/details?id=%1$s</string>
+        <string name="share_app_text2">文件已加密。要查看，请向发送此消息的人请求密钥并使用解密器\n https://play.google.com/store/apps/details?id=%1$s</string>
+        <string name="share_app_title">分享应用程序</string>
+        <string name="share_the_app">分享应用程序</string>
+        <string name="share_the_img">分享图像</string>
+        <string name="shared_screen_encryption_processing">正在解密…</string>
+        <string name="shared_screen_error">错误：%1$s</string>
+        <string name="shared_screen_image_creation_failed">无法创建图像</string>
+        <string name="shared_screen_no_images">没有保存的图像</string>
+        <string name="shared_screen_save_both_images">两个图像已保存</string>
+        <string name="shared_screen_save_success">已成功保存</string>
+        <string name="size">大小</string>
+        <string name="snapshot">拍摄\n快照</string>
+        <string name="stego_bitmap_conversion_failed">无法将字节转换为 Bitmap</string>
+        <string name="stego_convert_bits">将数据转换为位</string>
+        <string name="stego_convert_bytes">将位转换为字节</string>
+        <string name="stego_convert_original">将原始图像转换为字节数组</string>
+        <string name="stego_convert_to_bitmap">将字节转换为图像</string>
+        <string name="stego_data_length">数据长度：%1$d 位</string>
+        <string name="stego_decode_error">无法从 URI 解码表情包：%1$s</string>
+        <string name="stego_embed_data">将数据嵌入表情包图像中</string>
+        <string name="stego_extract_data">从表情包图像中提取数据</string>
+        <string name="stego_extract_error">提取图像时出错：%1$s</string>
+        <string name="stego_extract_header">提取数据头</string>
+        <string name="stego_extracting_bits">从表情包图像中提取所有位</string>
+        <string name="stego_extraction_completed">图像提取完成</string>
+        <string name="stego_generate_uri_completed">URI 生成完成</string>
+        <string name="stego_generating_uri">生成 URI</string>
+        <string name="stego_hide_error">隐藏图像时出错：%1$s</string>
+        <string name="stego_hiding_completed">图像隐藏完成</string>
+        <string name="stego_image_saved">编码图像已保存：%1$s</string>
+        <string name="stego_meme_too_small">表情包图像太小，无法隐藏数据</string>
+        <string name="stego_opening_meme">从 URI 打开表情包图像</string>
+        <string name="stego_prepare_header">准备头</string>
+        <string name="stego_save_extracted_failed">无法保存提取的图像</string>
+        <string name="stego_saving_image">正在保存编码图像…</string>
+        <string name="stego_start_hiding">开始在表情包中隐藏图像</string>
+        <string name="stego_uri_error">获取文件 URI 时出错：%1$s</string>
+        <string name="stego_uri_failed">无法为文件生成 URI：%1$s</string>
+        <string name="step00">\n设置安全，\n三个简单的步骤\n🔐️ 🕶️ 🔏</string>
+        <string name="step01_01">\n🔐️\n第1步\n使用密码登录应用程序吗？\n</string>
+        <string name="storage">存储</string>
+        <string name="storage_clear_error">清理存储时出错</string>
+        <string name="storage_cleared">存储已清理！</string>
+        <string name="storage_log">存储日志</string>
+        <string name="storage_log_activity">存储日志</string>
+        <string name="successful_enter">登录成功</string>
+        <string name="support_email">mailto:a9633238@gmail.com</string>
+        <string name="support_email_subject">致开发者</string>
+        <string name="support_email_text">开发者，你真棒！</string>
+        <string name="there_wil_be_media_library">此窗口将有媒体库</string>
+        <string name="timber_img">缩略图</string>
+        <string name="to_change_password">要更改密码，请输入旧密码和新密码</string>
+        <string name="todo">待办</string>
+        <string name="try_left">"剩余尝试次数： "</string>
+        <string name="unnown_tipe">未知类型</string>
+        <string name="uploaded_by_me">由我上传</string>
+        <string name="user_agreement">隐私政策</string>
+        <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+        <string name="variable_key">可变密钥</string>
+        <string name="wait">请稍候…</string>
+        <string name="what_key_sistem_to_choose">ℹ️ 选择哪种加密选项？</string>
+        <string name="whith_encryption">使用加密</string>
+        <string name="whithout_encryption">不使用加密</string>
+        <string name="write_to_support">写信给支持</string>
+        <string name="wrong_password">密码不匹配，请重新输入</string>
+        <string name="wrong_password0">密码错误</string>
+        <string name="you_can_like">您可能喜欢…</string>
+        <string name="you_were_looking_for">您正在寻找</string>
 </resources>

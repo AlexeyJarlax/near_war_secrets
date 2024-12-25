@@ -55,7 +55,7 @@ fun AuthScreen(
                         var password by remember { mutableStateOf("") }
 
                         Text(
-                            text = if (password.isEmpty()) "Введите пароль" else ""
+                            text = if (password.isEmpty()) stringResource(id = R.string.add_password) else ""
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -63,7 +63,7 @@ fun AuthScreen(
                         CustomOutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            label = "Пароль",
+                            label = stringResource(id = R.string.password),
                             placeholder = "...",
                             backgroundColor = My4,
                             isPassword = true,
@@ -87,7 +87,7 @@ fun AuthScreen(
                         }
                         if (hasError) {
                             Text(
-                                text = "Осталось попыток: $counter",
+                                text = stringResource(id = R.string.attempts_left, counter),
                                 color = MaterialTheme.colors.error
                             )
                         }

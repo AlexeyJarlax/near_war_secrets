@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
 import timber.log.Timber
@@ -52,7 +53,7 @@ fun MemeSelectionDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Выберите мемчик",
+                text = stringResource(id = R.string.chuse_mem),
                 style = MaterialTheme.typography.h6,
             )
         },
@@ -94,7 +95,7 @@ fun MemeSelectionDialog(
 
     CustomButtonOne(
         onClick = onDismiss,
-        text = "Отмена",
+        text = stringResource(id = R.string.cancel),
         icon = Icons.Default.Cancel
     )
 }

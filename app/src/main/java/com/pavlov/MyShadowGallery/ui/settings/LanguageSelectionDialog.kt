@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pavlov.MyShadowGallery.R
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
 
 @Composable
@@ -20,7 +22,7 @@ fun LanguageSelectionDialog(onDismiss: () -> Unit, onLanguageSelected: (String) 
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Выберите язык",
+                text = stringResource(id = R.string.language_option),
                 style = MaterialTheme.typography.h6,
             )
         },

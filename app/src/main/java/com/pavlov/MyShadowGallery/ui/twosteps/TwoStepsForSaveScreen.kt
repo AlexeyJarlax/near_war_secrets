@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,7 +25,7 @@ fun TwoStepsForSaveScreen(
     val navigateToSetPassword by viewModel.navigateToSetPassword.collectAsState()
     val navigateToMain by viewModel.navigateToMain.collectAsState()
     val navigateToKeyInput by viewModel.navigateToKeyInput.collectAsState()
-    val context = LocalContext.current
+//    val context = LocalContext.current
 
     LaunchedEffect(navigateToSetPassword) {
         if (navigateToSetPassword) {
@@ -58,7 +59,7 @@ fun TwoStepsForSaveScreen(
                     when (step) {
                         0 -> {
                             Text(
-                                text = context.getString(R.string.new_about_app),
+                                text = stringResource(id = R.string.new_about_app),
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.body1,
                                 modifier = Modifier
@@ -66,13 +67,13 @@ fun TwoStepsForSaveScreen(
                             )
                             CustomButtonOne(
                                 onClick = { viewModel.onNextButtonClicked() },
-                                text = "Продолжить",
+                                text = stringResource(id = R.string.resume),
                                 icon = R.drawable.login_30dp
                             )
                         }
 
                         1 -> {
-                            Text("Установить пароль для входа в приложение?")
+                            Text(stringResource(id = R.string.set_password))
                             Row {
                                 CustomButtonOne(
                                     onClick = { viewModel.onYesClicked() },
