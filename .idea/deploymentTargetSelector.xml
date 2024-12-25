@@ -7,10 +7,10 @@
       </SelectionState>
       <SelectionState runConfigName="MyShadowGallery.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-12-23T15:07:44.174408200Z">
+        <DropdownSelection timestamp="2024-12-25T11:57:20.583509900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=f49bc959" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Admin\.android\avd\Medium_Phone_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>

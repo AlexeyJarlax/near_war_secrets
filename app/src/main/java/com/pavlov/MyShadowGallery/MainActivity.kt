@@ -83,15 +83,16 @@ class MainActivity : ComponentActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-//            hideSystemUI()
+            hideSystemUI()
         }
     }
 
     private fun hideSystemUI() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(
-                android.view.WindowInsets.Type.statusBars() or
-                        android.view.WindowInsets.Type.navigationBars()
+                android.view.WindowInsets.Type.statusBars()
+//                        or
+//                        android.view.WindowInsets.Type.navigationBars()
             )
         } else {
             @Suppress("DEPRECATION")
