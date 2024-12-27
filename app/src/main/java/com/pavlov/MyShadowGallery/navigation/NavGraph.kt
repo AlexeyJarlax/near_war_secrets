@@ -25,7 +25,6 @@ import com.pavlov.MyShadowGallery.ui.storageLog.StorageLogScreen
 import com.pavlov.MyShadowGallery.ui.twosteps.TwoStepsForSaveScreen
 
 @Composable
-
 fun NavGraph(
     navController: NavHostController,
     activity: Activity,
@@ -33,14 +32,15 @@ fun NavGraph(
     modifier: Modifier = Modifier,
     intent: Intent?
 ) {
-    // Обработка intent внутри компонуемой функции (нагородил, чтобы принимать изображения из вне, и при этом навграф не сыпался)
+    // Обработка intent внутри компонуемой функции (из-за лагов вынес сюда из мейна)
     LaunchedEffect(intent) {
         intent?.let { receivedIntent ->
             val action = receivedIntent.action
             val type = receivedIntent.type
 
-            if (action == Intent.ACTION_SEND && type != null) {
-                if (type.startsWith("image/")) {
+            when {
+                // Обработка ACTION_SEND (обработка намерения поделиться изображением)
+                action == Intent.ACTION_SEND && type != null && type.startsWith("image/") -> {
                     val uri: Uri? = receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM)
                     uri?.let {
                         imagesViewModel.addReceivedPhoto(it)
@@ -50,11 +50,12 @@ fun NavGraph(
                         }
                     }
                 }
-            } else if (action == Intent.ACTION_SEND_MULTIPLE && type != null) {
-                if (type.startsWith("image/")) {
-                    val uris: ArrayList<Uri>? = receivedIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
-                    uris?.let {
-                        imagesViewModel.addReceivedPhotos(it)
+
+                // Обработка ACTION_VIEW (а тут обработка намерения "открыть" изображение)
+                action == Intent.ACTION_VIEW && type != null && type.startsWith("image/") -> {
+                    val uri: Uri? = receivedIntent.data
+                    uri?.let {
+                        imagesViewModel.addReceivedPhoto(it)
                         imagesViewModel.setAnImageWasSharedWithUsNow(true)
                         navController.navigate(NavDestinations.EXTRACTER) {
                             popUpTo(NavDestinations.IMAGES) { inclusive = false }

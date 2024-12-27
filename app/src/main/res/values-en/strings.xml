@@ -214,7 +214,7 @@ of fixed length that can then be used as the encryption key.</string>
     <string name="stego_convert_bytes">Converting bits to bytes</string>
     <string name="stego_convert_original">Converting original image to byte array</string>
     <string name="stego_convert_to_bitmap">Converting bytes to image</string>
-    <string name="stego_data_length">Data length: %1$d bits</string>
+    <string name="stego_data_length">Data length: %1$d bits (%2$.2f megabit)</string>
     <string name="stego_decode_error">Failed to decode meme from URI: %1$s</string>
     <string name="stego_embed_data">Embedding data into meme image</string>
     <string name="stego_extract_data">Extracting data from meme image</string>
@@ -265,4 +265,6 @@ of fixed length that can then be used as the encryption key.</string>
     <string name="wrong_password0">Incorrect password</string>
     <string name="you_can_like">You might like…</string>
     <string name="you_were_looking_for">You were looking for</string>
+    <string name="stego_compression_completed">Compression stage completed</string>
+    <string name="mem_info">(The size of the meme will affect the resolution of the embedded image)</string>
 </resources>

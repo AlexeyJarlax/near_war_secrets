@@ -1,6 +1,5 @@
 package com.pavlov.MyShadowGallery.ui.images.loaded
 
-import android.graphics.BitmapFactory
 import com.pavlov.MyShadowGallery.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,32 +20,29 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.pavlov.MyShadowGallery.theme.My5
 import com.pavlov.MyShadowGallery.theme.uiComponents.CustomButtonOne
 import com.pavlov.MyShadowGallery.theme.uiComponents.MyStyledDialogWithTitle
-import timber.log.Timber
 
 @Composable
 fun MemeSelectionDialog(
     onMemeSelected: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
+
     val memeList = listOf(
-        R.drawable.mem3,
-        R.drawable.mem2,
-        R.drawable.mem1,
-        R.drawable.x533x451
+        Pair(R.drawable.mem533x451_, R.drawable.mem533x451),
+        Pair(R.drawable.mem683x749_, R.drawable.mem683x749),
+        Pair(R.drawable.mem984x720_, R.drawable.mem984x720),
+        Pair(R.drawable.mem1164x800_, R.drawable.mem1164x800),
+        Pair(R.drawable.mem1920x1065_, R.drawable.mem1920x1065),
+        Pair(R.drawable.mem1920x1277_, R.drawable.mem1920x1277),
+        Pair(R.drawable.mem4621x2599_, R.drawable.mem4621x2599)
     )
 
-    val context = LocalContext.current
-
-    fun getImageSize(resourceId: Int): String {
-        return try {
-            val bitmap = BitmapFactory.decodeResource(context.resources, resourceId)
-            "${bitmap.width}x${bitmap.height}"
-        } catch (e: Exception) {
-            Timber.tag("MemeSelectionDialog").e(e, "Ошибка при получении размера изображения")
-            "Unknown"
-        }
+    fun getSizeFromResourceName(resourceName: String): String {
+        val sizeRegex = Regex("(\\d+x\\d+)")
+        return sizeRegex.find(resourceName)?.value ?: "Unknown"
     }
 
     MyStyledDialogWithTitle(
@@ -59,32 +55,39 @@ fun MemeSelectionDialog(
         },
         gap = 0,
         content = {
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(20.dp))
+            Text(
+                text = stringResource(id = R.string.mem_info),
+                color = My5
+            )
+            Spacer(modifier = Modifier.width(6.dp))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 400.dp)
             ) {
-
-                items(memeList) { memeResId ->
+                items(memeList) { (thumbnailResId, originalResId) ->
+                    val resourceName = LocalContext.current.resources.getResourceEntryName(originalResId)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .clickable { onMemeSelected(memeResId) },
+                            .clickable { onMemeSelected(originalResId) },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+
                         Image(
-                            painter = painterResource(id = memeResId),
-                            contentDescription = "Meme",
+                            painter = painterResource(id = thumbnailResId),
+                            contentDescription = "Meme Thumbnail",
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(150.dp)
                                 .clip(RoundedCornerShape(8.dp)),
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.width(16.dp))
+
                         Text(
-                            text = getImageSize(memeResId),
+                            text = getSizeFromResourceName(resourceName),
                             style = MaterialTheme.typography.body1
                         )
                     }

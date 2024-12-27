@@ -31,19 +31,58 @@ class SteganographyRepository @Inject constructor(
         emit(StegoEvent.Progress(context.getString(R.string.stego_start_hiding)))
 
         try {
-            // Шаг 1: Конвертируем originalBitmap в байтовый массив
+            // Шаг 1: Конвертируем originalBitmap в байтовый массив с возможной компрессией
             emit(StegoEvent.Progress(context.getString(R.string.stego_convert_original)))
-            val byteArray = bitmapToByteArray(originalBitmap)
+
+            // Определяем доступные биты для скрытого изображения
+            val memeWidth = memeBitmap.width
+            val memeHeight = memeBitmap.height
+            val availableBits = memeWidth * memeHeight * BITS_PER_PIXEL - HEADER_SIZE * 8 // Вычитаем биты заголовка
+            val maxDataLength = availableBits / 8 // Максимальный размер в байтах
+
+            Timber.tag(TAG).d("Available bits: $availableBits, Max data length: $maxDataLength bytes")
+
+            // Начальные параметры компрессии
+            var currentBitmap = originalBitmap
+            var compressionQuality = 100
+            var byteArray = bitmapToByteArray(currentBitmap, compressionQuality)
+
+            // Итеративно уменьшаем качество или масштабируем изображение до тех пор, пока размер не станет допустимым
+            while (byteArray.size > maxDataLength) {
+                compressionQuality -= 5
+                if (compressionQuality < 10) {
+                    // Если качество слишком низкое, начинаем масштабирование
+                    val scaleFactor = 0.9f
+                    val newWidth = (currentBitmap.width * scaleFactor).toInt()
+                    val newHeight = (currentBitmap.height * scaleFactor).toInt()
+                    if (newWidth < 1 || newHeight < 1) {
+                        emit(StegoEvent.Error(context.getString(R.string.stego_meme_too_small)))
+                        return@flow
+                    }
+                    Timber.tag(TAG).d("Scaling hidden image to ${newWidth}x${newHeight}")
+                    currentBitmap = Bitmap.createScaledBitmap(currentBitmap, newWidth, newHeight, true)
+                    compressionQuality = 100 // Сброс качества после масштабирования
+                    emit(StegoEvent.Progress(context.getString(R.string.stego_compression_completed)))
+                } else {
+                    Timber.tag(TAG).d("Reducing compression quality to $compressionQuality")
+                }
+                byteArray = bitmapToByteArray(currentBitmap, compressionQuality)
+                Timber.tag(TAG).d("Current hidden data size: ${byteArray.size} bytes")
+            }
+
+            Timber.tag(TAG).d("Final hidden data size: ${byteArray.size} bytes")
 
             // Шаг 2: Подготавливаем заголовок
             emit(StegoEvent.Progress(context.getString(R.string.stego_prepare_header)))
             val dataLength = byteArray.size * 8 // длина в битах
-            val headerBytes = ByteArray(4)
+            val headerBytes = ByteArray(HEADER_SIZE)
             headerBytes[0] = (dataLength shr 24).toByte()
             headerBytes[1] = (dataLength shr 16).toByte()
             headerBytes[2] = (dataLength shr 8).toByte()
             headerBytes[3] = (dataLength).toByte()
             val totalData = headerBytes + byteArray
+
+            Timber.tag(TAG).d("Total data length (bits): $dataLength")
 
             // Шаг 3: Конвертируем totalData в BitSet
             emit(StegoEvent.Progress(context.getString(R.string.stego_convert_bits)))
@@ -52,22 +91,12 @@ class SteganographyRepository @Inject constructor(
             // Шаг 4: Встраиваем dataBits в memeBitmap
             emit(StegoEvent.Progress(context.getString(R.string.stego_embed_data)))
             val encodedBitmap = memeBitmap.copy(Bitmap.Config.ARGB_8888, true)
-            val memeWidth = memeBitmap.width
-            val memeHeight = memeBitmap.height
-            val totalPixels = memeWidth * memeHeight
-
-            // Проверяем, достаточно ли места для встраивания данных
-            val availableBits = totalPixels * BITS_PER_PIXEL
-            if (dataBitSet.length() > availableBits) {
-                emit(StegoEvent.Error(context.getString(R.string.stego_meme_too_small)))
-                return@flow
-            }
 
             var bitIndex = 0
-            for (y in 0 until memeHeight) {
+            outer@ for (y in 0 until memeHeight) {
                 for (x in 0 until memeWidth) {
                     if (bitIndex >= dataBitSet.length()) {
-                        break
+                        break@outer
                     }
                     val pixel = memeBitmap.getPixel(x, y)
 
@@ -94,10 +123,10 @@ class SteganographyRepository @Inject constructor(
             emit(StegoEvent.Progress(context.getString(R.string.stego_hiding_completed)))
             emit(StegoEvent.Progress(context.getString(R.string.stego_saving_image)))
 
-            val fileName = "meme_with_hidden_image_${System.currentTimeMillis()}.png"
+            val fileName = "meme_${System.currentTimeMillis()}.png" // Изменено на PNG
             val destinationFile = File(context.cacheDir, fileName)
             val outputStream = FileOutputStream(destinationFile)
-            encodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            encodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream) // Изменено на PNG
             outputStream.flush()
             outputStream.close()
 
@@ -127,6 +156,12 @@ class SteganographyRepository @Inject constructor(
             emit(StegoEvent.Error(context.getString(R.string.stego_hide_error, e.message ?: "Неизвестная ошибка")))
         }
     }.flowOn(Dispatchers.Default)
+
+    private fun bitmapToByteArray(bitmap: Bitmap, quality: Int = 100): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, quality, outputStream)
+        return outputStream.toByteArray()
+    }
 
     suspend fun extractOriginalFromMeme(
         memeUri: Uri
@@ -171,9 +206,9 @@ class SteganographyRepository @Inject constructor(
 
             // Шаг 2: Извлечение заголовка (первые 32 бита)
             emit(StegoEvent.Progress(context.getString(R.string.stego_extract_header)))
-            val headerBits = allBits.get(0, 32)
-            val headerBytes = ByteArray(4)
-            for (i in 0 until 4) { // 4 байта
+            val headerBits = allBits.get(0, HEADER_SIZE * 8)
+            val headerBytes = ByteArray(HEADER_SIZE)
+            for (i in 0 until HEADER_SIZE) { // 4 байта
                 var byte = 0
                 for (bit in 0 until 8) {
                     byte = (byte shl 1) or (if (headerBits.get(i * 8 + bit)) 1 else 0)
@@ -188,18 +223,20 @@ class SteganographyRepository @Inject constructor(
                             ((headerBytes[2].toInt() and 0xFF) shl 8) or
                             (headerBytes[3].toInt() and 0xFF)
                     )
-            emit(StegoEvent.Progress(context.getString(R.string.stego_data_length, dataLength)))
+            val dataLengthInBits = dataLength
+            val dataLengthInMegabits = dataLength / 1_000_000.0 // Перевод в мегабиты
+            emit(StegoEvent.Progress(context.getString(R.string.stego_data_length, dataLengthInBits, dataLengthInMegabits)))
 
             // Шаг 3: Извлечение данных
             emit(StegoEvent.Progress(context.getString(R.string.stego_extract_data)))
             val dataBitsToExtract = dataLength
             val dataBitSet = BitSet(dataBitsToExtract)
             for (i in 0 until dataBitsToExtract) {
-                if (32 + i >= allBits.length()) {
+                if (HEADER_SIZE * 8 + i >= allBits.length()) {
                     emit(StegoEvent.Error(context.getString(R.string.stego_extract_error, "Недостаточно бит для данных")))
                     return@flow
                 }
-                dataBitSet.set(i, allBits.get(32 + i))
+                dataBitSet.set(i, allBits.get(HEADER_SIZE * 8 + i))
             }
 
             // Шаг 4: Конвертация битов в байты
@@ -217,6 +254,8 @@ class SteganographyRepository @Inject constructor(
                 }
                 dataBytes[i] = byte.toByte()
             }
+
+            Timber.tag(TAG).d("Extracted data bytes size: ${dataBytes.size}")
 
             // Шаг 5: Конвертация байтов в Bitmap
             emit(StegoEvent.Progress(context.getString(R.string.stego_convert_to_bitmap)))
@@ -240,11 +279,6 @@ class SteganographyRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.Default)
 
-    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        return outputStream.toByteArray()
-    }
 
     private fun byteArrayToBitSet(byteArray: ByteArray): BitSet {
         val bitSet = BitSet(byteArray.size * 8)

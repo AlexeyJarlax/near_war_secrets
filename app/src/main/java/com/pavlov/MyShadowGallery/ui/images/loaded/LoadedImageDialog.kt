@@ -249,7 +249,7 @@ fun LoadedImageDialog (
                         if (uri != null) {
                             hiddenImageUri = uri
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
+                                type = "file/jpeg"
                                 putExtra(Intent.EXTRA_STREAM, uri)
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
