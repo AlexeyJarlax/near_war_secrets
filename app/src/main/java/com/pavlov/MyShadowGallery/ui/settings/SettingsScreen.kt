@@ -56,13 +56,13 @@ fun SettingsScreen(
                     )
 
                     // Кнопка "Выбрать язык"
-                    CustomButtonOne(
-                        onClick = { showLanguageDialog = true },
-                        text = stringResource(R.string.language),
-                        textColor = My7,
-                        iconColor = My7,
-                        icon = Icons.Default.Language,
-                    )
+//                    CustomButtonOne(
+//                        onClick = { showLanguageDialog = true },
+//                        text = stringResource(R.string.language),
+//                        textColor = My7,
+//                        iconColor = My7,
+//                        icon = Icons.Default.Language,
+//                    )
 
                     // Кнопка "Настройки безопасности"
                     CustomButtonOne(

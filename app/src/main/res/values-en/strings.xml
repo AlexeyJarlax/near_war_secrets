@@ -1,174 +1,111 @@
 <resources>
-<string name="app_name_1">NWS</string>
-<string name="mimicry_app_name">MoodSound Galaxy</string>
-<string name="app_name_in_main_page">NearWarSecrets</string>
-<string name="disguise_btn">Disguise</string>
-<string name="search">Search</string>
-<string name="button_back">Back</string>
-<string name="button_item_loader">Add</string>
-<string name="storage_log">Storage Log</string>
-<string name="button_settings">Settings</string>
-<string name="dark_mod">Dark Mode</string>
-<string name="share_the_app">Share the App</string>
-<string name="write_to_support">Write to Support</string>
-<string name="user_agreement">Privacy Policy</string>
-<string name="share_app_text">My Shadow Gallery - a hidden gallery for storing encrypted images with restricted access:
-    https://play.google.com/store/apps/details?id=%1$s</string>
-<string name="share_app_text2">File encrypted in My Shadow Gallery. To view, request the key from the sender and use the decryptor:
-    https://play.google.com/store/apps/details?id=%1$s</string>
-<string name="share_app_title">Share the App</string>
-<string name="support_email">mailto:a9633238@gmail.com</string>
-<string name="support_email_subject">Message to the Developer of this App</string>
-<string name="support_email_text">message text</string>
-<string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
-<string name="heading_search_history_list_view">Search History:</string>
-<string name="todo">To-Do</string>
-<string name="there_wil_be_media_library">Media library will be available in this window</string>
-<string name="cam_bat_hide">Hide Camera</string>
-<string name="cam_bat_start">Start Camera</string>
-<string name="cam_bat">Camera</string>
-<string name="snapshot">Take a Snapshot</string>
-<string name="galery">Upload File</string>
-<string name="mountin_switch">Visual Style: Cat Gallery / Mountains</string>
-<string name="sample">One Two Three</string>
-<string name="about_app">About the App</string>
-<string name="about_app_long1">An app for those who have secrets...</string>
-<string name="about_app_long2">The app captures and stores photos in encrypted form. Images are not accessible to the gallery and other apps.
-    Access to the app is password-protected and disguised as a music app. Images saved using encryption cannot be
-    read without the key, even if the file is extracted from the phone. Security concept: all data is stored only on the users device,
-    no server-side storage of user images, previews, keys, passwords is applied. However, the user can share images in both encrypted
-    and decrypted forms. Receive images from other users and decrypt them using a similar encryption key.</string>
-<string name="about_app_long3">Data storage features:</string>
-<string name="about_app_long4">- Previews are stored in the internal app directory with the extension .p and are not encrypted. The preview scale in pixels
-    can be selected in Settings from 1x1 px to 100x100 px.
-\n\n
-- Original images are stored in the internal app directory. When encryption is used, the file is saved with the extension .kk. If
-    the user chooses not to use encryption, the file is saved with the extension .o. When the user shares a decrypted image, a temporary file
-    with the extension .peekaboo is created. In this form, the file can be sent by any means available to the device. Once the user closes the view window
-    of this image, the decrypted copy is deleted from the device. That is, encrypted images are only stored in encrypted form. The user can change the
-    encryption settings through the Settings menu.
-\n\n
-- The encryption key and password are stored on the device in a secure form. For security reasons, there is no way to recover the key and password.
-    If you forget the password to log into the app, the best solution is to uninstall and reinstall the app. In case of loss of the encryption key,
-    you can create another key without reinstalling the app, however, images saved with the old key will not be accessible for viewing. Clear the
-    image storage, change the key or password through the Settings menu.</string>
-<string name="about_app_long5">Encryption System Features</string>
-
-    <string name="about_app_long6">The app has three encryption modes:\n\n
-1. NO ENCRYPTION. Saving files without entering an encryption key – files are stored on the device in a format inaccessible to other apps and the gallery, but
-        an attacker can extract and read them if they gain access to the device. When a file sent from the device is received, its contents can be read.
-\n\n
-2. CONSTANT ENCRYPTION KEY (optimal option). The user comes up with or generates an encryption key. The key is used to encrypt the file according to
-        the Advanced Encryption Standard. The file is stored on the device in an encrypted form, and even with access to the devices memory (or with a
-        received encrypted file from the device), an attacker cannot read the contents without the encryption key. The key is stored in the app in a
-        secure hashed form. The user can create and store up to three keys in the app.
-\n\n
-3. VARIABLE ENCRYPTION KEY. If the user checks the "Do not save encryption key" option, the key will not be stored in the app and will be requested each time
-        when entering. The key exists in the app only while it is open. The highest level of security; however, if you forget the old key, files previously
-        saved with this key will not be accessible for viewing. In the Settings menu, you can always change security options.</string>
-    <string name="clearing_the_storage">Clear Storage</string>
-    <string name="key_input_clear">Clear the key when closing the session \n(the key will be requested when entering)</string>
-    <string name="preview_off">Use Encryption Key</string>
-    <string name="nothing_was_found">Nothing was found</string>
-    <string name="refresh">Refresh</string>
-    <string name="any_mistake">Here will be an error message,\nicon will change depending\non the nature of the error</string>
-    <string name="you_were_looking_for">You were looking for</string>
-    <string name="clear_the_history">Clear History</string>
+    <string name="app_name_1">Near War Secret</string>
+    <string name="about_app">About the App</string>
+    <string name="about_app_long1">An application for those who have secrets...</string>
+    <string name="about_app_long3">Data Storage Features:</string>
+    <string name="about_app_long5">Encryption System Features</string>
+    <string name="about_the_app">About the App</string>
+    <string name="access_obtained">Access Granted</string>
+    <string name="add_key">Add New Key</string>
+    <string name="add_password">Enter Password</string>
     <string name="added">Added: </string>
-    <string name="preview_scaling_factor">Preview Scaling Factor(px):</string>
-    <string name="reset_settings_confirm">Clear All Data: Reset Settings, Key, Password, Clear Storage</string>
-    <string name="personal_data">Personal Data</string>
-    <string name="disguise_it_as_a_music_player">Disguise as a Music Player</string>
-    <string name="language">Language</string>
-    <string name="goAhead">Go Ahead!</string>
-    <string name="input">Confirm Input</string>
-    <string name="noinput">Input Canceled</string>
-    <string name="step00">MY SHADOW GALLERY\n\nLets set up security,\nthree simple steps\n🔐️ 🕶️ 🔏</string>
-    <string name="step01_01">\n🔐️\nStep 1\nUse a password to enter the app?\n</string>
-    <string name="step01_02">\n🔐️\nStep 1\nPassword\n\nA previously saved password for entering the app is detected, do you want to change the password?</string>
-    <string name="step01_03">🗑️ Delete Password</string>
-    <string name="step02_00">\n🕶️\nStep 2\n\nEnable disguise\nas a music app?</string>
-    <string name="step02_01">\nTo exit disguise mode, enter the password in the song search field</string>
-    <string name="step02_02">\nTo exit disguise mode, enter the NUMBER 000 in the song search field</string>
-    <string name="step02_03">Ill try to remember this!</string>
-    <string name="step03_00">\n🔏\nStep 3\nUse an encryption key?</string>
-    <string name="step03_01">Image Encryption🔏\nAllow the app to generate a unique encryption key or create your own. The key is used for encryption with the Advanced Encryption Standard.
-    Images and key are stored on the device in a secure encrypted form.</string>
-    <string name="storage">Storage</string>
-    <string name="key_byte_count_message">Recommended to add (bytes):</string>
-    <string name="encryption_key_set">Encryption key set</string>
-    <string name="encryption_mode_set_no_encryption">Set save mode: no encryption</string>
-    <string name="encryption_key_not_set">Encryption key not set</string>
-    <string name="create_encryption_key">Create Encryption Key</string>
-    <string name="generate">Generate</string>
-    <string name="helper_text_prefix">Recommended to add: %1$d bytes</string>
-    <string name="do_not_add_key">Do Not Use Encryption Key</string>
-    <string name="constant_key">Constant Key</string>
-    <string name="variable_key">Variable Key</string>
-    <string name="old_key_button_text">Previously saved encryption keys were found in the storage. Press the key name to select it as the default key.
-    Press the "Trash" button to delete the key</string>
-
-    <string name="developers_page">Developers Page</string>
-    <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
-    <string name="wait">Please wait...</string>
-    <string name="password">Password:</string>
-    <string name="invalid_character">Invalid character</string>
-    <string name="repit_password">Re-enter the password</string>
-    <string name="wrong_password">Incorrect password, please try again</string>
-    <string name="save_password">Password saved</string>
-    <string name="to_change_password">To change the password, enter the old and new passwords</string>
-    <string name="del_password">Password successfully deleted</string>
-    <string name="try_left">Attempts left: </string>
-    <string name="last_warning">! After the last attempt, settings will be reset, and storage will be cleared !</string>
-    <string name="new_password">New Password</string>
-    <string name="old_password">Old Password</string>
-    <string name="access_obtained">Access obtained</string>
-    <string name="encryption_no">Saved without encryption</string>
-    <string name="download">Downloading...</string>
-    <string name="share_the_img">Share Image</string>
-    <string name="encrepted_img">Encrypted Image</string>
-    <string name="decripted_img">Decrypted Image</string>
-    <string name="timber_img">Thumbnail</string>
-    <string name="chuse_img">Choose a file to send</string>
-    <string name="encrypted_save">Encrypted file saved:</string>
-    <string name="decrypting">Decrypting...</string>
-    <string name="naming_options">File Naming Generator</string>
-    <string name="language_option">Select App Language</string>
-    <string name="naming_option">Select File Naming Style</string>
-    <string name="preview">Preview</string>
-    <string name="encrypted_file">Encrypted File</string>
-    <string name="whithout_encryption">Without Encryption</string>
+    <string name="any_mistake">An error message will appear here,\nthe icon will change depending\non the nature of the error</string>
+    <string name="app_name_in_main_page">Near War Secret</string>
+    <string name="app_version_text">"\nApp Version: "</string>
+    <string name="attempts_left">Attempts left: %d</string>
+    <string name="back">Back</string>
+    <string name="background_process">background\nprocess…</string>
+    <string name="button_back">Back</string>
+    <string name="button_item_loader">Add</string>
+    <string name="button_settings">Settings</string>
+    <string name="cam_bat">Camera</string>
+    <string name="cam_bat_hide">Hide\nCamera</string>
+    <string name="cam_bat_start">Start\nCamera</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose_encryption_key">Choose Key</string>
+    <string name="chuse_img">Choose File to Send</string>
+    <string name="chuse_mem">Choose a Meme</string>
+    <string name="clear_storage">Data from storage will be permanently deleted, confirm?</string>
+    <string name="clear_the_history">Clear History</string>
+    <string name="clearing_the_storage">Clearing Storage</string>
+    <string name="confirm">Confirm Action</string>
+    <string name="confirm_clear_storage_title">Press the number eight to confirm</string>
+    <string name="confirm_new_password_placeholder">Confirm the new password here</string>
+    <string name="confirm_password">Input Verification</string>
+    <string name="constant_key">Permanent Key</string>
+    <string name="create_encryption_key">Creating Encryption Key</string>
+    <string name="dark_mod">Dark Theme</string>
+    <string name="dark_mode">Night Theme</string>
+    <string name="date">Date</string>
     <string name="decripted_file">Decrypted File</string>
-    <string name="unnown_tipe">Unknown Type</string>
+    <string name="decripted_img">Decrypted Image</string>
+    <string name="decrypting">Decrypting…</string>
+    <string name="del_pass">🗑️ Delete Password</string>
+    <string name="del_password">Password successfully deleted</string>
+    <string name="delit_one_keys">Delete one of the old keys</string>
+    <string name="developers_page">Developer Page</string>
+    <string name="developers_page_url">https://play.google.com/store/apps/dev?id=8406991842366944145</string>
+    <string name="directory_empty">No other content available</string>
+    <string name="disguise_btn">Disguise</string>
+    <string name="disguise_it_as_a_music_player">Disguise as a Music Player</string>
+    <string name="do_not_add_key">Do not use encryption key</string>
+    <string name="do_not_save_key_in_sistem1">Save encryption key in the system</string>
+    <string name="do_not_save_key_in_sistem2">(up to three encryption keys can be stored in the system)</string>
+    <string name="do_not_save_key_in_sistem3">(existing encryption keys will be removed from the app, the user will need to enter the key each time they log into the app)</string>
     <string name="done">Done</string>
-    <string name="security_settings">Security Settings</string>
-    <string name="sensitive_info">"Sensitive information and personal data can be completely deleted by pressing the CLEAR ALL DATA button above"</string>
-    <string name="send_to_app">File sent to the app. Enter the app for processing.</string>
-    <string name="saving_option">File received from another app:</string>
-    <string name="saving_option1">Save the file "as is"\n\n</string>
-    <string name="saving_option2">Encrypt and save the file\n\n</string>
-    <string name="saving_option3">Attempt to decrypt the file\n\n</string>
-    <string name="saving_option5">Delete the file</string>
+    <string name="download">Downloading…</string>
+    <string name="encrepted_img">Encrypted Image</string>
+    <string name="encrypted_file">Encrypted File</string>
+    <string name="encrypted_save">Encrypted file saved:</string>
+    <string name="encryption_key_not_set">Encryption key not set</string>
+    <string name="encryption_key_set">Encryption key set</string>
+    <string name="encryption_mode_set_no_encryption">Save mode set: no encryption</string>
+    <string name="encryption_no">Saved without encryption</string>
+    <string name="enter">Enter\n</string>
+    <string name="enter_encryption_key1">Enter Key Manually</string>
+    <string name="enter_encryption_key2">Enter Key Manually (upon successful decryption, the file will be re-encoded with the default key)</string>
+    <string name="enter_new_password_placeholder">Enter new password here</string>
+    <string name="error">Error</string>
+    <string name="error_camera">Camera access error</string>
+    <string name="error_connect">Connection error</string>
+    <string name="error_decode_meme">Failed to decode meme resource: %1$d</string>
+    <string name="error_decode_original">Failed to decode original image from file: %1$s</string>
+    <string name="error_decryption">Decryption error</string>
+    <string name="error_del">Error deleting file</string>
+    <string name="error_encryption">Error: Failed to complete encryption</string>
+    <string name="error_gallery">Gallery access error</string>
+    <string name="error_hide_data">Error: %1$s</string>
+    <string name="error_hide_data_detailed">Error hiding data: %1$s</string>
+    <string name="error_hide_image">Error hiding data in image</string>
+    <string name="error_key">The key may have been changed</string>
+    <string name="error_save">Save error</string>
+    <string name="error_serch">Song search unavailable</string>
+    <string name="error_steganography">Error during steganography: %1$s</string>
+    <string name="error_text_web">Connection problems \n\n Download failed. Check\ninternet connection</string>
+    <string name="error_url">"Failed to obtain URI for the file"</string>
+    <string name="error0">Undefined error</string>
+    <string name="error400">400 - Bad Request</string>
+    <string name="error401">401 - Unauthorized Request</string>
+    <string name="error403">403 - Forbidden Request</string>
+    <string name="error404">404 - Not Found</string>
+    <string name="error500">500 - Internal Server Error</string>
+    <string name="error503">503 - Service Temporarily Unavailable</string>
+    <string name="exit">Exit</string>
+    <string name="extracted_file_not_found">Image for extraction not found</string>
     <string name="feature_in_development">Feature in development</string>
-    <string name="storage_log_activity">App Storage Image Log.\n
-                    The preview is saved with the extension .p.\nEncrypted files are saved with the extension .kk\n
-                    Files saved without encryption have the extension .o\n
-                    The decrypted file, shared by the user, exists in the system for a short time with the extension .peekaboo\n
-                    A file passed to the app using the "share" function exists in the system with the extension .share\n\n
-                    ----------------\n\n</string>
-
-    <string name="how_does_is_work">How It Works</string>
-    <string name="how_to_share_picture">How to Share an Image?</string>
-    <string name="how_to_accept_picture">How to Receive an Image?</string>
-    <string name="how_to_sett_secure">How to Set Up Security?</string>
-    <string name="how_to_add_picture">How to Add an Image?</string>
     <string name="file_from_web">Received File</string>
-    <string name="save_key">Save New Key</string>
+    <string name="file_name">File Name</string>
+    <string name="file_path">Location</string>
+    <string name="file_type">File Type</string>
+    <string name="flip">Flip</string>
+    <string name="galery">Upload\nFile</string>
+    <string name="generate">Generate</string>
+    <string name="goAhead">Go Ahead!</string>
+    <string name="heading_search_history_list_view">Search bar query history:</string>
+    <string name="helper_text_prefix">Recommended to add: %1$d bytes</string>
+    <string name="how_does_is_work">How It Works</string>
     <string name="how_does_the_key_works">ℹ️ How Does the Encryption Key Work?</string>
-    <string name="do_not_save_key_in_sistem1">Save Encryption Key in the System</string>
-    <string name="do_not_save_key_in_sistem2">(Up to three encryption keys can be stored in the system)</string>
-    <string name="key_name">Key Name</string>
-    <string name="what_key_sistem_to_choose">ℹ️ Which Encryption Option to Choose?</string>
+
     <string name="how_does_the_key_works_details">ADVANCED ENCRYPTION STANDARD\n\nThe apps function implements the encryption algorithm for images using
 AES (Advanced Encryption Standard).
 This algorithm uses a symmetric key and applies the AES standard to ensure the security of the image during transmission or storage. \n\n
@@ -181,39 +118,153 @@ Collisions occur when two different input messages generate the same hash value.
 occurrence requires a huge amount of computational resources.\n- The apps master key is used as the basis for creating the encryption key. To bring
 the master key to a fixed length, SHA is applied. This ensures that regardless of the length of the original master key, the result will be a hash
 of fixed length that can then be used as the encryption key.</string>
-    <string name="add_key">Add New Key</string>
-    <string name="no_available_keys">Maximum number of keys reached</string>
-    <string name="delit_one_keys">Delete one of the old keys</string>
-    <string name="key_delited">Key deleted</string>
-    <string name="do_not_save_key_in_sistem3">(Existing encryption keys will be deleted from the app, and the user will have to enter the key each time they log in)</string>
-    <string name="save_key_on_session">Use the key for the session</string>
-    <string name="choose_encryption_key">Choose Key</string>
-    <string name="enter_encryption_key1">Enter the key manually</string>
-    <string name="enter_encryption_key2">Enter the key manually (if decryption is successful, the file will be re-encoded with the default key)</string>
-    <string name="clear_storage">Data will be permanently deleted</string>
-    <string name="confirm_clear_storage_title">Press the number eight to confirm</string>
+    <string name="how_to_accept_picture">How to obtain an image?</string>
+    <string name="how_to_add_picture">How to add an image?</string>
+    <string name="how_to_sett_secure">How to set up security?</string>
+    <string name="how_to_share_picture">How to send an image?</string>
+    <string name="input">Confirm Input</string>
+    <string name="invalid_character">invalid character</string>
+    <string name="key_byte_count_message">Recommended to add (bytes):</string>
     <string name="key_d">%d files encrypted with this key</string>
-    <string name="made_by_key">%d Encrypted by the key</string>
-    <string name="app_version_text">"\nApp Version: "</string>
+    <string name="key_delited">key deleted</string>
+    <string name="key_input_clear">Delete key upon session closure \n(the key will be requested upon login)</string>
+    <string name="key_name">Key Name</string>
+    <string name="language">Language/language/应用语言/idioma</string>
+    <string name="language_change_notice">Language will change on the next launch</string>
+    <string name="language_option">Select App Language</string>
+    <string name="last_warning">! After the last attempt, settings will reset and storage will be cleared !</string>
+    <string name="loaded_dialog_close">Close</string>
+    <string name="loaded_dialog_delete">Delete</string>
+    <string name="loaded_dialog_encrypt_meme">Encrypt into a Meme</string>
+    <string name="loaded_dialog_encryption_processing">Processing Encryption</string>
+    <string name="loaded_dialog_file_not_found">File not found</string>
+    <string name="loaded_dialog_image_creation_failed">Failed to create image</string>
+    <string name="loaded_dialog_save">Save</string>
+    <string name="loaded_dialog_send">Send</string>
+    <string name="loaded_dialog_share_image">Share</string>
+    <string name="loaded_dialog_share_original">Share Original</string>
+    <string name="loaded_dialog_sharing_method">Sharing Method</string>
+    <string name="log">Log</string>
+    <string name="made_by_key">%d Encrypted by key</string>
+    <string name="mimicry_app_name">AMN</string>
+    <string name="naming_option">Choose File Naming Style</string>
+    <string name="naming_options">File Name Generator</string>
+    <string name="new_about_app">ALMOST MILITARY SECRET\n\nAn application for secret correspondence allows you to:\n\n- Send an encrypted message;\n- Send an encrypted image;\n- Hide text inside an image or, for example, a meme;\n- Hide one photo inside another;\n- Hide an archive with any number of files inside any image.\n</string>
+    <string name="new_password">New Password</string>
+    <string name="no_added_images">No images added</string>
+    <string name="no_available_keys">Allowed number of keys exhausted</string>
     <string name="no_key_found">Default key not set</string>
-    <string name="background_process">Background\nprocess...</string>
-    <string name="error_text_web">Connection problems \n
-    \n Download failed. Check your\n
-    internet connection</string>
-    <string name="error400">400 - Bad Request</string>
-    <string name="error401">401 - Unauthorized</string>
-    <string name="error403">403 - Forbidden</string>
-    <string name="error404">404 - Not Found</string>
-    <string name="error500">500 - Internal Server Error</string>
-    <string name="error503">503 - Service Unavailable</string>
-    <string name="error0">Unknown Error</string>
-    <string name="error_encryption">Error: Unable to complete encryption</string>
-    <string name="error_save">Save error</string>
-    <string name="error_camera">Error accessing the camera</string>
-    <string name="error_decryption">Decryption error</string>
-    <string name="error_key">The key may have been changed</string>
-    <string name="error_del">Error deleting the file</string>
-    <string name="error_serch">Song search is unavailable</string>
-    <string name="error_connect">Connection error</string>
-    <string name="you_can_like">You might like...</string>
+    <string name="noinput">Input Refused</string>
+    <string name="nothing_was_found">Nothing was found</string>
+    <string name="old_password">Old Password</string>
+    <string name="option">Options</string>
+    <string name="password">Password</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="personal_data">Personal Data</string>
+    <string name="photo">Photo</string>
+    <string name="preview">Preview</string>
+    <string name="preview_off">Use Encryption Key</string>
+    <string name="preview_scaling_factor">Preview Scaling Factor (px):</string>
+    <string name="progress_extraction_complete">Extraction Complete</string>
+    <string name="progress_hide_data">Hiding Data Process…</string>
+    <string name="progress_load_meme">Loading Wrapper Image…</string>
+    <string name="progress_load_original">Loading Original Image…</string>
+    <string name="progress_reset">Resetting Progress…</string>
+    <string name="progress_resize_images">Resizing Images…</string>
+    <string name="received_from_outside">Received from Outside</string>
+    <string name="refresh">Refresh</string>
+    <string name="repit_password">Enter Password Again</string>
+    <string name="reset_settings">Clear All Data</string>
+    <string name="reset_settings_confirm">Clear all data: personal data, settings, key, password, storage. Confirm? </string>
+    <string name="resume">Resume</string>
+    <string name="sample">One two three</string>
+    <string name="save">Save</string>
+    <string name="save_key">Save New Key</string>
+    <string name="save_key_on_session">Use Key for Session Duration</string>
+    <string name="save_password">Password Saved</string>
+    <string name="saved">Saved</string>
+    <string name="saving_option">File received from another app:</string>
+    <string name="saving_option1">Save file "as is"\n\n</string>
+    <string name="saving_option2">Encrypt and save file\n\n</string>
+    <string name="saving_option3">Attempt to decrypt file\n\n</string>
+    <string name="saving_option5">Delete file</string>
+    <string name="search">Search</string>
+    <string name="security_settings">Security Settings</string>
+    <string name="send_to_app">File sent to the app. Log in to the app for processing.</string>
+    <string name="sensitive_info">"Sensitive information and personal data can be completely deleted by pressing the CLEAR ALL DATA button located above"</string>
+    <string name="set_password">Set a password to log into the app?</string>
+    <string name="settings_reset_error">Error resetting settings.</string>
+    <string name="settings_reset_success">Settings reset successfully!</string>
+    <string name="settings_title">Settings</string>
+    <string name="share_app_text">Almost Military Secret - a hidden gallery for storing encoded images with restricted access:\n https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_app_text2">File encrypted. To view, request the key from the sender and use the decryptor\n https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_app_title">Share the App</string>
+    <string name="share_the_app">Share the App</string>
+    <string name="share_the_img">Share the Image</string>
+    <string name="shared_screen_encryption_processing">Decrypting…</string>
+    <string name="shared_screen_error">Error: %1$s</string>
+    <string name="shared_screen_image_creation_failed">Failed to create image</string>
+    <string name="shared_screen_no_images">No saved images</string>
+    <string name="shared_screen_save_both_images">Both images saved</string>
+    <string name="shared_screen_save_success">Saved Successfully</string>
+    <string name="size">size</string>
+    <string name="snapshot">Take\nSnapshot</string>
+    <string name="stego_bitmap_conversion_failed">Failed to convert bytes to Bitmap</string>
+    <string name="stego_convert_bits">Converting data to bits</string>
+    <string name="stego_convert_bytes">Converting bits to bytes</string>
+    <string name="stego_convert_original">Converting original image to byte array</string>
+    <string name="stego_convert_to_bitmap">Converting bytes to image</string>
+    <string name="stego_data_length">Data length: %1$d bits (%2$.2f megabit)</string>
+    <string name="stego_decode_error">Failed to decode meme from URI: %1$s</string>
+    <string name="stego_embed_data">Embedding data into meme image</string>
+    <string name="stego_extract_data">Extracting data from meme image</string>
+    <string name="stego_extract_error">Error extracting image: %1$s</string>
+    <string name="stego_extract_header">Extracting data header</string>
+    <string name="stego_extracting_bits">Extracting all bits from meme image</string>
+    <string name="stego_extraction_completed">Image extraction completed</string>
+    <string name="stego_generate_uri_completed">URI generation completed</string>
+    <string name="stego_generating_uri">Generating URI</string>
+    <string name="stego_hide_error">Error hiding image: %1$s</string>
+    <string name="stego_hiding_completed">Image hiding completed</string>
+    <string name="stego_image_saved">Encoded image saved: %1$s</string>
+    <string name="stego_meme_too_small">Meme image is too small to hide data</string>
+    <string name="stego_opening_meme">Opening meme image from URI</string>
+    <string name="stego_prepare_header">Preparing header</string>
+    <string name="stego_save_extracted_failed">Failed to save extracted image</string>
+    <string name="stego_saving_image">Saving encoded image…</string>
+    <string name="stego_start_hiding">Starting to hide image in meme</string>
+    <string name="stego_uri_error">Error obtaining URI for file: %1$s</string>
+    <string name="stego_uri_failed">Failed to generate URI for file: %1$s</string>
+    <string name="step00">\nSetting up security,\nthree simple steps\n🔐️ 🕶️ 🔏</string>
+    <string name="step01_01">\n🔐️\nStep 1\nUse a password to log into the app?\n</string>
+    <string name="storage">Storage</string>
+    <string name="storage_clear_error">Error clearing storage</string>
+    <string name="storage_cleared">Storage cleared!</string>
+    <string name="storage_log">Storage Log</string>
+    <string name="storage_log_activity">Storage Log</string>
+    <string name="successful_enter">Successful Login</string>
+    <string name="support_email">mailto:a9633238@gmail.com</string>
+    <string name="support_email_subject">To the Developer</string>
+    <string name="support_email_text">Developer, you are awesome!</string>
+    <string name="there_wil_be_media_library">a media library will be in this window</string>
+    <string name="timber_img">Thumbnail</string>
+    <string name="to_change_password">To change the password, enter the old and new passwords</string>
+    <string name="todo">To Do</string>
+    <string name="try_left">"Attempts left: "</string>
+    <string name="unnown_tipe">Unknown type</string>
+    <string name="uploaded_by_me">Uploaded by me</string>
+    <string name="user_agreement">Privacy Policy</string>
+    <string name="user_agreement_url">https://raw.githubusercontent.com/AlexeyJarlax/Privacy-Policy-1.8.txt/main/Privacy-Policy-1.8.txt</string>
+    <string name="variable_key">Variable Key</string>
+    <string name="wait">please wait…</string>
+    <string name="what_key_sistem_to_choose">ℹ️ Which encryption option to choose?</string>
+    <string name="whith_encryption">With Encryption</string>
+    <string name="whithout_encryption">Without Encryption</string>
+    <string name="write_to_support">Write to Support</string>
+    <string name="wrong_password">Password does not match, please re-enter</string>
+    <string name="wrong_password0">Incorrect password</string>
+    <string name="you_can_like">You might like…</string>
+    <string name="you_were_looking_for">You were looking for</string>
+    <string name="stego_compression_completed">Compression stage completed</string>
+    <string name="mem_info">(The size of the meme will affect the resolution of the embedded image)</string>
 </resources>

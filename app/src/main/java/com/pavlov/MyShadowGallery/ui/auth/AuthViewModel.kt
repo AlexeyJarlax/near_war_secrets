@@ -1,5 +1,6 @@
 package com.pavlov.MyShadowGallery.ui.auth
 
+import com.pavlov.MyShadowGallery.R
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -75,14 +76,14 @@ class AuthViewModel @Inject constructor(
                 doDelPassword()
                 _navigateToTwoStepsForSave.value = true
             } else {
-                _message.value = "Успешный вход."
+                _message.value = context.getString(R.string.successful_enter)
                 _navigateToItemLoader.value = true
             }
         } else {
             _counter.value -= 1
             _hasError.value = true
             apkm.saveCounter(APK.KEY_COUNT_TRY, _counter.value)
-            _message.value = "Неверный пароль."
+            _message.value = context.getString(R.string.wrong_password0)
 
             if (_counter.value < 1) {
                 resetSettings()

@@ -1,5 +1,6 @@
 package com.pavlov.MyShadowGallery.ui.images.loaded
 
+import com.pavlov.MyShadowGallery.R
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -36,6 +37,8 @@ import com.pavlov.MyShadowGallery.ui.images.ImagesViewModel
 import com.pavlov.MyShadowGallery.ui.images.ZoomableImage
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.pavlov.MyShadowGallery.util.ToastExt
 
 /** ИСПОЛЬЗУЮ ЭТОТ ЭКРАН НА ОТКРЫТОЕ ИЗ ХРАНИЛИЩА*/
 
@@ -53,7 +56,7 @@ fun LoadedImageDialog (
 
     if (actualImageFile == null || !actualImageFile.exists()) {
         LaunchedEffect(Unit) {
-            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+            ToastExt.show(context.getString(R.string.loaded_dialog_file_not_found))
             onDismiss()
         }
         return
@@ -65,7 +68,7 @@ fun LoadedImageDialog (
 
     if (actualUri == null) {
         LaunchedEffect(Unit) {
-            Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+            ToastExt.show(context.getString(R.string.loaded_dialog_file_not_found))
             onDismiss()
         }
         return
@@ -113,14 +116,14 @@ fun LoadedImageDialog (
                                 onSave?.invoke()
                                 onDismiss()
                             },
-                            text = "Сохранить",
+                            text = stringResource(R.string.loaded_dialog_save),
                             textColor = My7,
                             iconColor = My7,
                             icon = Icons.Default.Save
                         )
                         CustomButtonOne(
                             onClick = { showShareOptions = true },
-                            text = "Отправить",
+                            text = stringResource(R.string.loaded_dialog_send),
                             textColor = My7,
                             iconColor = My7,
                             icon = Icons.Default.Share
@@ -133,7 +136,7 @@ fun LoadedImageDialog (
                     ) {
                         CustomButtonOne(
                             onClick = onDelete,
-                            text = "Удалить",
+                            text = stringResource(R.string.loaded_dialog_delete),
                             textColor = My7,
                             iconColor = My7,
                             icon = Icons.Default.Delete
@@ -141,7 +144,7 @@ fun LoadedImageDialog (
 
                         CustomButtonOne(
                             onClick = onDismiss,
-                            text = "Закрыть",
+                            text = stringResource(R.string.loaded_dialog_close),
                             textColor = My7,
                             iconColor = My7,
                             icon = Icons.Default.Close
@@ -150,21 +153,21 @@ fun LoadedImageDialog (
                 } else { // кейс с 3 кнопками
                     CustomButtonOne(
                         onClick = { showShareOptions = true },
-                        text = "Поделиться",
+                        text = stringResource(R.string.loaded_dialog_share_image),
                         textColor = My7,
                         iconColor = My7,
                         icon = Icons.Default.Share
                     )
                     CustomButtonOne(
                         onClick = onDelete,
-                        text = "Удалить",
+                        text = stringResource(R.string.loaded_dialog_delete),
                         textColor = My7,
                         iconColor = My7,
                         icon = Icons.Default.Delete
                     )
                     CustomButtonOne(
                         onClick = onDismiss,
-                        text = "Закрыть",
+                        text = stringResource(R.string.loaded_dialog_close),
                         textColor = My7,
                         iconColor = My7,
                         icon = Icons.Default.Close
@@ -179,7 +182,7 @@ fun LoadedImageDialog (
             onDismissRequest = { showShareOptions = false },
             title = {
                 Text(
-                    text = "Способ отправки",
+                    text = stringResource(R.string.loaded_dialog_sharing_method),
                     style = MaterialTheme.typography.h6,
                 )
             },
@@ -203,15 +206,15 @@ fun LoadedImageDialog (
                                 context.startActivity(
                                     Intent.createChooser(
                                         shareIntent,
-                                        "Поделиться изображением"
+                                        context.getString(R.string.loaded_dialog_share_image)
                                     )
                                 )
                             } else {
-                                Toast.makeText(context, "Файл не найден", Toast.LENGTH_SHORT).show()
+                                ToastExt.show(context.getString(R.string.loaded_dialog_file_not_found))
                             }
                             showShareOptions = false
                         },
-                        text = "Поделиться оригиналом",
+                        text = stringResource(R.string.loaded_dialog_share_original),
                         textColor = My7,
                         iconColor = My7,
                         icon = Icons.Default.InsertPhoto
@@ -224,7 +227,7 @@ fun LoadedImageDialog (
                             showMemeSelection = true
                             showShareOptions = false
                         },
-                        text = "Зашифровать в мемчик",
+                        text = stringResource(R.string.loaded_dialog_encrypt_meme),
                         textColor = My7,
                         iconColor = My7,
                         icon = Icons.Default.HideImage
@@ -246,23 +249,19 @@ fun LoadedImageDialog (
                         if (uri != null) {
                             hiddenImageUri = uri
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "image/jpeg"
+                                type = "file/jpeg"
                                 putExtra(Intent.EXTRA_STREAM, uri)
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
                             context.startActivity(
                                 Intent.createChooser(
                                     shareIntent,
-                                    "Поделиться изображением"
+                                    context.getString(R.string.loaded_dialog_share_image)
                                 )
                             )
                             onDismiss()
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Не удалось создать изображение",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            ToastExt.show(context.getString(R.string.loaded_dialog_image_creation_failed))
                         }
                     }
                 )
@@ -282,7 +281,7 @@ fun LoadedImageDialog (
                     .padding(16.dp)
                     .background(Color.Transparent),
             ) {
-                Text(text = "Обработка шифрования", color = My3)
+                Text(text = stringResource(R.string.loaded_dialog_encryption_processing), color = My3)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Column(
@@ -300,8 +299,8 @@ fun LoadedImageDialog (
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
-                            val icon: ImageVector = if (step.startsWith("Ошибка")) Icons.Default.Error else Icons.Default.Cable
-                            val tint: Color = if (step.startsWith("Ошибка")) Color.Red else My3
+                            val icon: ImageVector = if (step.startsWith(stringResource(R.string.error))) Icons.Default.Error else Icons.Default.Cable
+                            val tint: Color = if (step.startsWith(stringResource(R.string.error))) Color.Red else My3
                             Icon(
                                 imageVector = icon,
                                 contentDescription = null,
