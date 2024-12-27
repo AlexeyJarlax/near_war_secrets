@@ -214,7 +214,7 @@
     <string name="stego_convert_bytes">Convirtiendo bits a bytes</string>
     <string name="stego_convert_original">Convirtiendo imagen original a arreglo de bytes</string>
     <string name="stego_convert_to_bitmap">Convirtiendo bytes a imagen</string>
-    <string name="stego_data_length">Longitud de datos: %1$d bits</string>
+    <string name="stego_data_length">Longitud de datos: %1$d bits (%2$.2f megabit)</string>
     <string name="stego_decode_error">No se pudo decodificar meme desde URI: %1$s</string>
     <string name="stego_embed_data">Insertando datos en imagen meme</string>
     <string name="stego_extract_data">Extrayendo datos de imagen meme</string>
@@ -265,6 +265,7 @@
     <string name="wrong_password0">Contraseña incorrecta</string>
     <string name="you_can_like">Te puede gustar…</string>
     <string name="you_were_looking_for">Estabas buscando</string>
-    <string name="stego_compression_completed">этап компрессии завершен</string>
+    <string name="stego_compression_completed">Etapa de compresión completada</string>
+    <string name="mem_info">(El tamaño del meme afectará la resolución de la imagen incrustada)</string>
 
 </resources>

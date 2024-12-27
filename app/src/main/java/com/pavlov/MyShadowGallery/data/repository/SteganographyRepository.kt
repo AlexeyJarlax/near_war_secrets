@@ -223,7 +223,9 @@ class SteganographyRepository @Inject constructor(
                             ((headerBytes[2].toInt() and 0xFF) shl 8) or
                             (headerBytes[3].toInt() and 0xFF)
                     )
-            emit(StegoEvent.Progress(context.getString(R.string.stego_data_length, dataLength)))
+            val dataLengthInBits = dataLength
+            val dataLengthInMegabits = dataLength / 1_000_000.0 // Перевод в мегабиты
+            emit(StegoEvent.Progress(context.getString(R.string.stego_data_length, dataLengthInBits, dataLengthInMegabits)))
 
             // Шаг 3: Извлечение данных
             emit(StegoEvent.Progress(context.getString(R.string.stego_extract_data)))

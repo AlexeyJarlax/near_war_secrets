@@ -32,7 +32,7 @@ fun NavGraph(
     modifier: Modifier = Modifier,
     intent: Intent?
 ) {
-    // Обработка intent внутри компонуемой функции
+    // Обработка intent внутри компонуемой функции (из-за лагов вынес сюда из мейна)
     LaunchedEffect(intent) {
         intent?.let { receivedIntent ->
             val action = receivedIntent.action

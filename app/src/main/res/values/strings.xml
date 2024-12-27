@@ -213,7 +213,7 @@ AES (Advanced Encryption Standard).
     <string name="stego_convert_bytes">Конвертация битов в байты</string>
     <string name="stego_convert_original">Конвертация оригинального изображения в байтовый массив</string>
     <string name="stego_convert_to_bitmap">Преобразование байтов в изображение</string>
-    <string name="stego_data_length">Длина данных: %1$d бит</string>
+    <string name="stego_data_length">Длина данных: %1$d бит (%2$.2f Мбит)</string>
     <string name="stego_decode_error">Не удалось декодировать мем из URI: %1$s</string>
     <string name="stego_embed_data">Встраивание данных в мем изображение</string>
     <string name="stego_extract_data">Извлечение данных из мем изображения</string>
@@ -265,4 +265,5 @@ AES (Advanced Encryption Standard).
     <string name="you_can_like">Вам может понравится…</string>
     <string name="you_were_looking_for">Вы искали</string>
     <string name="stego_compression_completed">этап компрессии завершен</string>
+    <string name="mem_info">\n(размер мема будет влиять на разрешение вложенного изображения)</string>
 </resources>
