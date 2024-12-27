@@ -264,4 +264,5 @@ AES (Advanced Encryption Standard).
     <string name="wrong_password0">Неверный пароль</string>
     <string name="you_can_like">Вам может понравится…</string>
     <string name="you_were_looking_for">Вы искали</string>
+    <string name="stego_compression_completed">этап компрессии завершен</string>
 </resources>

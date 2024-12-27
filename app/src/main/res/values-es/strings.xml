@@ -265,5 +265,6 @@
     <string name="wrong_password0">Contraseña incorrecta</string>
     <string name="you_can_like">Te puede gustar…</string>
     <string name="you_were_looking_for">Estabas buscando</string>
+    <string name="stego_compression_completed">этап компрессии завершен</string>
 
 </resources>

@@ -265,4 +265,5 @@ of fixed length that can then be used as the encryption key.</string>
     <string name="wrong_password0">Incorrect password</string>
     <string name="you_can_like">You might like…</string>
     <string name="you_were_looking_for">You were looking for</string>
+    <string name="stego_compression_completed">этап компрессии завершен</string>
 </resources>
